@@ -59,11 +59,7 @@ const ContactHero = () => {
 
           <div className='order-1 mx-auto flex h-full max-h-130 w-full flex-col lg:order-2'>
             <div className='relative w-full overflow-hidden rounded-3xl'>
-              <img
-                src='/images/services/service-bg.webp'
-                alt='Zolt Mercer'
-                className='max-h-93.5 w-full object-cover'
-              />
+              <img src='/images/services/service-bg.webp' alt='Zolt Mercer' className='max-h-93.5 w-full object-cover' />
 
               <motion.div
                 className='absolute bottom-0 max-lg:left-1/2 max-lg:-translate-x-1/2'
@@ -73,11 +69,7 @@ const ContactHero = () => {
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               >
-                <img
-                  src='/images/services/services-profile.webp'
-                  alt='Zolt Mercer'
-                  className='max-w-105 object-cover'
-                />
+                <img src='/images/services/services-profile.webp' alt='Zolt Mercer' className='max-w-105 object-cover' />
               </motion.div>
 
               <div className='absolute inset-x-0 bottom-0 flex justify-center'>
