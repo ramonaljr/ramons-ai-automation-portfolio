@@ -31,9 +31,11 @@ const Hero = () => {
             <h1 className='mb-2 text-4xl font-semibold tracking-tight sm:text-5xl lg:text-[64px] lg:font-bold'>
               <GreetingWord />I am Ramon 👋🏻
             </h1>
-            <p className='text-muted-foreground text-xl font-medium sm:text-2xl lg:text-3xl'>AI Automation Engineer</p>
+            <p className='text-muted-foreground text-xl font-medium sm:text-2xl lg:text-3xl'>
+              AI Automation Specialist &amp; MBA
+            </p>
             <p className='mb-8 max-w-2xl text-base'>
-              AI Automation Engineer based in the Philippines. I architect autonomous agent systems, intelligent workflow pipelines, and custom LLM integrations to eliminate bottlenecks and scale business operations.
+              Finance professional turned AI Automation Specialist based in Cagayan de Oro, Philippines. With 10 years across accounting and financial analysis, I bridge deep business domain knowledge with n8n, Claude, OpenAI, and Python to automate mission-critical operations.
             </p>
             <div className='flex items-center gap-2.5 pt-2'>
               <Button

@@ -8,48 +8,48 @@ const EXPERIENCES = [
   {
     index: '01',
     logo: '/images/features/logo-01.webp',
-    company: 'Autonomous Systems & AI Consulting',
-    role: 'Lead AI Automation Engineer',
-    period: '2024 -',
-    status: { text: 'Present', tone: 'positive' as const },
-    stack: ['LangChain', 'LangGraph', 'OpenAI', 'Anthropic', 'n8n', 'Python'],
-    achievement: 'Designed multi-agent systems automating 80%+ of client support & lead triage',
+    company: 'My Mountain Mover',
+    role: 'Financial Analyst (AI & Valuation)',
+    period: '2022 -',
+    status: { text: 'Present · US Remote', tone: 'positive' as const },
+    stack: ['Claude', 'OpenAI', 'DCF Valuation', 'n8n', 'Python', 'Excel'],
+    achievement: 'Automated DCF valuation modeling and earnings-call analysis pipelines',
     description:
-      'Architecting end-to-end autonomous agent networks and workflow automations for growth-stage businesses. Implemented deterministic tool-use pipelines, custom vector embeddings, and real-time event triggers.'
+      'Maintain DCF valuation models and financial statement forecasts for US portfolios. Leverage Claude and AI automation daily to accelerate research, financial analysis, and structured reporting workflows.'
   },
   {
     index: '02',
     logo: '/images/features/logo-02.webp',
-    company: 'AI Platforms & SaaS Solutions',
-    role: 'Full-Stack AI Engineer',
-    period: '2023 - 2024',
-    stack: ['Next.js', 'FastAPI', 'PostgreSQL', 'Vector DBs', 'RAG'],
-    achievement: 'Engineered AI-native platforms with sub-2s query response and automated ingestion',
+    company: 'Johndorf Ventures Corporation',
+    role: 'Branch Accountant',
+    period: '2020 - 2021',
+    stack: ['Team Leadership', 'AP/AR', 'Reconciliation', 'SAP', 'Process Mapping'],
+    achievement: 'Led a 10-person accounting team delivering monthly & annual closes',
     description:
-      'Developed AI-powered web applications and CRMs with automated email parsing, structured document extraction, and seamless third-party API integrations.'
+      'Owned and documented repeatable close, reconciliation, and approval processes across AP, AR, and disbursement — establishing the exact process-mapping discipline required for enterprise automation.'
   },
   {
     index: '03',
     logo: '/images/features/logo-03.webp',
-    company: 'Quantitative & Automation Lab',
-    role: 'Systems & Data Pipeline Engineer',
-    period: '2023',
-    stack: ['Python', 'Data Pipelines', 'APIs', 'Async Automation'],
-    achievement: 'Built high-throughput data processing pipelines handling real-time financial streams',
+    company: 'Johndorf Ventures Corporation',
+    role: 'Project Cost Accountant',
+    period: '2016 - 2020',
+    stack: ['Cost Accounting', 'Variance Analysis', 'QuickBooks', 'Workbooks'],
+    achievement: 'Reconciled multi-million project cost ledgers with automated reporting',
     description:
-      'Created custom automation scrapers, data normalization workflows, and automated backtesting alerts with zero human intervention required.'
+      'Performed standard costing and variance analysis for a major real estate developer. Reconciled material, labor, and overhead costs against item ledgers and built recurring reporting systems.'
   },
   {
     index: '04',
     logo: '/images/features/logo-04.webp',
-    company: 'Open Source & AI Labs',
-    role: 'Independent AI Builder',
-    period: '2022 -',
-    status: { text: 'Ongoing · Research', tone: 'accent' as const },
-    stack: ['Autonomous Agents', 'TypeScript', 'Python', 'MCP Tools'],
-    achievement: 'Created custom AI toolkits, agent plugins, and open-source automations',
+    company: 'Johndorf Ventures Corporation',
+    role: 'AP Supervisor & Tax Compliance Analyst',
+    period: '2015 - 2018',
+    status: { text: 'Accounting Operations', tone: 'accent' as const },
+    stack: ['Tax Compliance', 'Invoicing', 'Vendor Reconciliation', 'Voucher Controls'],
+    achievement: 'Supervised full AP lifecycle and strict statutory filing calendars',
     description:
-      'Experimenting with cutting-edge agentic architectures, self-correcting prompt flows, and bespoke automation hooks to push autonomous computing forward.'
+      'Supervised end-to-end invoice processing, vendor aging, and voucher controls. Managed statutory tax compliance calendars — high-volume, rules-based operations prime for automation.'
   }
 ]
 

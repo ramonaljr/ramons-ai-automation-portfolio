@@ -24,25 +24,25 @@ const STEP_TITLES: Record<number, string> = {
 
 const SERVICES = [
   {
-    id: 'ai-workflow-strategy',
-    title: 'AI Workflow & Strategy Consultation',
+    id: 'n8n-workflow-audit',
+    title: 'n8n Workflow & Automation Audit',
+    price: '$120',
+    duration: '30 min',
+    description: 'Audit of operational bottlenecks, toolstack mapping, and n8n architecture plan'
+  },
+  {
+    id: 'financial-process-automation',
+    title: 'Financial & AP/AR Automation Scoping',
+    price: '$180',
+    duration: '45 min',
+    description: 'Scoping for automated invoice processing, reconciliation, and reporting'
+  },
+  {
+    id: 'llm-rag-agent-design',
+    title: 'Claude & LLM Agent System Design',
     price: '$150',
     duration: '30 min',
-    description: 'Audit of operational bottlenecks and AI automation architecture plan'
-  },
-  {
-    id: 'autonomous-agents-design',
-    title: 'Autonomous Agent System Design',
-    price: '$250',
-    duration: '45 min',
-    description: 'Deep-dive scoping for multi-agent workflows and tool-calling agents'
-  },
-  {
-    id: 'rag-and-data-pipeline',
-    title: 'Custom RAG & Data Automation',
-    price: '$200',
-    duration: '30 min',
-    description: 'Private knowledge base RAG architecture and API pipeline setup'
+    description: 'Prompt engineering, RAG architecture, and API integration strategy'
   }
 ]
 

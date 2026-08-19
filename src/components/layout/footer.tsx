@@ -8,10 +8,10 @@ import { Separator } from '@/components/ui/separator'
 import RamonSignature from '@/components/layout/ramon-signature'
 
 const socials = [
-  { label: 'GitHub', src: '/images/footer/github-logo.webp' },
-  { label: 'Email', src: '/images/footer/gmail.webp' },
-  { label: 'LinkedIn', src: '/images/footer/linkedin.webp' },
-  { label: 'X', src: '/images/footer/twitter.webp' }
+  { label: 'GitHub', src: '/images/footer/github-logo.webp', href: 'https://github.com/ramonaljr' },
+  { label: 'Email', src: '/images/footer/gmail.webp', href: 'mailto:ramonvallejerajr@gmail.com' },
+  { label: 'LinkedIn', src: '/images/footer/linkedin.webp', href: 'https://linkedin.com/in/ramon-vallejera-jr-mba' },
+  { label: 'X', src: '/images/footer/twitter.webp', href: 'https://x.com/ramonaljr' }
 ]
 
 const Footer = () => {
@@ -28,6 +28,8 @@ const Footer = () => {
                 size='icon'
                 aria-label={social.label}
                 className='hover:bg-muted/5 min-w-10 rounded-md'
+                render={<a href={social.href} target='_blank' rel='noopener noreferrer' />}
+                nativeButton={false}
               >
                 <Image src={social.src} alt={social.label} width={16} height={16} />
               </Button>

@@ -14,9 +14,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 const STATS = [
-  { label: 'Total hours', value: '163' },
-  { label: 'Rating', value: '4.82' },
-  { label: 'Total jobs', value: '81' }
+  { label: 'Domain Exp', value: '10+ Yrs' },
+  { label: 'n8n & LLMs', value: 'Certified' },
+  { label: 'Education', value: 'MBA' }
 ]
 
 const ProfileCard = ({ className }: { className?: string }) => {
@@ -62,7 +62,7 @@ const ProfileCard = ({ className }: { className?: string }) => {
                 <div className='flex grow flex-col items-center gap-4'>
                   <div className='relative'>
                     <Avatar className='size-30'>
-                      <AvatarImage src='/images/hire-me/profile.webp' alt='Ramon A. Vallejera, Jr.' />
+                      <AvatarImage src='/images/hire-me/profile.webp' alt='Ramon A. Vallejera, Jr., MBA' />
                       <AvatarFallback>R</AvatarFallback>
                     </Avatar>
                     <span className='absolute -bottom-3 left-[50%] flex size-7.5 -translate-x-1/2 items-center justify-center'>
@@ -70,10 +70,10 @@ const ProfileCard = ({ className }: { className?: string }) => {
                     </span>
                   </div>
                   <div>
-                    <h3 className='text-xl font-semibold lg:text-[36px]'>Ramon Vallejera Jr.</h3>
-                    <p className='text-muted-foreground flex items-center justify-center gap-1 text-base font-medium'>
-                      <MapPinIcon className='fill-muted-foreground text-card size-5' />
-                      Philippines
+                    <h3 className='text-xl font-semibold lg:text-[34px]'>Ramon Vallejera Jr.</h3>
+                    <p className='text-muted-foreground flex items-center justify-center gap-1 text-sm font-medium'>
+                      <MapPinIcon className='fill-muted-foreground text-card size-4' />
+                      Cagayan de Oro, Philippines
                     </p>
                   </div>
                 </div>
@@ -81,8 +81,8 @@ const ProfileCard = ({ className }: { className?: string }) => {
                 <div className='divide-border divide-y text-center'>
                   {STATS.map(stat => (
                     <div key={stat.label} className='py-1.5 first:pt-0 last:pb-0'>
-                      <p className='text-foreground text-xl font-semibold lg:text-[26px]'>{stat.value}</p>
-                      <p className='text-base'>{stat.label}</p>
+                      <p className='text-foreground text-lg font-semibold lg:text-[22px]'>{stat.value}</p>
+                      <p className='text-xs text-muted-foreground'>{stat.label}</p>
                     </div>
                   ))}
                 </div>
@@ -96,13 +96,13 @@ const ProfileCard = ({ className }: { className?: string }) => {
           >
             <CardContent className='relative flex h-full flex-col justify-between gap-6'>
               <div>
-                <p className='text-xs text-white/60'>Ramon A. Vallejera, Jr.</p>
-                <h3 className='text-base font-medium'>AI Automation Engineer</h3>
+                <p className='text-xs text-white/60'>Ramon A. Vallejera, Jr., MBA</p>
+                <h3 className='text-base font-medium'>AI Automation Specialist</h3>
               </div>
 
               <div className='flex items-end justify-between gap-3'>
-                <p className='text-base'>
-                  I design and deploy resilient autonomous agents and workflow automations that scale operations.
+                <p className='text-sm leading-relaxed text-neutral-200'>
+                  10 years across accounting & finance means I understand the exact business processes I automate — invoicing, reconciliation, and approvals.
                 </p>
                 <Avatar className='h-24.5 w-20.5 shrink-0 rounded-[12px]'>
                   <AvatarImage src='/images/hire-me/profile.webp' alt='Ramon A. Vallejera, Jr.' className='rounded-[12px]' />

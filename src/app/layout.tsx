@@ -38,20 +38,20 @@ const satoshi = localFont({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Ramon Vallejera Jr.',
-    default: 'Ramon A. Vallejera, Jr. - AI Automation Engineer'
+    template: '%s - Ramon Vallejera Jr., MBA',
+    default: 'Ramon A. Vallejera, Jr., MBA — AI Automation Specialist'
   },
   description:
-    'Portfolio of Ramon A. Vallejera, Jr. — AI Automation Engineer based in the Philippines specializing in autonomous agents, intelligent workflow automations, and custom LLM solutions.',
+    'Portfolio of Ramon A. Vallejera, Jr., MBA — AI Automation Specialist based in Cagayan de Oro, Philippines. 10 years of finance & accounting domain expertise combined with n8n, Claude, OpenAI, and Python business workflow automations.',
   robots: 'index,follow',
   keywords: [
-    'AI Automation Engineer',
     'AI Automation Specialist',
-    'Autonomous Agents',
-    'LangChain',
-    'LangGraph',
-    'LLM Integration',
-    'Workflow Automation',
+    'n8n AI Workflows',
+    'Financial Process Automation',
+    'Claude API',
+    'OpenAI Automation',
+    'Accounting Automation',
+    'Cagayan de Oro',
     'Philippines'
   ],
   icons: {

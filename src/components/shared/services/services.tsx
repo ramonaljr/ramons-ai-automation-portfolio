@@ -13,44 +13,44 @@ import { Accordion, AccordionItem, AccordionPanel, AccordionTrigger } from '@/co
 
 const SERVICES = [
   {
-    title: 'Autonomous AI Agents & Multi-Agent Systems',
+    title: 'n8n AI Agents & Workflow Automation',
     image: '/images/services/thumb-01.webp',
-    duration: '2 to 4 weeks',
-    tools: ['LangGraph', 'CrewAI', 'Claude & GPT-4o', 'Python'],
-    description:
-      'I architect autonomous multi-agent networks that execute complex multi-step workflows, perform automated decision-making, and run 24/7 without manual supervision.'
-  },
-  {
-    title: 'End-to-End Workflow & Business Automation',
-    image: '/images/services/thumb-02.webp',
     duration: '1 to 3 weeks',
-    tools: ['n8n', 'Make', 'Custom APIs', 'Webhooks'],
+    tools: ['n8n (Cloud & Self-Hosted)', 'Webhooks', 'Triggers', 'Error Handling'],
     description:
-      'I eliminate manual human bottlenecks by connecting your CRM, communication tools, and databases into intelligent, automated operational pipelines.'
+      'I design, build, and deploy resilient n8n automated workflows and autonomous AI agents that run 24/7 with strict error handling and documented failovers.'
   },
   {
-    title: 'Custom LLM Integration & RAG Pipelines',
-    image: '/images/services/thumb-03.webp',
+    title: 'Financial & Accounting Process Automation',
+    image: '/images/services/thumb-02.webp',
     duration: '2 to 4 weeks',
-    tools: ['Pinecone', 'ChromaDB', 'Hybrid Search', 'LangChain'],
+    tools: ['QuickBooks', 'SAP', 'Sage', 'Excel', 'AP/AR Pipelines'],
     description:
-      'I build robust Retrieval-Augmented Generation (RAG) engines that let AI securely query your private company documents and data with zero hallucinations.'
+      'Leveraging 10 years of accounting experience, I automate invoice processing, vendor reconciliations, reporting workbooks, and multi-step approval workflows.'
   },
   {
-    title: 'AI-Native Full-Stack Applications',
+    title: 'Claude, OpenAI & Gemini LLM Integration',
+    image: '/images/services/thumb-03.webp',
+    duration: '1 to 3 weeks',
+    tools: ['Claude', 'OpenAI', 'Gemini API', 'Prompt Engineering', 'RAG'],
+    description:
+      'I connect frontier LLM models into your business logic to summarize earnings calls, extract structured data from messy documents, and generate actionable insights.'
+  },
+  {
+    title: 'Business Systems & API Integrations',
     image: '/images/services/thumb-04.webp',
-    duration: '3 to 6 weeks',
-    tools: ['Next.js', 'FastAPI', 'PostgreSQL', 'Tailwind CSS'],
+    duration: '1 to 2 weeks',
+    tools: ['REST APIs', 'JSON', 'Google Workspace', 'Airtable', 'Telegram', 'Gmail'],
     description:
-      'I build complete, high-performance web applications powered by embedded intelligence, real-time streaming, and intuitive modern interfaces.'
+      'I connect disparate SaaS platforms into synchronized, automated ecosystems that eliminate manual copy-pasting and human data entry.'
   },
   {
-    title: 'Automated Data Extraction & AI Tooling',
+    title: 'Python & Full-Stack Automation Tooling',
     image: '/images/services/thumb-05.webp',
-    duration: '1 to 2 weeks',
-    tools: ['Playwright', 'MCP Servers', 'Async Pipelines', 'APIs'],
+    duration: '2 to 4 weeks',
+    tools: ['Python', 'JavaScript', 'React', 'Node.js', 'Git/GitHub'],
     description:
-      'I construct intelligent data scrapers, automated research agents, and Model Context Protocol (MCP) integrations tailored to your technical stack.'
+      'I build bespoke automation scripts, data parsers, and custom web interfaces documented cleanly so your team can maintain and run them with ease.'
   }
 ]
 

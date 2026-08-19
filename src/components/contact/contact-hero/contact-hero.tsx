@@ -14,9 +14,9 @@ import Eyebrow from '@/components/shared/eyebrow/eyebrow'
 import ContactForm from '@/components/contact/contact-form/contact-form'
 
 const SOCIALS = [
-  { label: 'Github', icon: GithubIcon },
-  { label: 'LinkedIn', icon: LinkedinIcon },
-  { label: 'Instagram', icon: InstagramIcon }
+  { label: 'Github', icon: GithubIcon, href: 'https://github.com/ramonaljr' },
+  { label: 'LinkedIn', icon: LinkedinIcon, href: 'https://linkedin.com/in/ramon-vallejera-jr-mba' },
+  { label: 'Instagram', icon: InstagramIcon, href: 'mailto:ramonvallejerajr@gmail.com' }
 ]
 
 const ContactHero = () => {
@@ -94,14 +94,14 @@ const ContactHero = () => {
               </p>
 
               <div className='flex items-center gap-1'>
-                {SOCIALS.map(({ label, icon: Icon }) => (
+                {SOCIALS.map(({ label, icon: Icon, href }) => (
                   <Button
                     key={label}
                     variant='ghost'
                     size='icon-sm'
                     aria-label={label}
                     className='text-muted-foreground/80 hover:bg-transparent dark:hover:bg-transparent'
-                    render={<a href='#' />}
+                    render={<a href={href} target='_blank' rel='noopener noreferrer' />}
                     nativeButton={false}
                   >
                     <Icon className='size-4' />
