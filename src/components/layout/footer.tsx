@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 
+import RamonSignature from '@/components/layout/ramon-signature'
+
 const socials = [
   { label: 'GitHub', src: '/images/footer/github-logo.webp' },
   { label: 'Email', src: '/images/footer/gmail.webp' },
@@ -41,7 +43,7 @@ const Footer = () => {
         </div>
 
         <div className='-ml-5 space-y-1 text-center'>
-          <img src='/images/footer/signature.webp' alt='Seal' className='mx-auto -mb-6 w-60' />
+          <RamonSignature className='mx-auto -mb-6 h-28 w-60 text-foreground dark:text-white' />
           <p className='text-xs'>@Ramon A. Vallejera, Jr. {new Date().getFullYear()}</p>
         </div>
       </div>
