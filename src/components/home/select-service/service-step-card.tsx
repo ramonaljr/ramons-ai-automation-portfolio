@@ -32,10 +32,10 @@ const SERVICES = [
   },
   {
     id: 'business-process-automation',
-    title: 'End-to-End Business Process Automation',
+    title: 'End-to-End Business Operations Automation',
     price: '$180',
     duration: '45 min',
-    description: 'Scoping for automated onboarding, CRM syncing, approvals, and operational pipelines'
+    description: 'Automate CRM syncs, lead pipelines, client onboarding, and cross-team workflows'
   },
   {
     id: 'llm-rag-agent-design',
