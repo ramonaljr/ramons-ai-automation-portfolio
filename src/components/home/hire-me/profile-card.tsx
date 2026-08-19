@@ -70,7 +70,7 @@ const ProfileCard = ({ className }: { className?: string }) => {
                     </span>
                   </div>
                   <div>
-                    <h3 className='text-xl font-semibold lg:text-[34px]'>Ramon Vallejera Jr.</h3>
+                    <h3 className='text-2xl font-semibold lg:text-[34px] tracking-tight'>Ramon</h3>
                     <p className='text-muted-foreground flex items-center justify-center gap-1 text-sm font-medium'>
                       <MapPinIcon className='fill-muted-foreground text-card size-4' />
                       Philippines
