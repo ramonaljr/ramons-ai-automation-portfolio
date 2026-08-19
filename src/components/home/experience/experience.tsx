@@ -9,13 +9,13 @@ const EXPERIENCES = [
     index: '01',
     logo: '/images/features/logo-01.webp',
     company: 'My Mountain Mover',
-    role: 'Financial Analyst (AI & Valuation)',
+    role: 'Financial Analyst',
     period: '2022 -',
     status: { text: 'Present · US Remote', tone: 'positive' as const },
-    stack: ['Claude', 'OpenAI', 'DCF Valuation', 'n8n', 'Python', 'Excel'],
-    achievement: 'Automated DCF valuation modeling and earnings-call analysis pipelines',
+    stack: ['Claude', 'DCF Modeling', 'Financial Analysis', 'Forecasting', 'Excel'],
+    achievement: 'Maintained DCF models across public portfolios & accelerated research with AI tools',
     description:
-      'Maintain DCF valuation models and financial statement forecasts for US portfolios. Leverage Claude and AI automation daily to accelerate research, financial analysis, and structured reporting workflows.'
+      'Maintain DCF valuation models and financial statement forecasts across US portfolios. Leverage Claude and AI tools daily to accelerate research, market data analysis, and structured reporting workflows.'
   },
   {
     index: '02',

@@ -1,11 +1,11 @@
 ---
 slug: 'launching-a-marketing-site-in-5-days'
-title: 'Autonomous DCF Valuation & Earnings Research Pipeline'
-description: 'Built an automated financial research workflow in n8n leveraging Claude and OpenAI to parse quarterly SEC filings, summarize earnings calls, and update valuation assumptions.'
-organisation: 'Valuation & Research'
-role: 'Financial Analyst & Automation Lead'
+title: 'Autonomous RAG Knowledge Base & Document Intelligence System'
+description: 'Engineered a semantic Retrieval-Augmented Generation (RAG) pipeline in n8n with Pinecone and Claude to index company documentation and deliver instant cited answers.'
+organisation: 'Knowledge & Operations'
+role: 'AI Automation Specialist'
 duration: '2 Weeks'
-tools: ['n8n', 'Claude API', 'OpenAI', 'Python', 'Airtable', 'Financial Modeling']
+tools: ['n8n', 'Claude 3.5 Sonnet', 'Pinecone', 'Supabase Vector', 'Google Drive', 'Telegram']
 publishedAt: '2026-05-10'
 image: '/images/features/page-02.webp'
 heroImage: '/images/case-study/lumio-04.webp'
@@ -14,28 +14,27 @@ logo: '/images/features/logo-02.webp'
 
 ## Problem
 
-Tracking portfolio earnings across dozen publicly traded companies required repetitive manual reading of 100+ page 10-Q/10-K filings, earnings call transcripts, and press releases every quarter. Analysts spent 15+ hours per company manually extracting revenue segments, EBITDA margins, and forward capex guidance to update Discounted Cash Flow (DCF) model assumptions.
+A distributed team was losing 12+ hours per employee each week searching for critical operational procedures, client contracts, and technical SOPs scattered across multiple Google Drive folders, PDFs, and internal databases. Traditional keyword search frequently missed relevant context or returned outdated document versions.
 
 ## My Role
 
-Combining my MBA valuation expertise with n8n automation, I built an end-to-end autonomous research workflow that scrapes new filings as they drop on SEC EDGAR, runs structured LLM extraction chains, and populates updated model assumption tables.
+Designed and deployed an automated **RAG Knowledge Base & Document Intelligence System** in **n8n**, connecting document storage directly to **Pinecone vector embeddings** and **Claude 3.5 Sonnet** to provide accurate, context-aware answers with direct citations.
 
 ## Key Outcomes
 
-- **80% faster quarterly updates** per covered company (from 8 hours down to ~90 minutes).
-- **Automated sentiment & guidance variance detection** comparing management tone quarter-over-quarter.
-- **Instant executive briefings** generated automatically and delivered to email/Telegram before market open.
+- **95% reduction in search time**: Team members retrieve verified answers in $< 2$ seconds.
+- **Zero document hallucinations**: Strict prompt constraints require the agent to cite source paragraphs and disclaim unknown queries.
+- **Automated re-indexing**: n8n monitors Google Drive folders via webhooks and automatically vectorizes updated files.
 
-## How I Solved It
+## Technical Architecture
 
-### 1. Document Ingestion & Chunking
-- Created scheduled n8n workflows monitoring RSS feeds and financial API endpoints.
-- Auto-downloads PDF transcripts and normalizes tables into structured markdown.
+### 1. Automated Document Ingestion & Chunking
+- Webhook trigger detects new or modified PDFs and Docs in Google Drive.
+- Text is cleaned, normalized, and split into recursive chunks with contextual metadata (document title, author, update timestamp).
 
-### 2. Multi-Pass Financial Extraction
-- **Pass 1 (KPI Extraction)**: Claude extracts organic revenue growth, operating margin guidance, and capital expenditures.
-- **Pass 2 (Guidance Revision)**: Compares current guidance against prior quarter baseline, highlighting upward/downward revisions.
-- **Pass 3 (DCF Assumption Update)**: Translates qualitative management remarks into numeric WACC and terminal growth sensitivities.
+### 2. Vector Embedding & Hybrid Search
+- Text chunks are embedded using OpenAI / Voyage embeddings and stored in **Pinecone & Supabase Vector**.
+- Uses hybrid keyword-vector retrieval to balance semantic intent with exact term matching.
 
-### 3. Output Delivery & Reporting
-Clean data tables are automatically synced to Airtable workbooks with downloadable executive summaries ready for client presentation.
+### 3. Multi-Channel Assistant Interface
+- Connected to **Telegram and Slack bots**, allowing team members to ask questions in natural language and receive formatted answers with source links directly in their daily workspace.
