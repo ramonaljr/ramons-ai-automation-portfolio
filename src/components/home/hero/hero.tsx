@@ -29,12 +29,11 @@ const Hero = () => {
               Available
             </Badge>
             <h1 className='mb-2 text-4xl font-semibold tracking-tight sm:text-5xl lg:text-[64px] lg:font-bold'>
-              <GreetingWord />I am Zolt 👋🏻
+              <GreetingWord />I am Ramon 👋🏻
             </h1>
-            <p className='text-muted-foreground text-xl font-medium sm:text-2xl lg:text-3xl'>Design engineer</p>
+            <p className='text-muted-foreground text-xl font-medium sm:text-2xl lg:text-3xl'>AI Automation Engineer</p>
             <p className='mb-8 max-w-2xl text-base'>
-              Design engineer based in Austin. I don&apos;t just bridge design and engineering - I own the entire
-              experience, from the first sketch to the final shipped product.
+              AI Automation Engineer based in the Philippines. I architect autonomous agent systems, intelligent workflow pipelines, and custom LLM integrations to eliminate bottlenecks and scale business operations.
             </p>
             <div className='flex items-center gap-2.5 pt-2'>
               <Button

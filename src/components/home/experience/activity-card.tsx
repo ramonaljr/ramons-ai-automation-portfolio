@@ -64,8 +64,8 @@ const ActivityCard = () => {
     <Card className='ring-border gap-6 rounded-3xl p-6 shadow-lg'>
       <CardContent className='space-y-4 p-0'>
         <div>
-          <p className='text-sm font-semibold'>@zolt_mercer</p>
-          <p className='text-muted-foreground text-xs opacity-75'>864 contributions in the template timeline</p>
+          <p className='text-sm font-semibold'>@ramonaljr</p>
+          <p className='text-muted-foreground text-xs opacity-75'>864 contributions in open source & client repos</p>
         </div>
 
         <div className='overflow-x-auto max-md:pr-6'>

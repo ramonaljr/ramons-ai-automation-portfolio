@@ -11,11 +11,11 @@ import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 
 const FEATURES = [
-  'One request at a time',
-  'Avg. 48 hour turnaround',
-  'Unlimited revisions',
-  'Design + code delivered',
-  'Up to 2 stakeholders'
+  'One automation request at a time',
+  'Fast turnaround & deployment',
+  'Unlimited revisions & tuning',
+  'Autonomous agents + pipelines',
+  'Direct communication channel'
 ]
 
 const PricingCard = ({ className }: { className?: string }) => {
@@ -24,9 +24,9 @@ const PricingCard = ({ className }: { className?: string }) => {
       <CardContent className='space-y-6 px-6'>
         <div className='space-y-2.5'>
           <p className='text-foreground text-2xl font-medium lg:text-[30px]'>Monthly Retainer</p>
-          <p className='text-muted-foreground mb-0 text-base'>One design engineer dedicated to your product.</p>
+          <p className='text-muted-foreground mb-0 text-base'>Dedicated AI Automation Engineer for your team.</p>
           <p className='text-muted-foreground text-base'>
-            I design it, build it, and ship it - start to finish, no middleman.
+            I architect, automate, and maintain your AI systems and workflows end-to-end.
           </p>
         </div>
 

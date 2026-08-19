@@ -24,25 +24,25 @@ const STEP_TITLES: Record<number, string> = {
 
 const SERVICES = [
   {
-    id: 'product-design-engineering',
-    title: 'Product Design & Engineering',
-    price: '$240',
-    duration: '20 min',
-    description: 'End-to-end ownership from design to code'
-  },
-  {
-    id: 'framer-site-or-landing-page',
-    title: 'Framer Site or Landing Page',
-    price: '$120',
+    id: 'ai-workflow-strategy',
+    title: 'AI Workflow & Strategy Consultation',
+    price: '$150',
     duration: '30 min',
-    description: 'Designed and built in Framer, live ready to launch'
+    description: 'Audit of operational bottlenecks and AI automation architecture plan'
   },
   {
-    id: 'design-system-setup',
-    title: 'Design System Setup',
-    price: '$160',
-    duration: '15 min',
-    description: 'I create design system that can scale'
+    id: 'autonomous-agents-design',
+    title: 'Autonomous Agent System Design',
+    price: '$250',
+    duration: '45 min',
+    description: 'Deep-dive scoping for multi-agent workflows and tool-calling agents'
+  },
+  {
+    id: 'rag-and-data-pipeline',
+    title: 'Custom RAG & Data Automation',
+    price: '$200',
+    duration: '30 min',
+    description: 'Private knowledge base RAG architecture and API pipeline setup'
   }
 ]
 

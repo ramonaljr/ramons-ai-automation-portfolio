@@ -35,14 +35,14 @@ const Footer = () => {
         </div>
 
         <div className='mb-8 flex items-center justify-center gap-5 text-center max-lg:hidden xl:ml-8'>
-          <p className='text-muted-foreground'>Thank you, for visiting here</p>
+          <p className='text-muted-foreground'>Thank you for visiting</p>
           <img src='/images/footer/tree-seal.webp' alt='Seal' className='size-25' />
-          <p className='text-muted-foreground'>Let&apos;s create something beautiful</p>
+          <p className='text-muted-foreground'>Let&apos;s build intelligent systems together</p>
         </div>
 
         <div className='-ml-5 space-y-1 text-center'>
           <img src='/images/footer/signature.webp' alt='Seal' className='mx-auto -mb-6 w-60' />
-          <p className='text-xs'>@zolt Mercer {new Date().getFullYear()}</p>
+          <p className='text-xs'>@Ramon A. Vallejera, Jr. {new Date().getFullYear()}</p>
         </div>
       </div>
     </footer>

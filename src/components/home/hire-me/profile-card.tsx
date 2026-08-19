@@ -62,18 +62,18 @@ const ProfileCard = ({ className }: { className?: string }) => {
                 <div className='flex grow flex-col items-center gap-4'>
                   <div className='relative'>
                     <Avatar className='size-30'>
-                      <AvatarImage src='/images/hire-me/profile.webp' alt='Zolt Mercer' />
-                      <AvatarFallback>Z</AvatarFallback>
+                      <AvatarImage src='/images/hire-me/profile.webp' alt='Ramon A. Vallejera, Jr.' />
+                      <AvatarFallback>R</AvatarFallback>
                     </Avatar>
                     <span className='absolute -bottom-3 left-[50%] flex size-7.5 -translate-x-1/2 items-center justify-center'>
                       <img src='/images/hire-me/profile-star-icon.webp' alt='Verified' />
                     </span>
                   </div>
                   <div>
-                    <h3 className='text-xl font-semibold lg:text-[36px]'>Zolt Mercer</h3>
+                    <h3 className='text-xl font-semibold lg:text-[36px]'>Ramon Vallejera Jr.</h3>
                     <p className='text-muted-foreground flex items-center justify-center gap-1 text-base font-medium'>
                       <MapPinIcon className='fill-muted-foreground text-card size-5' />
-                      Austin, USA
+                      Philippines
                     </p>
                   </div>
                 </div>
@@ -96,17 +96,17 @@ const ProfileCard = ({ className }: { className?: string }) => {
           >
             <CardContent className='relative flex h-full flex-col justify-between gap-6'>
               <div>
-                <p className='text-xs text-white/60'>Zolt Mercer</p>
-                <h3 className='text-base font-medium'>Verified since April 2019</h3>
+                <p className='text-xs text-white/60'>Ramon A. Vallejera, Jr.</p>
+                <h3 className='text-base font-medium'>AI Automation Engineer</h3>
               </div>
 
               <div className='flex items-end justify-between gap-3'>
                 <p className='text-base'>
-                  I care about craft, details, and building things people actually enjoy using.
+                  I design and deploy resilient autonomous agents and workflow automations that scale operations.
                 </p>
                 <Avatar className='h-24.5 w-20.5 shrink-0 rounded-[12px]'>
-                  <AvatarImage src='/images/hire-me/profile.webp' alt='Zolt Mercer' className='rounded-[12px]' />
-                  <AvatarFallback>Z</AvatarFallback>
+                  <AvatarImage src='/images/hire-me/profile.webp' alt='Ramon A. Vallejera, Jr.' className='rounded-[12px]' />
+                  <AvatarFallback>R</AvatarFallback>
                 </Avatar>
               </div>
             </CardContent>

@@ -13,40 +13,44 @@ import { Accordion, AccordionItem, AccordionPanel, AccordionTrigger } from '@/co
 
 const SERVICES = [
   {
-    title: 'UI & Product Design',
+    title: 'Autonomous AI Agents & Multi-Agent Systems',
     image: '/images/services/thumb-01.webp',
-    duration: '1 to 3 weeks',
-    tools: ['Figma', 'Spline', 'Adobe XD'],
-    description:
-      'I design interfaces that are clean, intuitive, and built around your users. From the wireframe to the final pixel-perfect file.'
-  },
-  {
-    title: 'Design Engineering',
-    image: '/images/services/thumb-02.webp',
     duration: '2 to 4 weeks',
-    tools: ['React', 'Tailwind', 'Figma'],
-    description: 'I bridge the gap between design and code, turning polished mockups into production-ready interfaces.'
+    tools: ['LangGraph', 'CrewAI', 'Claude & GPT-4o', 'Python'],
+    description:
+      'I architect autonomous multi-agent networks that execute complex multi-step workflows, perform automated decision-making, and run 24/7 without manual supervision.'
   },
   {
-    title: 'Framer Development',
+    title: 'End-to-End Workflow & Business Automation',
+    image: '/images/services/thumb-02.webp',
+    duration: '1 to 3 weeks',
+    tools: ['n8n', 'Make', 'Custom APIs', 'Webhooks'],
+    description:
+      'I eliminate manual human bottlenecks by connecting your CRM, communication tools, and databases into intelligent, automated operational pipelines.'
+  },
+  {
+    title: 'Custom LLM Integration & RAG Pipelines',
     image: '/images/services/thumb-03.webp',
-    duration: '1 to 2 weeks',
-    tools: ['Framer', 'CMS', 'SEO'],
-    description: 'I build and launch fast, animated marketing sites in Framer — from first draft to live domain.'
+    duration: '2 to 4 weeks',
+    tools: ['Pinecone', 'ChromaDB', 'Hybrid Search', 'LangChain'],
+    description:
+      'I build robust Retrieval-Augmented Generation (RAG) engines that let AI securely query your private company documents and data with zero hallucinations.'
   },
   {
-    title: 'Design Systems',
+    title: 'AI-Native Full-Stack Applications',
     image: '/images/services/thumb-04.webp',
     duration: '3 to 6 weeks',
-    tools: ['Figma', 'Tokens', 'Component library'],
-    description: 'I build scalable design systems that keep design and code in sync as your product grows.'
+    tools: ['Next.js', 'FastAPI', 'PostgreSQL', 'Tailwind CSS'],
+    description:
+      'I build complete, high-performance web applications powered by embedded intelligence, real-time streaming, and intuitive modern interfaces.'
   },
   {
-    title: 'Interaction & Motion Design',
+    title: 'Automated Data Extraction & AI Tooling',
     image: '/images/services/thumb-05.webp',
-    duration: '1 to 3 weeks',
-    tools: ['Framer', 'GSAP', 'Motion'],
-    description: 'I add the small, purposeful motion details that make an interface feel alive and considered.'
+    duration: '1 to 2 weeks',
+    tools: ['Playwright', 'MCP Servers', 'Async Pipelines', 'APIs'],
+    description:
+      'I construct intelligent data scrapers, automated research agents, and Model Context Protocol (MCP) integrations tailored to your technical stack.'
   }
 ]
 

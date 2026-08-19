@@ -10,8 +10,6 @@ import { Toaster } from '@/components/ui/sonner'
 import CustomCursor from '@/components/layout/custom-cursor'
 import EdgeBlur from '@/components/layout/edge-blur'
 
-import DownloadButton from '@/components/layout/Download'
-
 import { cn } from '@/lib/utils'
 
 import './globals.css'
@@ -40,13 +38,22 @@ const satoshi = localFont({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Zolt',
-    default: 'Zolt - Portfolio Landing page'
+    template: '%s - Ramon Vallejera Jr.',
+    default: 'Ramon A. Vallejera, Jr. - AI Automation Engineer'
   },
   description:
-    'Zolt is a Free modern Shadcn UI Portfolio Template built with Next.js for designers, developers, freelancers, and agencies to create fast, responsive, and SEO-friendly portfolio websites.',
+    'Portfolio of Ramon A. Vallejera, Jr. — AI Automation Engineer based in the Philippines specializing in autonomous agents, intelligent workflow automations, and custom LLM solutions.',
   robots: 'index,follow',
-  keywords: ['keyword1', 'keyword2', 'keyword3'],
+  keywords: [
+    'AI Automation Engineer',
+    'AI Automation Specialist',
+    'Autonomous Agents',
+    'LangChain',
+    'LangGraph',
+    'LLM Integration',
+    'Workflow Automation',
+    'Philippines'
+  ],
   icons: {
     icon: [
       {
@@ -90,13 +97,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(`${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}`),
   openGraph: {
     title: {
-      template: '%s - Zolt',
-      default: 'Zolt - Portfolio Landing page'
+      template: '%s - Ramon Vallejera Jr.',
+      default: 'Ramon A. Vallejera, Jr. - AI Automation Engineer'
     },
     description:
-      'Zolt is a Free modern Shadcn UI Portfolio Template built with Next.js for designers, developers, freelancers, and agencies to create fast, responsive, and SEO-friendly portfolio websites.',
+      'Portfolio of Ramon A. Vallejera, Jr. — AI Automation Engineer based in the Philippines specializing in autonomous agents, intelligent workflow automations, and custom LLM solutions.',
     type: 'website',
-    siteName: 'Zolt',
+    siteName: 'Ramon A. Vallejera, Jr.',
     url: `${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}`,
     images: [
       {
@@ -104,18 +111,18 @@ export const metadata: Metadata = {
         type: 'image/png',
         width: 1200,
         height: 630,
-        alt: 'Portfolio Landing page'
+        alt: "Ramon's AI Automation Portfolio"
       }
     ]
   },
   twitter: {
     card: 'summary_large_image',
     title: {
-      template: '%s - Zolt',
-      default: 'Zolt - Portfolio Landing page'
+      template: '%s - Ramon Vallejera Jr.',
+      default: 'Ramon A. Vallejera, Jr. - AI Automation Engineer'
     },
     description:
-      'Zolt is a Free modern Shadcn UI Portfolio Template built with Next.js for designers, developers, freelancers, and agencies to create fast, responsive, and SEO-friendly portfolio websites.'
+      'Portfolio of Ramon A. Vallejera, Jr. — AI Automation Engineer based in the Philippines specializing in autonomous agents, intelligent workflow automations, and custom LLM solutions.'
   }
 }
 
@@ -137,8 +144,6 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
           <EdgeBlur />
           <Toaster />
           <CustomCursor />
-
-          <DownloadButton />
         </ThemeProvider>
       </body>
     </html>

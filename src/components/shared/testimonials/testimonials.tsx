@@ -22,23 +22,23 @@ type Testimonial = {
 const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "Working with Zolt was a different experience. He didn't just deliver designs he delivered a working product.",
+      "Working with Ramon completely transformed our operations. He didn't just automate tasks—he architected an intelligent agentic pipeline that saved us 30+ hours weekly.",
     name: 'Marcus Reid',
     role: 'Co-founder, Orion Labs',
     avatar: '/images/testimonials/avatar-01.webp'
   },
   {
     quote:
-      'Zolt built our entire design system in under a month. Every component was documented, every token was connected.',
+      'Ramon deployed a full multi-agent customer workflow and custom RAG pipeline in under a month. Flawless execution and exceptional communication.',
     name: 'Priya Nair',
-    role: 'Product Lead, Lumio SaaS',
+    role: 'Product Lead, Lumio AI',
     avatar: '/images/testimonials/avatar-02.webp'
   },
   {
     quote:
-      "I've hired a lot of freelancers. Zolt is the rare one who actually cares about the craft. He flagged things I hadn't even noticed.",
+      "I've worked with many engineers, but Ramon stands out. His deep knowledge of LLMs, agent architectures, and backend integrations solved problems we didn't even know we had.",
     name: 'Daniel Hoffmann',
-    role: 'CTO, Trackflow HQ',
+    role: 'CTO, Trackflow',
     avatar: '/images/testimonials/avatar-03.webp'
   }
 ]

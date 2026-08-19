@@ -18,8 +18,8 @@ const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       '@id': `${process.env.NEXT_PUBLIC_APP_URL}#website`,
-      name: 'Zolt Mercer',
-      description: 'Design engineer based in Austin.',
+      name: 'Ramon A. Vallejera, Jr.',
+      description: 'AI Automation Engineer based in the Philippines specializing in autonomous systems, AI workflows, and LLM integrations.',
       url: `${process.env.NEXT_PUBLIC_APP_URL}`,
       inLanguage: 'en-US'
     }

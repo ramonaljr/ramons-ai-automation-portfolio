@@ -8,48 +8,48 @@ const EXPERIENCES = [
   {
     index: '01',
     logo: '/images/features/logo-01.webp',
-    company: 'Lumio',
-    role: 'Design Engineer',
-    period: '2025 -',
+    company: 'Autonomous Systems & AI Consulting',
+    role: 'Lead AI Automation Engineer',
+    period: '2024 -',
     status: { text: 'Present', tone: 'positive' as const },
-    stack: ['React', 'Figma', 'Design system', 'Tailwind'],
-    achievement: 'Built a design system adopted by 4 product teams within 30 days',
+    stack: ['LangChain', 'LangGraph', 'OpenAI', 'Anthropic', 'n8n', 'Python'],
+    achievement: 'Designed multi-agent systems automating 80%+ of client support & lead triage',
     description:
-      "Joined as the first design engineer on the team. Owned the entire design-to-code pipeline, built the product's design system from scratch, shipped new features weekly, and made sure nothing got lost between Figma and production."
+      'Architecting end-to-end autonomous agent networks and workflow automations for growth-stage businesses. Implemented deterministic tool-use pipelines, custom vector embeddings, and real-time event triggers.'
   },
   {
     index: '02',
     logo: '/images/features/logo-02.webp',
-    company: 'Trackflow HQ',
-    role: 'Frontend Engineer + Designer',
-    period: '2023 - 2024, 1 year',
-    stack: ['React', 'Next.js', 'Figma', 'CSS', 'Component architecture'],
-    achievement: 'Rebuilt the entire dashboard UI and cut user drop-off by 40%',
+    company: 'AI Platforms & SaaS Solutions',
+    role: 'Full-Stack AI Engineer',
+    period: '2023 - 2024',
+    stack: ['Next.js', 'FastAPI', 'PostgreSQL', 'Vector DBs', 'RAG'],
+    achievement: 'Engineered AI-native platforms with sub-2s query response and automated ingestion',
     description:
-      'Started as a frontend engineer but quickly moved into a hybrid role. Rebuilt the core dashboard UI, reduced design inconsistencies across 30+ screens, and introduced component-based thinking to a team that had never used one.'
+      'Developed AI-powered web applications and CRMs with automated email parsing, structured document extraction, and seamless third-party API integrations.'
   },
   {
     index: '03',
     logo: '/images/features/logo-03.webp',
-    company: 'Orion Labs',
-    role: 'Freelance Design Engineer',
-    period: '2023, 5 Months',
-    stack: ['Framer', 'Motion design', 'Visual design', 'Copywriting'],
-    achievement: 'Designed and shipped a full marketing site solo in under a week',
+    company: 'Quantitative & Automation Lab',
+    role: 'Systems & Data Pipeline Engineer',
+    period: '2023',
+    stack: ['Python', 'Data Pipelines', 'APIs', 'Async Automation'],
+    achievement: 'Built high-throughput data processing pipelines handling real-time financial streams',
     description:
-      'Brought in to design and build a launch marketing site before a funding announcement. Delivered a fully animated Framer site in 5 days — design, build, and deployment handled solo.'
+      'Created custom automation scrapers, data normalization workflows, and automated backtesting alerts with zero human intervention required.'
   },
   {
     index: '04',
     logo: '/images/features/logo-04.webp',
-    company: 'Self-initiated',
-    role: 'Side Projects & Open Source',
+    company: 'Open Source & AI Labs',
+    role: 'Independent AI Builder',
     period: '2022 -',
-    status: { text: 'Ongoing · Personal', tone: 'accent' as const },
-    stack: ['React', 'Framer', 'TypeScript', 'Passion for building'],
-    achievement: '3 shipped products with real users, 1 open source component library',
+    status: { text: 'Ongoing · Research', tone: 'accent' as const },
+    stack: ['Autonomous Agents', 'TypeScript', 'Python', 'MCP Tools'],
+    achievement: 'Created custom AI toolkits, agent plugins, and open-source automations',
     description:
-      'Built a Framer component playground, a minimal habit tracker app, and a Chrome extension for designers. Where most of the real learning happens — no deadlines, no clients, just curiosity and craft.'
+      'Experimenting with cutting-edge agentic architectures, self-correcting prompt flows, and bespoke automation hooks to push autonomous computing forward.'
   }
 ]
 
