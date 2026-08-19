@@ -34,8 +34,8 @@ const Hero = () => {
             <p className='text-muted-foreground text-xl font-medium sm:text-2xl lg:text-3xl'>
               AI Automation Specialist
             </p>
-            <p className='mb-8 max-w-2xl text-base leading-relaxed'>
-              Finance professional and MBA graduate with 10 years of accounting and financial analysis experience, specializing in end-to-end AI automation. Based in the Philippines, I build autonomous n8n workflows, Claude &amp; OpenAI agent integrations, and Python pipelines that eliminate bottlenecks across invoicing, reconciliations, and reporting with clear documentation and measurable ROI.
+            <p className='mb-8 max-w-2xl text-base leading-relaxed text-neutral-300'>
+              Senior finance professional and MBA with 10 years of accounting, cost analysis, and financial modeling experience. Based in the Philippines, I build reliable, production-ready n8n automations, Claude &amp; OpenAI API integrations, and Python workflows that automate invoicing, reconciliations, and reporting with clear documentation and measurable business ROI.
             </p>
             <div className='flex items-center gap-2.5 pt-2'>
               <Button

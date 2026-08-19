@@ -11,10 +11,10 @@ import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 
 const FEATURES = [
-  'One automation request at a time',
-  'Fast turnaround & deployment',
-  'Unlimited revisions & tuning',
-  'Autonomous agents + pipelines',
+  'n8n workflow builds & audits',
+  'AP/AR & invoice automations',
+  'Claude & OpenAI integrations',
+  'SOPs & handover documentation',
   'Direct communication channel'
 ]
 
@@ -24,9 +24,9 @@ const PricingCard = ({ className }: { className?: string }) => {
       <CardContent className='space-y-6 px-6'>
         <div className='space-y-2.5'>
           <p className='text-foreground text-2xl font-medium lg:text-[30px]'>Monthly Retainer</p>
-          <p className='text-muted-foreground mb-0 text-base'>Dedicated AI Automation Engineer for your team.</p>
+          <p className='text-muted-foreground mb-0 text-base'>Dedicated AI Automation Specialist for your operations.</p>
           <p className='text-muted-foreground text-base'>
-            I architect, automate, and maintain your AI systems and workflows end-to-end.
+            I map, automate, and maintain your business workflows and financial systems end-to-end.
           </p>
         </div>
 

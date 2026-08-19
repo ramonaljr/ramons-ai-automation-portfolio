@@ -12,34 +12,34 @@ import Eyebrow from '@/components/shared/eyebrow/eyebrow'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-type Testimonial = {
+type Principle = {
   quote: string
   name: string
   role: string
   avatar: string
 }
 
-const TESTIMONIALS: Testimonial[] = [
+const PRINCIPLES: Principle[] = [
   {
     quote:
-      "Working with Ramon completely transformed our operations. He didn't just automate tasks—he architected an intelligent agentic pipeline that saved us 30+ hours weekly.",
-    name: 'Marcus Reid',
-    role: 'Co-founder, Orion Labs',
-    avatar: '/images/testimonials/avatar-01.webp'
+      "Process-first mapping before code. Invoicing, AP/AR, and GL reconciliations fail when developers don't understand the accounting rules. I map out the SOPs, edge cases, and chart of accounts first.",
+    name: '1. Domain-Driven Process Mapping',
+    role: 'Accounting logic & business rules mapped before building',
+    avatar: '/images/features/logo-01.webp'
   },
   {
     quote:
-      'Ramon deployed a full multi-agent customer workflow and custom RAG pipeline in under a month. Flawless execution and exceptional communication.',
-    name: 'Priya Nair',
-    role: 'Product Lead, Lumio AI',
-    avatar: '/images/testimonials/avatar-02.webp'
+      'Deterministic math, probabilistic AI. Critical calculations, ledger balances, and data routes remain deterministic in code. LLMs (Claude & OpenAI) are reserved for unstructured document parsing, classification, and extraction.',
+    name: '2. Deterministic Reliability + LLM Intelligence',
+    role: 'Zero hallucinations on financial numbers and ledgers',
+    avatar: '/images/features/logo-02.webp'
   },
   {
     quote:
-      "I've worked with many engineers, but Ramon stands out. His deep knowledge of LLMs, agent architectures, and backend integrations solved problems we didn't even know we had.",
-    name: 'Daniel Hoffmann',
-    role: 'CTO, Trackflow',
-    avatar: '/images/testimonials/avatar-03.webp'
+      'Fail-safe architecture with human oversight. Every production workflow includes try/catch error branches, automated alert notifications, and human-in-the-loop review gates for high-value transactions.',
+    name: '3. Fail-Safe & Human-in-the-Loop Design',
+    role: 'Workflows documented so teams can easily operate them',
+    avatar: '/images/features/logo-03.webp'
   }
 ]
 
@@ -71,8 +71,8 @@ const sideColumnVariants = {
 const MiddleColumnBlock = ({ avatar, name }: { avatar: string; name: string }) => (
   <div className='mx-auto w-fit space-y-2'>
     <div className={TILE_CLASS} />
-    <div className='shadow-realistic relative size-25 rounded-md'>
-      <img src={avatar} alt={name} className='absolute inset-0 h-full w-full rounded-md object-cover' />
+    <div className='shadow-realistic relative size-25 rounded-md p-2 bg-card flex items-center justify-center'>
+      <img src={avatar} alt={name} className='size-12 object-contain' />
     </div>
     <div className={TILE_CLASS} />
   </div>
@@ -89,20 +89,20 @@ const Testimonials = ({ showBorder = true }: TestimonialsProps) => {
 
   const goTo = (nextDirection: number) => {
     setPreviousIndex(index)
-    setIndex(current => (current + nextDirection + TESTIMONIALS.length) % TESTIMONIALS.length)
+    setIndex(current => (current + nextDirection + PRINCIPLES.length) % PRINCIPLES.length)
     setDirection(nextDirection)
   }
 
-  const testimonial = TESTIMONIALS[index]
-  const outgoing = TESTIMONIALS[previousIndex]
+  const principle = PRINCIPLES[index]
+  const outgoing = PRINCIPLES[previousIndex]
 
   return (
     <section id='testimonials' className={cn('py-8 sm:py-16 lg:py-24', showBorder && 'border-b')}>
       <div className='mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:space-y-16 lg:px-10.5'>
         <div className='space-y-2'>
-          <Eyebrow>Good words</Eyebrow>
+          <Eyebrow>Core Principles</Eyebrow>
           <h2 className='text-2xl font-semibold md:text-3xl lg:text-4xl'>
-            some good words from people I&apos;ve worked with
+            how I architect reliable, production-grade automations
           </h2>
         </div>
 
@@ -145,7 +145,7 @@ const Testimonials = ({ showBorder = true }: TestimonialsProps) => {
                     animate={{ y: 0 }}
                     transition={{ duration: 0.5, ease: 'easeOut' }}
                   >
-                    <MiddleColumnBlock avatar={testimonial.avatar} name={testimonial.name} />
+                    <MiddleColumnBlock avatar={principle.avatar} name={principle.name} />
                     <div style={{ marginTop: SHADOW_ROOM }}>
                       <MiddleColumnBlock avatar={outgoing.avatar} name={outgoing.name} />
                     </div>
@@ -188,10 +188,10 @@ const Testimonials = ({ showBorder = true }: TestimonialsProps) => {
                 transition={{ duration: 0.35, ease: 'easeOut' }}
                 className='space-y-5'
               >
-                <p className='text-primary max-w-lg text-xl font-medium lg:text-[26px]'>{testimonial.quote}</p>
+                <p className='text-primary max-w-lg text-xl font-medium lg:text-[24px] leading-relaxed'>{principle.quote}</p>
                 <div>
-                  <p className='text-base font-medium'>{testimonial.name}</p>
-                  <p className='text-muted-foreground text-xs'>{testimonial.role}</p>
+                  <p className='text-base font-semibold text-foreground'>{principle.name}</p>
+                  <p className='text-muted-foreground text-sm'>{principle.role}</p>
                 </div>
               </motion.div>
             </AnimatePresence>
