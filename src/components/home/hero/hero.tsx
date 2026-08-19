@@ -29,13 +29,13 @@ const Hero = () => {
               Available
             </Badge>
             <h1 className='mb-2 text-4xl font-semibold tracking-tight sm:text-5xl lg:text-[64px] lg:font-bold'>
-              <GreetingWord />I am Ramon 👋🏻
+              <GreetingWord /> I am Ramon 👋🏻
             </h1>
             <p className='text-muted-foreground text-xl font-medium sm:text-2xl lg:text-3xl'>
               AI Automation Specialist
             </p>
             <p className='text-foreground/85 dark:text-neutral-300 mb-8 max-w-2xl text-base sm:text-lg leading-relaxed'>
-              Senior business professional &amp; MBA with 10 years of operational analysis and systems experience. Based in the Philippines, I build reliable, production-ready <strong>n8n automations</strong>, <strong>Claude &amp; OpenAI API integrations</strong>, and <strong>Python workflows</strong> to streamline operations, client onboarding, data pipelines, and reporting with clear documentation and measurable ROI.
+              Finance professional &amp; MBA with 10 years of business operations and analytical experience. Based in the Philippines, I build production-grade <strong>n8n workflows (cloud &amp; self-hosted)</strong>, <strong>Claude &amp; OpenAI agent integrations</strong>, <strong>RAG knowledge systems</strong>, and <strong>multi-system API pipelines</strong> (Google Workspace, Airtable, Telegram) — engineered with strict error handling, failovers, and clear documentation so teams can actually run them.
             </p>
             <div className='flex items-center gap-2.5 pt-2'>
               <Button

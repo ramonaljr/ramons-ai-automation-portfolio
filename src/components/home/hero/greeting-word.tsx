@@ -21,22 +21,15 @@ const GreetingWord = () => {
   }, [])
 
   return (
-    <span className='mr-2 inline-grid overflow-hidden align-bottom'>
-      {/* Invisible sizers reserve space for the widest greeting so surrounding text doesn't shift */}
-      {GREETINGS.map(word => (
-        <span key={word} className='invisible col-start-1 row-start-1 whitespace-nowrap' aria-hidden='true'>
-          {word}
-        </span>
-      ))}
-
-      <AnimatePresence mode='popLayout' initial={false}>
+    <span className='inline-flex overflow-hidden align-baseline'>
+      <AnimatePresence mode='wait' initial={false}>
         <motion.span
           key={GREETINGS[index]}
-          initial={{ y: '100%', opacity: 0 }}
-          animate={{ y: '0%', opacity: 1 }}
-          exit={{ y: '-100%', opacity: 0 }}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
-          className='col-start-1 row-start-1 inline-block whitespace-nowrap'
+          initial={{ y: 24, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -24, opacity: 0 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          className='inline-block whitespace-nowrap'
         >
           {GREETINGS[index]}
         </motion.span>
