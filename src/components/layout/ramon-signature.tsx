@@ -3,56 +3,52 @@ import type { SVGProps } from 'react'
 export const RamonSignature = ({ className, ...props }: SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      viewBox='0 0 320 120'
-      fill='none'
+      viewBox='0 0 360 130'
+      fill='currentColor'
       xmlns='http://www.w3.org/2000/svg'
       className={className}
       {...props}
     >
-      {/* Ramon Calligraphic Signature */}
-      <g stroke='currentColor' strokeLinecap='round' strokeLinejoin='round'>
-        {/* Letter 'R' - Stem and loop */}
-        <path
-          d='M 45,95 C 50,70 58,42 66,24 C 67,21 72,18 78,21 C 88,24 104,26 108,38 C 111,48 102,59 86,63 C 74,66 62,64 57,64'
-          strokeWidth='3.2'
-        />
-        {/* Letter 'R' - Diagonal sweeping leg */}
-        <path
-          d='M 76,60 C 85,67 96,78 108,94 C 112,100 118,97 122,88'
-          strokeWidth='3.0'
-        />
+      {/* 
+        Ultra-sleek, dynamic italic signature: "Ramon"
+        Features: 
+        - Fast, expressive calligraphic strokes with natural pressure variation (filled paths).
+        - Sharp italic slant (~30°).
+        - Extended dynamic tail underline flourish.
+      */}
+      <g transform='translate(15, 5) skewX(-14)'>
+        {/* === Capital 'R' === */}
+        {/* Main slanted downstem with top-hook entry */}
+        <path d='M 42 32 C 40 26, 46 22, 53 23 C 51 38, 43 65, 34 94 C 32 99, 29 101, 26 99 C 24 97, 26 91, 29 82 C 37 57, 45 36, 48 26 C 45 28, 43 30, 42 32 Z' />
+        
+        {/* Upper rounded loop of 'R' */}
+        <path d='M 48 25 C 60 21, 78 20, 89 27 C 98 33, 99 44, 93 51 C 86 58, 72 61, 57 60 C 50 59, 44 58, 41 57 C 42 54, 46 54, 55 55 C 68 56, 80 53, 86 48 C 91 43, 91 35, 84 30 C 75 25, 59 25, 48 27 Z' />
+        
+        {/* Sweeping diagonal leg of 'R' transitioning into 'a' */}
+        <path d='M 62 58 C 67 58, 73 63, 79 72 C 86 82, 94 95, 102 96 C 106 97, 109 93, 114 83 C 117 76, 120 71, 124 72 C 127 73, 126 79, 122 88 C 116 100, 108 103, 101 101 C 91 98, 81 83, 74 72 C 70 65, 65 61, 60 60 Z' />
 
-        {/* Letter 'a' */}
-        <path
-          d='M 124,72 C 120,64 126,56 135,55 C 144,54 148,63 147,72 C 146,80 137,84 129,83 C 122,81 123,71 128,63 C 134,55 147,56 148,72 L 148,84'
-          strokeWidth='2.8'
-        />
+        {/* === Letter 'a' === */}
+        {/* Slanted oval body */}
+        <path d='M 132 68 C 124 71, 118 80, 118 89 C 118 97, 123 101, 131 99 C 139 97, 144 90, 147 82 C 148 78, 148 73, 147 70 C 145 66, 139 65, 132 68 Z M 132 72 C 137 70, 142 72, 143 78 C 144 84, 139 94, 131 95 C 126 96, 123 93, 123 87 C 123 80, 127 74, 132 72 Z' />
+        {/* Downstroke of 'a' into 'm' connector */}
+        <path d='M 146 72 C 148 70, 150 71, 150 75 C 148 83, 144 93, 143 98 C 142 101, 145 101, 149 97 C 154 92, 158 83, 162 76 C 163 74, 165 75, 164 77 C 160 86, 155 96, 149 101 C 142 106, 138 103, 139 96 C 141 89, 145 78, 146 72 Z' />
 
-        {/* Letter 'm' */}
-        <path
-          d='M 152,68 C 154,60 159,54 166,54 C 173,54 176,62 176,72 L 176,84 M 176,66 C 180,58 186,54 193,54 C 201,54 204,63 204,74 L 204,84'
-          strokeWidth='2.8'
-        />
+        {/* === Letter 'm' === */}
+        {/* First arch */}
+        <path d='M 162 76 C 166 69, 172 67, 177 71 C 180 74, 180 81, 176 90 C 173 97, 172 99, 175 97 C 178 95, 182 89, 186 80 C 187 78, 189 79, 188 81 C 183 91, 177 101, 171 101 C 167 101, 166 96, 169 88 C 172 81, 173 75, 171 73 C 168 70, 164 73, 160 80 Z' />
+        {/* Second arch into 'o' connector */}
+        <path d='M 186 80 C 190 70, 196 68, 201 72 C 204 75, 204 82, 199 92 C 196 98, 196 100, 200 97 C 206 92, 211 83, 215 76 C 217 74, 219 75, 217 78 C 212 87, 206 97, 199 101 C 194 103, 191 99, 193 91 C 196 83, 198 76, 196 73 C 193 70, 189 74, 184 82 Z' />
 
-        {/* Letter 'o' */}
-        <path
-          d='M 212,71 C 210,61 217,54 226,54 C 235,54 240,63 239,73 C 238,82 229,85 221,84 C 213,82 212,72 220,62 C 226,55 237,56 242,65'
-          strokeWidth='2.8'
-        />
+        {/* === Letter 'o' === */}
+        <path d='M 223 72 C 216 75, 212 83, 212 90 C 212 97, 216 101, 224 99 C 231 97, 236 90, 237 81 C 238 74, 233 69, 223 72 Z M 223 76 C 228 74, 232 77, 232 83 C 232 89, 228 95, 223 96 C 218 97, 216 93, 216 88 C 216 82, 219 77, 223 76 Z' />
+        {/* Loop out of 'o' into 'n' */}
+        <path d='M 233 77 C 236 74, 240 73, 244 76 C 248 79, 247 84, 244 90 C 241 96, 241 99, 244 97 C 248 93, 253 84, 257 77 C 259 75, 260 76, 259 78 C 254 87, 248 97, 243 101 C 238 103, 235 99, 237 91 C 239 84, 241 78, 238 76 C 236 75, 234 76, 232 79 Z' />
 
-        {/* Letter 'n' */}
-        <path
-          d='M 248,68 C 251,59 257,54 265,54 C 274,54 278,63 277,75 L 277,85'
-          strokeWidth='2.8'
-        />
+        {/* === Letter 'n' === */}
+        <path d='M 257 77 C 261 70, 268 68, 274 72 C 278 76, 277 84, 271 95 C 268 101, 268 102, 275 97 C 285 90, 298 78, 312 65 C 315 62, 317 64, 314 67 C 298 83, 282 98, 269 104 C 263 107, 259 104, 261 95 C 264 87, 268 78, 266 74 C 263 71, 258 75, 253 83 Z' />
 
-        {/* Dynamic Underline Flourish */}
-        <path
-          d='M 60,98 C 110,95 180,94 250,91 C 275,90 298,87 312,82 C 318,80 322,76 317,74 C 310,72 290,75 270,78'
-          strokeWidth='2.4'
-          strokeDasharray='300'
-          strokeDashoffset='0'
-        />
+        {/* === Sharp, Dynamic Underline Flourish === */}
+        <path d='M 55 106 C 95 103, 175 100, 255 96 C 290 94, 325 90, 345 84 C 352 82, 356 78, 350 76 C 342 74, 322 78, 298 82 C 248 89, 155 96, 52 101 C 45 102, 44 107, 55 106 Z' opacity='0.9' />
       </g>
     </svg>
   )
