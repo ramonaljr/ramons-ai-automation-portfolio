@@ -1,6 +1,6 @@
 # Ramon A. Vallejera, Jr. — AI Automation Portfolio
 
-> **AI Automation Engineer & Systems Specialist** based in the Philippines. Architecting autonomous agent networks, intelligent workflow automations, and custom LLM solutions for modern businesses.
+> **AI Automation Specialist** based in the Philippines. 10 years of finance & accounting domain expertise combined with an MBA, building autonomous n8n workflows, Claude & OpenAI agent integrations, and Python business automations.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black.svg)](https://nextjs.org/)
@@ -11,10 +11,10 @@
 
 ## ⚡ Highlights & Specializations
 
-- **Autonomous AI Agents & Multi-Agent Workflows**: Designed multi-agent systems using LangGraph, CrewAI, and custom tool-calling agents for automated operations.
-- **Workflow & Process Automation**: Seamless operational automation linking CRMs, databases, and APIs via n8n, Make, and custom Python services.
-- **Custom LLM & RAG Pipelines**: High-performance Retrieval-Augmented Generation architectures with vector databases (Pinecone, ChromaDB) and hybrid search.
-- **AI-Native Full-Stack Applications**: Modern, responsive web applications built with Next.js, FastAPI, PostgreSQL, and Shadcn UI.
+- **n8n AI Agents & Workflow Automation**: Production-grade n8n automations (cloud & self-hosted) with error handling, triggers, and webhook integrations.
+- **Financial & Accounting Process Automation**: Automated invoice processing, vendor reconciliations, reporting workbooks, and multi-step approval workflows (QuickBooks, SAP, Sage, Excel).
+- **Claude, OpenAI & Gemini Integration**: Prompt engineering, structured document extraction, and AI agent architectures.
+- **Business Systems & API Integrations**: End-to-end sync across Google Workspace, Airtable, Telegram, Gmail, and custom REST APIs.
 
 ---
 

@@ -32,10 +32,10 @@ const Hero = () => {
               <GreetingWord />I am Ramon 👋🏻
             </h1>
             <p className='text-muted-foreground text-xl font-medium sm:text-2xl lg:text-3xl'>
-              AI Automation Specialist &amp; MBA
+              AI Automation Specialist
             </p>
-            <p className='mb-8 max-w-2xl text-base'>
-              Finance professional turned AI Automation Specialist based in Cagayan de Oro, Philippines. With 10 years across accounting and financial analysis, I bridge deep business domain knowledge with n8n, Claude, OpenAI, and Python to automate mission-critical operations.
+            <p className='mb-8 max-w-2xl text-base leading-relaxed'>
+              Finance professional and MBA graduate with 10 years of accounting and financial analysis experience, specializing in end-to-end AI automation. Based in the Philippines, I build autonomous n8n workflows, Claude &amp; OpenAI agent integrations, and Python pipelines that eliminate bottlenecks across invoicing, reconciliations, and reporting with clear documentation and measurable ROI.
             </p>
             <div className='flex items-center gap-2.5 pt-2'>
               <Button

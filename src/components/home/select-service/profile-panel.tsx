@@ -72,7 +72,7 @@ const ProfilePanel = () => {
         <p className='flex items-center gap-2 font-medium'>
           Ramon A. Vallejera, Jr.
           <span className='bg-muted-foreground inline-block size-2 rounded-full' />
-          <span className='text-muted-foreground font-normal'>AI Automation Engineer</span>
+          <span className='text-muted-foreground font-normal'>AI Automation Specialist</span>
         </p>
 
         <div className='flex items-center gap-1'>

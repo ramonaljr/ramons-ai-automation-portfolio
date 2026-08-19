@@ -26,7 +26,7 @@ const jsonLd = {
       '@type': 'WebSite',
       '@id': `${process.env.NEXT_PUBLIC_APP_URL}#website`,
       name: 'Ramon A. Vallejera, Jr.',
-      description: 'AI Automation Engineer based in the Philippines.',
+      description: 'AI Automation Specialist based in the Philippines.',
       url: `${process.env.NEXT_PUBLIC_APP_URL}`,
       inLanguage: 'en-US'
     },

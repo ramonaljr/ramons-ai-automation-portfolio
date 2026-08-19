@@ -73,7 +73,7 @@ const ProfileCard = ({ className }: { className?: string }) => {
                     <h3 className='text-xl font-semibold lg:text-[34px]'>Ramon Vallejera Jr.</h3>
                     <p className='text-muted-foreground flex items-center justify-center gap-1 text-sm font-medium'>
                       <MapPinIcon className='fill-muted-foreground text-card size-4' />
-                      Cagayan de Oro, Philippines
+                      Philippines
                     </p>
                   </div>
                 </div>
@@ -96,13 +96,13 @@ const ProfileCard = ({ className }: { className?: string }) => {
           >
             <CardContent className='relative flex h-full flex-col justify-between gap-6'>
               <div>
-                <p className='text-xs text-white/60'>Ramon A. Vallejera, Jr., MBA</p>
-                <h3 className='text-base font-medium'>AI Automation Specialist</h3>
+                <p className='text-xs text-white/60'>Ramon A. Vallejera, Jr.</p>
+                <h3 className='text-base font-medium'>AI Automation Specialist (MBA)</h3>
               </div>
 
               <div className='flex items-end justify-between gap-3'>
                 <p className='text-sm leading-relaxed text-neutral-200'>
-                  10 years across accounting & finance means I understand the exact business processes I automate — invoicing, reconciliation, and approvals.
+                  10 years in finance &amp; accounting combined with MBA strategic rigor. I build resilient n8n &amp; AI automations that non-technical teams can easily operate and scale.
                 </p>
                 <Avatar className='h-24.5 w-20.5 shrink-0 rounded-[12px]'>
                   <AvatarImage src='/images/hire-me/profile.webp' alt='Ramon A. Vallejera, Jr.' className='rounded-[12px]' />
