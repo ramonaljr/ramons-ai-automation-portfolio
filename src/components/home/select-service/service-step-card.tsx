@@ -31,18 +31,18 @@ const SERVICES = [
     description: 'Audit of operational bottlenecks, toolstack mapping, and n8n architecture plan'
   },
   {
-    id: 'financial-process-automation',
-    title: 'Financial & AP/AR Automation Scoping',
+    id: 'business-process-automation',
+    title: 'End-to-End Business Process Automation',
     price: '$180',
     duration: '45 min',
-    description: 'Scoping for automated invoice processing, reconciliation, and reporting'
+    description: 'Scoping for automated onboarding, CRM syncing, approvals, and operational pipelines'
   },
   {
     id: 'llm-rag-agent-design',
-    title: 'Claude & LLM Agent System Design',
+    title: 'Claude & AI Agent System Design',
     price: '$150',
     duration: '30 min',
-    description: 'Prompt engineering, RAG architecture, and API integration strategy'
+    description: 'Prompt engineering, document extraction, RAG, and AI voice agent strategy'
   }
 ]
 

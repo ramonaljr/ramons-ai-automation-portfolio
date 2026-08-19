@@ -35,7 +35,7 @@ const Hero = () => {
               AI Automation Specialist
             </p>
             <p className='text-foreground/85 dark:text-neutral-300 mb-8 max-w-2xl text-base sm:text-lg leading-relaxed'>
-              Senior finance professional &amp; MBA with 10 years of accounting, cost analysis, and financial modeling experience. Based in the Philippines, I build reliable, production-ready <strong>n8n automations</strong>, <strong>Claude &amp; OpenAI API integrations</strong>, and <strong>Python workflows</strong> that automate invoicing, reconciliations, and reporting with clear documentation and measurable business ROI.
+              Senior business professional &amp; MBA with 10 years of operational analysis and systems experience. Based in the Philippines, I build reliable, production-ready <strong>n8n automations</strong>, <strong>Claude &amp; OpenAI API integrations</strong>, and <strong>Python workflows</strong> to streamline operations, client onboarding, data pipelines, and reporting with clear documentation and measurable ROI.
             </p>
             <div className='flex items-center gap-2.5 pt-2'>
               <Button

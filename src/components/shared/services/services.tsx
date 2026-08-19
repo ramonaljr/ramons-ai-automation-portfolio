@@ -18,39 +18,39 @@ const SERVICES = [
     duration: '1 to 3 weeks',
     tools: ['n8n (Cloud & Self-Hosted)', 'Webhooks', 'Triggers', 'Error Handling'],
     description:
-      'I design, build, and deploy resilient n8n automated workflows and autonomous AI agents that run 24/7 with strict error handling and documented failovers.'
+      'I design, build, and deploy production-grade n8n automations and autonomous AI agents that run 24/7, connect your apps, and execute complex multi-step workflows with zero human intervention.'
   },
   {
-    title: 'Financial & Accounting Process Automation',
+    title: 'End-to-End Business Process Automation',
     image: '/images/services/thumb-02.webp',
     duration: '2 to 4 weeks',
-    tools: ['QuickBooks', 'SAP', 'Sage', 'Excel', 'AP/AR Pipelines'],
+    tools: ['CRMs', 'Operations', 'Onboarding', 'Invoicing & AP/AR', 'Approval Flows'],
     description:
-      'Leveraging 10 years of accounting experience, I automate invoice processing, vendor reconciliations, reporting workbooks, and multi-step approval workflows.'
+      'I eliminate repetitive manual bottlenecks across your entire business — lead management, client onboarding, automated reporting, data validation, and multi-department approval flows.'
   },
   {
-    title: 'Claude, OpenAI & Gemini LLM Integration',
+    title: 'Claude, OpenAI & LLM Integrations (RAG)',
     image: '/images/services/thumb-03.webp',
     duration: '1 to 3 weeks',
-    tools: ['Claude', 'OpenAI', 'Gemini API', 'Prompt Engineering', 'RAG'],
+    tools: ['Claude 3.5 Sonnet', 'OpenAI GPT-4o', 'DeepSeek', 'Prompt Engineering', 'RAG'],
     description:
-      'I connect frontier LLM models into your business logic to summarize earnings calls, extract structured data from messy documents, and generate actionable insights.'
+      'I embed frontier LLM intelligence into your daily operations to classify incoming emails, extract structured data from unstructured documents/PDFs, and power secure internal knowledge bases.'
   },
   {
-    title: 'Business Systems & API Integrations',
+    title: 'Cross-Platform SaaS & API Integrations',
     image: '/images/services/thumb-04.webp',
     duration: '1 to 2 weeks',
-    tools: ['REST APIs', 'JSON', 'Google Workspace', 'Airtable', 'Telegram', 'Gmail'],
+    tools: ['Google Workspace', 'Airtable', 'Notion', 'Slack & Telegram', 'REST APIs'],
     description:
-      'I connect disparate SaaS platforms into synchronized, automated ecosystems that eliminate manual copy-pasting and human data entry.'
+      'I synchronize your disparate software tools into a unified, real-time ecosystem — ensuring clean data flows automatically between spreadsheets, databases, and communication channels.'
   },
   {
-    title: 'Python & Full-Stack Automation Tooling',
+    title: 'Autonomous AI Voice & Customer Agents',
     image: '/images/services/thumb-05.webp',
-    duration: '2 to 4 weeks',
-    tools: ['Python', 'JavaScript', 'React', 'Node.js', 'Git/GitHub'],
+    duration: '2 to 3 weeks',
+    tools: ['VAPI', 'Retell AI', 'ElevenLabs', 'Cal.com', 'WhatsApp & Twilio'],
     description:
-      'I build bespoke automation scripts, data parsers, and custom web interfaces documented cleanly so your team can maintain and run them with ease.'
+      'I build human-like AI voice receptionists and conversational chatbots that handle customer inquiries, qualify inbound prospects, and book confirmed calendar appointments 24/7.'
   }
 ]
 
