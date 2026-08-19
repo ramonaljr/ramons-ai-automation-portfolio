@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 // Third-party Imports
 import { AnimatePresence, motion } from 'motion/react'
 
-const GREETINGS = ['Hello', 'नमस्ते', '你好', 'Ciao']
+const GREETINGS = ['Hello,', 'Kamusta,', 'Hi,', 'Hey,']
 const INTERVAL_MS = 2200
 
 const GreetingWord = () => {
