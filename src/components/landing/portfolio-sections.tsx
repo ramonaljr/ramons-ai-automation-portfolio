@@ -16,7 +16,7 @@ import { ContactSection } from "@/components/landing/contact-section"
 import { ArticlesSection } from "@/components/landing/articles-section"
 import { ChatWidget } from "@/components/landing/chat-widget"
 import { ParticleField } from "@/components/landing/particle-field"
-import { ArrowIcon, CONTAINER, DISPLAY_FONT, PAGE, READABLE, SECTION, rise, TextReveal, useInView } from "@/components/landing/motion"
+import { ArrowIcon, CONTAINER, DISPLAY_FONT, PAGE, READABLE, SECTION, rise, sweep, SWEEP_STEP, SWEEP_STEP_DENSE, TextReveal, useInView } from "@/components/landing/motion"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import type { PostMetadata } from "@/lib/posts"
@@ -79,7 +79,7 @@ function ServicesSection() {
             <div
               key={s.slug}
               className="group relative flex flex-col rounded-2xl border border-black/[0.07] bg-white/50 px-7 pt-14 pb-8 text-center transition-all duration-300 hover:bg-white hover:border-black/12"
-              style={rise(inView, i * 80)}
+              style={sweep(inView, i, SWEEP_STEP_DENSE)}
             >
               {/* Icon medallion, straddling the top edge like the reference */}
               <span className="absolute -top-9 left-1/2 -translate-x-1/2 w-[72px] h-[72px] rounded-full bg-[#F5F4F0] border border-black/10 flex items-center justify-center transition-colors duration-300 group-hover:border-black/25">
@@ -118,7 +118,7 @@ function ServicesSection() {
           {/* Sixth cell balances the 3-column grid and routes to contact */}
           <div
             className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/12 px-7 py-12 text-center"
-            style={rise(inView, SERVICES.length * 80)}
+            style={sweep(inView, SERVICES.length, SWEEP_STEP_DENSE)}
           >
             <p
               className="text-lg font-light tracking-tight text-[#111]"
@@ -166,7 +166,7 @@ function PlatformsSection() {
                   ? "border-black/15 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]"
                   : "border-black/[0.07] bg-white/50 hover:bg-white hover:border-black/12"
               }`}
-              style={rise(inView, i * 100)}
+              style={sweep(inView, i)}
             >
               {p.primary && (
                 <span className="absolute top-6 right-6 text-[11px] tracking-widest font-mono text-white bg-[#111] rounded px-2 py-1">
@@ -228,7 +228,7 @@ function ProcessSection() {
         {/* Steps */}
         <div ref={ref} className="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((p, i) => (
-            <div key={p.step} className={READABLE} style={rise(inView, i * 110)}>
+            <div key={p.step} className={READABLE} style={sweep(inView, i)}>
 
               {/* Numeral with the rail running to the next step */}
               <div className="flex items-center gap-3">
@@ -262,7 +262,7 @@ function ProcessSection() {
         {/* Closing prompt */}
         <div
           className="mt-24 rounded-2xl border border-black/[0.09] bg-white/40 px-6 py-14 text-center"
-          style={rise(inView, PROCESS.length * 110)}
+          style={rise(inView, PROCESS.length * SWEEP_STEP)}
         >
           <p className="font-mono text-[14px] tracking-[0.18em] text-black/68">
             HAVE A PROCESS THAT FEELS TOO MANUAL?
@@ -299,7 +299,7 @@ function PrinciplesSection() {
             <div
               key={p.n}
               className="rounded-2xl border border-black/[0.07] bg-white/50 p-8 hover:bg-white hover:border-black/12 transition-all duration-300"
-              style={rise(inView, i * 100)}
+              style={sweep(inView, i)}
             >
               <span className="text-[12px] font-mono text-black/72">{p.n}</span>
               <h3
@@ -343,7 +343,7 @@ function EngagementSection() {
                   ? "border-black/15 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]"
                   : "border-black/[0.07] bg-white/50 hover:bg-white hover:border-black/12"
               }`}
-              style={rise(inView, i * 100)}
+              style={sweep(inView, i)}
             >
               <span className="text-[12px] tracking-widest font-mono text-black/68">
                 {e.duration.toUpperCase()}

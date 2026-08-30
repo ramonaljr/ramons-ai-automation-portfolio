@@ -111,6 +111,57 @@ export function rise(inView: boolean, delay = 0): CSSProperties {
 }
 
 /**
+ * Gap between successive items in a `sweep`, in ms.
+ *
+ * Exported so a block that follows a swept row can chain off the end of it
+ * rather than hard-coding a number that drifts out of sync when this changes.
+ */
+export const SWEEP_STEP = 180
+
+/**
+ * Step for grids that wrap onto more than one row.
+ *
+ * A linear index across a wrapping grid still sweeps correctly — it just reads
+ * as a reading-order cascade that restarts at the left on each new row. But the
+ * ramp is counted in cells, not columns, so the six-cell Services grid at the
+ * full step would take about 1.7s to finish against roughly 1.3s for the single
+ * rows. Tightening the step keeps every grid on the page inside the same
+ * envelope instead of making the densest one the slowest.
+ */
+export const SWEEP_STEP_DENSE = 110
+
+/**
+ * The horizontal sibling of `rise`: a left-to-right sweep across a row of peers.
+ *
+ * These grids were already staggered by index, but on `translateY` — and
+ * direction is read from movement, not from timing. Four cards rising a tenth
+ * of a second apart look like one block arriving with a shimmer, never like a
+ * sweep. Moving them on X is what makes the reading order legible.
+ *
+ * The step also has to clear a real fraction of the duration or the items
+ * collapse back into a single event: at the previous 100ms against a 700ms
+ * transition, the last card was already moving before the first was a seventh
+ * of the way in. 180ms against 800ms leaves each card a visible head start.
+ *
+ * Negative X is safe at any distance — overflow past the left edge of an LTR
+ * document is clipped, not scrolled, so this cannot widen the page the way a
+ * positive offset would.
+ *
+ * Reduced motion needs nothing here: `useInView` hands those readers `inView`
+ * on mount, and the duration override in globals.css stops the resulting state
+ * change from playing.
+ */
+export function sweep(inView: boolean, index = 0, step = SWEEP_STEP, distance = 34): CSSProperties {
+  const delay = index * step
+
+  return {
+    opacity: inView ? 1 : 0,
+    transform: inView ? 'translateX(0px)' : `translateX(-${distance}px)`,
+    transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
+  }
+}
+
+/**
  * `rise` as a wrapper, so server-rendered pages can use the landing entrance
  * without turning the whole page into a client component.
  */
