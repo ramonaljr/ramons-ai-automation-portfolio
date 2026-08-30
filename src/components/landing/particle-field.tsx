@@ -171,6 +171,7 @@ export function ParticleField({ className = "" }: { className?: string }) {
     <div
       ref={wrapRef}
       aria-hidden="true"
+
       // No overflow-hidden here: `overflow: hidden` turns this into a scroll
       // container, and a sticky child then sticks to *it* rather than the
       // viewport — so the canvas scrolled away and the field vanished below
