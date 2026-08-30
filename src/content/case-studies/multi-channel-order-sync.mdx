@@ -14,6 +14,36 @@ sample: true
 # Fill these in to reveal the buttons on the case study page.
 videoUrl: ''
 repoUrl: ''
+
+# ── Selected Work grid + detail modal ──
+platform: 'Make'
+categories: ['Operations', 'Commerce']
+speed: '4,000+/wk'
+workflowImage: '/images/workflows/multi-channel-order-sync.svg'
+logicSummary: 'Three channel triggers -> normalise -> iterate line items -> transactional stock decrement -> write-back.'
+keyOutcome:
+  value: '0'
+  label: 'Overnight Drift'
+integrations: ['Make', 'Shopify', 'Amazon', 'PostgreSQL', 'Slack']
+problem: 'Three sales channels each kept their own stock count, reconciled by CSV export the next morning. Oversells were discovered only when a warehouse pick failed, and staff lost around 15 hours a week to manual reconciliation.'
+solution: 'Built Make scenarios that normalise orders from Shopify, Amazon and a wholesale portal into one schema, explode them into line items with an Iterator, and decrement a single authoritative PostgreSQL stock table transactionally.'
+stepCount: 4
+impactHighlight: 'One authoritative stock figure across three channels, continuously.'
+impactHighlightDesc: 'Oversells are caught at order ingestion rather than at the shelf, and reconciliation stops being a daily manual job.'
+roi:
+  - value: '0'
+    label: 'Overnight Drift'
+  - value: '~15 hrs'
+    label: 'Saved Weekly'
+  - value: '4,000+'
+    label: 'Orders / Week'
+failsafeHeadline: 'Replayable by Design'
+failsafeDesc: 'Every normalised order is retained in staging, so a bad run is recovered by replaying a window rather than rebuilding state.'
+failsafes:
+  - title: '1. Transactional Decrement'
+    desc: 'Two channels selling the last unit cannot both succeed; the loser routes to exceptions.'
+  - title: '2. Nightly Three-Way Audit'
+    desc: 'A scheduled reconciliation reports drift the real-time path missed.'
 ---
 
 {/*

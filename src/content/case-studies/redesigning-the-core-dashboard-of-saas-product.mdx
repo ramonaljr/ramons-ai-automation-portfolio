@@ -13,6 +13,36 @@ logo: '/images/features/logo-04.webp'
 # Fill these in to reveal the buttons on the case study page.
 videoUrl: ''
 repoUrl: ''
+
+# ── Selected Work grid + detail modal ──
+platform: 'n8n'
+categories: ['AI Agents', 'Voice']
+speed: '< 1 SEC'
+workflowImage: '/images/workflows/redesigning-the-core-dashboard-of-saas-product.svg'
+logicSummary: 'Inbound call -> speech to text -> qualification agent -> live calendar check -> confirmed booking.'
+keyOutcome:
+  value: '24/7'
+  label: 'Call Coverage'
+integrations: ['VAPI', 'ElevenLabs', 'n8n', 'Cal.com', 'Twilio']
+problem: 'Inbound calls outside office hours went to voicemail and were rarely returned, so qualified prospects were lost simply because nobody picked up.'
+solution: 'Built an ultra-low-latency voice receptionist using VAPI and ElevenLabs, orchestrated in n8n, that qualifies the caller against a defined script, checks live Cal.com availability and books a confirmed slot.'
+stepCount: 4
+impactHighlight: 'Answers every inbound call and books straight into a live calendar.'
+impactHighlightDesc: 'Sub-second response, real availability checks, and an explicit handoff to a human the moment the call leaves the script.'
+roi:
+  - value: '24/7'
+    label: 'Call Coverage'
+  - value: '< 1 SEC'
+    label: 'Response Latency'
+  - value: '100%'
+    label: 'Calls Transcribed'
+failsafeHeadline: 'Knows When to Stop'
+failsafeDesc: 'The agent hands off to a person rather than improvising once a request falls outside its script.'
+failsafes:
+  - title: '1. Scope Handoff'
+    desc: 'Out-of-scope requests transfer to a human instead of being answered speculatively.'
+  - title: '2. Booking Verification'
+    desc: 'Slots are confirmed against live calendar state, so double-booking cannot occur.'
 ---
 
 ## Problem

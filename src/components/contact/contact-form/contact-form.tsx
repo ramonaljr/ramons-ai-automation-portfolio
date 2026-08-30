@@ -1,6 +1,8 @@
 'use client'
 
 // Third-party Imports
+import { useEffect } from 'react'
+
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
@@ -33,6 +35,36 @@ const ContactForm = ({ className }: ContactFormProps) => {
       message: ''
     }
   })
+
+  // The booking panel on the landing page links here carrying a chosen slot.
+  // Read it from location rather than useSearchParams so /contact stays static.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const date = params.get('date')
+    const time = params.get('time')
+    const topic = params.get('topic')
+
+    if (topic) {
+      const match = SERVICE_OPTIONS.find(o => o.toLowerCase().startsWith(topic.toLowerCase()))
+
+      form.setValue('service', match ?? SERVICE_OPTIONS[0])
+    }
+
+    if (date && time) {
+      const readable = new Date(`${date}T00:00:00`).toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      })
+
+      form.setValue(
+        'message',
+        `I'd like to book the ${time} slot on ${readable} (PH time).\n\nThe process I want to automate:\n`
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onSubmit = (values: ContactFormValues) => {
     console.log(values)

@@ -1,11 +1,13 @@
 import { z } from 'zod'
 
 export const SERVICE_OPTIONS = [
-  'UI & Product Design',
-  'Design Engineering',
-  'Framer Development',
-  'Design Systems',
-  'Interaction & Motion Design'
+  'Workflow Audit (30 min, free)',
+  'n8n AI Agents & Workflow Automation',
+  'End-to-End Business Process Automation',
+  'Claude, OpenAI & LLM Integrations (RAG)',
+  'Cross-Platform SaaS & API Integrations',
+  'Autonomous AI Voice & Customer Agents',
+  'Something else'
 ] as const
 
 export const contactFormSchema = z.object({

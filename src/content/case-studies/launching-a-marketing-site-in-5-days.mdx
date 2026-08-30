@@ -13,6 +13,36 @@ logo: '/images/features/logo-02.webp'
 # Fill these in to reveal the buttons on the case study page.
 videoUrl: ''
 repoUrl: ''
+
+# ── Selected Work grid + detail modal ──
+platform: 'n8n'
+categories: ['AI Agents', 'Knowledge']
+speed: '< 4 SEC'
+workflowImage: '/images/workflows/launching-a-marketing-site-in-5-days.svg'
+logicSummary: 'Drive watcher -> chunk + embed -> Pinecone upsert -> query with citations via Telegram.'
+keyOutcome:
+  value: '100%'
+  label: 'Cited Answers'
+integrations: ['n8n', 'Claude 3.5 Sonnet', 'Pinecone', 'Supabase', 'Telegram']
+problem: 'Company documentation was spread across Drive folders and nobody could find authoritative answers, so the same questions were re-asked and re-answered by whoever happened to know.'
+solution: 'Engineered a semantic RAG pipeline in n8n that watches Drive, chunks and embeds new documents into Pinecone, and answers questions in Telegram with citations linking back to the source document.'
+stepCount: 4
+impactHighlight: 'Turns scattered documentation into instant, checkable answers.'
+impactHighlightDesc: 'Every response carries a citation back to the source file, so answers can be verified rather than trusted.'
+roi:
+  - value: '100%'
+    label: 'Cited Answers'
+  - value: '< 4 SEC'
+    label: 'Query Response'
+  - value: '24/7'
+    label: 'Availability'
+failsafeHeadline: 'No Answer Without a Source'
+failsafeDesc: 'Retrieval below the relevance threshold returns an explicit ''not found'' rather than inventing an answer.'
+failsafes:
+  - title: '1. Grounding Check'
+    desc: 'Responses must cite retrieved chunks; ungrounded generations are suppressed.'
+  - title: '2. Re-index on Change'
+    desc: 'Document edits trigger re-embedding so stale answers cannot persist.'
 ---
 
 ## Problem

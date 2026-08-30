@@ -13,6 +13,36 @@ logo: '/images/features/logo-03.webp'
 # Fill these in to reveal the buttons on the case study page.
 videoUrl: ''
 repoUrl: ''
+
+# ── Selected Work grid + detail modal ──
+platform: 'n8n'
+categories: ['CRM & Leads', 'Operations']
+speed: '< 60 SEC'
+workflowImage: '/images/workflows/prototyping-an-onboarding-flow-that-actually-converts.svg'
+logicSummary: 'Form trigger -> agreement generation -> Drive provisioning -> CRM sync -> Telegram alert.'
+keyOutcome:
+  value: '0'
+  label: 'Manual Handoffs'
+integrations: ['n8n', 'Google Workspace', 'Airtable', 'Telegram']
+problem: 'Client intake required someone to manually generate an agreement, create a Drive folder structure, copy details into the CRM, and notify the team — a chain that took hours and dropped steps under load.'
+solution: 'Automated the full intake lifecycle in n8n: a form submission generates a dynamic agreement, provisions the Google Workspace folder tree, writes the CRM record, and posts a briefed alert to Telegram.'
+stepCount: 4
+impactHighlight: 'Client intake completes end to end without a human touching it.'
+impactHighlightDesc: 'From form submission to provisioned folders, signed agreement and CRM record in under a minute.'
+roi:
+  - value: '0'
+    label: 'Manual Handoffs'
+  - value: '< 60 SEC'
+    label: 'Intake to Ready'
+  - value: '100%'
+    label: 'Logged in CRM'
+failsafeHeadline: 'Idempotent Provisioning'
+failsafeDesc: 'Re-submissions and retries match on a stable key, so a client never ends up with duplicate folders or records.'
+failsafes:
+  - title: '1. Keyed Matching'
+    desc: 'Records are upserted on email, so retries update rather than duplicate.'
+  - title: '2. Partial-Failure Alert'
+    desc: 'If any step fails mid-chain the team is notified with exactly which step stopped.'
 ---
 
 ## Problem

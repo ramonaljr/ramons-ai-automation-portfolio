@@ -1,21 +1,32 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
-import { PixelIcon } from "@/components/landing/pixel-icon"
+import { ProjectModal } from "@/components/landing/project-modal"
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
+const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
 
-function Tag({ children }: { children: React.ReactNode }) {
+const FILTERS = ["ALL", "AI AGENTS", "N8N", "ZAPIER", "MAKE"] as const
+
+type Filter = (typeof FILTERS)[number]
+
+function Ico({ d, size = 13 }: { d: string; size?: number }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/40 bg-black/[0.04]">
-      {children}
-    </span>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={d} />
+    </svg>
   )
 }
 
-function useInView(threshold = 0.12) {
+const P = {
+  expand: "M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7",
+  bolt: "M13 2L4 14h7l-1 8 9-12h-7l1-8z",
+  arrow: "M4 12h14M13 6l6 6-6 6",
+}
+
+function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
 
@@ -33,201 +44,258 @@ function useInView(threshold = 0.12) {
   return { ref, inView }
 }
 
-// ── Icons ────────────────────────────────────────────────────────────────────
+/** A project matches a filter on its platform or on one of its categories. */
+function matches(cs: CaseStudyMetadata, f: Filter) {
+  if (f === "ALL") return true
+  const platform = (cs.platform ?? "").toUpperCase()
+  const cats = (cs.categories ?? []).map(c => c.toUpperCase())
 
-function PlayIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M4 2.5v9l7-4.5-7-4.5Z" fill="currentColor" />
-    </svg>
-  )
+  return platform === f || cats.includes(f)
 }
 
-function GithubIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
-    </svg>
-  )
-}
-
-function ArrowIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M3 11L11 3M11 3H5M11 3V9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-// ── Card ─────────────────────────────────────────────────────────────────────
-
-function ProjectCard({ cs, index }: { cs: CaseStudyMetadata; index: number }) {
-  const { ref, inView } = useInView()
-
-  // Lead platform drives the badge — first tool is always the automation platform.
-  const platform = cs.tools?.[0] ?? "Automation"
+function Chips({ items }: { items?: string[] }) {
+  if (!items?.length) return null
 
   return (
-    <div
-      ref={ref}
-      className="group relative rounded-2xl border border-black/[0.07] bg-white/60 overflow-hidden transition-all duration-500 hover:border-black/15 hover:bg-white"
-      style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0px)" : "translateY(28px)",
-        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${index * 90}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${index * 90}ms, border-color 0.3s, background-color 0.3s`,
-      }}
-    >
-      <div className="grid md:grid-cols-[1.4fr_1fr] gap-0">
-
-        {/* Copy */}
-        <div className="p-7 lg:p-9 order-2 md:order-1">
-          <div className="flex flex-wrap items-center gap-2 mb-5">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#111] text-white text-[10px] tracking-widest font-mono">
-              {platform.toUpperCase()}
-            </span>
-            {cs.duration && (
-              <span className="text-[11px] tracking-wide text-black/40 font-mono">{cs.duration}</span>
-            )}
-            {cs.sample && (
-              <span
-                className="text-[10px] tracking-widest font-mono text-amber-700/70 border border-amber-600/25 bg-amber-500/[0.07] rounded px-2 py-0.5"
-                title="Illustrative example, not a delivered client engagement"
-              >
-                SAMPLE
-              </span>
-            )}
-          </div>
-
-          <h3
-            className="text-2xl lg:text-[28px] font-light leading-snug tracking-tight text-[#111] mb-3"
-            style={{ fontFamily: DISPLAY_FONT }}
-          >
-            {cs.title}
-          </h3>
-
-          <p className="text-sm leading-relaxed text-black/55 mb-6 max-w-lg">{cs.description}</p>
-
-          {cs.tools && cs.tools.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-7">
-              {cs.tools.map(t => (
-                <span
-                  key={t}
-                  className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[11px] text-black/50"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Actions */}
-          <div className="flex flex-wrap items-center gap-2">
-            <a
-              href={`/case-study/${cs.slug}`}
-              className="inline-flex items-center gap-2 pl-4 pr-3 py-2 rounded-full bg-[#111] text-white text-[12px] tracking-wide hover:bg-black transition-colors"
-            >
-              Read case study
-              <ArrowIcon />
-            </a>
-
-            {cs.videoUrl ? (
-              <a
-                href={cs.videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/12 text-[12px] text-black/65 hover:text-black hover:border-black/30 hover:bg-black/[0.03] transition-all"
-              >
-                <PlayIcon />
-                Live video walkthrough
-              </a>
-            ) : (
-              <span
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-dashed border-black/12 text-[12px] text-black/30 cursor-default"
-                title="Add videoUrl to this case study's frontmatter to enable"
-              >
-                <PlayIcon />
-                Walkthrough coming soon
-              </span>
-            )}
-
-            {cs.repoUrl ? (
-              <a
-                href={cs.repoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/12 text-[12px] text-black/65 hover:text-black hover:border-black/30 hover:bg-black/[0.03] transition-all"
-              >
-                <GithubIcon />
-                View GitHub
-              </a>
-            ) : (
-              <span
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-dashed border-black/12 text-[12px] text-black/30 cursor-default"
-                title="Add repoUrl to this case study's frontmatter to enable"
-              >
-                <GithubIcon />
-                Repo coming soon
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Visual */}
-        <div className="relative order-1 md:order-2 min-h-[180px] md:min-h-full overflow-hidden bg-black/[0.03]">
-          {cs.image && (
-             
-            <img
-              src={cs.image}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.03]"
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/70 via-transparent to-transparent md:from-white/80" />
-        </div>
-      </div>
+    <div className="flex flex-wrap gap-1.5">
+      {items.map(t => (
+        <span key={t} className="rounded-md border border-black/[0.08] bg-black/[0.02] px-2.5 py-1 font-mono text-[11px] text-black/50">
+          {t}
+        </span>
+      ))}
     </div>
   )
 }
 
-// ── Section ──────────────────────────────────────────────────────────────────
+function SampleBadge() {
+  return (
+    <span
+      className="rounded border border-amber-600/25 bg-amber-500/[0.07] px-2 py-0.5 font-mono text-[10px] tracking-widest text-amber-700/70"
+      title="Illustrative example, not a delivered client engagement"
+    >
+      SAMPLE
+    </span>
+  )
+}
 
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
-  const { ref, inView } = useInView(0.1)
+  const { ref, inView } = useInView(0.05)
+  const [filter, setFilter] = useState<Filter>("ALL")
+  const [open, setOpen] = useState<CaseStudyMetadata | null>(null)
+
+  const shown = useMemo(() => caseStudies.filter(cs => matches(cs, filter)), [caseStudies, filter])
+  const featured = shown.find(cs => cs.featured) ?? shown[0]
+  const rest = shown.filter(cs => cs.slug !== featured?.slug)
+
+  const count = String(caseStudies.length).padStart(2, "0")
 
   return (
     <section id="portfolio" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto">
+      <div className={CONTAINER}>
 
-        <div
-          ref={ref}
-          className="mb-16"
-          style={{
-            opacity: inView ? 1 : 0,
-            transform: inView ? "translateY(0)" : "translateY(16px)",
-            transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)",
-          }}
-        >
-          <PixelIcon type="workflow" size={40} />
-          <div className="mt-4"><Tag>PORTFOLIO</Tag></div>
-          <h2
-            className="mt-6 text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-tight text-[#111]"
-            style={{ fontFamily: DISPLAY_FONT }}
-          >
-            Automations built<br />and shipped.
-          </h2>
-          <p className="mt-5 text-[15px] leading-relaxed text-black/50 max-w-xl">
-            Production pipelines across n8n, Zapier and Make — each one mapped, built against real
-            edge cases, documented, and handed over.
-          </p>
+        {/* ── Header ─────────────────────────────────────────────────────── */}
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="font-mono text-[12px] tracking-[0.25em] text-black/35">SELECTED</p>
+            <h2
+              className="mt-2 text-[clamp(2.5rem,6vw,5rem)] font-light leading-[0.95] tracking-tight text-[#111]"
+              style={{ fontFamily: DISPLAY_FONT }}
+            >
+              WORK
+            </h2>
+            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-black/50">
+              A selection of AI automation systems and production workflows built to eliminate
+              repetitive tasks, connect business tools, and improve operational efficiency.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-start gap-4 lg:items-end">
+            <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/60 px-4 py-2 font-mono text-[11px] tracking-wide text-black/55">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              {count}+ AUTOMATION PROJECTS
+            </span>
+
+            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filter projects">
+              {FILTERS.map(f => {
+                const active = filter === f
+                const n = caseStudies.filter(cs => matches(cs, f)).length
+
+                return (
+                  <button
+                    key={f}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    disabled={n === 0}
+                    onClick={() => setFilter(f)}
+                    className={`rounded-full border px-4 py-2 font-mono text-[11px] tracking-wide transition-all ${
+                      active
+                        ? "border-black/25 bg-[#111] text-white"
+                        : n === 0
+                          ? "border-black/[0.06] text-black/20"
+                          : "border-black/10 text-black/50 hover:border-black/25 hover:text-black"
+                    }`}
+                  >
+                    {f}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-5">
-          {caseStudies.map((cs, i) => (
-            <ProjectCard key={cs.slug} cs={cs} index={i} />
-          ))}
+        <div className="mt-10 border-t border-black/[0.07]" />
+
+        {/* ── Featured ───────────────────────────────────────────────────── */}
+        <div ref={ref} className="mt-12">
+          {featured && (
+            <article
+              className="group grid overflow-hidden rounded-2xl border border-black/[0.07] bg-white/50 transition-all duration-300 hover:border-black/12 hover:bg-white lg:grid-cols-[1.25fr_1fr]"
+              style={{
+                opacity: inView ? 1 : 0,
+                transform: inView ? "translateY(0)" : "translateY(24px)",
+                transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1), border-color .3s, background-color .3s",
+              }}
+            >
+              {/* Canvas */}
+              <div className="relative border-b border-black/[0.07] bg-white p-4 lg:border-b-0 lg:border-r">
+                {featured.workflowImage && (
+                  <img
+                    src={featured.workflowImage}
+                    alt={`Workflow canvas for ${featured.title}`}
+                    className="w-full rounded-lg"
+                  />
+                )}
+                <button
+                  type="button"
+                  onClick={() => setOpen(featured)}
+                  className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-lg border border-black/10 bg-white/90 px-3.5 py-2 font-mono text-[11px] tracking-wide text-black/60 backdrop-blur transition-all hover:border-black/25 hover:text-black"
+                >
+                  <Ico d={P.expand} size={12} />
+                  INSPECT NODES
+                </button>
+              </div>
+
+              {/* Detail */}
+              <div className="flex flex-col p-7 lg:p-9">
+                <div className="flex flex-wrap items-center gap-2">
+                  {featured.platform && (
+                    <span className="rounded-full border border-black/15 bg-black/[0.04] px-3 py-1 font-mono text-[11px] text-black/70">
+                      {featured.platform}
+                    </span>
+                  )}
+                  {featured.categories?.map(c => (
+                    <span key={c} className="rounded-full border border-black/10 px-3 py-1 font-mono text-[11px] text-black/45">
+                      {c}
+                    </span>
+                  ))}
+                  <span className="ml-auto rounded border border-amber-600/30 bg-amber-500/[0.08] px-2.5 py-1 font-mono text-[10px] tracking-widest text-amber-700/80">
+                    FEATURED
+                  </span>
+                </div>
+
+                <h3
+                  className="mt-6 text-2xl font-light leading-snug tracking-tight text-[#111] lg:text-[32px]"
+                  style={{ fontFamily: DISPLAY_FONT }}
+                >
+                  {featured.title}
+                </h3>
+                <p className="mt-4 text-[14px] leading-relaxed text-black/55">{featured.description}</p>
+                {featured.sample && <div className="mt-4"><SampleBadge /></div>}
+
+                <div className="mt-auto pt-8">
+                  <Chips items={featured.tools} />
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-black/[0.07] pt-6">
+                    {featured.speed && (
+                      <span className="inline-flex items-center gap-2 rounded-lg border border-emerald-600/20 bg-emerald-500/[0.07] px-3 py-2 font-mono text-[12px] text-emerald-800/80">
+                        <Ico d={P.bolt} size={12} />
+                        {featured.speed}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setOpen(featured)}
+                      className="inline-flex items-center gap-2 font-mono text-[12px] tracking-wide text-black/60 transition-colors hover:text-black"
+                    >
+                      VIEW FULL WORKFLOW
+                      <Ico d={P.arrow} size={13} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          )}
+
+          {/* ── Grid ─────────────────────────────────────────────────────── */}
+          <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {rest.map((cs, i) => (
+              <article
+                key={cs.slug}
+                className="group flex flex-col overflow-hidden rounded-2xl border border-black/[0.07] bg-white/50 transition-all duration-300 hover:border-black/12 hover:bg-white"
+                style={{
+                  opacity: inView ? 1 : 0,
+                  transform: inView ? "translateY(0)" : "translateY(24px)",
+                  transition: `opacity 0.6s cubic-bezier(0.16,1,0.3,1) ${120 + i * 80}ms, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${120 + i * 80}ms, border-color .3s, background-color .3s`,
+                }}
+              >
+                <div className="border-b border-black/[0.07] bg-white p-3">
+                  {cs.workflowImage && (
+                    <img
+                      src={cs.workflowImage}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-[150px] w-full rounded object-cover object-left-top"
+                    />
+                  )}
+                </div>
+
+                <div className="flex flex-1 flex-col p-6">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {cs.platform && (
+                      <span className="rounded-full border border-black/15 bg-black/[0.04] px-2.5 py-0.5 font-mono text-[10px] text-black/65">
+                        {cs.platform}
+                      </span>
+                    )}
+                    {cs.speed && (
+                      <span className="font-mono text-[10px] text-black/35">{cs.speed}</span>
+                    )}
+                    {cs.sample && <SampleBadge />}
+                  </div>
+
+                  <h3
+                    className="mt-4 text-[19px] font-light leading-snug tracking-tight text-[#111]"
+                    style={{ fontFamily: DISPLAY_FONT }}
+                  >
+                    {cs.title}
+                  </h3>
+                  <p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-black/50">
+                    {cs.description}
+                  </p>
+
+                  <div className="mt-auto pt-6">
+                    <button
+                      type="button"
+                      onClick={() => setOpen(cs)}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#111] px-5 py-2.5 text-[12px] tracking-wide text-white transition-colors hover:bg-black"
+                    >
+                      View workflow
+                      <Ico d={P.arrow} size={13} />
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {shown.length === 0 && (
+            <p className="py-16 text-center text-[14px] text-black/40">
+              Nothing built on this platform yet.
+            </p>
+          )}
         </div>
       </div>
+
+      {open && <ProjectModal cs={open} onClose={() => setOpen(null)} />}
     </section>
   )
 }

@@ -14,6 +14,36 @@ sample: true
 # Fill these in to reveal the buttons on the case study page.
 videoUrl: ''
 repoUrl: ''
+
+# ── Selected Work grid + detail modal ──
+platform: 'Zapier'
+categories: ['CRM & Leads']
+speed: '< 60 SEC'
+workflowImage: '/images/workflows/lead-routing-and-crm-enrichment.svg'
+logicSummary: 'Form intake -> normalise -> Clearbit enrichment -> GPT-4o scoring -> path routing -> Slack alert.'
+keyOutcome:
+  value: '100%'
+  label: 'Leads Logged'
+integrations: ['Zapier', 'HubSpot', 'Clearbit', 'Slack', 'Gmail']
+problem: 'Sales reps frequently missed inbound demo requests sitting in a shared inbox, taking over four hours to first contact, and roughly one in six leads was never logged at all.'
+solution: 'Engineered a Zapier pipeline that normalises every intake source into one shape, enriches with Clearbit, scores fit with GPT-4o against written ICP rules, routes on paths by score and territory, and posts a briefed alert to the owning rep.'
+stepCount: 4
+impactHighlight: 'First-touch time drops from about four hours to under a minute.'
+impactHighlightDesc: 'Reps open an enriched, scored and briefed lead rather than a bare name and email address.'
+roi:
+  - value: '100%'
+    label: 'Leads Logged'
+  - value: '< 60 SEC'
+    label: 'First Touch'
+  - value: '0'
+    label: 'Dropped Leads'
+failsafeHeadline: 'Every Path Ends in a Logged Outcome'
+failsafeDesc: 'Rejections are recorded too, so nothing disappears silently between the form and the CRM.'
+failsafes:
+  - title: '1. Enrichment Fallback'
+    desc: 'If Clearbit fails the lead routes to manual review rather than being dropped.'
+  - title: '2. Audit Sheet'
+    desc: 'Every decision, including rejects, is written to a sheet that doubles as a review queue.'
 ---
 
 {/*

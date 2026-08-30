@@ -29,6 +29,36 @@ export type CaseStudyMetadata = {
 
   /** Public repo for the workflow/export. Button is hidden until this is set. */
   repoUrl?: string
+
+  // ── Fields powering the Selected Work grid and its detail modal ──────────
+  /** Lead automation platform, drives the filter tabs. */
+  platform?: 'n8n' | 'Zapier' | 'Make'
+
+  /** Extra filter facets, e.g. "AI Agents", "CRM & Leads". */
+  categories?: string[]
+
+  /** Pins this project to the large card at the top of the section. */
+  featured?: boolean
+
+  /** Headline speed/scale badge, e.g. "< 90 SEC". */
+  speed?: string
+
+  /** Workflow canvas diagram shown in the modal. */
+  workflowImage?: string
+
+  /** One-line trigger-to-outcome summary. */
+  logicSummary?: string
+  keyOutcome?: { value: string; label: string }
+  integrations?: string[]
+  problem?: string
+  solution?: string
+  stepCount?: number
+  impactHighlight?: string
+  impactHighlightDesc?: string
+  roi?: { value: string; label: string }[]
+  failsafeHeadline?: string
+  failsafeDesc?: string
+  failsafes?: { title: string; desc: string }[]
 }
 
 // local content directory (comment below line if using remote fetching)
