@@ -85,9 +85,7 @@ const MoreWriting = ({ items }: { items: PostMetadata[] }) => {
                       {post.category}
                     </span>
                   )}
-                  {post.readingTime && (
-                    <span className='font-mono text-[11px] text-black/45'>{post.readingTime}</span>
-                  )}
+                  {post.readingTime && <span className='font-mono text-[11px] text-black/45'>{post.readingTime}</span>}
                 </div>
 
                 <h3
@@ -186,29 +184,41 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
         </div>
       </header>
 
-      <div className='relative'>
-        <ParticleField />
-
-        <div className='relative z-10'>
-          <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
-            <div className='mx-auto max-w-[1080px]'>
-              <div className='grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20'>
-                <ReadingRail headings={headings} contentId='post-content' />
-                <div id='post-content' className='min-w-0 max-w-[70ch]'>
-                  <MDXContent source={content} />
-                </div>
+      {/* The reading zone stays on plain cream — behind body copy the
+          constellation field competes with the text. It picks up again below
+          the article, where the content is card-based. */}
+      <>
+        <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+          <div className='mx-auto max-w-[1080px]'>
+            <div className='grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20'>
+              <ReadingRail headings={headings} contentId='post-content' />
+              <div id='post-content' className='max-w-[70ch] min-w-0'>
+                <MDXContent source={content} />
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <MoreWriting items={morePosts} />
-          <CtaSection
-            title={<>Got a process<br />worth automating?</>}
-            blurb='If something here maps onto a workflow you are running by hand, tell me about it and I will say what it would take.'
-          />
-          <SiteFooter />
+        {/* Browsing zone — card-based, so the field reads as texture here */}
+        <div className='relative'>
+          <ParticleField />
+
+          <div className='relative z-10'>
+            <MoreWriting items={morePosts} />
+            <CtaSection
+              title={
+                <>
+                  Got a process
+                  <br />
+                  worth automating?
+                </>
+              }
+              blurb='If something here maps onto a workflow you are running by hand, tell me about it and I will say what it would take.'
+            />
+            <SiteFooter />
+          </div>
         </div>
-      </div>
+      </>
 
       <ChatWidget />
     </div>

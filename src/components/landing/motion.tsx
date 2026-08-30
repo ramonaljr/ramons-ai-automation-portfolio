@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react'
 
 /**
  * Design tokens and the reveal primitive shared by every surface that has to
@@ -24,6 +24,29 @@ export const SECTION = 'py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06
 /** Cream page ground. Applied to the outermost wrapper of every page. */
 export const PAGE = 'bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased'
 
+const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
+
+const subscribeToMotionPreference = (onChange: () => void) => {
+  const query = window.matchMedia(REDUCED_MOTION)
+
+  query.addEventListener('change', onChange)
+
+  return () => query.removeEventListener('change', onChange)
+}
+
+/**
+ * Read as an external store rather than in an effect: the server has no
+ * `matchMedia`, and setting state on mount instead would cost a second render
+ * on every revealed element.
+ */
+export function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeToMotionPreference,
+    () => window.matchMedia(REDUCED_MOTION).matches,
+    () => false
+  )
+}
+
 /**
  * Fires once when the element scrolls into view.
  *
@@ -33,27 +56,27 @@ export const PAGE = 'bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased
  */
 export function useInView<T extends HTMLElement = HTMLDivElement>(threshold = 0.12) {
   const ref = useRef<T>(null)
-  const [inView, setInView] = useState(false)
+  const [seen, setSeen] = useState(false)
+  const reduced = usePrefersReducedMotion()
 
   useEffect(() => {
     const el = ref.current
 
-    if (!el) return
+    if (!el || reduced) return
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setInView(true)
-
-      return
-    }
-
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true) }, { threshold })
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) setSeen(true)
+      },
+      { threshold }
+    )
 
     obs.observe(el)
 
     return () => obs.disconnect()
-  }, [threshold])
+  }, [threshold, reduced])
 
-  return { ref, inView }
+  return { ref, inView: seen || reduced }
 }
 
 /** The landing page's signature entrance: 22px rise with a decelerating ease. */
@@ -93,7 +116,13 @@ export function Reveal({
 export function ArrowIcon() {
   return (
     <svg width='13' height='13' viewBox='0 0 14 14' fill='none' aria-hidden='true'>
-      <path d='M3 11L11 3M11 3H5M11 3V9' stroke='currentColor' strokeWidth='1.6' strokeLinecap='round' strokeLinejoin='round' />
+      <path
+        d='M3 11L11 3M11 3H5M11 3V9'
+        stroke='currentColor'
+        strokeWidth='1.6'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
     </svg>
   )
 }
@@ -101,7 +130,17 @@ export function ArrowIcon() {
 /** Rightward arrow used on inline "keep reading" links. */
 export function ArrowRight({ size = 13 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
+    <svg
+      width={size}
+      height={size}
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='1.8'
+      strokeLinecap='round'
+      strokeLinejoin='round'
+      aria-hidden='true'
+    >
       <path d='M4 12h14M13 6l6 6-6 6' />
     </svg>
   )

@@ -1,4 +1,4 @@
-import type { JSX } from 'react'
+import { Children, isValidElement, type JSX, type ReactNode } from 'react'
 
 import { MDXRemote, type MDXRemoteProps } from 'next-mdx-remote-client/rsc'
 
@@ -18,10 +18,37 @@ import { generateSlug } from '@/lib/extract-headings'
 
 const HEAD = 'scroll-mt-28 font-light tracking-tight text-[#111]'
 
+/** Images carry their alt text as a visible caption. */
+const MdxImage = ({ src, alt }: { src?: string; alt?: string }) => (
+  <figure className='mt-10'>
+    <div className='rounded-2xl border border-black/[0.07] bg-white p-2'>
+      <img src={src} alt={alt ?? ''} className='w-full rounded-xl' />
+    </div>
+    {alt ? (
+      <figcaption className='mt-3 font-mono text-[11px] leading-relaxed tracking-wide text-black/45'>{alt}</figcaption>
+    ) : null}
+  </figure>
+)
+
+/**
+ * Markdown wraps a standalone image in a paragraph. `<figure>` is not valid
+ * inside `<p>`, so the browser reparents it and hydration fails — the paragraph
+ * has to step aside when it holds nothing but an image.
+ */
+const isLoneImage = (children: ReactNode) => {
+  const nodes = Children.toArray(children)
+
+  return nodes.length === 1 && isValidElement(nodes[0]) && nodes[0].type === MdxImage
+}
+
 const components: MDXRemoteProps['components'] = {
   // h1 belongs to the page header; inside the body it reads as a section break.
   h1: ({ children }) => (
-    <h1 id={generateSlug(children as string)} className={`${HEAD} mt-16 text-[clamp(1.6rem,2.6vw,2.25rem)] leading-tight`} style={{ fontFamily: DISPLAY_FONT }}>
+    <h1
+      id={generateSlug(children as string)}
+      className={`${HEAD} mt-16 text-[clamp(1.6rem,2.6vw,2.25rem)] leading-tight`}
+      style={{ fontFamily: DISPLAY_FONT }}
+    >
       {children}
     </h1>
   ),
@@ -37,18 +64,30 @@ const components: MDXRemoteProps['components'] = {
   ),
 
   h3: ({ children }) => (
-    <h3 id={generateSlug(children as string)} className={`${HEAD} mt-12 text-[20px] leading-snug`} style={{ fontFamily: DISPLAY_FONT }}>
+    <h3
+      id={generateSlug(children as string)}
+      className={`${HEAD} mt-12 text-[20px] leading-snug`}
+      style={{ fontFamily: DISPLAY_FONT }}
+    >
       {children}
     </h3>
   ),
 
   h4: ({ children }) => (
-    <h4 id={generateSlug(children as string)} className='mt-9 scroll-mt-28 font-mono text-[13px] font-semibold tracking-[0.18em] text-[#111]'>
+    <h4
+      id={generateSlug(children as string)}
+      className='mt-9 scroll-mt-28 font-mono text-[13px] font-semibold tracking-[0.18em] text-[#111]'
+    >
       {children}
     </h4>
   ),
 
-  p: ({ children }) => <p className='mt-5 text-[15.5px] leading-[1.8] text-black/70'>{children}</p>,
+  p: ({ children }) =>
+    isLoneImage(children) ? (
+      <>{children}</>
+    ) : (
+      <p className='mt-5 text-[15.5px] leading-[1.8] text-black/70'>{children}</p>
+    ),
 
   ul: ({ children }) => <ul className='mt-6 space-y-3'>{children}</ul>,
 
@@ -93,14 +132,7 @@ const components: MDXRemoteProps['components'] = {
     </pre>
   ),
 
-  img: ({ src, alt }) => (
-    <figure className='mt-10'>
-      <div className='rounded-2xl border border-black/[0.07] bg-white p-2'>
-        <img src={src as string} alt={(alt as string) ?? ''} className='w-full rounded-xl' />
-      </div>
-      {alt ? <figcaption className='mt-3 font-mono text-[11px] tracking-wide text-black/45'>{alt}</figcaption> : null}
-    </figure>
-  ),
+  img: MdxImage,
 
   blockquote: ({ children }) => (
     <blockquote className='mt-10 border-l border-black/20 pl-6 text-[17px] leading-relaxed font-light text-black/62 italic [&_p]:mt-0 [&_p]:text-[17px] [&_p]:leading-relaxed [&_p]:text-black/62'>

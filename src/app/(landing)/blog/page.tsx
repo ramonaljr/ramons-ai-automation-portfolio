@@ -49,8 +49,8 @@ const BlogPage = async () => {
           </h1>
 
           <p className='mt-7 max-w-2xl text-[16px] leading-relaxed text-black/62'>
-            Working notes on n8n, Zapier and Make — architecture decisions, failure modes, and what
-            actually holds up in production.
+            Working notes on n8n, Zapier and Make — architecture decisions, failure modes, and what actually holds up in
+            production.
           </p>
 
           {posts.length > 0 && (
@@ -69,15 +69,12 @@ const BlogPage = async () => {
             <div className={CONTAINER}>
               {posts.length === 0 ? (
                 <div className='rounded-2xl border border-dashed border-black/12 px-6 py-20 text-center'>
-                  <p
-                    className='text-2xl font-light tracking-tight text-[#111]'
-                    style={{ fontFamily: DISPLAY_FONT }}
-                  >
+                  <p className='text-2xl font-light tracking-tight text-[#111]' style={{ fontFamily: DISPLAY_FONT }}>
                     Nothing published yet.
                   </p>
                   <p className='mx-auto mt-4 max-w-md text-[14px] leading-relaxed text-black/60'>
-                    The first post is in progress. Until then, the case studies go into detail on how
-                    each automation was built.
+                    The first post is in progress. Until then, the case studies go into detail on how each automation
+                    was built.
                   </p>
                   <a
                     href='/#portfolio'
