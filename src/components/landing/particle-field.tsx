@@ -26,12 +26,14 @@ type P = { x: number; y: number; vx: number; vy: number; r: number }
 export function ParticleField({ className = "" }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
+  const boxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
     const wrap = wrapRef.current
+    const box = boxRef.current
 
-    if (!canvas || !wrap) return
+    if (!canvas || !wrap || !box) return
 
     const ctx = canvas.getContext("2d", { alpha: true })
 
@@ -50,11 +52,13 @@ export function ParticleField({ className = "" }: { className?: string }) {
     const LINK_SQ = LINK * LINK
 
     const resize = () => {
-      // Measure the canvas itself — it lives inside the sticky h-screen box.
-      // Measuring `wrap` would return the full section range (~10,000px) and
-      // allocate a backing store that large, which is the exact cost the
-      // sticky layout exists to avoid.
-      const rect = canvas.getBoundingClientRect()
+      // Measure the sticky box, not the canvas and not the wrapper.
+      //   - `wrap` spans the whole section range (~11,000px) and would
+      //     allocate a backing store that large.
+      //   - `canvas` is wrong in a subtler way: resize() writes an inline
+      //     width onto it, so measuring it feeds its own output back in and
+      //     the canvas ratchets wider on every observation.
+      const rect = box.getBoundingClientRect()
 
       w = Math.max(1, Math.round(rect.width))
       h = Math.max(1, Math.round(rect.height))
@@ -153,7 +157,7 @@ export function ParticleField({ className = "" }: { className?: string }) {
       if (reduced) draw()
     })
 
-    ro.observe(canvas)
+    ro.observe(box)
 
     const onVisibility = () => (document.hidden ? stop() : start())
 
@@ -179,7 +183,7 @@ export function ParticleField({ className = "" }: { className?: string }) {
       className={`pointer-events-none absolute inset-0 ${className}`}
     >
       {/* Sticky so one viewport of canvas covers the whole scroll range. */}
-      <div className="sticky top-0 h-screen w-full">
+      <div ref={boxRef} className="sticky top-0 h-screen w-full overflow-hidden">
         <canvas ref={canvasRef} className="h-full w-full" />
       </div>
     </div>

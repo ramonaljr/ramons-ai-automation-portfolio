@@ -77,7 +77,7 @@ export function ReadingRail({ headings, contentId }: { headings: Heading[]; cont
               on the landing page's Selected Work section. */}
           <nav
             aria-label='On this page'
-            className='-mx-6 mb-10 flex gap-2 overflow-x-auto px-6 pb-1 [scrollbar-width:none] lg:hidden [&::-webkit-scrollbar]:hidden'
+            className='mb-10 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] lg:hidden [&::-webkit-scrollbar]:hidden'
           >
             {headings.map(h => (
               <a

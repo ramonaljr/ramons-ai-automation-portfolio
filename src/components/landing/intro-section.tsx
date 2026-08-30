@@ -65,7 +65,7 @@ export function IntroSection() {
           <Tag>ABOUT</Tag>
         </div>
 
-        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-14 lg:gap-20 items-start">
+        <div className="grid lg:grid-cols-[1.6fr_1fr] gap-14 lg:gap-16 items-start">
 
           {/* ── Left: the introduction ──────────────────────────────────── */}
           <div>
@@ -157,7 +157,7 @@ export function IntroSection() {
           </div>
 
           {/* ── Right: portrait ──────────────────────────────────────────── */}
-          <div style={reveal(180)}>
+          <div className="w-full lg:max-w-[400px] lg:justify-self-end" style={reveal(180)}>
             <div className="relative">
               {/* Office background lifted out with the Vision framework and
                   composited on white, so the portrait sits on a white card
