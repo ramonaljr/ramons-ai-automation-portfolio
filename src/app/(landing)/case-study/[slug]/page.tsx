@@ -311,6 +311,96 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
           </section>
         )}
 
+        {/* ── Outcome ─────────────────────────────────────────────────────
+            Figures first: these are the fields a reader scans for, and prose
+            is the wrong shape for them. The article below tells the story. */}
+        {(metadata.impactHighlight || metadata.roi) && (
+          <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+            <div className={CONTAINER}>
+              <p className='font-mono text-[12px] tracking-[0.28em] text-black/50'>OUTCOME</p>
+
+              {metadata.impactHighlight && (
+                <p
+                  className='mt-4 max-w-3xl text-[clamp(1.35rem,2.4vw,2rem)] leading-snug font-light tracking-tight text-[#111]'
+                  style={{ fontFamily: DISPLAY_FONT }}
+                >
+                  {metadata.impactHighlight}
+                </p>
+              )}
+              {metadata.impactHighlightDesc && (
+                <p className='mt-4 max-w-2xl text-[15px] leading-relaxed text-black/68'>
+                  {metadata.impactHighlightDesc}
+                </p>
+              )}
+
+              {metadata.roi && metadata.roi.length > 0 && (
+                <div className='mt-12 grid gap-4 sm:grid-cols-3'>
+                  {metadata.roi.map((r, i) => (
+                    <Reveal key={r.label} delay={i * 90}>
+                      <div className='rounded-2xl border border-black/[0.07] bg-white/60 p-8 text-center'>
+                        <p
+                          className='text-[clamp(2rem,4vw,2.75rem)] leading-none font-light text-[#111]'
+                          style={{ fontFamily: DISPLAY_FONT }}
+                        >
+                          {r.value}
+                        </p>
+                        <p className='mt-3 text-[13px] text-black/62'>{r.label}</p>
+                      </div>
+                    </Reveal>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* ── Problem / Solution ──────────────────────────────────────────
+            A scannable summary ahead of the long read, so someone deciding
+            whether to read at all can get the shape of it in two paragraphs. */}
+        {(metadata.problem || metadata.solution) && (
+          <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+            <div className={CONTAINER}>
+              <p className='font-mono text-[12px] tracking-[0.28em] text-black/50'>IN SHORT</p>
+              <div className='mt-10 grid gap-5 md:grid-cols-2'>
+                {metadata.problem && (
+                  <div className='rounded-2xl border border-rose-600/15 bg-rose-500/[0.04] p-8'>
+                    <p className='font-mono text-[12px] tracking-[0.18em] text-rose-800/70'>
+                      THE PROBLEM
+                    </p>
+                    <p className='mt-4 text-[15px] leading-relaxed text-black/72'>{metadata.problem}</p>
+                  </div>
+                )}
+                {metadata.solution && (
+                  <div className='rounded-2xl border border-emerald-600/20 bg-emerald-500/[0.05] p-8'>
+                    <p className='font-mono text-[12px] tracking-[0.18em] text-emerald-800/70'>
+                      WHAT I BUILT
+                    </p>
+                    <p className='mt-4 text-[15px] leading-relaxed text-black/72'>{metadata.solution}</p>
+                  </div>
+                )}
+              </div>
+
+              {metadata.integrations && metadata.integrations.length > 0 && (
+                <>
+                  <p className='mt-14 font-mono text-[12px] tracking-[0.18em] text-black/50'>
+                    ACTIVE INTEGRATIONS
+                  </p>
+                  <div className='mt-4 flex flex-wrap gap-2'>
+                    {metadata.integrations.map(i => (
+                      <span
+                        key={i}
+                        className='rounded-lg border border-black/[0.09] bg-white px-4 py-2.5 font-mono text-[13px] text-black/68'
+                      >
+                        {i}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
+        )}
+
         <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
           <div className='mx-auto max-w-[1080px]'>
             <div className='grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20'>
@@ -321,6 +411,45 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
             </div>
           </div>
         </section>
+
+        {/* ── Fail-safes ──────────────────────────────────────────────────
+            After the article rather than before it: this is the answer to
+            "what happens when it breaks", which only lands once the reader
+            knows what "it" is. */}
+        {(metadata.failsafeHeadline || metadata.failsafes) && (
+          <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+            <div className={CONTAINER}>
+              <p className='font-mono text-[12px] tracking-[0.28em] text-black/50'>WHEN IT BREAKS</p>
+
+              {metadata.failsafeHeadline && (
+                <p
+                  className='mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight text-[#111]'
+                  style={{ fontFamily: DISPLAY_FONT }}
+                >
+                  {metadata.failsafeHeadline}
+                </p>
+              )}
+              {metadata.failsafeDesc && (
+                <p className='mt-4 max-w-2xl text-[15px] leading-relaxed text-black/68'>
+                  {metadata.failsafeDesc}
+                </p>
+              )}
+
+              {metadata.failsafes && metadata.failsafes.length > 0 && (
+                <div className='mt-10 grid gap-5 md:grid-cols-2'>
+                  {metadata.failsafes.map((f, i) => (
+                    <Reveal key={f.title} delay={i * 90}>
+                      <div className='rounded-2xl border border-black/[0.07] bg-white/60 p-8'>
+                        <p className='font-mono text-[14px] text-emerald-800/80'>{f.title}</p>
+                        <p className='mt-3 text-[14px] leading-relaxed text-black/68'>{f.desc}</p>
+                      </div>
+                    </Reveal>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
         {/* Browsing zone — card-based, so the field reads as texture here */}
         <div className='relative'>

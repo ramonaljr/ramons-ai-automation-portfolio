@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 
-import { ProjectModal } from "@/components/landing/project-modal"
 import { READABLE } from "@/components/landing/motion"
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 
@@ -82,7 +81,6 @@ function SampleBadge() {
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
   const { ref, inView } = useInView(0.05)
   const [filter, setFilter] = useState<Filter>("ALL")
-  const [open, setOpen] = useState<CaseStudyMetadata | null>(null)
 
   const shown = useMemo(() => caseStudies.filter(cs => matches(cs, filter)), [caseStudies, filter])
   const featured = shown.find(cs => cs.featured) ?? shown[0]
@@ -170,14 +168,6 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     className="w-full rounded-lg"
                   />
                 )}
-                <button
-                  type="button"
-                  onClick={() => setOpen(featured)}
-                  className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-lg border border-black/10 bg-white/90 px-3.5 py-2 font-mono text-[12px] tracking-wide text-black/70 backdrop-blur transition-all hover:border-black/25 hover:text-black"
-                >
-                  <Ico d={P.expand} size={12} />
-                  INSPECT NODES
-                </button>
               </div>
 
               {/* Detail */}
@@ -216,22 +206,13 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         {featured.speed}
                       </span>
                     )}
-                    <div className="flex items-center gap-5">
-                      <a
-                        href={`/case-study/${featured.slug}`}
-                        className="font-mono text-[13px] tracking-wide text-black/70 underline-offset-4 transition-colors hover:text-black hover:underline"
-                      >
-                        READ CASE STUDY
-                      </a>
-                      <button
-                        type="button"
-                        onClick={() => setOpen(featured)}
-                        className="inline-flex items-center gap-2 font-mono text-[13px] tracking-wide text-black/70 transition-colors hover:text-black"
-                      >
-                        VIEW FULL WORKFLOW
-                        <Ico d={P.arrow} size={13} />
-                      </button>
-                    </div>
+                    <a
+                      href={`/case-study/${featured.slug}`}
+                      className="inline-flex items-center gap-2 font-mono text-[13px] tracking-wide text-black/70 transition-colors hover:text-black"
+                    >
+                      READ CASE STUDY
+                      <Ico d={P.arrow} size={13} />
+                    </a>
                   </div>
                 </div>
               </div>
@@ -287,23 +268,13 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     {cs.description}
                   </p>
 
-                  <div className="mt-auto flex items-center gap-2 pt-6">
-                    <button
-                      type="button"
-                      onClick={() => setOpen(cs)}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#111] px-5 py-2.5 text-[13px] tracking-wide text-white transition-colors hover:bg-black"
-                    >
-                      View workflow
-                      <Ico d={P.arrow} size={13} />
-                    </button>
-                    {/* A real anchor so the case study is reachable by crawlers
-                        and without JavaScript — the modal renders only on click,
-                        so its link never reaches the served HTML. */}
+                  <div className="mt-auto pt-6">
                     <a
                       href={`/case-study/${cs.slug}`}
-                      className="inline-flex shrink-0 items-center rounded-full border border-black/12 px-4 py-2.5 text-[13px] text-black/72 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#111] px-5 py-2.5 text-[13px] tracking-wide text-white transition-colors hover:bg-black"
                     >
-                      Read
+                      Read case study
+                      <Ico d={P.arrow} size={13} />
                     </a>
                   </div>
                 </div>
@@ -318,8 +289,6 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           )}
         </div>
       </div>
-
-      {open && <ProjectModal cs={open} onClose={() => setOpen(null)} />}
     </section>
   )
 }
