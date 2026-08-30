@@ -26,7 +26,7 @@ import { ENGAGEMENTS, PLATFORMS, PRINCIPLES, PROCESS, SERVICES } from "@/lib/por
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/55 bg-black/[0.04]">
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] tracking-widest font-sans text-black/68 bg-black/[0.04]">
       {children}
     </span>
   )
@@ -50,7 +50,7 @@ function SectionHead({
       >
         {title}
       </h2>
-      {blurb && <p className="mt-5 text-[15px] leading-relaxed text-black/62 max-w-xl">{blurb}</p>}
+      {blurb && <p className="mt-5 text-[15px] leading-relaxed text-black/72 max-w-xl">{blurb}</p>}
     </div>
   )
 }
@@ -92,13 +92,13 @@ function ServicesSection() {
                 {s.title}
               </h3>
 
-              <p className="mt-3 text-[13px] leading-relaxed text-black/62 flex-1">
+              <p className="mt-3 text-[14px] leading-relaxed text-black/72 flex-1">
                 {s.description}
               </p>
 
               <div className="mt-5 flex flex-wrap justify-center gap-1.5">
                 {s.tools.slice(0, 3).map(t => (
-                  <span key={t} className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[10px] text-black/60">
+                  <span key={t} className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[11px] text-black/70">
                     {t}
                   </span>
                 ))}
@@ -106,7 +106,7 @@ function ServicesSection() {
 
               <a
                 href={`/services/${s.slug}`}
-                className="mt-7 inline-flex items-center justify-center gap-2 self-center pl-5 pr-4 py-2.5 rounded-full bg-[#111] text-white text-[12px] tracking-wide hover:bg-black transition-colors"
+                className="mt-7 inline-flex items-center justify-center gap-2 self-center pl-5 pr-4 py-2.5 rounded-full bg-[#111] text-white text-[13px] tracking-wide hover:bg-black transition-colors"
               >
                 View Services
                 <ArrowIcon />
@@ -125,12 +125,12 @@ function ServicesSection() {
             >
               Not sure which<br />you need?
             </p>
-            <p className="mt-3 text-[13px] leading-relaxed text-black/60 max-w-[22ch]">
+            <p className="mt-3 text-[14px] leading-relaxed text-black/70 max-w-[22ch]">
               Describe the process that eats your week and I will tell you where it fits.
             </p>
             <a
               href="/contact"
-              className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-black/12 text-[12px] tracking-wide text-black/65 hover:text-black hover:border-black/30 hover:bg-black/[0.03] transition-all"
+              className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-black/12 text-[13px] tracking-wide text-black/72 hover:text-black hover:border-black/30 hover:bg-black/[0.03] transition-all"
             >
               Ask me
               <ArrowIcon />
@@ -168,7 +168,7 @@ function PlatformsSection() {
               style={rise(inView, i * 100)}
             >
               {p.primary && (
-                <span className="absolute top-6 right-6 text-[10px] tracking-widest font-mono text-white bg-[#111] rounded px-2 py-1">
+                <span className="absolute top-6 right-6 text-[11px] tracking-widest font-mono text-white bg-[#111] rounded px-2 py-1">
                   PRIMARY
                 </span>
               )}
@@ -179,18 +179,18 @@ function PlatformsSection() {
               >
                 {p.name}
               </h3>
-              <p className="mt-2 text-sm text-black/62 leading-relaxed">{p.tagline}</p>
+              <p className="mt-2 text-sm text-black/72 leading-relaxed">{p.tagline}</p>
 
               <ul className="mt-6 space-y-2.5">
                 {p.bestFor.map(b => (
-                  <li key={b} className="flex items-start gap-2.5 text-[13px] text-black/60 leading-snug">
+                  <li key={b} className="flex items-start gap-2.5 text-[14px] text-black/70 leading-snug">
                     <span className="mt-[7px] w-1 h-1 rounded-full bg-black/30 shrink-0" />
                     {b}
                   </li>
                 ))}
               </ul>
 
-              <p className="mt-6 pt-5 border-t border-black/[0.07] text-[12px] leading-relaxed text-black/55 italic">
+              <p className="mt-6 pt-5 border-t border-black/[0.07] text-[13px] leading-relaxed text-black/68 italic">
                 {p.note}
               </p>
             </div>
@@ -212,14 +212,14 @@ function ProcessSection() {
 
         {/* Header — mono eyebrow and subtitle, matching the reference */}
         <div className="mb-20">
-          <p className="font-mono text-[12px] tracking-[0.28em] text-black/55">PROCESS</p>
+          <p className="font-mono text-[13px] tracking-[0.28em] text-black/68">PROCESS</p>
           <h2
             className="mt-4 text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
             style={{ fontFamily: DISPLAY_FONT }}
           >
             How I build automation
           </h2>
-          <p className="mt-5 font-mono text-[14px] leading-relaxed text-black/60">
+          <p className="mt-5 font-mono text-[14px] leading-relaxed text-black/70">
             From business problem to a working automation system.
           </p>
         </div>
@@ -245,7 +245,7 @@ function ProcessSection() {
                 )}
               </div>
 
-              <h3 className="mt-7 font-mono text-[13px] font-semibold tracking-[0.18em] text-[#111]">
+              <h3 className="mt-7 font-mono text-[14px] font-semibold tracking-[0.18em] text-[#111]">
                 {p.label}
               </h3>
 
@@ -253,7 +253,7 @@ function ProcessSection() {
                 {p.summary}
               </p>
 
-              <p className="mt-3 text-[13.5px] leading-relaxed text-black/62">{p.desc}</p>
+              <p className="mt-3 text-[13.5px] leading-relaxed text-black/72">{p.desc}</p>
             </div>
           ))}
         </div>
@@ -263,12 +263,12 @@ function ProcessSection() {
           className="mt-24 rounded-2xl border border-black/[0.09] bg-white/40 px-6 py-14 text-center"
           style={rise(inView, PROCESS.length * 110)}
         >
-          <p className="font-mono text-[13px] tracking-[0.18em] text-black/55">
+          <p className="font-mono text-[14px] tracking-[0.18em] text-black/68">
             HAVE A PROCESS THAT FEELS TOO MANUAL?
           </p>
           <a
             href="/#contact"
-            className="mt-7 inline-flex items-center gap-2.5 rounded-full bg-[#111] px-7 py-3.5 font-mono text-[12px] tracking-[0.14em] text-white transition-colors hover:bg-black"
+            className="mt-7 inline-flex items-center gap-2.5 rounded-full bg-[#111] px-7 py-3.5 font-mono text-[13px] tracking-[0.14em] text-white transition-colors hover:bg-black"
           >
             LET&apos;S AUTOMATE IT
             <ArrowIcon />
@@ -300,15 +300,15 @@ function PrinciplesSection() {
               className="rounded-2xl border border-black/[0.07] bg-white/50 p-8 hover:bg-white hover:border-black/12 transition-all duration-300"
               style={rise(inView, i * 100)}
             >
-              <span className="text-[11px] font-mono text-black/62">{p.n}</span>
+              <span className="text-[12px] font-mono text-black/72">{p.n}</span>
               <h3
                 className="mt-4 text-xl font-light leading-snug tracking-tight text-[#111]"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 {p.title}
               </h3>
-              <p className="mt-2 text-[12px] text-black/55 leading-relaxed">{p.sub}</p>
-              <p className="mt-5 pt-5 border-t border-black/[0.07] text-[14px] leading-relaxed text-black/55">
+              <p className="mt-2 text-[13px] text-black/68 leading-relaxed">{p.sub}</p>
+              <p className="mt-5 pt-5 border-t border-black/[0.07] text-[14px] leading-relaxed text-black/68">
                 {p.body}
               </p>
             </div>
@@ -344,7 +344,7 @@ function EngagementSection() {
               }`}
               style={rise(inView, i * 100)}
             >
-              <span className="text-[11px] tracking-widest font-mono text-black/55">
+              <span className="text-[12px] tracking-widest font-mono text-black/68">
                 {e.duration.toUpperCase()}
               </span>
               <h3
@@ -353,11 +353,11 @@ function EngagementSection() {
               >
                 {e.name}
               </h3>
-              <p className="mt-3 text-[13px] leading-relaxed text-black/62">{e.summary}</p>
+              <p className="mt-3 text-[14px] leading-relaxed text-black/72">{e.summary}</p>
 
               <ul className="mt-6 space-y-2.5 flex-1">
                 {e.includes.map(it => (
-                  <li key={it} className="flex items-start gap-2.5 text-[13px] text-black/60 leading-snug">
+                  <li key={it} className="flex items-start gap-2.5 text-[14px] text-black/70 leading-snug">
                     <span className="mt-[7px] w-1 h-1 rounded-full bg-black/30 shrink-0" />
                     {it}
                   </li>
@@ -366,10 +366,10 @@ function EngagementSection() {
 
               <a
                 href="/contact"
-                className={`mt-8 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full text-[12px] tracking-wide transition-colors ${
+                className={`mt-8 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full text-[13px] tracking-wide transition-colors ${
                   e.featured
                     ? "bg-[#111] text-white hover:bg-black"
-                    : "border border-black/12 text-black/65 hover:text-black hover:border-black/30 hover:bg-black/[0.03]"
+                    : "border border-black/12 text-black/72 hover:text-black hover:border-black/30 hover:bg-black/[0.03]"
                 }`}
               >
                 {e.cta}

@@ -202,7 +202,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
-            <span className='inline-flex items-center gap-3 font-mono text-sm text-black/62'>
+            <span className='inline-flex items-center gap-3 font-mono text-sm text-black/72'>
               <span className='h-px w-8 bg-black/25' />
               AI automation for finance &amp; business operations
             </span>
@@ -243,7 +243,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               >
                 {stat.value}
               </span>
-              <span className='text-xs leading-tight text-black/60'>{stat.label}</span>
+              <span className='text-xs leading-tight text-black/70'>{stat.label}</span>
             </div>
           ))}
         </div>

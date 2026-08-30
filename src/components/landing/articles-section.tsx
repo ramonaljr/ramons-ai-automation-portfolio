@@ -60,7 +60,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
 
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between mb-14">
           <div>
-            <p className="font-mono text-[12px] tracking-[0.28em] text-black/50">WRITING</p>
+            <p className="font-mono text-[13px] tracking-[0.28em] text-black/62">WRITING</p>
             <h2
               className="mt-4 text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-tight text-[#111]"
               style={{ fontFamily: DISPLAY_FONT }}
@@ -71,7 +71,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
 
           <a
             href="/blog"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-black/12 px-5 py-2.5 text-[12px] tracking-wide text-black/62 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-black/12 px-5 py-2.5 text-[13px] tracking-wide text-black/72 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black"
           >
             All articles
             <Ico d={P.arrow} />
@@ -104,7 +104,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
               </a>
 
               <div className="flex flex-1 flex-col p-6">
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-black/55">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-black/68">
                   <span className="inline-flex items-center gap-1.5">
                     <Ico d={P.user} size={12} />
                     Ramon
@@ -119,12 +119,12 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
 
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
                   {post.category && (
-                    <span className="rounded-full border border-black/12 px-3.5 py-1.5 font-mono text-[11px] text-black/70">
+                    <span className="rounded-full border border-black/12 px-3.5 py-1.5 font-mono text-[12px] text-black/70">
                       {post.category}
                     </span>
                   )}
                   {formatDate(post.publishedAt) && (
-                    <span className="font-mono text-[11px] text-black/50">
+                    <span className="font-mono text-[12px] text-black/62">
                       {formatDate(post.publishedAt)}
                     </span>
                   )}
@@ -140,7 +140,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
                 </h3>
 
                 {post.description && (
-                  <p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-black/62">
+                  <p className="mt-3 line-clamp-3 text-[14px] leading-relaxed text-black/72">
                     {post.description}
                   </p>
                 )}
@@ -148,7 +148,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
                 <div className="mt-auto pt-6">
                   <a
                     href={`/blog/${post.slug}`}
-                    className="inline-flex items-center gap-2 font-mono text-[12px] tracking-wide text-black/62 transition-colors hover:text-black"
+                    className="inline-flex items-center gap-2 font-mono text-[13px] tracking-wide text-black/72 transition-colors hover:text-black"
                   >
                     READ ARTICLE
                     <Ico d={P.arrow} />

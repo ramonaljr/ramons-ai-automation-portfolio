@@ -9,7 +9,7 @@ const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/55 bg-black/[0.04]">
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] tracking-widest font-sans text-black/68 bg-black/[0.04]">
       {children}
     </span>
   )
@@ -48,7 +48,7 @@ export function ExperienceSection() {
           >
             Ten years in the<br />processes I now automate.
           </h2>
-          <p className="mt-5 text-[15px] leading-relaxed text-black/62 max-w-xl">
+          <p className="mt-5 text-[15px] leading-relaxed text-black/72 max-w-xl">
             I did AP, reconciliation and month-end close by hand before I automated any of it.
             That is why the workflows I build match how finance teams actually operate.
           </p>
@@ -81,10 +81,10 @@ export function ExperienceSection() {
 
                 <article className="rounded-2xl border border-black/[0.07] bg-white/50 p-7 lg:p-8 hover:bg-white hover:border-black/12 transition-all duration-300">
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2 mb-4">
-                    <span className="font-mono text-[11px] text-black/62">{r.index}</span>
-                    <span className="font-mono text-[11px] tracking-wide text-black/60">{r.period}</span>
+                    <span className="font-mono text-[12px] text-black/72">{r.index}</span>
+                    <span className="font-mono text-[12px] tracking-wide text-black/70">{r.period}</span>
                     {r.status && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/20 bg-emerald-500/[0.07] px-2.5 py-0.5 text-[10px] tracking-widest font-mono text-emerald-700/80">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/20 bg-emerald-500/[0.07] px-2.5 py-0.5 text-[11px] tracking-widest font-mono text-emerald-700/80">
                         {r.status.toUpperCase()}
                       </span>
                     )}
@@ -96,10 +96,10 @@ export function ExperienceSection() {
                   >
                     {r.role}
                   </h3>
-                  <p className="mt-1 text-[13px] text-black/60">{r.company}</p>
+                  <p className="mt-1 text-[14px] text-black/70">{r.company}</p>
 
                   <p className="mt-5 text-[14px] leading-snug text-black/75">{r.achievement}</p>
-                  <p className="mt-3 text-[14px] leading-relaxed text-black/62 max-w-3xl">
+                  <p className="mt-3 text-[14px] leading-relaxed text-black/72 max-w-3xl">
                     {r.description}
                   </p>
 
@@ -107,7 +107,7 @@ export function ExperienceSection() {
                     {r.stack.map(t => (
                       <span
                         key={t}
-                        className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[11px] text-black/62"
+                        className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[12px] text-black/72"
                       >
                         {t}
                       </span>

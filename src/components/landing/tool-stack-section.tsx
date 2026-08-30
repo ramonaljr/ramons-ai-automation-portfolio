@@ -17,7 +17,7 @@ function ToolMark({ tool }: { tool: Tool }) {
     return (
       <span
         aria-hidden="true"
-        className="flex items-center justify-center w-[22px] h-[22px] rounded-full text-[11px] font-semibold text-white shrink-0"
+        className="flex items-center justify-center w-[22px] h-[22px] rounded-full text-[12px] font-semibold text-white shrink-0"
         style={{ backgroundColor: tool.color }}
       >
         {tool.name.charAt(0)}
@@ -50,7 +50,7 @@ function Pill({ tool }: { tool: Tool }) {
   return (
     <span className="flex items-center gap-2.5 shrink-0 rounded-full border border-black/[0.08] bg-white/70 px-5 py-3 transition-colors duration-300 hover:bg-white hover:border-black/20">
       <ToolMark tool={tool} />
-      <span className="text-[14px] whitespace-nowrap text-black/65">{tool.name}</span>
+      <span className="text-[14px] whitespace-nowrap text-black/72">{tool.name}</span>
     </span>
   )
 }
@@ -109,7 +109,7 @@ export function ToolStackSection() {
           transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
-        <p className="font-mono text-[12px] tracking-[0.25em] text-black/55">{'// TOOL STACK'}</p>
+        <p className="font-mono text-[13px] tracking-[0.25em] text-black/68">{'// TOOL STACK'}</p>
 
         <h2
           className="mt-5 text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] tracking-tight text-[#111]"
@@ -119,7 +119,7 @@ export function ToolStackSection() {
           <span className="text-[#6d28d9]">Build With</span>
         </h2>
 
-        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-black/62">
+        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-black/72">
           The platforms behind every system I ship — connected, automated, and running in
           production.
         </p>

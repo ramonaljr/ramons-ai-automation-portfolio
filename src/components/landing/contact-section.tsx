@@ -17,7 +17,7 @@ const MONTHS = [
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/55 bg-black/[0.04]">
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] tracking-widest font-sans text-black/68 bg-black/[0.04]">
       {children}
     </span>
   )
@@ -128,7 +128,7 @@ export function ContactSection() {
           >
             Book a workflow audit.
           </h2>
-          <p className="mt-5 text-[15px] leading-relaxed text-black/62 max-w-xl">
+          <p className="mt-5 text-[15px] leading-relaxed text-black/72 max-w-xl">
             Thirty minutes, no charge. Bring the process that eats your week and I will tell you
             whether it is worth automating, and on which platform.
           </p>
@@ -151,15 +151,15 @@ export function ContactSection() {
             >
               {PROFILE.name}
             </h3>
-            <p className="mt-1.5 text-[14px] text-black/60">
+            <p className="mt-1.5 text-[14px] text-black/70">
               {PROFILE.title} · {PROFILE.credential}
             </p>
 
             <div className="mt-9 grid sm:grid-cols-2 gap-x-6 gap-y-7">
               <div className="flex gap-3">
-                <span className="mt-0.5 text-black/55"><Icon d={PATHS.mail} /></span>
+                <span className="mt-0.5 text-black/68"><Icon d={PATHS.mail} /></span>
                 <div className="min-w-0">
-                  <p className="text-[10px] tracking-widest font-mono text-black/55">EMAIL</p>
+                  <p className="text-[11px] tracking-widest font-mono text-black/68">EMAIL</p>
                   <a
                     href={`mailto:${PROFILE.email}`}
                     className="mt-1 block text-[14px] text-black/70 hover:text-black transition-colors break-all"
@@ -170,18 +170,18 @@ export function ContactSection() {
               </div>
 
               <div className="flex gap-3">
-                <span className="mt-0.5 text-black/55"><Icon d={PATHS.pin} /></span>
+                <span className="mt-0.5 text-black/68"><Icon d={PATHS.pin} /></span>
                 <div>
-                  <p className="text-[10px] tracking-widest font-mono text-black/55">LOCATION</p>
+                  <p className="text-[11px] tracking-widest font-mono text-black/68">LOCATION</p>
                   <p className="mt-1 text-[14px] text-black/70">{PROFILE.location}</p>
-                  <p className="text-[12px] text-black/55">Working across time zones</p>
+                  <p className="text-[13px] text-black/68">Working across time zones</p>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="mt-0.5 text-black/55"><Icon d={PATHS.cal} /></span>
+                <span className="mt-0.5 text-black/68"><Icon d={PATHS.cal} /></span>
                 <div>
-                  <p className="text-[10px] tracking-widest font-mono text-black/55">AVAILABILITY</p>
+                  <p className="text-[11px] tracking-widest font-mono text-black/68">AVAILABILITY</p>
                   <p className="mt-1 text-[14px] text-black/70">
                     Open for workflow audits &amp; custom builds
                   </p>
@@ -189,9 +189,9 @@ export function ContactSection() {
               </div>
 
               <div className="flex gap-3">
-                <span className="mt-0.5 text-black/55"><Icon d={PATHS.arrow} /></span>
+                <span className="mt-0.5 text-black/68"><Icon d={PATHS.arrow} /></span>
                 <div>
-                  <p className="text-[10px] tracking-widest font-mono text-black/55">RESPONSE</p>
+                  <p className="text-[11px] tracking-widest font-mono text-black/68">RESPONSE</p>
                   <p className="mt-1 text-[14px] text-black/70">Usually within one business day</p>
                 </div>
               </div>
@@ -204,7 +204,7 @@ export function ContactSection() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2.5 rounded-full border border-black/10 text-[11px] tracking-wide text-black/55 hover:text-black hover:border-black/25 hover:bg-black/[0.03] transition-all"
+                  className="px-4 py-2.5 rounded-full border border-black/10 text-[12px] tracking-wide text-black/68 hover:text-black hover:border-black/25 hover:bg-black/[0.03] transition-all"
                 >
                   {s.label}
                 </a>
@@ -223,7 +223,7 @@ export function ContactSection() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-[10px] tracking-widest font-mono text-black/55">
+                <p className="text-[11px] tracking-widest font-mono text-black/68">
                   WORKFLOW AUDIT · 30 MIN · FREE
                 </p>
                 <h3
@@ -232,11 +232,11 @@ export function ContactSection() {
                 >
                   Book a slot
                 </h3>
-                <p className="mt-1.5 text-[13px] text-black/60">
+                <p className="mt-1.5 text-[14px] text-black/70">
                   Pick a weekday, then a time (PH time, UTC+8).
                 </p>
               </div>
-              <span className="hidden sm:flex w-10 h-10 shrink-0 rounded-xl border border-black/10 items-center justify-center text-black/55">
+              <span className="hidden sm:flex w-10 h-10 shrink-0 rounded-xl border border-black/10 items-center justify-center text-black/68">
                 <Icon d={PATHS.cal} />
               </span>
             </div>
@@ -249,18 +249,18 @@ export function ContactSection() {
                   onClick={() => shift(-1)}
                   disabled={atEarliestMonth}
                   aria-label="Previous month"
-                  className="w-8 h-8 rounded-lg border border-black/10 flex items-center justify-center text-black/62 hover:text-black hover:border-black/25 disabled:opacity-30 disabled:pointer-events-none transition-all"
+                  className="w-8 h-8 rounded-lg border border-black/10 flex items-center justify-center text-black/72 hover:text-black hover:border-black/25 disabled:opacity-30 disabled:pointer-events-none transition-all"
                 >
                   <Icon d={PATHS.chevL} />
                 </button>
-                <p className="text-[12px] tracking-widest font-mono text-black/60">
+                <p className="text-[13px] tracking-widest font-mono text-black/70">
                   {cursor ? `${MONTHS[cursor.m].toUpperCase()} ${cursor.y}` : " "}
                 </p>
                 <button
                   type="button"
                   onClick={() => shift(1)}
                   aria-label="Next month"
-                  className="w-8 h-8 rounded-lg border border-black/10 flex items-center justify-center text-black/62 hover:text-black hover:border-black/25 transition-all"
+                  className="w-8 h-8 rounded-lg border border-black/10 flex items-center justify-center text-black/72 hover:text-black hover:border-black/25 transition-all"
                 >
                   <Icon d={PATHS.chevR} />
                 </button>
@@ -268,7 +268,7 @@ export function ContactSection() {
 
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {DAY_LABELS.map((d, i) => (
-                  <span key={i} className="text-center text-[11px] font-mono text-black/62 py-1">
+                  <span key={i} className="text-center text-[12px] font-mono text-black/72 py-1">
                     {d}
                   </span>
                 ))}
@@ -287,7 +287,7 @@ export function ContactSection() {
                       type="button"
                       disabled={!ok}
                       onClick={() => { setPicked(key); setTime(null) }}
-                      className={`h-9 rounded-lg text-[13px] transition-all ${
+                      className={`h-9 rounded-lg text-[14px] transition-all ${
                         isPicked
                           ? "bg-[#111] text-white"
                           : ok
@@ -303,7 +303,7 @@ export function ContactSection() {
             </div>
 
             {/* Times */}
-            <p className="mt-7 text-[10px] tracking-widest font-mono text-black/55">AVAILABLE TIMES</p>
+            <p className="mt-7 text-[11px] tracking-widest font-mono text-black/68">AVAILABLE TIMES</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {SLOTS.map(t => (
                 <button
@@ -311,29 +311,29 @@ export function ContactSection() {
                   type="button"
                   disabled={!picked}
                   onClick={() => setTime(t)}
-                  className={`px-4 py-2.5 rounded-lg border text-[13px] transition-all ${
+                  className={`px-4 py-2.5 rounded-lg border text-[14px] transition-all ${
                     time === t
                       ? "bg-[#111] text-white border-[#111]"
                       : picked
-                        ? "border-black/12 text-black/65 hover:border-black/30 hover:bg-black/[0.03]"
-                        : "border-black/[0.07] text-black/62 cursor-default"
+                        ? "border-black/12 text-black/72 hover:border-black/30 hover:bg-black/[0.03]"
+                        : "border-black/[0.07] text-black/72 cursor-default"
                   }`}
                 >
                   {t}
                 </button>
               ))}
             </div>
-            <p className="mt-3 text-[12px] text-black/55">
+            <p className="mt-3 text-[13px] text-black/68">
               {!picked ? "Pick a date first." : !time ? "Now pick a time." : "Confirm on the next step."}
             </p>
 
             <a
               href={bookHref}
               aria-disabled={!ready}
-              className={`mt-7 flex items-center justify-center gap-2.5 w-full px-5 py-3.5 rounded-full text-[13px] tracking-wide transition-colors ${
+              className={`mt-7 flex items-center justify-center gap-2.5 w-full px-5 py-3.5 rounded-full text-[14px] tracking-wide transition-colors ${
                 ready
                   ? "bg-[#111] text-white hover:bg-black"
-                  : "bg-black/[0.05] text-black/55 pointer-events-none"
+                  : "bg-black/[0.05] text-black/68 pointer-events-none"
               }`}
             >
               <Icon d={PATHS.cal} />

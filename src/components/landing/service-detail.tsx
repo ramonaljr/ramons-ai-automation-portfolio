@@ -35,7 +35,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
         <div className={CONTAINER}>
           <a
             href="/#services"
-            className="inline-flex items-center gap-2 text-[12px] text-black/60 hover:text-black transition-colors mb-10"
+            className="inline-flex items-center gap-2 text-[13px] text-black/70 hover:text-black transition-colors mb-10"
           >
             <span aria-hidden="true">←</span> All services
           </a>
@@ -45,7 +45,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
               <PixelIcon type="platform" size={30} />
             </span>
             <div>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] tracking-widest font-mono text-black/55 bg-black/[0.04]">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] tracking-widest font-mono text-black/68 bg-black/[0.04]">
                 {service.duration.toUpperCase()}
               </span>
               <h1
@@ -65,8 +65,8 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
 
           {/* Main column */}
           <div className="min-w-0">
-            <p className="text-[16px] leading-relaxed text-black/60 max-w-2xl">{service.description}</p>
-            <p className="mt-5 text-[15px] leading-relaxed text-black/55 max-w-2xl">{service.detail}</p>
+            <p className="text-[16px] leading-relaxed text-black/70 max-w-2xl">{service.description}</p>
+            <p className="mt-5 text-[15px] leading-relaxed text-black/68 max-w-2xl">{service.detail}</p>
 
             {/* Workflow mockup */}
             <div className="mt-12 rounded-2xl overflow-hidden border border-black/[0.07] bg-white">
@@ -89,7 +89,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
             </h2>
             <ul className="mt-6 grid sm:grid-cols-2 gap-x-8 gap-y-3.5">
               {service.includes.map(it => (
-                <li key={it} className="flex items-start gap-2.5 text-[14px] leading-snug text-black/60">
+                <li key={it} className="flex items-start gap-2.5 text-[14px] leading-snug text-black/70">
                   <span className="text-black/70"><CheckIcon /></span>
                   {it}
                 </li>
@@ -113,7 +113,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                     <span className="text-black/70"><CheckIcon /></span>
                     <div>
                       <h3 className="text-[15px] font-medium text-[#111]">{d.title}</h3>
-                      <p className="mt-1.5 text-[13px] leading-relaxed text-black/62">{d.desc}</p>
+                      <p className="mt-1.5 text-[14px] leading-relaxed text-black/72">{d.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -129,7 +129,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
             </h2>
             <ul className="mt-6 grid sm:grid-cols-2 gap-x-8 gap-y-3.5">
               {service.qualities.map(q => (
-                <li key={q} className="flex items-start gap-2.5 text-[14px] leading-snug text-black/60">
+                <li key={q} className="flex items-start gap-2.5 text-[14px] leading-snug text-black/70">
                   <span className="text-black/70"><CheckIcon /></span>
                   {q}
                 </li>
@@ -144,14 +144,14 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
               >
                 Think this is what you need?
               </h2>
-              <p className="mt-3 text-[14px] leading-relaxed text-black/55 max-w-lg">
+              <p className="mt-3 text-[14px] leading-relaxed text-black/68 max-w-lg">
                 Tell me the process and the systems involved. I will confirm whether this is the
                 right fit and quote a fixed scope.
               </p>
               <div className="mt-7 flex flex-wrap items-center gap-3">
                 <a
                   href="/contact"
-                  className="group inline-flex items-center gap-3 pl-6 pr-2 py-2 rounded-full bg-[#111] text-white text-[13px] tracking-wide hover:bg-black transition-colors"
+                  className="group inline-flex items-center gap-3 pl-6 pr-2 py-2 rounded-full bg-[#111] text-white text-[14px] tracking-wide hover:bg-black transition-colors"
                 >
                   REQUEST A QUOTE
                   <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/15 group-hover:bg-white/25 transition-colors">
@@ -160,7 +160,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                 </a>
                 <a
                   href={`mailto:${PROFILE.email}`}
-                  className="inline-flex items-center px-5 py-3 rounded-full border border-black/12 text-[12px] tracking-wide text-black/65 hover:text-black hover:border-black/30 hover:bg-black/[0.03] transition-all"
+                  className="inline-flex items-center px-5 py-3 rounded-full border border-black/12 text-[13px] tracking-wide text-black/72 hover:text-black hover:border-black/30 hover:bg-black/[0.03] transition-all"
                 >
                   {PROFILE.email}
                 </a>
@@ -172,14 +172,14 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
           <aside className="lg:sticky lg:top-28 space-y-5">
             {/* Tools */}
             <div className="rounded-2xl border border-black/[0.07] bg-white/60 p-6">
-              <h2 className="text-[11px] tracking-widest font-mono text-black/55 pb-3 mb-4 border-b border-black/[0.07]">
+              <h2 className="text-[12px] tracking-widest font-mono text-black/68 pb-3 mb-4 border-b border-black/[0.07]">
                 TOOLS USED
               </h2>
               <div className="flex flex-wrap gap-1.5">
                 {service.tools.map(t => (
                   <span
                     key={t}
-                    className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[11px] text-black/55"
+                    className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[12px] text-black/68"
                   >
                     {t}
                   </span>
@@ -189,7 +189,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
 
             {/* Other services */}
             <div className="rounded-2xl border border-black/[0.07] bg-white/60 p-6">
-              <h2 className="text-[11px] tracking-widest font-mono text-black/55 pb-3 mb-4 border-b border-black/[0.07]">
+              <h2 className="text-[12px] tracking-widest font-mono text-black/68 pb-3 mb-4 border-b border-black/[0.07]">
                 OTHER SERVICES
               </h2>
               <ul className="space-y-2">
@@ -199,7 +199,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                       href={`/services/${o.slug}`}
                       className="group flex items-center justify-between gap-3 rounded-xl border border-black/[0.06] bg-white px-4 py-3 hover:border-black/20 transition-all"
                     >
-                      <span className="text-[13px] text-black/65 group-hover:text-black transition-colors">
+                      <span className="text-[14px] text-black/72 group-hover:text-black transition-colors">
                         {o.short}
                       </span>
                       <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#111] text-white shrink-0 transition-transform group-hover:translate-x-0.5">
@@ -218,14 +218,14 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                   <span className="absolute -inset-1 rounded-full bg-emerald-500/30 animate-[pulse-dot_2s_ease-in-out_infinite]" />
                   <span className="relative w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 </span>
-                <span className="text-[11px] tracking-widest font-mono text-black/62">AVAILABLE</span>
+                <span className="text-[12px] tracking-widest font-mono text-black/72">AVAILABLE</span>
               </div>
-              <p className="mt-3 text-[13px] leading-relaxed text-black/55">
+              <p className="mt-3 text-[14px] leading-relaxed text-black/68">
                 {PROFILE.name} — {PROFILE.title}, {PROFILE.location}.
               </p>
               <a
                 href="/#portfolio"
-                className="mt-4 inline-flex items-center gap-2 text-[12px] text-black/55 hover:text-black transition-colors"
+                className="mt-4 inline-flex items-center gap-2 text-[13px] text-black/68 hover:text-black transition-colors"
               >
                 See the work
                 <ArrowIcon />

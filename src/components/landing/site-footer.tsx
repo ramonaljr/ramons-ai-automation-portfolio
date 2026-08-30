@@ -29,10 +29,8 @@ export function SiteFooter() {
       <div className={CONTAINER}>
         <div className='flex flex-col justify-between gap-8 md:flex-row md:items-center'>
           <div>
-            <p className='font-pixel text-xs tracking-[0.25em] text-black/70'>
-              {PROFILE.shortName.toUpperCase()}
-            </p>
-            <p className='mt-2 text-[13px] text-black/60'>
+            <p className='font-pixel text-xs tracking-[0.25em] text-black/70'>{PROFILE.shortName.toUpperCase()}</p>
+            <p className='mt-2 text-[14px] text-black/70'>
               {PROFILE.title} · {PROFILE.location}
             </p>
           </div>
@@ -42,7 +40,7 @@ export function SiteFooter() {
               <a
                 key={l.label}
                 href={l.href ?? (onLanding ? l.hash : `/${l.hash}`)}
-                className='rounded-md px-2 py-1.5 text-[12px] text-black/62 transition-colors hover:bg-black/[0.04] hover:text-black'
+                className='rounded-md px-2 py-1.5 text-[13px] text-black/72 transition-colors hover:bg-black/[0.04] hover:text-black'
               >
                 {l.label}
               </a>
@@ -56,7 +54,7 @@ export function SiteFooter() {
                 href={s.href}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='rounded-full border border-black/10 px-3.5 py-2 text-[11px] text-black/55 transition-all hover:border-black/25 hover:bg-black/[0.03] hover:text-black'
+                className='rounded-full border border-black/10 px-3.5 py-2 text-[12px] text-black/68 transition-all hover:border-black/25 hover:bg-black/[0.03] hover:text-black'
               >
                 {s.label}
               </a>
@@ -64,7 +62,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <p className='mt-10 border-t border-black/[0.06] pt-6 text-[11px] text-black/62'>
+        <p className='mt-10 border-t border-black/[0.06] pt-6 text-[12px] text-black/72'>
           © {new Date().getFullYear()} {PROFILE.name}. Built with n8n, Zapier and Make in mind.
         </p>
       </div>

@@ -8,7 +8,13 @@ import { PROFILE } from '@/lib/portfolio'
  * route ends on the same glass-and-cream treatment.
  */
 export function CtaSection({
-  title = <>What are you still<br />doing by hand?</>,
+  title = (
+    <>
+      What are you still
+      <br />
+      doing by hand?
+    </>
+  ),
   blurb = 'Tell me the process that eats your week. I will tell you whether it is worth automating, and on which platform.'
 }: {
   title?: React.ReactNode
@@ -20,7 +26,7 @@ export function CtaSection({
     <section className='relative overflow-hidden border-t border-black/[0.06] px-6 py-32 md:px-12 lg:px-20'>
       {/* Glass panels, anchored bottom-centre — the template's own footer
           treatment. Light by design; it fades up into the cream page. */}
-      { }
+      {}
       <img
         src='/images/landing/footer.png'
         alt=''
@@ -56,12 +62,12 @@ export function CtaSection({
         >
           {title}
         </h2>
-        <p className='mx-auto mt-6 max-w-lg text-[15px] leading-relaxed text-black/55'>{blurb}</p>
+        <p className='mx-auto mt-6 max-w-lg text-[15px] leading-relaxed text-black/68'>{blurb}</p>
 
         <div className='mt-10 flex flex-wrap items-center justify-center gap-3'>
           <a
             href='/contact'
-            className='group inline-flex items-center gap-3 rounded-full bg-[#111] py-2 pr-2 pl-6 text-[13px] tracking-wide text-white transition-colors hover:bg-black'
+            className='group inline-flex items-center gap-3 rounded-full bg-[#111] py-2 pr-2 pl-6 text-[14px] tracking-wide text-white transition-colors hover:bg-black'
           >
             START A CONVERSATION
             <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
@@ -70,7 +76,7 @@ export function CtaSection({
           </a>
           <a
             href={`mailto:${PROFILE.email}`}
-            className='inline-flex items-center rounded-full border border-black/12 px-5 py-3 text-[12px] tracking-wide text-black/65 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black'
+            className='inline-flex items-center rounded-full border border-black/12 px-5 py-3 text-[13px] tracking-wide text-black/72 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black'
           >
             {PROFILE.email}
           </a>

@@ -141,7 +141,7 @@ export function ChatWidget() {
             >
               Ask about automation
             </p>
-            <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-black/55">
+            <p className="mt-0.5 flex items-center gap-1.5 text-[12px] text-black/68">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
               Assistant not connected yet
             </p>
@@ -150,7 +150,7 @@ export function ChatWidget() {
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close chat"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/55 transition-all hover:border-black/25 hover:text-black"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/68 transition-all hover:border-black/25 hover:text-black"
           >
             <Ico d={P.close} size={14} />
           </button>
@@ -195,7 +195,7 @@ export function ChatWidget() {
                 key={s}
                 type="button"
                 onClick={() => submit(s)}
-                className="rounded-full border border-black/12 bg-white/60 px-3 py-1.5 text-[11.5px] text-black/62 transition-all hover:border-black/30 hover:text-black"
+                className="rounded-full border border-black/12 bg-white/60 px-3 py-1.5 text-[11.5px] text-black/72 transition-all hover:border-black/30 hover:text-black"
               >
                 {s}
               </button>
@@ -216,7 +216,7 @@ export function ChatWidget() {
             onChange={e => setDraft(e.target.value)}
             placeholder="Ask a question…"
             autoComplete="off"
-            className="flex-1 bg-transparent px-1 text-[13.5px] text-[#111] placeholder:text-black/40 focus:outline-none"
+            className="flex-1 bg-transparent px-1 text-[13.5px] text-[#111] placeholder:text-black/58 focus:outline-none"
           />
           <button
             type="submit"

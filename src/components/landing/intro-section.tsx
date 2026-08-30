@@ -22,7 +22,7 @@ const SOCIALS = [
 // Matches the Tag used by the other sections on this page.
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/55 bg-black/[0.04]">
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] tracking-widest font-sans text-black/68 bg-black/[0.04]">
       {children}
     </span>
   )
@@ -76,8 +76,8 @@ export function IntroSection() {
                 className="text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
-                <GreetingWord className="text-black/45" />
-                <span className="text-black/45">, I&apos;m</span>
+                <GreetingWord className="text-black/58" />
+                <span className="text-black/58">, I&apos;m</span>
                 <br />
                 Ramon A. Vallejera, Jr.
               </h2>
@@ -86,7 +86,7 @@ export function IntroSection() {
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 AI Automation Specialist
-                <span className="text-black/45"> · MBA</span>
+                <span className="text-black/58"> · MBA</span>
               </p>
             </div>
 
@@ -114,7 +114,7 @@ export function IntroSection() {
             <div className="mt-10 space-y-3" style={reveal(220)}>
               {CONTACT.map(c => (
                 <div key={c.label} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="text-[11px] tracking-widest text-black/55 font-mono w-24 shrink-0">
+                  <span className="text-[12px] tracking-widest text-black/68 font-mono w-24 shrink-0">
                     {c.label.toUpperCase()}
                   </span>
                   {c.href ? (
@@ -135,7 +135,7 @@ export function IntroSection() {
             <div className="mt-10 flex flex-wrap items-center gap-4" style={reveal(300)}>
               <a
                 href="/contact"
-                className="group inline-flex items-center gap-3 pl-6 pr-2 py-2 rounded-full bg-[#111] text-white text-[13px] tracking-wide hover:bg-black transition-colors"
+                className="group inline-flex items-center gap-3 pl-6 pr-2 py-2 rounded-full bg-[#111] text-white text-[14px] tracking-wide hover:bg-black transition-colors"
               >
                 HIRE ME
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/15 group-hover:bg-white/25 transition-colors">
@@ -158,7 +158,7 @@ export function IntroSection() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2.5 rounded-full border border-black/10 text-[11px] tracking-wide text-black/55 hover:text-black hover:border-black/25 hover:bg-black/[0.03] transition-all"
+                    className="px-4 py-2.5 rounded-full border border-black/10 text-[12px] tracking-wide text-black/68 hover:text-black hover:border-black/25 hover:bg-black/[0.03] transition-all"
                   >
                     {s.label}
                   </a>
@@ -189,7 +189,7 @@ export function IntroSection() {
                   <span className="absolute -inset-1 rounded-full bg-emerald-500/30 animate-[pulse-dot_2s_ease-in-out_infinite]" />
                   <span className="relative w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 </span>
-                <span className="text-[10px] tracking-widest text-black/55 font-mono">AVAILABLE</span>
+                <span className="text-[11px] tracking-widest text-black/68 font-mono">AVAILABLE</span>
               </div>
             </div>
 
@@ -204,7 +204,7 @@ export function IntroSection() {
                   <div className="text-lg font-light text-[#111]" style={{ fontFamily: DISPLAY_FONT }}>
                     {s.value}
                   </div>
-                  <div className="mt-1 text-[10px] leading-tight text-black/55">{s.label}</div>
+                  <div className="mt-1 text-[11px] leading-tight text-black/68">{s.label}</div>
                 </div>
               ))}
             </div>

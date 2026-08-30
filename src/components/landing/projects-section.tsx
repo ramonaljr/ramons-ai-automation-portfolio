@@ -59,7 +59,7 @@ function Chips({ items }: { items?: string[] }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       {items.map(t => (
-        <span key={t} className="rounded-md border border-black/[0.08] bg-black/[0.02] px-2.5 py-1 font-mono text-[11px] text-black/62">
+        <span key={t} className="rounded-md border border-black/[0.08] bg-black/[0.02] px-2.5 py-1 font-mono text-[12px] text-black/72">
           {t}
         </span>
       ))}
@@ -70,7 +70,7 @@ function Chips({ items }: { items?: string[] }) {
 function SampleBadge() {
   return (
     <span
-      className="rounded border border-amber-600/25 bg-amber-500/[0.07] px-2 py-0.5 font-mono text-[10px] tracking-widest text-amber-700/70"
+      className="rounded border border-amber-600/25 bg-amber-500/[0.07] px-2 py-0.5 font-mono text-[11px] tracking-widest text-amber-700/70"
       title="Illustrative example, not a delivered client engagement"
     >
       SAMPLE
@@ -96,21 +96,21 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="font-mono text-[12px] tracking-[0.25em] text-black/55">SELECTED</p>
+            <p className="font-mono text-[13px] tracking-[0.25em] text-black/68">SELECTED</p>
             <h2
               className="mt-2 text-[clamp(2.5rem,6vw,5rem)] font-light leading-[0.95] tracking-tight text-[#111]"
               style={{ fontFamily: DISPLAY_FONT }}
             >
               WORK
             </h2>
-            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-black/62">
+            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-black/72">
               A selection of AI automation systems and production workflows built to eliminate
               repetitive tasks, connect business tools, and improve operational efficiency.
             </p>
           </div>
 
           <div className="flex flex-col items-start gap-4 lg:items-end">
-            <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/60 px-4 py-2 font-mono text-[11px] tracking-wide text-black/55">
+            <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/60 px-4 py-2 font-mono text-[12px] tracking-wide text-black/68">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               {count}+ AUTOMATION PROJECTS
             </span>
@@ -128,12 +128,12 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     aria-selected={active}
                     disabled={n === 0}
                     onClick={() => setFilter(f)}
-                    className={`rounded-full border px-4 py-2 font-mono text-[11px] tracking-wide transition-all ${
+                    className={`rounded-full border px-4 py-2 font-mono text-[12px] tracking-wide transition-all ${
                       active
                         ? "border-black/25 bg-[#111] text-white"
                         : n === 0
                           ? "border-black/[0.06] text-black/20"
-                          : "border-black/10 text-black/62 hover:border-black/25 hover:text-black"
+                          : "border-black/10 text-black/72 hover:border-black/25 hover:text-black"
                     }`}
                   >
                     {f}
@@ -172,7 +172,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                 <button
                   type="button"
                   onClick={() => setOpen(featured)}
-                  className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-lg border border-black/10 bg-white/90 px-3.5 py-2 font-mono text-[11px] tracking-wide text-black/60 backdrop-blur transition-all hover:border-black/25 hover:text-black"
+                  className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-lg border border-black/10 bg-white/90 px-3.5 py-2 font-mono text-[12px] tracking-wide text-black/70 backdrop-blur transition-all hover:border-black/25 hover:text-black"
                 >
                   <Ico d={P.expand} size={12} />
                   INSPECT NODES
@@ -183,16 +183,16 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
               <div className="flex flex-col p-7 lg:p-9">
                 <div className="flex flex-wrap items-center gap-2">
                   {featured.platform && (
-                    <span className="rounded-full border border-black/15 bg-black/[0.04] px-3 py-1 font-mono text-[11px] text-black/70">
+                    <span className="rounded-full border border-black/15 bg-black/[0.04] px-3 py-1 font-mono text-[12px] text-black/70">
                       {featured.platform}
                     </span>
                   )}
                   {featured.categories?.map(c => (
-                    <span key={c} className="rounded-full border border-black/10 px-3 py-1 font-mono text-[11px] text-black/60">
+                    <span key={c} className="rounded-full border border-black/10 px-3 py-1 font-mono text-[12px] text-black/70">
                       {c}
                     </span>
                   ))}
-                  <span className="ml-auto rounded border border-amber-600/30 bg-amber-500/[0.08] px-2.5 py-1 font-mono text-[10px] tracking-widest text-amber-700/80">
+                  <span className="ml-auto rounded border border-amber-600/30 bg-amber-500/[0.08] px-2.5 py-1 font-mono text-[11px] tracking-widest text-amber-700/80">
                     FEATURED
                   </span>
                 </div>
@@ -203,14 +203,14 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                 >
                   {featured.title}
                 </h3>
-                <p className="mt-4 text-[14px] leading-relaxed text-black/55">{featured.description}</p>
+                <p className="mt-4 text-[14px] leading-relaxed text-black/68">{featured.description}</p>
                 {featured.sample && <div className="mt-4"><SampleBadge /></div>}
 
                 <div className="mt-auto pt-8">
                   <Chips items={featured.tools} />
                   <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-black/[0.07] pt-6">
                     {featured.speed && (
-                      <span className="inline-flex items-center gap-2 rounded-lg border border-emerald-600/20 bg-emerald-500/[0.07] px-3 py-2 font-mono text-[12px] text-emerald-800/80">
+                      <span className="inline-flex items-center gap-2 rounded-lg border border-emerald-600/20 bg-emerald-500/[0.07] px-3 py-2 font-mono text-[13px] text-emerald-800/80">
                         <Ico d={P.bolt} size={12} />
                         {featured.speed}
                       </span>
@@ -218,14 +218,14 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     <div className="flex items-center gap-5">
                       <a
                         href={`/case-study/${featured.slug}`}
-                        className="font-mono text-[12px] tracking-wide text-black/60 underline-offset-4 transition-colors hover:text-black hover:underline"
+                        className="font-mono text-[13px] tracking-wide text-black/70 underline-offset-4 transition-colors hover:text-black hover:underline"
                       >
                         READ CASE STUDY
                       </a>
                       <button
                         type="button"
                         onClick={() => setOpen(featured)}
-                        className="inline-flex items-center gap-2 font-mono text-[12px] tracking-wide text-black/60 transition-colors hover:text-black"
+                        className="inline-flex items-center gap-2 font-mono text-[13px] tracking-wide text-black/70 transition-colors hover:text-black"
                       >
                         VIEW FULL WORKFLOW
                         <Ico d={P.arrow} size={13} />
@@ -266,12 +266,12 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                 <div className="flex flex-1 flex-col p-6">
                   <div className="flex flex-wrap items-center gap-2">
                     {cs.platform && (
-                      <span className="rounded-full border border-black/15 bg-black/[0.04] px-2.5 py-0.5 font-mono text-[10px] text-black/65">
+                      <span className="rounded-full border border-black/15 bg-black/[0.04] px-2.5 py-0.5 font-mono text-[11px] text-black/72">
                         {cs.platform}
                       </span>
                     )}
                     {cs.speed && (
-                      <span className="font-mono text-[10px] text-black/55">{cs.speed}</span>
+                      <span className="font-mono text-[11px] text-black/68">{cs.speed}</span>
                     )}
                     {cs.sample && <SampleBadge />}
                   </div>
@@ -282,7 +282,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                   >
                     {cs.title}
                   </h3>
-                  <p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-black/62">
+                  <p className="mt-3 line-clamp-3 text-[14px] leading-relaxed text-black/72">
                     {cs.description}
                   </p>
 
@@ -290,7 +290,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     <button
                       type="button"
                       onClick={() => setOpen(cs)}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#111] px-5 py-2.5 text-[12px] tracking-wide text-white transition-colors hover:bg-black"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#111] px-5 py-2.5 text-[13px] tracking-wide text-white transition-colors hover:bg-black"
                     >
                       View workflow
                       <Ico d={P.arrow} size={13} />
@@ -300,7 +300,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         so its link never reaches the served HTML. */}
                     <a
                       href={`/case-study/${cs.slug}`}
-                      className="inline-flex shrink-0 items-center rounded-full border border-black/12 px-4 py-2.5 text-[12px] text-black/62 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black"
+                      className="inline-flex shrink-0 items-center rounded-full border border-black/12 px-4 py-2.5 text-[13px] text-black/72 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black"
                     >
                       Read
                     </a>
@@ -311,7 +311,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           </div>
 
           {shown.length === 0 && (
-            <p className="py-16 text-center text-[14px] text-black/55">
+            <p className="py-16 text-center text-[14px] text-black/68">
               Nothing built on this platform yet.
             </p>
           )}

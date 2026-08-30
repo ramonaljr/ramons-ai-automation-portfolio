@@ -37,8 +37,7 @@ export function SiteNav() {
 
   // Off the landing page a hash alone points at nothing, so send the reader
   // home first. `away` lets a link prefer a real page over a section anchor.
-  const resolve = (link: (typeof NAV_LINKS)[number]) =>
-    onLanding ? link.hash : (link.away ?? `/${link.hash}`)
+  const resolve = (link: (typeof NAV_LINKS)[number]) => (onLanding ? link.hash : (link.away ?? `/${link.hash}`))
 
   const contactHref = onLanding ? '#contact' : '/#contact'
   const close = () => setOpen(false)
@@ -46,7 +45,6 @@ export function SiteNav() {
   return (
     <div className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4'>
       <div className='pointer-events-auto w-full max-w-5xl'>
-
         {/* Main bar */}
         <nav
           className='flex items-center justify-between rounded-2xl border border-black/[0.06] px-5 py-3'
@@ -62,7 +60,7 @@ export function SiteNav() {
               <a
                 key={l.label}
                 href={resolve(l)}
-                className='rounded-md px-2 py-2 text-[11px] tracking-wide text-black/60 transition-colors duration-200 hover:bg-black/[0.04] hover:text-black'
+                className='rounded-md px-2 py-2 text-[12px] tracking-wide text-black/70 transition-colors duration-200 hover:bg-black/[0.04] hover:text-black'
               >
                 {l.label}
               </a>
@@ -72,7 +70,7 @@ export function SiteNav() {
           <div className='flex items-center gap-2'>
             <a
               href={contactHref}
-              className='hidden rounded-xl border border-black/10 px-4 py-2 text-[11px] tracking-wide text-black/60 transition-all duration-200 hover:border-black/20 hover:bg-black/[0.03] hover:text-black md:block'
+              className='hidden rounded-xl border border-black/10 px-4 py-2 text-[12px] tracking-wide text-black/70 transition-all duration-200 hover:border-black/20 hover:bg-black/[0.03] hover:text-black md:block'
               style={UI_FONT}
             >
               HIRE ME
@@ -112,7 +110,7 @@ export function SiteNav() {
                 key={l.label}
                 href={resolve(l)}
                 onClick={close}
-                className='rounded-xl px-4 py-3 text-sm tracking-wide text-black/60 transition-colors hover:bg-black/[0.03] hover:text-black'
+                className='rounded-xl px-4 py-3 text-sm tracking-wide text-black/70 transition-colors hover:bg-black/[0.03] hover:text-black'
                 style={UI_FONT}
               >
                 {l.label}
@@ -122,7 +120,7 @@ export function SiteNav() {
               <a
                 href={contactHref}
                 onClick={close}
-                className='block w-full rounded-xl border border-black/10 px-4 py-2.5 text-center text-[11px] tracking-wide text-black/60 transition-all duration-200 hover:border-black/20 hover:bg-black/[0.03] hover:text-black'
+                className='block w-full rounded-xl border border-black/10 px-4 py-2.5 text-center text-[12px] tracking-wide text-black/70 transition-all duration-200 hover:border-black/20 hover:bg-black/[0.03] hover:text-black'
                 style={UI_FONT}
               >
                 HIRE ME
@@ -130,7 +128,6 @@ export function SiteNav() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   )
