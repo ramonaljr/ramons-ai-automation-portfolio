@@ -19,6 +19,7 @@ export const PROFILE = {
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ramon-vallejera-jr-mba-6976a3115' },
     { label: 'Upwork', href: 'https://www.upwork.com/freelancers/~01b91218e9b141a711' }
   ],
+
   /** Served from public/. Swap the file, keep the path. */
   cv: '/ramon-vallejera-cv.pdf'
 } as const
