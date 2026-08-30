@@ -17,9 +17,10 @@ export const PROFILE = {
   socials: [
     { label: 'GitHub', href: 'https://github.com/ramonaljr' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ramon-vallejera-jr-mba-6976a3115' },
-    { label: 'X', href: 'https://x.com/ramonaljr' },
     { label: 'Upwork', href: 'https://www.upwork.com/freelancers/~01b91218e9b141a711' }
-  ]
+  ],
+  /** Served from public/. Swap the file, keep the path. */
+  cv: '/ramon-vallejera-cv.pdf'
 } as const
 
 /** Headline figures. Each is traceable to a case study or to work history. */

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { GreetingWord } from "@/components/landing/greeting-word"
 import { READABLE } from "@/components/landing/motion"
+import { PROFILE } from "@/lib/portfolio"
 
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
@@ -12,12 +13,6 @@ const CONTACT = [
   { label: "Email", value: "ramonvallejerajr@gmail.com", href: "mailto:ramonvallejerajr@gmail.com" },
   { label: "Location", value: "Philippines — working across time zones", href: null },
   { label: "Availability", value: "Open to new projects", href: null },
-] as const
-
-const SOCIALS = [
-  { label: "GitHub", href: "https://github.com/ramonaljr" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/ramon-vallejera-jr-mba-6976a3115" },
-  { label: "X", href: "https://x.com/ramonaljr" },
 ] as const
 
 // Matches the Tag used by the other sections on this page.
@@ -156,8 +151,19 @@ export function IntroSection() {
                 </span>
               </a>
 
+              <a
+                href={PROFILE.cv}
+                download
+                className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-3 text-[13px] tracking-wide text-black/72 transition-all hover:border-black/35 hover:bg-black/[0.03] hover:text-black"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+                </svg>
+                DOWNLOAD CV
+              </a>
+
               <div className="flex items-center gap-2">
-                {SOCIALS.map(s => (
+                {PROFILE.socials.map(s => (
                   <a
                     key={s.label}
                     href={s.href}
