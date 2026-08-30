@@ -192,7 +192,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
         ))}
       </div>
 
-      <div className='relative z-10 mx-auto w-full max-w-[1400px] px-6 py-32 lg:px-12 lg:py-40'>
+      <div className='relative z-10 mx-auto w-full max-w-[1560px] px-6 py-32 md:px-12 lg:px-20 lg:py-40 2xl:max-w-[1760px]'>
         <div className='lg:max-w-[55%]'>
           {/* Eyebrow */}
           <div
@@ -228,11 +228,11 @@ export function HeroSection({ ready }: { ready?: boolean }) {
 
       {/* Stats — 3 metrics static, no auto-scroll */}
       <div
-        className={`absolute right-0 bottom-12 left-0 z-30 px-6 transition-all delay-500 duration-700 lg:px-12 ${
+        className={`absolute right-0 bottom-12 left-0 z-30 px-6 transition-all delay-500 duration-700 md:px-12 lg:px-20 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <div className='mx-auto flex max-w-[1400px] items-start gap-10 lg:gap-20'>
+        <div className='mx-auto flex max-w-[1400px] items-start gap-10 lg:gap-20 2xl:max-w-[1600px]'>
           {[
             { value: '3500+', label: 'autonomous agents active' },
             { value: '99.7%', label: 'distributed uptime' },

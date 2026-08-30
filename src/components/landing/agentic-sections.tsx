@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState, useCallback } from "react"
 
 import { IntroAnimation } from "@/components/landing/intro-animation"
 import { HeroSection } from "@/components/landing/hero-section"
+import { IntroSection } from "@/components/landing/intro-section"
 import { PixelIcon } from "@/components/landing/pixel-icon"
 import { LiveAgentFeed, LiveAgentCounter } from "@/components/landing/live-agent-feed"
 import { RevealText } from "@/components/landing/reveal-text"
@@ -81,7 +82,7 @@ export function AgenticSections() {
   }
 
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div id="top" className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
 
       {/* ── INTRO ANIMATION ───────────────────────────────────────────────── */}
       <IntroAnimation onDone={handleIntroDone} />
@@ -92,9 +93,12 @@ export function AgenticSections() {
       {/* ── HERO (grafted from the COMPUTE template, converted to light) ── */}
       <HeroSection ready={heroReady} />
 
+      {/* ── ABOUT / INTRODUCTION ───────────────────────────────────────────── */}
+      <IntroSection />
+
       {/* ── PLATFORM OVERVIEW (bento) ──────────────────────────────────────── */}
       <section id="platform" className="py-32 px-6 md:px-12 lg:px-20">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto">
           <div className="mb-16">
             <PixelIcon type="platform" size={40} />
             <div className="mt-4"><Tag>PLATFORM</Tag></div>
@@ -170,7 +174,7 @@ export function AgenticSections() {
 
       {/* ── BUILD YOUR AGENTS (4 cards) ───────────────────────────────────── */}
       <section id="agents" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16">
             <div>
               <PixelIcon type="agents" size={40} />
@@ -190,7 +194,7 @@ export function AgenticSections() {
 
       {/* ── HOW IT WORKS ──────────────────────────────────────────────────── */}
       <section id="workflow" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06] overflow-hidden">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto">
           <div className="mb-16">
             <PixelIcon type="workflow" size={40} />
             <div className="mt-4"><Tag>WORKFLOW</Tag></div>
@@ -236,7 +240,7 @@ export function AgenticSections() {
 
       {/* ── INTEGRATIONS ──────────────────────────────────────────────────── */}
       <section id="integrations" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16">
             <div>
               <PixelIcon type="integrations" size={40} />
@@ -306,7 +310,7 @@ export function AgenticSections() {
 
       {/* ── SECURITY & OBSERVABILITY ──────────────────────────────────��──── */}
       <section id="security" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto">
           <div className="mb-16">
             <PixelIcon type="platform" size={40} />
             <div className="mt-4"><Tag>SECURITY</Tag></div>
@@ -418,7 +422,7 @@ export function AgenticSections() {
 
       {/* ── LIVE AGENTS ��──────────────────────────────────────────────────── */}
       <section id="live" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
               <PixelIcon type="agents" size={40} />
@@ -578,7 +582,7 @@ export function AgenticSections() {
 
       {/* ── FOOTER ────────────────────────────────────────────────────────── */}
       <footer className="py-10 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
           <span className="font-pixel text-xs tracking-[0.25em] text-black/50">AGENTIC</span>
 
           {/* Nav sections */}
@@ -607,7 +611,7 @@ export function AgenticSections() {
             ))}
           </div>
         </div>
-        <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-black/[0.04]">
+        <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto mt-8 pt-6 border-t border-black/[0.04]">
           <span className="text-xs text-black/20">© 2026 Agentic. All rights reserved.</span>
         </div>
       </footer>

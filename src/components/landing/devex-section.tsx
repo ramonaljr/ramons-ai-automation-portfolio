@@ -146,7 +146,7 @@ export function DevExSection() {
 
   return (
     <section id="devex" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto">
         <div className="mb-16">
           <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/[0.05] border border-black/[0.06] text-[10px] tracking-widest text-black/40 uppercase">
             Developer Experience

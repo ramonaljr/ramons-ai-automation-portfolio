@@ -2,12 +2,15 @@
 
 import { useState } from "react"
 
+// Services/Portfolio/Blog point at the closest existing section for now and
+// should be re-pointed as those sections are built out.
 const NAV_LINKS = [
-  { label: "Platform",     href: "#platform" },
-  { label: "Agents",       href: "#agents" },
-  { label: "Workflow",     href: "#workflow" },
-  { label: "Integrations", href: "#integrations" },
-  { label: "Pricing",      href: "#pricing" },
+  { label: "Home",      href: "#top" },
+  { label: "About",     href: "#about" },
+  { label: "Services",  href: "#platform" },
+  { label: "Portfolio", href: "#agents" },
+  { label: "Blog",      href: "#live" },
+  { label: "Contact",   href: "/contact" },
 ]
 
 const NAV_STYLE = {
@@ -24,7 +27,7 @@ export function MobileNav() {
 
   return (
     <div className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-3xl">
+      <div className="pointer-events-auto w-full max-w-5xl">
 
         {/* Main bar */}
         <nav
@@ -34,7 +37,7 @@ export function MobileNav() {
           <span className="font-pixel text-xs tracking-[0.25em] text-black/70">AGENTIC</span>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-7" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+          <div className="hidden md:flex items-center gap-5 lg:gap-6" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
             {NAV_LINKS.map(l => (
               <a
                 key={l.label}
