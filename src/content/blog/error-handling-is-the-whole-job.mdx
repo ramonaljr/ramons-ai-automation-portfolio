@@ -1,0 +1,45 @@
+---
+slug: 'error-handling-is-the-whole-job'
+title: 'Error handling is the whole job'
+description: 'Most automations do not fail loudly. They fail quietly, for weeks, and someone finds out at month-end. Here is the error architecture I put on every workflow before I call it done.'
+publishedAt: '2026-08-12'
+readingTime: '6 min read'
+category: 'n8n'
+tags: ['n8n', 'Reliability']
+coverImage: '/images/blog/error-handling-is-the-whole-job.svg'
+# DRAFT SEED — written to fill the section while the blog is new.
+# Review, edit in your own voice, or replace before promoting the site.
+needsReview: true
+---
+
+## The failure mode nobody plans for
+
+An automation that crashes is easy. You get an alert, you fix it, everyone moves on.
+
+The dangerous one is the automation that keeps running while doing the wrong thing. A field goes missing upstream, your workflow writes `undefined` into a ledger for three weeks, and nobody notices until reconciliation.
+
+Every production workflow I build assumes this will happen.
+
+## Three layers, in this order
+
+### 1. Validate before you write
+
+The cheapest place to catch a bad record is before it reaches a system of record. Every write step is preceded by a check that the fields it depends on actually exist and are the right shape.
+
+In n8n this is usually an IF node with an explicit condition per required field. It is boring. It is also the difference between a bad afternoon and a bad quarter.
+
+### 2. Route failures somewhere a human looks
+
+A try/catch branch that logs to the execution history is not error handling. Nobody reads execution history.
+
+Failures need to land somewhere with a person attached to it: a Slack channel, a Telegram message, an Airtable view someone opens each morning. The alert should carry enough context to act on — which record, which step, what the payload looked like.
+
+### 3. Make the whole run replayable
+
+When something does go wrong, you want to re-run a window rather than reconstruct state by hand. That means writing incoming data to a staging table before you transform it, and keying your writes so a replay updates rather than duplicates.
+
+## The test I actually run
+
+Before handover I break the workflow on purpose. Malformed PDF. Missing email field. Duplicate submission. API returning a 429.
+
+If any of those produce a silent success, it is not finished.

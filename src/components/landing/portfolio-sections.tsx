@@ -11,8 +11,10 @@ import { PixelIcon } from "@/components/landing/pixel-icon"
 import { ToolStackSection } from "@/components/landing/tool-stack-section"
 import { ExperienceSection } from "@/components/landing/experience-section"
 import { ContactSection } from "@/components/landing/contact-section"
+import { ArticlesSection } from "@/components/landing/articles-section"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
+import type { PostMetadata } from "@/lib/posts"
 import { ENGAGEMENTS, PLATFORMS, PRINCIPLES, PROCESS, PROFILE, SERVICES } from "@/lib/portfolio"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
@@ -549,7 +551,13 @@ function SiteFooter() {
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
-export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
+export function PortfolioSections({
+  caseStudies,
+  posts,
+}: {
+  caseStudies: CaseStudyMetadata[]
+  posts: PostMetadata[]
+}) {
   const [heroReady, setHeroReady] = useState(false)
   const handleIntroDone = useCallback(() => setHeroReady(true), [])
 
@@ -567,6 +575,7 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
       <ToolStackSection />
       <PrinciplesSection />
       <ExperienceSection />
+      <ArticlesSection posts={posts} />
       <EngagementSection />
       <ContactSection />
       <CtaSection />

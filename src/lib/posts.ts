@@ -16,6 +16,11 @@ export type PostMetadata = {
   readingTime?: string
   tags?: string[]
   draft?: boolean
+  category?: string
+  coverImage?: string
+
+  /** Seed content awaiting the author's own pass. */
+  needsReview?: boolean
 }
 
 const rootDirectory = path.join(process.cwd(), 'src', 'content', 'blog')

@@ -1,6 +1,7 @@
 import { PortfolioSections } from '@/components/landing/portfolio-sections'
 
 import { getCaseStudies } from '@/lib/case-studies'
+import { getPosts } from '@/lib/posts'
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -20,10 +21,11 @@ const jsonLd = {
 
 const Home = async () => {
   const caseStudies = await getCaseStudies()
+  const posts = await getPosts(3)
 
   return (
     <>
-      <PortfolioSections caseStudies={caseStudies} />
+      <PortfolioSections caseStudies={caseStudies} posts={posts} />
 
       {/* Add JSON-LD to your page */}
       <script

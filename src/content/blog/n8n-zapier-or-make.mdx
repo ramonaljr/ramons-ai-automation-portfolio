@@ -1,0 +1,45 @@
+---
+slug: 'n8n-zapier-or-make'
+title: 'n8n, Zapier or Make: how I actually choose'
+description: 'There is no best platform, only a best fit for your data, your volume, and whoever has to maintain the thing after I leave. A practical decision guide.'
+publishedAt: '2026-08-05'
+readingTime: '5 min read'
+category: 'Platforms'
+tags: ['n8n', 'Zapier', 'Make']
+coverImage: '/images/blog/n8n-zapier-or-make.svg'
+# DRAFT SEED — written to fill the section while the blog is new.
+# Review, edit in your own voice, or replace before promoting the site.
+needsReview: true
+---
+
+## The question behind the question
+
+Clients ask "which is best". The useful question is "which is right for this, given who maintains it".
+
+Three things decide it: where the data can live, how many operations a month, and who edits it after handover.
+
+## Where the data can live
+
+If the data cannot leave your infrastructure — patient records, financial ledgers, anything with a compliance officer attached — the conversation ends at self-hosted n8n. Zapier and Make are both cloud-only.
+
+This is the one criterion that overrides everything else.
+
+## Volume and billing shape
+
+Zapier bills per task. Make bills per operation. n8n self-hosted bills you for a server.
+
+At low volume Zapier is cheapest in total cost, because your time configuring it is the dominant cost and Zapier takes the least of it. Somewhere in the low thousands of runs a month, that flips hard. A workflow that explodes one order into twenty line items burns twenty tasks in Zapier and twenty operations in Make — but Make's operations are an order of magnitude cheaper.
+
+## Who maintains it
+
+This is the criterion people skip and then regret.
+
+If your ops team wants to change the routing rules themselves without calling me, Zapier is the right answer even when n8n is technically superior. A worse tool that your team will actually maintain beats a better tool that calcifies the moment I hand it over.
+
+## Where I land, most of the time
+
+- **Complex logic, AI agents, sensitive data, high volume** — n8n
+- **Mainstream SaaS apps, linear logic, team already on it** — Zapier
+- **Heavy iteration and data transformation at volume** — Make
+
+And often the answer is more than one. There is no rule saying a business runs on a single platform.

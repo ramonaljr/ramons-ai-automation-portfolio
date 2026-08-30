@@ -1,0 +1,43 @@
+---
+slug: 'rag-that-cites-its-sources'
+title: 'A knowledge base that cites its sources'
+description: 'An internal assistant that answers confidently and wrongly is worse than a search box. Citations are what make retrieval trustworthy enough to actually use.'
+publishedAt: '2026-07-28'
+readingTime: '7 min read'
+category: 'AI Agents'
+tags: ['RAG', 'Claude', 'Pinecone']
+coverImage: '/images/blog/rag-that-cites-its-sources.svg'
+# DRAFT SEED — written to fill the section while the blog is new.
+# Review, edit in your own voice, or replace before promoting the site.
+needsReview: true
+---
+
+## Why most internal chatbots get abandoned
+
+They get built, demoed well, and then quietly stop being used.
+
+The reason is almost always the same: somebody asked it something important, got a confident answer, acted on it, and found out later it was invented. After that, nobody trusts it, and a tool nobody trusts is dead weight.
+
+## Citations change the contract
+
+When every answer carries a link back to the document and section it came from, the assistant stops being an oracle and becomes a very fast index. That is a much easier thing to trust, and a much more honest description of what retrieval actually does.
+
+Practically, this means the generation step is only allowed to answer from retrieved chunks, and the response template requires a source for each claim.
+
+## What I do when retrieval finds nothing
+
+Return nothing.
+
+"I could not find this in the indexed documents" is a correct, useful answer. A model asked to be helpful will happily fill that silence with something plausible, so the threshold has to be enforced in the pipeline rather than requested in the prompt.
+
+## Keeping the index honest
+
+Documents change. An index built once is wrong within a month.
+
+The watcher on the source folder matters more than the model choice — when a document is edited, its chunks are re-embedded and the old ones removed. Otherwise you get the worst outcome available: a confident, cited answer pointing at a version that no longer exists.
+
+## The part that is not about AI
+
+Most of the work in a good knowledge base is deciding what goes in it. Indexing everything produces a system that retrieves plausible-looking noise.
+
+Scope it to the documents that answer real, repeated questions. That is a librarian's job, not an engineer's, and it is where the value actually comes from.
