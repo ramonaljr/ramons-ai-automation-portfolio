@@ -65,7 +65,9 @@ export function IntroSection() {
           <Tag>ABOUT</Tag>
         </div>
 
-        <div className="grid lg:grid-cols-[1.6fr_1fr] gap-14 lg:gap-16 items-start">
+        {/* Narrower than the page container: at 1600px the two columns drifted
+            ~600px apart and stopped reading as one block. */}
+        <div className="grid max-w-[1120px] gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16 items-start">
 
           {/* ── Left: the introduction ──────────────────────────────────── */}
           <div>
@@ -74,30 +76,39 @@ export function IntroSection() {
                 className="text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
-                <GreetingWord className="text-black/50" />
-                <span className="text-black/50">, I&apos;m</span>
+                <GreetingWord className="text-black/45" />
+                <span className="text-black/45">, I&apos;m</span>
                 <br />
                 Ramon A. Vallejera, Jr.
               </h2>
               <p
-                className="mt-4 text-xl sm:text-2xl font-light text-black/62"
+                className="mt-4 text-xl sm:text-2xl font-light text-black/70"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 AI Automation Specialist
-                <span className="text-black/62"> · MBA</span>
+                <span className="text-black/45"> · MBA</span>
               </p>
             </div>
 
-            <p className="mt-8 text-[15px] leading-relaxed text-black/55 max-w-xl" style={reveal(140)}>
-              Finance professional and MBA with 10 years of business operations and analytical
-              experience. Based in the Philippines, I build production-grade{" "}
-              <span className="text-black/80">n8n workflows</span> (cloud and self-hosted),{" "}
-              <span className="text-black/80">Claude and OpenAI agent integrations</span>,{" "}
-              <span className="text-black/80">RAG knowledge systems</span>, and{" "}
-              <span className="text-black/80">multi-system API pipelines</span> across Google
-              Workspace, Airtable and Telegram — engineered with strict error handling, failovers
-              and clear documentation, so teams can actually run them.
-            </p>
+            <div className="mt-8 max-w-[58ch] space-y-4" style={reveal(140)}>
+              <p className="text-[15.5px] leading-[1.7] text-black/72">
+                I spent ten years inside the processes I now automate — accounts payable,
+                reconciliation, month-end close — first as an accountant, then as a financial
+                analyst. That is the part most automation work is missing: someone who knows
+                what the approval rule is actually for before they wire it up.
+              </p>
+              <p className="text-[15.5px] leading-[1.7] text-black/72">
+                Today I build production automation on{" "}
+                <span className="font-medium text-[#111]">n8n, Zapier and Make</span> — AI agents,{" "}
+                <span className="font-medium text-[#111]">Claude and OpenAI integrations</span>,{" "}
+                <span className="font-medium text-[#111]">RAG knowledge systems</span> and
+                multi-system pipelines across Google Workspace, Airtable and Telegram.
+              </p>
+              <p className="text-[15.5px] leading-[1.7] text-black/72">
+                Everything ships with error branches, failure alerting and documentation, so your
+                team can run it without me.
+              </p>
+            </div>
 
             {/* ── Contact rows ──────────────────────────────────────────── */}
             <div className="mt-10 space-y-3" style={reveal(220)}>
@@ -157,7 +168,7 @@ export function IntroSection() {
           </div>
 
           {/* ── Right: portrait ──────────────────────────────────────────── */}
-          <div className="w-full lg:max-w-[400px] lg:justify-self-end" style={reveal(180)}>
+          <div className="w-full" style={reveal(180)}>
             <div className="relative">
               {/* Office background lifted out with the Vision framework and
                   composited on white, so the portrait sits on a white card
