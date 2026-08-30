@@ -83,7 +83,7 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
                 </span>
               )}
               {cs.categories?.map(c => (
-                <span key={c} className="rounded-full border border-black/10 px-3 py-1 font-mono text-[11px] tracking-wide text-black/45">
+                <span key={c} className="rounded-full border border-black/10 px-3 py-1 font-mono text-[11px] tracking-wide text-black/60">
                   {c}
                 </span>
               ))}
@@ -98,7 +98,7 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/45 transition-all hover:border-black/25 hover:text-black"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/60 transition-all hover:border-black/25 hover:text-black"
             >
               <Ico d={P.close} size={15} />
             </button>
@@ -123,7 +123,7 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
               className={`flex shrink-0 items-center gap-2 border-b-2 px-3 py-4 text-[13px] transition-colors ${
                 tab === t
                   ? "border-[#111] text-[#111]"
-                  : "border-transparent text-black/40 hover:text-black/70"
+                  : "border-transparent text-black/55 hover:text-black/70"
               }`}
             >
               <Ico d={TAB_ICON[t]} />
@@ -149,6 +149,9 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
                   {cs.workflowImage && (
                     <img
                       src={cs.workflowImage}
+                      width={1400}
+                      height={900}
+                      loading="lazy"
                       alt={`Workflow canvas for ${cs.title}`}
                       className="w-full"
                     />
@@ -158,7 +161,7 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
 
               <div className="mt-5 grid gap-4 sm:grid-cols-[1.6fr_1fr]">
                 <div className="rounded-xl border border-black/[0.07] bg-white/60 p-5">
-                  <p className="font-mono text-[10px] tracking-widest text-black/40">
+                  <p className="font-mono text-[10px] tracking-widest text-black/55">
                     WORKFLOW LOGIC SUMMARY
                   </p>
                   <p className="mt-2.5 text-[14px] leading-relaxed text-black/65">{cs.logicSummary}</p>
@@ -179,7 +182,7 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
 
               {cs.integrations && (
                 <>
-                  <p className="mt-6 font-mono text-[10px] tracking-widest text-black/40">
+                  <p className="mt-6 font-mono text-[10px] tracking-widest text-black/55">
                     ACTIVE INTEGRATIONS IN WORKFLOW:
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -222,7 +225,7 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
 
               {cs.roi && (
                 <>
-                  <p className="mt-7 font-mono text-[10px] tracking-widest text-black/40">QUANTIFIED ROI:</p>
+                  <p className="mt-7 font-mono text-[10px] tracking-widest text-black/55">QUANTIFIED ROI:</p>
                   <div className="mt-3 grid gap-4 sm:grid-cols-3">
                     {cs.roi.map(r => (
                       <div key={r.label} className="rounded-xl border border-black/[0.07] bg-white/60 p-6 text-center">
@@ -232,7 +235,7 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
                         >
                           {r.value}
                         </p>
-                        <p className="mt-2 text-[12px] text-black/45">{r.label}</p>
+                        <p className="mt-2 text-[12px] text-black/60">{r.label}</p>
                       </div>
                     ))}
                   </div>
@@ -265,7 +268,7 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
 
         {/* Footer */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-black/[0.07] p-7 sm:px-9">
-          <p className="font-mono text-[12px] text-black/40">
+          <p className="font-mono text-[12px] text-black/55">
             Platform: <span className="text-black/70">{cs.platform ?? "—"}</span>
           </p>
 
@@ -282,7 +285,7 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
               </a>
             ) : (
               <span
-                className="inline-flex cursor-default items-center gap-2 rounded-full border border-dashed border-black/12 px-4 py-2.5 text-[12px] text-black/30"
+                className="inline-flex cursor-default items-center gap-2 rounded-full border border-dashed border-black/12 px-4 py-2.5 text-[12px] text-black/62"
                 title="Add videoUrl to this case study's frontmatter to enable"
               >
                 <Ico d={P.play} size={12} />
@@ -302,7 +305,7 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
               </a>
             ) : (
               <span
-                className="inline-flex cursor-default items-center gap-2 rounded-full border border-dashed border-black/12 px-4 py-2.5 text-[12px] text-black/30"
+                className="inline-flex cursor-default items-center gap-2 rounded-full border border-dashed border-black/12 px-4 py-2.5 text-[12px] text-black/62"
                 title="Add repoUrl to this case study's frontmatter to enable"
               >
                 <Ico d={P.git} size={13} />

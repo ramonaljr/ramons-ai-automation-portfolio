@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react"
 
-import { PixelIcon } from "@/components/landing/pixel-icon"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
@@ -21,7 +20,7 @@ const SOCIALS = [
 // Matches the Tag used by the other sections on this page.
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/40 bg-black/[0.04]">
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/55 bg-black/[0.04]">
       {children}
     </span>
   )
@@ -61,8 +60,7 @@ export function IntroSection() {
 
         {/* ── Section header ─────────────────────────────────────────────── */}
         <div className="mb-16" style={reveal(0)}>
-          <PixelIcon type="agents" size={40} />
-          <div className="mt-4"><Tag>ABOUT</Tag></div>
+          <Tag>ABOUT</Tag>
         </div>
 
         <div className="grid lg:grid-cols-[1.15fr_1fr] gap-14 lg:gap-20 items-start">
@@ -70,7 +68,7 @@ export function IntroSection() {
           {/* ── Left: the introduction ──────────────────────────────────── */}
           <div>
             <div style={reveal(60)}>
-              <p className="text-xs tracking-[0.25em] text-black/35 mb-4 font-mono">HI, I&apos;M</p>
+              <p className="text-xs tracking-[0.25em] text-black/55 mb-4 font-mono">HI, I&apos;M</p>
               <h2
                 className="text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
                 style={{ fontFamily: DISPLAY_FONT }}
@@ -78,11 +76,11 @@ export function IntroSection() {
                 Ramon A.<br />Vallejera, Jr.
               </h2>
               <p
-                className="mt-4 text-xl sm:text-2xl font-light text-black/50"
+                className="mt-4 text-xl sm:text-2xl font-light text-black/62"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 AI Automation Specialist
-                <span className="text-black/25"> · MBA</span>
+                <span className="text-black/62"> · MBA</span>
               </p>
             </div>
 
@@ -101,7 +99,7 @@ export function IntroSection() {
             <div className="mt-10 space-y-3" style={reveal(220)}>
               {CONTACT.map(c => (
                 <div key={c.label} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="text-[11px] tracking-widest text-black/35 font-mono w-24 shrink-0">
+                  <span className="text-[11px] tracking-widest text-black/55 font-mono w-24 shrink-0">
                     {c.label.toUpperCase()}
                   </span>
                   {c.href ? (
@@ -191,7 +189,7 @@ export function IntroSection() {
                   <div className="text-lg font-light text-[#111]" style={{ fontFamily: DISPLAY_FONT }}>
                     {s.value}
                   </div>
-                  <div className="mt-1 text-[10px] leading-tight text-black/40">{s.label}</div>
+                  <div className="mt-1 text-[10px] leading-tight text-black/55">{s.label}</div>
                 </div>
               ))}
             </div>

@@ -311,7 +311,7 @@ export const TOOLS_ROW_1: Tool[] = [
   { name: 'Make', slug: 'make', color: '#6D00CC' },
   { name: 'Claude', slug: 'anthropic', color: '#191919' },
   { name: 'OpenAI', slug: 'openai', color: '#412991' },
-  { name: 'DeepSeek', color: '#4D6BFE' },
+  { name: 'DeepSeek', color: '#3B4FC4' },
   { name: 'PostgreSQL', slug: 'postgresql', color: '#4169E1' },
   { name: 'Supabase', slug: 'supabase', color: '#3FCF8E' },
   { name: 'Pinecone', color: '#0B7285' },
@@ -336,7 +336,7 @@ export const TOOLS_ROW_2: Tool[] = [
   { name: 'Google Drive', slug: 'googledrive', color: '#4285F4' },
   { name: 'Cal.com', slug: 'caldotcom', color: '#292929' },
   { name: 'ElevenLabs', slug: 'elevenlabs', color: '#000000' },
-  { name: 'VAPI', color: '#12A594' },
+  { name: 'VAPI', color: '#0A6F63' },
   { name: 'GitHub', slug: 'github', color: '#181717' }
 ]
 

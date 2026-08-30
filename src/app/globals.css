@@ -287,3 +287,25 @@
     transform: translateX(0);
   }
 }
+
+/* The marquee's animation is set via an inline style, which outranks a utility
+   class — so the reduced-motion opt-out has to be !important to take effect. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Visible keyboard focus. The browser default 1px outline was nearly invisible
+   on the cream ground. */
+/* Not wrapped in :where() — that zeroes specificity and the base
+   `* { outline-ring/50 }` rule then wins the colour. */
+a:focus-visible,
+button:focus-visible,
+[role='tab']:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #111 !important;
+  outline-offset: 2px;
+  border-radius: 4px;
+}

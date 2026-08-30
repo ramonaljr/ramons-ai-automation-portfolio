@@ -63,7 +63,7 @@ function Row({ tools, reverse = false, duration }: { tools: Tool[]; reverse?: bo
         <div
           key={copy}
           aria-hidden={copy === 1}
-          className="flex shrink-0 gap-3 pr-3 group-hover:[animation-play-state:paused] motion-reduce:animate-none"
+          className="marquee-track flex shrink-0 gap-3 pr-3 group-hover:[animation-play-state:paused]"
           style={{
             animation: `${reverse ? "marquee-reverse" : "marquee"} ${duration}s linear infinite`,
           }}
@@ -109,22 +109,17 @@ export function ToolStackSection() {
           transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
-        <p className="font-mono text-[12px] tracking-[0.25em] text-black/35">{'// TOOL STACK'}</p>
+        <p className="font-mono text-[12px] tracking-[0.25em] text-black/55">{'// TOOL STACK'}</p>
 
         <h2
           className="mt-5 text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] tracking-tight text-[#111]"
           style={{ fontFamily: DISPLAY_FONT }}
         >
           Tools I{" "}
-          <span
-            className="bg-clip-text text-transparent"
-            style={{ backgroundImage: "linear-gradient(100deg,#c026a3,#6d28d9,#0e7490)" }}
-          >
-            Build With
-          </span>
+          <span className="text-[#6d28d9]">Build With</span>
         </h2>
 
-        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-black/50">
+        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-black/62">
           The platforms behind every system I ship — connected, automated, and running in
           production.
         </p>

@@ -59,7 +59,7 @@ function Chips({ items }: { items?: string[] }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       {items.map(t => (
-        <span key={t} className="rounded-md border border-black/[0.08] bg-black/[0.02] px-2.5 py-1 font-mono text-[11px] text-black/50">
+        <span key={t} className="rounded-md border border-black/[0.08] bg-black/[0.02] px-2.5 py-1 font-mono text-[11px] text-black/62">
           {t}
         </span>
       ))}
@@ -96,14 +96,14 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="font-mono text-[12px] tracking-[0.25em] text-black/35">SELECTED</p>
+            <p className="font-mono text-[12px] tracking-[0.25em] text-black/55">SELECTED</p>
             <h2
               className="mt-2 text-[clamp(2.5rem,6vw,5rem)] font-light leading-[0.95] tracking-tight text-[#111]"
               style={{ fontFamily: DISPLAY_FONT }}
             >
               WORK
             </h2>
-            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-black/50">
+            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-black/62">
               A selection of AI automation systems and production workflows built to eliminate
               repetitive tasks, connect business tools, and improve operational efficiency.
             </p>
@@ -133,7 +133,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         ? "border-black/25 bg-[#111] text-white"
                         : n === 0
                           ? "border-black/[0.06] text-black/20"
-                          : "border-black/10 text-black/50 hover:border-black/25 hover:text-black"
+                          : "border-black/10 text-black/62 hover:border-black/25 hover:text-black"
                     }`}
                   >
                     {f}
@@ -162,6 +162,9 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                 {featured.workflowImage && (
                   <img
                     src={featured.workflowImage}
+                    width={1400}
+                    height={900}
+                    loading="lazy"
                     alt={`Workflow canvas for ${featured.title}`}
                     className="w-full rounded-lg"
                   />
@@ -185,7 +188,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     </span>
                   )}
                   {featured.categories?.map(c => (
-                    <span key={c} className="rounded-full border border-black/10 px-3 py-1 font-mono text-[11px] text-black/45">
+                    <span key={c} className="rounded-full border border-black/10 px-3 py-1 font-mono text-[11px] text-black/60">
                       {c}
                     </span>
                   ))}
@@ -242,6 +245,9 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                   {cs.workflowImage && (
                     <img
                       src={cs.workflowImage}
+                      width={1400}
+                      height={900}
+                      loading="lazy"
                       alt=""
                       aria-hidden="true"
                       className="h-[150px] w-full rounded object-cover object-left-top"
@@ -257,7 +263,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                       </span>
                     )}
                     {cs.speed && (
-                      <span className="font-mono text-[10px] text-black/35">{cs.speed}</span>
+                      <span className="font-mono text-[10px] text-black/55">{cs.speed}</span>
                     )}
                     {cs.sample && <SampleBadge />}
                   </div>
@@ -268,7 +274,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                   >
                     {cs.title}
                   </h3>
-                  <p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-black/50">
+                  <p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-black/62">
                     {cs.description}
                   </p>
 
@@ -288,7 +294,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           </div>
 
           {shown.length === 0 && (
-            <p className="py-16 text-center text-[14px] text-black/40">
+            <p className="py-16 text-center text-[14px] text-black/55">
               Nothing built on this platform yet.
             </p>
           )}

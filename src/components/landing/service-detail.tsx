@@ -35,7 +35,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
         <div className={CONTAINER}>
           <a
             href="/#services"
-            className="inline-flex items-center gap-2 text-[12px] text-black/45 hover:text-black transition-colors mb-10"
+            className="inline-flex items-center gap-2 text-[12px] text-black/60 hover:text-black transition-colors mb-10"
           >
             <span aria-hidden="true">←</span> All services
           </a>
@@ -45,7 +45,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
               <PixelIcon type="platform" size={30} />
             </span>
             <div>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] tracking-widest font-mono text-black/40 bg-black/[0.04]">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] tracking-widest font-mono text-black/55 bg-black/[0.04]">
                 {service.duration.toUpperCase()}
               </span>
               <h1
@@ -113,7 +113,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                     <span className="text-black/70"><CheckIcon /></span>
                     <div>
                       <h3 className="text-[15px] font-medium text-[#111]">{d.title}</h3>
-                      <p className="mt-1.5 text-[13px] leading-relaxed text-black/50">{d.desc}</p>
+                      <p className="mt-1.5 text-[13px] leading-relaxed text-black/62">{d.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
           <aside className="lg:sticky lg:top-28 space-y-5">
             {/* Tools */}
             <div className="rounded-2xl border border-black/[0.07] bg-white/60 p-6">
-              <h2 className="text-[11px] tracking-widest font-mono text-black/40 pb-3 mb-4 border-b border-black/[0.07]">
+              <h2 className="text-[11px] tracking-widest font-mono text-black/55 pb-3 mb-4 border-b border-black/[0.07]">
                 TOOLS USED
               </h2>
               <div className="flex flex-wrap gap-1.5">
@@ -189,7 +189,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
 
             {/* Other services */}
             <div className="rounded-2xl border border-black/[0.07] bg-white/60 p-6">
-              <h2 className="text-[11px] tracking-widest font-mono text-black/40 pb-3 mb-4 border-b border-black/[0.07]">
+              <h2 className="text-[11px] tracking-widest font-mono text-black/55 pb-3 mb-4 border-b border-black/[0.07]">
                 OTHER SERVICES
               </h2>
               <ul className="space-y-2">
@@ -218,7 +218,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                   <span className="absolute -inset-1 rounded-full bg-emerald-500/30 animate-[pulse-dot_2s_ease-in-out_infinite]" />
                   <span className="relative w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 </span>
-                <span className="text-[11px] tracking-widest font-mono text-black/50">AVAILABLE</span>
+                <span className="text-[11px] tracking-widest font-mono text-black/62">AVAILABLE</span>
               </div>
               <p className="mt-3 text-[13px] leading-relaxed text-black/55">
                 {PROFILE.name} — {PROFILE.title}, {PROFILE.location}.

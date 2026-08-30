@@ -9,7 +9,7 @@ import type { ReactNode } from 'react'
  * all of which would fight a full-width design.
  */
 const LandingLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
-  return <div className='flex w-full min-w-0 flex-col'>{children}</div>
+  return <main className='flex w-full min-w-0 flex-col'>{children}</main>
 }
 
 export default LandingLayout

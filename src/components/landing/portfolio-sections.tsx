@@ -23,7 +23,7 @@ const SECTION = "py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]"
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/40 bg-black/[0.04]">
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] tracking-widest font-sans text-black/55 bg-black/[0.04]">
       {children}
     </span>
   )
@@ -56,9 +56,8 @@ function rise(inView: boolean, delay = 0) {
 }
 
 function SectionHead({
-  icon, tag, title, blurb,
+  tag, title, blurb,
 }: {
-  icon: "platform" | "agents" | "workflow" | "integrations" | "pricing"
   tag: string
   title: React.ReactNode
   blurb?: string
@@ -67,15 +66,14 @@ function SectionHead({
 
   return (
     <div ref={ref} className="mb-16" style={rise(inView)}>
-      <PixelIcon type={icon} size={40} />
-      <div className="mt-4"><Tag>{tag}</Tag></div>
+      <Tag>{tag}</Tag>
       <h2
         className="mt-6 text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-tight text-[#111]"
         style={{ fontFamily: DISPLAY_FONT }}
       >
         {title}
       </h2>
-      {blurb && <p className="mt-5 text-[15px] leading-relaxed text-black/50 max-w-xl">{blurb}</p>}
+      {blurb && <p className="mt-5 text-[15px] leading-relaxed text-black/62 max-w-xl">{blurb}</p>}
     </div>
   )
 }
@@ -101,7 +99,6 @@ function ServicesSection() {
     <section id="services" className={SECTION}>
       <div className={CONTAINER}>
         <SectionHead
-          icon="platform"
           tag="OUR SERVICES"
           title={<>What I build<br />for operators.</>}
           blurb="Five ways I remove manual work from a business. Every engagement ends with a documented workflow your team can run without me."
@@ -126,13 +123,13 @@ function ServicesSection() {
                 {s.title}
               </h3>
 
-              <p className="mt-3 text-[13px] leading-relaxed text-black/50 flex-1">
+              <p className="mt-3 text-[13px] leading-relaxed text-black/62 flex-1">
                 {s.description}
               </p>
 
               <div className="mt-5 flex flex-wrap justify-center gap-1.5">
                 {s.tools.slice(0, 3).map(t => (
-                  <span key={t} className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[10px] text-black/45">
+                  <span key={t} className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[10px] text-black/60">
                     {t}
                   </span>
                 ))}
@@ -159,7 +156,7 @@ function ServicesSection() {
             >
               Not sure which<br />you need?
             </p>
-            <p className="mt-3 text-[13px] leading-relaxed text-black/45 max-w-[22ch]">
+            <p className="mt-3 text-[13px] leading-relaxed text-black/60 max-w-[22ch]">
               Describe the process that eats your week and I will tell you where it fits.
             </p>
             <a
@@ -185,7 +182,6 @@ function PlatformsSection() {
     <section id="platforms" className={SECTION}>
       <div className={CONTAINER}>
         <SectionHead
-          icon="integrations"
           tag="PLATFORMS"
           title={<>The right tool<br />for the job.</>}
           blurb="I build in all three. Which one you should use depends on your data, your volume, and who has to maintain it afterwards."
@@ -214,7 +210,7 @@ function PlatformsSection() {
               >
                 {p.name}
               </h3>
-              <p className="mt-2 text-sm text-black/50 leading-relaxed">{p.tagline}</p>
+              <p className="mt-2 text-sm text-black/62 leading-relaxed">{p.tagline}</p>
 
               <ul className="mt-6 space-y-2.5">
                 {p.bestFor.map(b => (
@@ -225,7 +221,7 @@ function PlatformsSection() {
                 ))}
               </ul>
 
-              <p className="mt-6 pt-5 border-t border-black/[0.07] text-[12px] leading-relaxed text-black/40 italic">
+              <p className="mt-6 pt-5 border-t border-black/[0.07] text-[12px] leading-relaxed text-black/55 italic">
                 {p.note}
               </p>
             </div>
@@ -247,14 +243,14 @@ function ProcessSection() {
 
         {/* Header — mono eyebrow and subtitle, matching the reference */}
         <div className="mb-20">
-          <p className="font-mono text-[12px] tracking-[0.28em] text-black/35">PROCESS</p>
+          <p className="font-mono text-[12px] tracking-[0.28em] text-black/55">PROCESS</p>
           <h2
             className="mt-4 text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
             style={{ fontFamily: DISPLAY_FONT }}
           >
             How I build automation
           </h2>
-          <p className="mt-5 font-mono text-[14px] leading-relaxed text-black/45">
+          <p className="mt-5 font-mono text-[14px] leading-relaxed text-black/60">
             From business problem to a working automation system.
           </p>
         </div>
@@ -288,7 +284,7 @@ function ProcessSection() {
                 {p.summary}
               </p>
 
-              <p className="mt-3 text-[13.5px] leading-relaxed text-black/50">{p.desc}</p>
+              <p className="mt-3 text-[13.5px] leading-relaxed text-black/62">{p.desc}</p>
             </div>
           ))}
         </div>
@@ -323,7 +319,6 @@ function PrinciplesSection() {
     <section id="principles" className={SECTION}>
       <div className={CONTAINER}>
         <SectionHead
-          icon="platform"
           tag="HOW I BUILD"
           title={<>Reliability is<br />the feature.</>}
           blurb="An automation that silently does the wrong thing is worse than no automation. Three rules I do not bend."
@@ -336,14 +331,14 @@ function PrinciplesSection() {
               className="rounded-2xl border border-black/[0.07] bg-white/50 p-8 hover:bg-white hover:border-black/12 transition-all duration-300"
               style={rise(inView, i * 100)}
             >
-              <span className="text-[11px] font-mono text-black/30">{p.n}</span>
+              <span className="text-[11px] font-mono text-black/62">{p.n}</span>
               <h3
                 className="mt-4 text-xl font-light leading-snug tracking-tight text-[#111]"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 {p.title}
               </h3>
-              <p className="mt-2 text-[12px] text-black/40 leading-relaxed">{p.sub}</p>
+              <p className="mt-2 text-[12px] text-black/55 leading-relaxed">{p.sub}</p>
               <p className="mt-5 pt-5 border-t border-black/[0.07] text-[14px] leading-relaxed text-black/55">
                 {p.body}
               </p>
@@ -364,7 +359,6 @@ function EngagementSection() {
     <section id="engagement" className={SECTION}>
       <div className={CONTAINER}>
         <SectionHead
-          icon="pricing"
           tag="WORKING TOGETHER"
           title={<>Three ways<br />to start.</>}
           blurb="Scope and timeline are fixed up front. Pricing depends on systems involved and volume — tell me what you are dealing with and I will quote it."
@@ -381,7 +375,7 @@ function EngagementSection() {
               }`}
               style={rise(inView, i * 100)}
             >
-              <span className="text-[11px] tracking-widest font-mono text-black/35">
+              <span className="text-[11px] tracking-widest font-mono text-black/55">
                 {e.duration.toUpperCase()}
               </span>
               <h3
@@ -390,7 +384,7 @@ function EngagementSection() {
               >
                 {e.name}
               </h3>
-              <p className="mt-3 text-[13px] leading-relaxed text-black/50">{e.summary}</p>
+              <p className="mt-3 text-[13px] leading-relaxed text-black/62">{e.summary}</p>
 
               <ul className="mt-6 space-y-2.5 flex-1">
                 {e.includes.map(it => (
@@ -513,17 +507,17 @@ function SiteFooter() {
             <p className="font-pixel text-xs tracking-[0.25em] text-black/70">
               {PROFILE.shortName.toUpperCase()}
             </p>
-            <p className="mt-2 text-[13px] text-black/45">
+            <p className="mt-2 text-[13px] text-black/60">
               {PROFILE.title} · {PROFILE.location}
             </p>
           </div>
 
-          <nav className="flex flex-wrap gap-x-6 gap-y-2">
+          <nav className="flex flex-wrap gap-x-3 gap-y-1">
             {FOOTER_LINKS.map(l => (
               <a
                 key={l.label}
                 href={l.href}
-                className="text-[12px] text-black/50 hover:text-black transition-colors"
+                className="rounded-md px-2 py-1.5 text-[12px] text-black/62 transition-colors hover:bg-black/[0.04] hover:text-black"
               >
                 {l.label}
               </a>
@@ -545,7 +539,7 @@ function SiteFooter() {
           </div>
         </div>
 
-        <p className="mt-10 pt-6 border-t border-black/[0.06] text-[11px] text-black/30">
+        <p className="mt-10 pt-6 border-t border-black/[0.06] text-[11px] text-black/62">
           © {new Date().getFullYear()} {PROFILE.name}. Built with n8n, Zapier and Make in mind.
         </p>
       </div>

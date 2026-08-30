@@ -35,12 +35,12 @@ export function MobileNav() {
           <span className="font-pixel text-xs tracking-[0.25em] text-black/70">RAMON</span>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-5 lg:gap-6" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+          <div className="hidden md:flex items-center gap-2 lg:gap-3" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
             {NAV_LINKS.map(l => (
               <a
                 key={l.label}
                 href={l.href}
-                className="text-[11px] text-black/60 hover:text-black transition-colors duration-200 tracking-wide"
+                className="rounded-md px-2 py-2 text-[11px] text-black/60 transition-colors duration-200 tracking-wide hover:bg-black/[0.04] hover:text-black"
               >
                 {l.label}
               </a>
