@@ -13,6 +13,7 @@ import { ExperienceSection } from "@/components/landing/experience-section"
 import { ContactSection } from "@/components/landing/contact-section"
 import { ArticlesSection } from "@/components/landing/articles-section"
 import { ChatWidget } from "@/components/landing/chat-widget"
+import { ParticleField } from "@/components/landing/particle-field"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import type { PostMetadata } from "@/lib/posts"
@@ -568,19 +569,30 @@ export function PortfolioSections({
       <MobileNav />
 
       <HeroSection ready={heroReady} />
-      <IntroSection />
-      <ServicesSection />
-      <PlatformsSection />
-      <ProjectsSection caseStudies={caseStudies} />
-      <ProcessSection />
-      <ToolStackSection />
-      <PrinciplesSection />
-      <ExperienceSection />
-      <ArticlesSection posts={posts} />
-      <EngagementSection />
-      <ContactSection />
-      <CtaSection />
-      <SiteFooter />
+
+      {/* Everything from About down sits over the constellation field. The
+          wrapper is the positioning context; the canvas is sticky inside it so
+          one viewport of pixels covers the whole scroll range. */}
+      <div className="relative">
+        <ParticleField />
+
+        <div className="relative z-10">
+          <IntroSection />
+          <ServicesSection />
+          <PlatformsSection />
+          <ProjectsSection caseStudies={caseStudies} />
+          <ProcessSection />
+          <ToolStackSection />
+          <PrinciplesSection />
+          <ExperienceSection />
+          <ArticlesSection posts={posts} />
+          <EngagementSection />
+          <ContactSection />
+          <CtaSection />
+          <SiteFooter />
+        </div>
+      </div>
+
       <ChatWidget />
     </div>
   )
