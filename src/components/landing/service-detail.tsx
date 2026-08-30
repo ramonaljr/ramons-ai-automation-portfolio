@@ -1,6 +1,6 @@
 "use client"
 
-import { MobileNav } from "@/components/landing/mobile-nav"
+import { SiteNav } from "@/components/landing/site-nav"
 import { PixelIcon } from "@/components/landing/pixel-icon"
 
 import type { Service } from "@/lib/portfolio"
@@ -28,7 +28,7 @@ function CheckIcon() {
 export function ServiceDetail({ service, others }: { service: Service; others: Service[] }) {
   return (
     <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
-      <MobileNav />
+      <SiteNav />
 
       {/* ── Header ───────────────────────────────────────────────────────── */}
       <section className="px-6 md:px-12 lg:px-20 pt-36 pb-14">

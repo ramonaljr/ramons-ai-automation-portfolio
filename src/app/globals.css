@@ -295,6 +295,18 @@
     animation: none !important;
     transform: none !important;
   }
+
+  /* Scroll reveals set their transition inline too. `useInView` already hands
+     reduced-motion readers the final state on mount; collapsing the duration
+     here stops that state change from playing as an animation. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Visible keyboard focus. The browser default 1px outline was nearly invisible

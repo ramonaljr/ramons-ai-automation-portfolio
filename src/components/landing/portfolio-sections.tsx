@@ -1,9 +1,11 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useState } from "react"
 
 import { IntroAnimation } from "@/components/landing/intro-animation"
-import { MobileNav } from "@/components/landing/mobile-nav"
+import { SiteNav } from "@/components/landing/site-nav"
+import { SiteFooter } from "@/components/landing/site-footer"
+import { CtaSection } from "@/components/landing/cta-section"
 import { HeroSection } from "@/components/landing/hero-section"
 import { IntroSection } from "@/components/landing/intro-section"
 import { ProjectsSection } from "@/components/landing/projects-section"
@@ -14,14 +16,11 @@ import { ContactSection } from "@/components/landing/contact-section"
 import { ArticlesSection } from "@/components/landing/articles-section"
 import { ChatWidget } from "@/components/landing/chat-widget"
 import { ParticleField } from "@/components/landing/particle-field"
+import { ArrowIcon, CONTAINER, DISPLAY_FONT, PAGE, SECTION, rise, useInView } from "@/components/landing/motion"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import type { PostMetadata } from "@/lib/posts"
-import { ENGAGEMENTS, PLATFORMS, PRINCIPLES, PROCESS, PROFILE, SERVICES } from "@/lib/portfolio"
-
-const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
-const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
-const SECTION = "py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]"
+import { ENGAGEMENTS, PLATFORMS, PRINCIPLES, PROCESS, SERVICES } from "@/lib/portfolio"
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 
@@ -31,32 +30,6 @@ function Tag({ children }: { children: React.ReactNode }) {
       {children}
     </span>
   )
-}
-
-function useInView(threshold = 0.12) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [inView, setInView] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-
-    if (!el) return
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true) }, { threshold })
-
-    obs.observe(el)
-
-    return () => obs.disconnect()
-  }, [threshold])
-
-  return { ref, inView }
-}
-
-function rise(inView: boolean, delay = 0) {
-  return {
-    opacity: inView ? 1 : 0,
-    transform: inView ? "translateY(0px)" : "translateY(22px)",
-    transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
-  }
 }
 
 function SectionHead({
@@ -79,14 +52,6 @@ function SectionHead({
       </h2>
       {blurb && <p className="mt-5 text-[15px] leading-relaxed text-black/62 max-w-xl">{blurb}</p>}
     </div>
-  )
-}
-
-function ArrowIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M3 11L11 3M11 3H5M11 3V9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   )
 }
 
@@ -418,139 +383,6 @@ function EngagementSection() {
   )
 }
 
-// ── CTA ──────────────────────────────────────────────────────────────────────
-
-function CtaSection() {
-  const { ref, inView } = useInView(0.15)
-
-  return (
-    <section className="relative py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06] overflow-hidden">
-      {/* Glass panels, anchored bottom-centre — the template's own footer
-          treatment. Light by design; it fades up into the cream page. */}
-      { }
-      <img
-        src="/images/landing/footer.png"
-        alt=""
-        aria-hidden="true"
-        className="absolute bottom-0 left-0 w-full object-cover object-bottom pointer-events-none select-none"
-        style={{ opacity: 0.85 }}
-      />
-
-      {/* Progressive blur from the bottom */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          maskImage: "linear-gradient(to top, transparent 0%, black 55%)",
-          WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 55%)",
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-        }}
-      />
-
-      {/* Colour fade back to the page ground */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(to top, rgb(245,244,240) 0%, rgba(245,244,240,0.92) 18%, rgba(245,244,240,0.55) 35%, transparent 55%)",
-        }}
-      />
-
-      <div ref={ref} className={`relative z-10 ${CONTAINER} text-center`} style={rise(inView)}>
-        <h2
-          className="text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] tracking-tight text-[#111]"
-          style={{ fontFamily: DISPLAY_FONT }}
-        >
-          What are you still<br />doing by hand?
-        </h2>
-        <p className="mt-6 text-[15px] leading-relaxed text-black/55 max-w-lg mx-auto">
-          Tell me the process that eats your week. I will tell you whether it is worth automating,
-          and on which platform.
-        </p>
-
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href="/contact"
-            className="group inline-flex items-center gap-3 pl-6 pr-2 py-2 rounded-full bg-[#111] text-white text-[13px] tracking-wide hover:bg-black transition-colors"
-          >
-            START A CONVERSATION
-            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/15 group-hover:bg-white/25 transition-colors">
-              <ArrowIcon />
-            </span>
-          </a>
-          <a
-            href={`mailto:${PROFILE.email}`}
-            className="inline-flex items-center px-5 py-3 rounded-full border border-black/12 text-[12px] tracking-wide text-black/65 hover:text-black hover:border-black/30 hover:bg-black/[0.03] transition-all"
-          >
-            {PROFILE.email}
-          </a>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// ── Footer ───────────────────────────────────────────────────────────────────
-
-const FOOTER_LINKS = [
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Platforms", href: "#platforms" },
-  { label: "Portfolio", href: "#portfolio" },
-  { label: "Experience", href: "#experience" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
-]
-
-function SiteFooter() {
-  return (
-    <footer className="py-12 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-      <div className={CONTAINER}>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-          <div>
-            <p className="font-pixel text-xs tracking-[0.25em] text-black/70">
-              {PROFILE.shortName.toUpperCase()}
-            </p>
-            <p className="mt-2 text-[13px] text-black/60">
-              {PROFILE.title} · {PROFILE.location}
-            </p>
-          </div>
-
-          <nav className="flex flex-wrap gap-x-3 gap-y-1">
-            {FOOTER_LINKS.map(l => (
-              <a
-                key={l.label}
-                href={l.href}
-                className="rounded-md px-2 py-1.5 text-[12px] text-black/62 transition-colors hover:bg-black/[0.04] hover:text-black"
-              >
-                {l.label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex gap-2">
-            {PROFILE.socials.map(s => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 py-2 rounded-full border border-black/10 text-[11px] text-black/55 hover:text-black hover:border-black/25 hover:bg-black/[0.03] transition-all"
-              >
-                {s.label}
-              </a>
-            ))}
-          </div>
-        </div>
-
-        <p className="mt-10 pt-6 border-t border-black/[0.06] text-[11px] text-black/62">
-          © {new Date().getFullYear()} {PROFILE.name}. Built with n8n, Zapier and Make in mind.
-        </p>
-      </div>
-    </footer>
-  )
-}
-
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export function PortfolioSections({
@@ -564,9 +396,9 @@ export function PortfolioSections({
   const handleIntroDone = useCallback(() => setHeroReady(true), [])
 
   return (
-    <div id="top" className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div id="top" className={PAGE}>
       <IntroAnimation onDone={handleIntroDone} />
-      <MobileNav />
+      <SiteNav />
 
       <HeroSection ready={heroReady} />
 
