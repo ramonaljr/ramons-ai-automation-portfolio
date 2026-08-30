@@ -8,7 +8,6 @@ import { HeroSection } from "@/components/landing/hero-section"
 import { IntroSection } from "@/components/landing/intro-section"
 import { ProjectsSection } from "@/components/landing/projects-section"
 import { PixelIcon } from "@/components/landing/pixel-icon"
-import { GlitchBackground } from "@/components/landing/glitch-background"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import { ENGAGEMENTS, PLATFORMS, PRINCIPLES, PROCESS, PROFILE, SERVICES, STACK } from "@/lib/portfolio"
@@ -408,18 +407,40 @@ function EngagementSection() {
 // ── CTA ──────────────────────────────────────────────────────────────────────
 
 function CtaSection() {
-  const [hovered, setHovered] = useState(false)
   const { ref, inView } = useInView(0.15)
 
   return (
-    <section
-      className="relative py-36 px-6 md:px-12 lg:px-20 border-t border-black/[0.06] overflow-hidden"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div className="absolute inset-0 z-0 opacity-70">
-        <GlitchBackground isHovered={hovered} />
-      </div>
+    <section className="relative py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06] overflow-hidden">
+      {/* Glass panels, anchored bottom-centre — the template's own footer
+          treatment. Light by design; it fades up into the cream page. */}
+      { }
+      <img
+        src="/images/landing/footer.png"
+        alt=""
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 w-full object-cover object-bottom pointer-events-none select-none"
+        style={{ opacity: 0.85 }}
+      />
+
+      {/* Progressive blur from the bottom */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          maskImage: "linear-gradient(to top, transparent 0%, black 55%)",
+          WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 55%)",
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
+        }}
+      />
+
+      {/* Colour fade back to the page ground */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to top, rgb(245,244,240) 0%, rgba(245,244,240,0.92) 18%, rgba(245,244,240,0.55) 35%, transparent 55%)",
+        }}
+      />
 
       <div ref={ref} className={`relative z-10 ${CONTAINER} text-center`} style={rise(inView)}>
         <h2
