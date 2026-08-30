@@ -70,8 +70,8 @@ function ServicesSection() {
       <div className={CONTAINER}>
         <SectionHead
           tag="OUR SERVICES"
-          title={<>What I build<br />for operators.</>}
-          blurb="Five ways I remove manual work from a business. Every engagement ends with a documented workflow your team can run without me."
+          title={<>What I automate<br />across your business.</>}
+          blurb="Five ways I take manual work out of a business — from intake and onboarding through approvals, reporting and reconciliation. Every engagement ends with a documented workflow your team can run without me."
         />
 
         <div ref={ref} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-16 pt-10">

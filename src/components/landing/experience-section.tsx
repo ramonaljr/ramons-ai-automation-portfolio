@@ -50,7 +50,7 @@ export function ExperienceSection() {
           </h2>
           <p className="mt-5 text-[15px] leading-relaxed text-black/72 max-w-xl">
             I did AP, reconciliation and month-end close by hand before I automated any of it.
-            That is why the workflows I build match how finance teams actually operate.
+            That is why the workflows I build match how a business actually runs, rather than how a process diagram says it should.
           </p>
         </div>
 

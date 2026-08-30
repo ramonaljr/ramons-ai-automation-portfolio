@@ -92,10 +92,9 @@ export function IntroSection() {
 
             <div className="mt-8 max-w-[58ch] space-y-4" style={reveal(140)}>
               <p className="text-[15.5px] leading-[1.7] text-black/72">
-                I spent ten years inside the processes I now automate — accounts payable,
-                reconciliation, month-end close — first as an accountant, then as a financial
-                analyst. That is the part most automation work is missing: someone who knows
-                what the approval rule is actually for before they wire it up.
+                I automate the work that quietly eats a company&apos;s week — client intake and
+                onboarding, approvals and handoffs, reporting, invoicing, and the copying
+                between systems that someone is currently doing by hand.
               </p>
               <p className="text-[15.5px] leading-[1.7] text-black/72">
                 Today I build production automation on{" "}
@@ -105,8 +104,11 @@ export function IntroSection() {
                 multi-system pipelines across Google Workspace, Airtable and Telegram.
               </p>
               <p className="text-[15.5px] leading-[1.7] text-black/72">
-                Everything ships with error branches, failure alerting and documentation, so your
-                team can run it without me.
+                Before that I spent ten years running those processes rather than automating
+                them — as an accountant, then a financial analyst. That is the part most
+                automation work is missing: someone who knows what an approval rule is
+                actually for before they wire it up. Everything ships with error branches,
+                failure alerting and documentation, so your team can run it without me.
               </p>
             </div>
 
@@ -196,7 +198,7 @@ export function IntroSection() {
             {/* Credentials strip */}
             <div className="mt-6 grid grid-cols-3 divide-x divide-black/[0.07] border border-black/[0.07] rounded-xl overflow-hidden bg-white/50">
               {[
-                { value: "10", label: "yrs in finance ops" },
+                { value: "10", label: "yrs in business ops" },
                 { value: "MBA", label: "business strategy" },
                 { value: "n8n", label: "cloud + self-hosted" },
               ].map(s => (

@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
   },
   description:
-    'AI automation specialist in the Philippines. I build production n8n, Zapier and Make workflows, Claude and OpenAI agent integrations, and RAG knowledge systems — backed by 10 years in finance operations and an MBA.',
+    'End-to-end business automation. I build production n8n, Zapier and Make workflows, AI agents, and RAG knowledge systems that remove manual work across intake, onboarding, approvals, reporting and reconciliation — backed by 10 years running those operations and an MBA.',
   robots: 'index,follow',
   keywords: [
     'AI Automation Specialist',
@@ -119,7 +119,7 @@ export const metadata: Metadata = {
       default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
     },
     description:
-      'AI automation specialist in the Philippines building production n8n, Zapier and Make workflows, Claude and OpenAI agent integrations, and RAG knowledge systems for finance and business operations.',
+      'End-to-end business automation on n8n, Zapier and Make — AI agents, LLM integrations and RAG knowledge systems that take manual work out of intake, approvals, reporting and reconciliation.',
     type: 'website',
     siteName: 'Ramon A. Vallejera, Jr.',
     url: SITE_URL,
@@ -140,7 +140,7 @@ export const metadata: Metadata = {
       default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
     },
     description:
-      'AI automation specialist in the Philippines building production n8n, Zapier and Make workflows, Claude and OpenAI agent integrations, and RAG knowledge systems for finance and business operations.'
+      'End-to-end business automation on n8n, Zapier and Make — AI agents, LLM integrations and RAG knowledge systems that take manual work out of intake, approvals, reporting and reconciliation.'
   }
 }
 

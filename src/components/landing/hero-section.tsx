@@ -205,7 +205,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           >
             <span className='inline-flex items-center gap-3 font-mono text-sm text-black/72'>
               <span className='h-px w-8 bg-black/25' />
-              AI automation for finance &amp; business operations
+              End-to-end AI automation for business operations
             </span>
           </div>
 

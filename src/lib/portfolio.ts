@@ -25,7 +25,7 @@ export const PROFILE = {
 /** Headline figures. Each is traceable to a case study or to work history. */
 export const HERO_STATS = [
   { value: '25+ hrs', label: 'manual AP work removed per week' },
-  { value: '10 yrs', label: 'finance & business operations' },
+  { value: '10 yrs', label: 'running business operations' },
   { value: '4', label: 'production pipelines shipped' }
 ] as const
 
