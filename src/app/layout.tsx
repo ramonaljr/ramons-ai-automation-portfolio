@@ -11,6 +11,7 @@ import CustomCursor from '@/components/layout/custom-cursor'
 import EdgeBlur from '@/components/layout/edge-blur'
 
 import { cn } from '@/lib/utils'
+import { SITE_URL } from '@/lib/site'
 
 import './globals.css'
 
@@ -56,16 +57,19 @@ export const metadata: Metadata = {
     default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
   },
   description:
-    'Portfolio of Ramon A. Vallejera, Jr. — AI Automation Specialist based in the Philippines. 10 years of finance & accounting domain expertise combined with an MBA, building autonomous n8n workflows, Claude & OpenAI agent integrations, and Python business automations.',
+    'AI automation specialist in the Philippines. I build production n8n, Zapier and Make workflows, Claude and OpenAI agent integrations, and RAG knowledge systems — backed by 10 years in finance operations and an MBA.',
   robots: 'index,follow',
   keywords: [
     'AI Automation Specialist',
-    'n8n AI Workflows',
-    'Financial Process Automation',
-    'Claude API',
-    'OpenAI Automation',
-    'Accounting Automation',
-    'Python Automation',
+    'n8n developer',
+    'Zapier expert',
+    'Make.com automation',
+    'workflow automation consultant',
+    'Claude API integration',
+    'OpenAI automation',
+    'RAG knowledge base',
+    'AI voice agent',
+    'finance process automation',
     'Philippines'
   ],
   icons: {
@@ -108,17 +112,17 @@ export const metadata: Metadata = {
       }
     ]
   },
-  metadataBase: new URL(`${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}`),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     title: {
       template: '%s - Ramon Vallejera Jr.',
-      default: 'Ramon A. Vallejera, Jr. - AI Automation Engineer'
+      default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
     },
     description:
-      'Portfolio of Ramon A. Vallejera, Jr. — AI Automation Engineer based in the Philippines specializing in autonomous agents, intelligent workflow automations, and custom LLM solutions.',
+      'AI automation specialist in the Philippines building production n8n, Zapier and Make workflows, Claude and OpenAI agent integrations, and RAG knowledge systems for finance and business operations.',
     type: 'website',
     siteName: 'Ramon A. Vallejera, Jr.',
-    url: `${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}`,
+    url: SITE_URL,
     images: [
       {
         url: '/images/og-image.png',
@@ -133,10 +137,10 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: {
       template: '%s - Ramon Vallejera Jr.',
-      default: 'Ramon A. Vallejera, Jr. - AI Automation Engineer'
+      default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
     },
     description:
-      'Portfolio of Ramon A. Vallejera, Jr. — AI Automation Engineer based in the Philippines specializing in autonomous agents, intelligent workflow automations, and custom LLM solutions.'
+      'AI automation specialist in the Philippines building production n8n, Zapier and Make workflows, Claude and OpenAI agent integrations, and RAG knowledge systems for finance and business operations.'
   }
 }
 

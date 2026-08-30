@@ -314,6 +314,14 @@ export function ProjectModal({ cs, onClose }: { cs: CaseStudyMetadata; onClose: 
             )}
 
             <a
+              href={`/case-study/${cs.slug}`}
+              className="inline-flex items-center gap-2 rounded-full border border-black/12 px-4 py-2.5 text-[12px] text-black/65 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black"
+            >
+              Read full case study
+              <Ico d={P.arrow} size={13} />
+            </a>
+
+            <a
               href="/contact"
               className="inline-flex items-center gap-2.5 rounded-full bg-[#111] px-5 py-2.5 text-[12px] tracking-wide text-white transition-colors hover:bg-black"
             >

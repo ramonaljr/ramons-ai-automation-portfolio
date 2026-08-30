@@ -15,7 +15,7 @@ import ContactForm from '@/components/contact/contact-form/contact-form'
 
 const SOCIALS = [
   { label: 'Github', icon: GithubIcon, href: 'https://github.com/ramonaljr' },
-  { label: 'LinkedIn', icon: LinkedinIcon, href: 'https://linkedin.com/in/ramon-vallejera-jr-mba' },
+  { label: 'LinkedIn', icon: LinkedinIcon, href: 'https://www.linkedin.com/in/ramon-vallejera-jr-mba-6976a3115' },
   { label: 'Instagram', icon: InstagramIcon, href: 'mailto:ramonvallejerajr@gmail.com' }
 ]
 

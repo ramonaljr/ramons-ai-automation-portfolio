@@ -15,7 +15,7 @@ const CONTACT = [
 
 const SOCIALS = [
   { label: "GitHub", href: "https://github.com/ramonaljr" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/ramon-vallejera-jr-mba" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/ramon-vallejera-jr-mba-6976a3115" },
   { label: "X", href: "https://x.com/ramonaljr" },
 ] as const
 

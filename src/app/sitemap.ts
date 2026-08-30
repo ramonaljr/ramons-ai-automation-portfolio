@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 
 import { getCaseStudies } from '@/lib/case-studies'
 import { getPosts } from '@/lib/posts'
+import { abs } from '@/lib/site'
 import { SERVICES } from '@/lib/portfolio'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -18,6 +19,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   return routes.map(route => ({
-    url: `${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}${route}`
+    url: abs(route)
   }))
 }

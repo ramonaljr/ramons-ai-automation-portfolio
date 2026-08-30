@@ -70,10 +70,13 @@ export function ContactSection() {
   const [picked, setPicked] = useState<string | null>(null)
   const [time, setTime] = useState<string | null>(null)
 
+  // `today` must resolve on the client — deriving it during render would make
+  // the server and client disagree on which dates are selectable.
   useEffect(() => {
     const now = new Date()
 
     now.setHours(0, 0, 0, 0)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setToday(now)
     setCursor({ y: now.getFullYear(), m: now.getMonth() })
   }, [])

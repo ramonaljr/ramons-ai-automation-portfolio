@@ -10,7 +10,7 @@ import RamonSignature from '@/components/layout/ramon-signature'
 const socials = [
   { label: 'GitHub', src: '/images/footer/github-logo.webp', href: 'https://github.com/ramonaljr' },
   { label: 'Email', src: '/images/footer/gmail.webp', href: 'mailto:ramonvallejerajr@gmail.com' },
-  { label: 'LinkedIn', src: '/images/footer/linkedin.webp', href: 'https://linkedin.com/in/ramon-vallejera-jr-mba' },
+  { label: 'LinkedIn', src: '/images/footer/linkedin.webp', href: 'https://www.linkedin.com/in/ramon-vallejera-jr-mba-6976a3115' },
   { label: 'X', src: '/images/footer/twitter.webp', href: 'https://x.com/ramonaljr' }
 ]
 

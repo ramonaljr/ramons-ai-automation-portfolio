@@ -215,14 +215,22 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         {featured.speed}
                       </span>
                     )}
-                    <button
-                      type="button"
-                      onClick={() => setOpen(featured)}
-                      className="inline-flex items-center gap-2 font-mono text-[12px] tracking-wide text-black/60 transition-colors hover:text-black"
-                    >
-                      VIEW FULL WORKFLOW
-                      <Ico d={P.arrow} size={13} />
-                    </button>
+                    <div className="flex items-center gap-5">
+                      <a
+                        href={`/case-study/${featured.slug}`}
+                        className="font-mono text-[12px] tracking-wide text-black/60 underline-offset-4 transition-colors hover:text-black hover:underline"
+                      >
+                        READ CASE STUDY
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setOpen(featured)}
+                        className="inline-flex items-center gap-2 font-mono text-[12px] tracking-wide text-black/60 transition-colors hover:text-black"
+                      >
+                        VIEW FULL WORKFLOW
+                        <Ico d={P.arrow} size={13} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -278,15 +286,24 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     {cs.description}
                   </p>
 
-                  <div className="mt-auto pt-6">
+                  <div className="mt-auto flex items-center gap-2 pt-6">
                     <button
                       type="button"
                       onClick={() => setOpen(cs)}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#111] px-5 py-2.5 text-[12px] tracking-wide text-white transition-colors hover:bg-black"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#111] px-5 py-2.5 text-[12px] tracking-wide text-white transition-colors hover:bg-black"
                     >
                       View workflow
                       <Ico d={P.arrow} size={13} />
                     </button>
+                    {/* A real anchor so the case study is reachable by crawlers
+                        and without JavaScript — the modal renders only on click,
+                        so its link never reaches the served HTML. */}
+                    <a
+                      href={`/case-study/${cs.slug}`}
+                      className="inline-flex shrink-0 items-center rounded-full border border-black/12 px-4 py-2.5 text-[12px] text-black/62 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black"
+                    >
+                      Read
+                    </a>
                   </div>
                 </div>
               </article>

@@ -12,6 +12,7 @@ import { ToolStackSection } from "@/components/landing/tool-stack-section"
 import { ExperienceSection } from "@/components/landing/experience-section"
 import { ContactSection } from "@/components/landing/contact-section"
 import { ArticlesSection } from "@/components/landing/articles-section"
+import { ChatWidget } from "@/components/landing/chat-widget"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import type { PostMetadata } from "@/lib/posts"
@@ -580,6 +581,7 @@ export function PortfolioSections({
       <ContactSection />
       <CtaSection />
       <SiteFooter />
+      <ChatWidget />
     </div>
   )
 }
