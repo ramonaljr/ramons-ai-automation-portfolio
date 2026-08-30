@@ -66,3 +66,17 @@
 
 - **GitHub**: [@ramonaljr](https://github.com/ramonaljr)
 - **Location**: Philippines
+
+## Deployment
+
+Hosted on Vercel, deployed from `main`.
+
+- **Git deploys** are enabled for `main` only via `vercel.json`. Feature
+  branches do not consume a build. The repo shipped with
+  `"deploymentEnabled": false`, which silently ignored every push — if
+  deployments stop firing, check that flag first.
+- **`NEXT_PUBLIC_APP_URL`** must be set in Vercel (Production). Everything
+  that emits an absolute URL — canonicals, Open Graph, sitemap, robots,
+  JSON-LD — reads it through `src/lib/site.ts`. It is inlined at build time,
+  so changing it requires a fresh build, not just a redeploy.
+- When a custom domain is added, update that variable and nothing else.
