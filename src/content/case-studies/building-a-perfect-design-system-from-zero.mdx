@@ -7,8 +7,8 @@ role: 'AI Automation Specialist'
 duration: '3 Weeks'
 tools: ['n8n', 'Claude 3.5 Sonnet', 'QuickBooks API', 'Google Drive', 'Webhooks']
 publishedAt: '2026-05-01'
-image: '/images/features/page-01.webp'
-heroImage: '/images/case-study/lumio-04.webp'
+image: '/images/case-study/mockups/building-a-perfect-design-system-from-zero.svg'
+heroImage: '/images/case-study/mockups/building-a-perfect-design-system-from-zero.svg'
 logo: '/images/features/logo-01.webp'
 # Fill these in to reveal the buttons on the case study page.
 videoUrl: ''
@@ -20,7 +20,7 @@ categories: ['AI Agents', 'Finance Ops']
 featured: true
 speed: '< 30 SEC'
 workflowImage: '/images/workflows/building-a-perfect-design-system-from-zero.svg'
-logicSummary: 'Email/Drive intake -> Claude vision extraction -> PO + tax validation -> GL draft to QuickBooks.'
+logicSummary: 'Email/Drive intake → Claude vision extraction → PO + tax validation → GL draft to QuickBooks.'
 keyOutcome:
   value: '92%'
   label: 'Less Processing Time'
@@ -50,22 +50,9 @@ failsafes:
 
 A fast-growing multi-entity business was manually processing 200+ vendor invoices per week across different formats (PDFs, scanned receipts, email attachments). Accounts Payable staff spent over 25 hours weekly cross-referencing invoice line items with purchase orders, calculating tax withholdings, and manually typing General Ledger (GL) entries into their accounting software — resulting in frequent human error and delayed month-end closes.
 
-<div className='my-24 grid gap-4 sm:grid-cols-2'>
-  <div className='bg-card relative w-full overflow-hidden rounded-3xl p-2 dark:bg-white/10'>
-    <img
-      src='/images/case-study/lumio-02.webp'
-      alt='n8n workflow mapping from email trigger to OCR extraction'
-      className='w-full rounded-3xl'
-    />
-  </div>
-  <div className='bg-card relative w-full overflow-hidden rounded-3xl p-2 dark:bg-white/10'>
-    <img
-      src='/images/case-study/lumio-03.webp'
-      alt='Structured data validation and GL code assignment'
-      className='w-full rounded-3xl'
-    />
-  </div>
-</div>
+![Three intake formats — Gmail attachments, watched Drive folders and emailed portal exports — normalised into one enforced invoice schema](/images/case-study/mockups/inline/invoice-intake.svg)
+
+![Field-level extraction confidence from Claude vision, and the rule that decides between an auto-posted GL entry and an approval card](/images/case-study/mockups/inline/extraction-confidence.svg)
 
 ## My Role
 
@@ -97,13 +84,7 @@ I built custom prompt engineering chains in n8n utilizing Claude's vision capabi
 - Automatic routing: If confidence is $>98\%$ and variance is $0$, draft GL entries are pushed to QuickBooks/ERP.
 - If an unknown vendor or price discrepancy is flagged, an interactive Telegram/Slack card is sent to the financial manager with "Approve" or "Edit" buttons.
 
-<div className='bg-card relative mt-24 w-full overflow-hidden rounded-3xl p-2 sm:p-3 dark:bg-white/10'>
-  <img
-    src='/images/case-study/lumio-01.webp'
-    alt='Automated invoice dashboard and execution logs'
-    className='w-full rounded-3xl'
-  />
-</div>
+![A week of runs and the per-invoice execution log — every held invoice is recorded rather than dropped](/images/case-study/mockups/inline/run-log.svg)
 
 ## System Resilience & Documentation
 

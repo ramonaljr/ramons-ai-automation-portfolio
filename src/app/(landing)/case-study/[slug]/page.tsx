@@ -157,11 +157,10 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
   const otherCaseStudies = caseStudies.filter(item => item.slug !== slug).slice(0, 2)
   const headings = extractHeadings(content)
 
-  // The workflow canvas is the honest lead image for an automation build, and
-  // it is what the Selected Work card already shows. The stock hero art is only
-  // a fallback for entries that have no canvas yet.
-  const leadImage = metadata.workflowImage ?? metadata.heroImage ?? metadata.image
-  const leadIsCanvas = Boolean(metadata.workflowImage)
+  // Outcome first, mechanism second: the hero mock-up shows what the client
+  // ends up looking at, and the workflow canvas below it shows how that gets
+  // produced. `image` is the fallback for entries with no mock-up drawn yet.
+  const leadImage = metadata.heroImage ?? metadata.image
 
   const facts = [
     { label: 'Organisation', value: metadata.organisation },
@@ -210,7 +209,9 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
           <div className='mt-12 flex flex-wrap items-center gap-x-5 gap-y-3'>
             <Eyebrow>CASE STUDY</Eyebrow>
             {metadata.platform && <Chip tone='solid'>{metadata.platform}</Chip>}
-            {metadata.categories?.map(c => <Chip key={c}>{c}</Chip>)}
+            {metadata.categories?.map(c => (
+              <Chip key={c}>{c}</Chip>
+            ))}
             {metadata.sample && <Chip tone='warn'>SAMPLE</Chip>}
           </div>
 
@@ -257,41 +258,81 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
             <Reveal className='mt-14' threshold={0.05}>
               <figure>
                 <div className='rounded-2xl border border-black/[0.07] bg-white p-3'>
-                  <img src={leadImage} alt={metadata.title ?? ''} className='w-full rounded-xl' />
+                  <img
+                    src={leadImage}
+                    alt={`What the team sees when ${metadata.title} runs`}
+                    className='w-full rounded-xl'
+                  />
                 </div>
-                {leadIsCanvas && (
-                  <figcaption className='mt-3 font-mono text-[11px] tracking-[0.18em] text-black/45'>
-                    WORKFLOW CANVAS
-                  </figcaption>
-                )}
+                <figcaption className='mt-3 font-mono text-[11px] tracking-[0.18em] text-black/45'>
+                  WHAT THE TEAM SEES
+                </figcaption>
               </figure>
             </Reveal>
           )}
         </div>
       </header>
 
-      {/* Everything below the header sits over the constellation field, as on
-          the landing page. The wrapper is the positioning context. */}
-      <div className='relative'>
-        <ParticleField />
-
-        <div className='relative z-10'>
+      {/* The reading zone stays on plain cream. On the landing the constellation
+          field only ever sits behind white cards; behind body copy it competes
+          with the text, so it picks up again below the article. */}
+      <>
+        {/* The mechanism behind the mock-up above */}
+        {metadata.workflowImage && (
           <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
-            <div className='mx-auto max-w-[1080px]'>
-              <div className='grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20'>
-                <ReadingRail headings={headings} contentId='case-study-content' />
-                <div id='case-study-content' className='min-w-0 max-w-[70ch]'>
-                  <MDXContent source={content} />
-                </div>
-              </div>
+            <div className={CONTAINER}>
+              <p className='font-mono text-[12px] tracking-[0.28em] text-black/50'>THE WORKFLOW</p>
+              {metadata.logicSummary && (
+                <p
+                  className='mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight text-[#111]'
+                  style={{ fontFamily: DISPLAY_FONT }}
+                >
+                  {metadata.logicSummary}
+                </p>
+              )}
+
+              <Reveal className='mt-10' threshold={0.05}>
+                <figure>
+                  <div className='rounded-2xl border border-black/[0.07] bg-white p-3'>
+                    <img
+                      src={metadata.workflowImage}
+                      alt={`Workflow canvas for ${metadata.title}`}
+                      loading='lazy'
+                      className='w-full rounded-xl'
+                    />
+                  </div>
+                  <figcaption className='mt-3 font-mono text-[11px] tracking-[0.18em] text-black/45'>
+                    {metadata.platform ? `${metadata.platform.toUpperCase()} CANVAS` : 'WORKFLOW CANVAS'}
+                    {metadata.stepCount ? ` · ${metadata.stepCount} STAGES` : ''}
+                  </figcaption>
+                </figure>
+              </Reveal>
             </div>
           </section>
+        )}
 
-          <OtherWork items={otherCaseStudies} />
-          <CtaSection />
-          <SiteFooter />
+        <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+          <div className='mx-auto max-w-[1080px]'>
+            <div className='grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20'>
+              <ReadingRail headings={headings} contentId='case-study-content' />
+              <div id='case-study-content' className='max-w-[70ch] min-w-0'>
+                <MDXContent source={content} />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Browsing zone — card-based, so the field reads as texture here */}
+        <div className='relative'>
+          <ParticleField />
+
+          <div className='relative z-10'>
+            <OtherWork items={otherCaseStudies} />
+            <CtaSection />
+            <SiteFooter />
+          </div>
         </div>
-      </div>
+      </>
 
       <ChatWidget />
 
