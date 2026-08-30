@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { label: "Services",  href: "#services" },
   { label: "Portfolio", href: "#portfolio" },
   { label: "Blog",      href: "/blog" },
-  { label: "Contact",   href: "/contact" },
+  { label: "Contact",   href: "#contact" },
 ]
 
 const NAV_STYLE = {

@@ -277,3 +277,13 @@
     transform: scale(0.8);
   }
 }
+
+/* Reverse marquee, for the second tool-stack row */
+@keyframes marquee-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}

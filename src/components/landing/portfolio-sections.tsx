@@ -8,9 +8,12 @@ import { HeroSection } from "@/components/landing/hero-section"
 import { IntroSection } from "@/components/landing/intro-section"
 import { ProjectsSection } from "@/components/landing/projects-section"
 import { PixelIcon } from "@/components/landing/pixel-icon"
+import { ToolStackSection } from "@/components/landing/tool-stack-section"
+import { ExperienceSection } from "@/components/landing/experience-section"
+import { ContactSection } from "@/components/landing/contact-section"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
-import { ENGAGEMENTS, PLATFORMS, PRINCIPLES, PROCESS, PROFILE, SERVICES, STACK } from "@/lib/portfolio"
+import { ENGAGEMENTS, PLATFORMS, PRINCIPLES, PROCESS, PROFILE, SERVICES } from "@/lib/portfolio"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
@@ -273,40 +276,6 @@ function ProcessSection() {
   )
 }
 
-// ── Stack ────────────────────────────────────────────────────────────────────
-
-function StackSection() {
-  const { ref, inView } = useInView(0.08)
-
-  return (
-    <section id="stack" className={SECTION}>
-      <div className={CONTAINER}>
-        <SectionHead
-          icon="integrations"
-          tag="STACK"
-          title={<>What I connect.</>}
-          blurb="The systems I most often wire together. If it has an API or a webhook, it can usually join the list."
-        />
-
-        <div ref={ref} className="grid sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-10">
-          {STACK.map((g, i) => (
-            <div key={g.group} style={rise(inView, i * 80)}>
-              <h3 className="text-[11px] tracking-widest font-mono text-black/35 pb-3 mb-4 border-b border-black/[0.07]">
-                {g.group.toUpperCase()}
-              </h3>
-              <ul className="space-y-2.5">
-                {g.items.map(it => (
-                  <li key={it} className="text-[13px] text-black/60">{it}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 // ── Principles ───────────────────────────────────────────────────────────────
 
 function PrinciplesSection() {
@@ -492,6 +461,7 @@ const FOOTER_LINKS = [
   { label: "Services", href: "#services" },
   { label: "Platforms", href: "#platforms" },
   { label: "Portfolio", href: "#portfolio" },
+  { label: "Experience", href: "#experience" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ]
@@ -562,9 +532,11 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
       <PlatformsSection />
       <ProjectsSection caseStudies={caseStudies} />
       <ProcessSection />
-      <StackSection />
+      <ToolStackSection />
       <PrinciplesSection />
+      <ExperienceSection />
       <EngagementSection />
+      <ContactSection />
       <CtaSection />
       <SiteFooter />
     </div>

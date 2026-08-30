@@ -278,14 +278,53 @@ export const PROCESS = [
   }
 ]
 
-// ─── Stack ───────────────────────────────────────────────────────────────────
+// ─── Tool stack ──────────────────────────────────────────────────────────────
 
-export const STACK = [
-  { group: 'Automation', items: ['n8n', 'Zapier', 'Make', 'Webhooks', 'REST APIs'] },
-  { group: 'AI & LLM', items: ['Claude 3.5 Sonnet', 'OpenAI GPT-4o', 'DeepSeek', 'RAG', 'Prompt Engineering'] },
-  { group: 'Data & Vector', items: ['Pinecone', 'Supabase Vector', 'Airtable', 'Google Sheets', 'PostgreSQL'] },
-  { group: 'Business Systems', items: ['QuickBooks', 'Google Workspace', 'Notion', 'Cal.com', 'CRMs'] },
-  { group: 'Voice & Messaging', items: ['VAPI', 'Retell AI', 'ElevenLabs', 'Twilio', 'Telegram', 'Slack'] }
+export type Tool = {
+  name: string
+
+  /** Matches public/images/tools/<slug>.svg. Omit when there is no logo file
+   *  and a monogram badge should be rendered instead. */
+  slug?: string
+
+  /** Brand hex, from the simple-icons dataset. */
+  color: string
+}
+
+/** First marquee row — automation platforms, models, and data stores. */
+export const TOOLS_ROW_1: Tool[] = [
+  { name: 'n8n', slug: 'n8n', color: '#EA4B71' },
+  { name: 'Zapier', slug: 'zapier', color: '#FF4F00' },
+  { name: 'Make', slug: 'make', color: '#6D00CC' },
+  { name: 'Claude', slug: 'anthropic', color: '#191919' },
+  { name: 'OpenAI', slug: 'openai', color: '#412991' },
+  { name: 'DeepSeek', color: '#4D6BFE' },
+  { name: 'PostgreSQL', slug: 'postgresql', color: '#4169E1' },
+  { name: 'Supabase', slug: 'supabase', color: '#3FCF8E' },
+  { name: 'Pinecone', color: '#0B7285' },
+  { name: 'Airtable', slug: 'airtable', color: '#18BFFF' },
+  { name: 'Notion', slug: 'notion', color: '#000000' },
+  { name: 'Google Sheets', slug: 'googlesheets', color: '#34A853' }
+]
+
+/** Second marquee row — business systems and channels. */
+export const TOOLS_ROW_2: Tool[] = [
+  { name: 'HubSpot', slug: 'hubspot', color: '#FF7A59' },
+  { name: 'Salesforce', slug: 'salesforce', color: '#00A1E0' },
+  { name: 'QuickBooks', slug: 'quickbooks', color: '#2CA01C' },
+  { name: 'Xero', slug: 'xero', color: '#13B5EA' },
+  { name: 'Stripe', slug: 'stripe', color: '#635BFF' },
+  { name: 'Shopify', slug: 'shopify', color: '#7AB55C' },
+  { name: 'Twilio', slug: 'twilio', color: '#F22F46' },
+  { name: 'WhatsApp', slug: 'whatsapp', color: '#25D366' },
+  { name: 'Telegram', slug: 'telegram', color: '#26A5E4' },
+  { name: 'Slack', slug: 'slack', color: '#4A154B' },
+  { name: 'Gmail', slug: 'gmail', color: '#EA4335' },
+  { name: 'Google Drive', slug: 'googledrive', color: '#4285F4' },
+  { name: 'Cal.com', slug: 'caldotcom', color: '#292929' },
+  { name: 'ElevenLabs', slug: 'elevenlabs', color: '#000000' },
+  { name: 'VAPI', color: '#12A594' },
+  { name: 'GitHub', slug: 'github', color: '#181717' }
 ]
 
 // ─── Principles ──────────────────────────────────────────────────────────────
@@ -313,11 +352,60 @@ export const PRINCIPLES = [
 
 // ─── Work history ────────────────────────────────────────────────────────────
 
-export const EXPERIENCE = [
-  { company: 'My Mountain Mover', role: 'Financial Analyst' },
-  { company: 'Johndorf Ventures Corporation', role: 'Branch Accountant' },
-  { company: 'Johndorf Ventures Corporation', role: 'Project Cost Accountant' },
-  { company: 'Johndorf Ventures Corporation', role: 'AP Supervisor & Tax Compliance Analyst' }
+export type Role = {
+  index: string
+  company: string
+  role: string
+  period: string
+  status?: string
+  stack: string[]
+  achievement: string
+  description: string
+}
+
+export const EXPERIENCE: Role[] = [
+  {
+    index: '01',
+    company: 'My Mountain Mover',
+    role: 'Financial Analyst',
+    period: '2022 — Present',
+    status: 'US Remote',
+    stack: ['Claude', 'DCF Modeling', 'Financial Analysis', 'Forecasting', 'Excel'],
+    achievement: 'Maintained DCF models across public portfolios and accelerated research with AI tools',
+    description:
+      'Maintain DCF valuation models and financial statement forecasts across US portfolios. Leverage Claude and AI tools daily to accelerate research, market data analysis, and structured reporting workflows.'
+  },
+  {
+    index: '02',
+    company: 'Johndorf Ventures Corporation',
+    role: 'Branch Accountant',
+    period: '2020 — 2021',
+    stack: ['Team Leadership', 'AP/AR', 'Reconciliation', 'SAP', 'Process Mapping'],
+    achievement: 'Led a 10-person accounting team delivering monthly and annual closes',
+    description:
+      'Owned and documented repeatable close, reconciliation, and approval processes across AP, AR, and disbursement — establishing the exact process-mapping discipline required for enterprise automation.'
+  },
+  {
+    index: '03',
+    company: 'Johndorf Ventures Corporation',
+    role: 'Project Cost Accountant',
+    period: '2016 — 2020',
+    stack: ['Cost Accounting', 'Variance Analysis', 'QuickBooks', 'Workbooks'],
+    achievement: 'Reconciled multi-million project cost ledgers with automated reporting',
+    description:
+      'Performed standard costing and variance analysis for a major real estate developer. Reconciled material, labor, and overhead costs against item ledgers and built recurring reporting systems.'
+  },
+  {
+    index: '04',
+    company: 'Johndorf Ventures Corporation',
+    role: 'AP Supervisor & Tax Compliance Analyst',
+    period: '2015 — 2018',
+    status: 'Accounting Operations',
+    stack: ['Tax Compliance', 'Invoicing', 'Vendor Reconciliation', 'Voucher Controls'],
+    achievement: 'Supervised the full AP lifecycle and strict statutory filing calendars',
+    description:
+      'Supervised end-to-end invoice processing, vendor aging, and voucher controls. Managed statutory tax compliance calendars — high-volume, rules-based operations prime for automation.'
+  }
 ]
 
 // ─── Engagement models ───────────────────────────────────────────────────────
