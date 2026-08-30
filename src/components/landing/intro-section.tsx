@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react"
 
+import { GreetingWord } from "@/components/landing/greeting-word"
+
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
@@ -68,12 +70,14 @@ export function IntroSection() {
           {/* ── Left: the introduction ──────────────────────────────────── */}
           <div>
             <div style={reveal(60)}>
-              <p className="text-xs tracking-[0.25em] text-black/55 mb-4 font-mono">HI, I&apos;M</p>
               <h2
                 className="text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
-                Ramon A.<br />Vallejera, Jr.
+                <GreetingWord className="text-black/50" />
+                <span className="text-black/50">, I&apos;m</span>
+                <br />
+                Ramon A. Vallejera, Jr.
               </h2>
               <p
                 className="mt-4 text-xl sm:text-2xl font-light text-black/62"
