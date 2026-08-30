@@ -244,32 +244,70 @@ function ProcessSection() {
   return (
     <section id="process" className={SECTION}>
       <div className={CONTAINER}>
-        <SectionHead
-          icon="agents"
-          tag="PROCESS"
-          title={<>How the work<br />actually goes.</>}
-          blurb="Four steps, in this order. Most failed automations skip the first one."
-        />
 
-        <div ref={ref} className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Header — mono eyebrow and subtitle, matching the reference */}
+        <div className="mb-20">
+          <p className="font-mono text-[12px] tracking-[0.28em] text-black/35">PROCESS</p>
+          <h2
+            className="mt-4 text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
+            style={{ fontFamily: DISPLAY_FONT }}
+          >
+            How I build automation
+          </h2>
+          <p className="mt-5 font-mono text-[14px] leading-relaxed text-black/45">
+            From business problem to a working automation system.
+          </p>
+        </div>
+
+        {/* Steps */}
+        <div ref={ref} className="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((p, i) => (
-            <div
-              key={p.step}
-              className="relative rounded-2xl border border-black/[0.07] bg-white/50 p-7 hover:bg-white hover:border-black/12 transition-all duration-300"
-              style={rise(inView, i * 90)}
-            >
-              <span
-                className="block text-4xl font-light text-black/15 mb-4"
-                style={{ fontFamily: DISPLAY_FONT }}
-              >
-                {p.step}
-              </span>
-              <h3 className="text-lg font-light tracking-tight text-[#111] mb-3" style={{ fontFamily: DISPLAY_FONT }}>
-                {p.title}
+            <div key={p.step} style={rise(inView, i * 110)}>
+
+              {/* Numeral with the rail running to the next step */}
+              <div className="flex items-center gap-3">
+                <span
+                  className="text-[42px] leading-none font-light text-[#111]"
+                  style={{ fontFamily: DISPLAY_FONT }}
+                >
+                  {p.step}
+                </span>
+                {i < PROCESS.length - 1 && (
+                  <span className="hidden lg:flex flex-1 items-center gap-2" aria-hidden="true">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-black/25" />
+                    <span className="h-px flex-1 bg-black/[0.12]" />
+                  </span>
+                )}
+              </div>
+
+              <h3 className="mt-7 font-mono text-[13px] font-semibold tracking-[0.18em] text-[#111]">
+                {p.label}
               </h3>
-              <p className="text-[13px] leading-relaxed text-black/50">{p.desc}</p>
+
+              <p className="mt-3.5 text-[14px] font-medium leading-snug text-black/80">
+                {p.summary}
+              </p>
+
+              <p className="mt-3 text-[13.5px] leading-relaxed text-black/50">{p.desc}</p>
             </div>
           ))}
+        </div>
+
+        {/* Closing prompt */}
+        <div
+          className="mt-24 rounded-2xl border border-black/[0.09] bg-white/40 px-6 py-14 text-center"
+          style={rise(inView, PROCESS.length * 110)}
+        >
+          <p className="font-mono text-[13px] tracking-[0.18em] text-black/55">
+            HAVE A PROCESS THAT FEELS TOO MANUAL?
+          </p>
+          <a
+            href="/#contact"
+            className="mt-7 inline-flex items-center gap-2.5 rounded-full bg-[#111] px-7 py-3.5 font-mono text-[12px] tracking-[0.14em] text-white transition-colors hover:bg-black"
+          >
+            LET&apos;S AUTOMATE IT
+            <ArrowIcon />
+          </a>
         </div>
       </div>
     </section>

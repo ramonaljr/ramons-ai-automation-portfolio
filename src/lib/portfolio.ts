@@ -255,26 +255,39 @@ export const PLATFORMS: Platform[] = [
 
 // ─── Process ─────────────────────────────────────────────────────────────────
 
-export const PROCESS = [
+export type Step = {
+  step: string
+  label: string
+
+  /** Bold one-line statement of what this stage settles. */
+  summary: string
+  desc: string
+}
+
+export const PROCESS: Step[] = [
   {
     step: '01',
-    title: 'Map the process',
-    desc: 'Before any building, I document your SOPs, edge cases, approval rules and systems of record — so the automation matches how the business actually runs.'
+    label: 'DISCOVER',
+    summary: 'Find what should be automated.',
+    desc: 'Understand your current process, identify repetitive tasks, bottlenecks, and opportunities for automation.'
   },
   {
     step: '02',
-    title: 'Design the architecture',
-    desc: 'I decide what stays deterministic code and what an LLM handles, pick the right platform for the job, and plan the error branches and human review gates up front.'
+    label: 'DESIGN',
+    summary: 'Plan the right automation.',
+    desc: 'Map the workflow, choose the right tools, define the logic, and design how everything should work together.'
   },
   {
     step: '03',
-    title: 'Build & test against real data',
-    desc: 'The workflow is built and run against your real edge cases — malformed PDFs, duplicate records, missing fields — not just the happy path.'
+    label: 'BUILD',
+    summary: 'Turn the plan into a working system.',
+    desc: 'Build the workflow, connect APIs and business tools, integrate AI agents, and handle the required logic.'
   },
   {
     step: '04',
-    title: 'Hand over documented',
-    desc: 'You get a documented workflow, alerting on failures, and a walkthrough — so your team can operate and extend it without me.'
+    label: 'OPTIMIZE',
+    summary: 'Test, launch, and improve.',
+    desc: 'Test the automation, fix edge cases, monitor performance, and refine the system for reliable operation.'
   }
 ]
 
