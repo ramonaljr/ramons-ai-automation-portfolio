@@ -46,7 +46,7 @@ export function ParticleField({ className = "" }: { className?: string }) {
     let raf = 0
     let running = false
 
-    const LINK = 140
+    const LINK = 170
     const LINK_SQ = LINK * LINK
 
     const resize = () => {
@@ -69,14 +69,14 @@ export function ParticleField({ className = "" }: { className?: string }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       // Density by area, clamped so a 4K display does not melt.
-      const count = Math.round(Math.min(90, Math.max(28, (w * h) / 20000)))
+      const count = Math.round(Math.min(160, Math.max(50, (w * h) / 10500)))
 
       particles = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
         vx: (Math.random() - 0.5) * 0.28,
         vy: (Math.random() - 0.5) * 0.28,
-        r: 0.9 + Math.random() * 1.5,
+        r: 1.1 + Math.random() * 1.9,
       }))
     }
 
@@ -101,8 +101,8 @@ export function ParticleField({ className = "" }: { className?: string }) {
           const d2 = dx * dx + dy * dy
 
           if (d2 < LINK_SQ) {
-            ctx.strokeStyle = `rgba(${INK}, ${0.16 * (1 - d2 / LINK_SQ)})`
-            ctx.lineWidth = 1
+            ctx.strokeStyle = `rgba(${INK}, ${0.30 * (1 - d2 / LINK_SQ)})`
+            ctx.lineWidth = 1.1
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(q.x, q.y)
@@ -110,7 +110,7 @@ export function ParticleField({ className = "" }: { className?: string }) {
           }
         }
 
-        ctx.fillStyle = `rgba(${INK}, 0.22)`
+        ctx.fillStyle = `rgba(${INK}, 0.40)`
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
         ctx.fill()
@@ -171,7 +171,11 @@ export function ParticleField({ className = "" }: { className?: string }) {
     <div
       ref={wrapRef}
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}
+      // No overflow-hidden here: `overflow: hidden` turns this into a scroll
+      // container, and a sticky child then sticks to *it* rather than the
+      // viewport — so the canvas scrolled away and the field vanished below
+      // the first screen.
+      className={`pointer-events-none absolute inset-0 ${className}`}
     >
       {/* Sticky so one viewport of canvas covers the whole scroll range. */}
       <div className="sticky top-0 h-screen w-full">
