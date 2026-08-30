@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" role="img" aria-label="RAG pipeline">
+<defs>
+  <linearGradient id="iri" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#c026a3" stop-opacity=".55"/>
+    <stop offset="35%" stop-color="#6d28d9" stop-opacity=".5"/>
+    <stop offset="70%" stop-color="#0e7490" stop-opacity=".5"/>
+    <stop offset="100%" stop-color="#c2620a" stop-opacity=".5"/>
+  </linearGradient>
+  <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#ffffff" stop-opacity=".9"/>
+    <stop offset="100%" stop-color="#ffffff" stop-opacity=".35"/>
+  </linearGradient>
+  <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#000" flood-opacity=".10"/>
+  </filter>
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M40 0H0V40" fill="none" stroke="#111" stroke-opacity=".05" stroke-width="1"/>
+  </pattern>
+</defs>
+<rect width="1200" height="760" fill="#F5F4F0"/>
+<rect width="1200" height="760" fill="url(#grid)"/>
+<text x="60" y="80" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="30" font-weight="300" fill="#111" fill-opacity=".9">RAG pipeline</text><text x="60" y="112" font-family="ui-monospace, monospace" font-size="13" fill="#111" fill-opacity=".38">documents → vectors → cited answers</text>
+<path d="M230,220 C275.0,220 285.0,260 330,260" fill="none" stroke="#111" stroke-opacity=".22" stroke-width="1.6"/>
+<path d="M230,300 C275.0,300 285.0,290 330,290" fill="none" stroke="#111" stroke-opacity=".22" stroke-width="1.6"/>
+<path d="M230,380 C275.0,380 285.0,320 330,320" fill="none" stroke="#111" stroke-opacity=".22" stroke-width="1.6"/>
+<path d="M520,290 C565.0,290 575.0,290 620,290" fill="none" stroke="#111" stroke-opacity=".22" stroke-width="1.6"/>
+<path d="M810,290 C855.0,290 865.0,290 910,290" fill="none" stroke="#111" stroke-opacity=".22" stroke-width="1.6"/>
+<g filter="url(#soft)"><rect x="60" y="190" width="170" height="60" rx="10" fill="url(#glow)" stroke="#111" stroke-opacity=".12"/></g><circle cx="60" cy="220.0" r="4" fill="#111" fill-opacity=".18"/><circle cx="230" cy="220.0" r="4" fill="#111" fill-opacity=".18"/><text x="78" y="222" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="15" fill="#111" fill-opacity=".82">invoice.pdf</text><text x="78" y="244" font-family="ui-monospace, monospace" font-size="11" fill="#111" fill-opacity=".38">unstructured</text>
+<g filter="url(#soft)"><rect x="60" y="270" width="170" height="60" rx="10" fill="url(#glow)" stroke="#111" stroke-opacity=".12"/></g><circle cx="60" cy="300.0" r="4" fill="#111" fill-opacity=".18"/><circle cx="230" cy="300.0" r="4" fill="#111" fill-opacity=".18"/><text x="78" y="302" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="15" fill="#111" fill-opacity=".82">contract.docx</text><text x="78" y="324" font-family="ui-monospace, monospace" font-size="11" fill="#111" fill-opacity=".38">unstructured</text>
+<g filter="url(#soft)"><rect x="60" y="350" width="170" height="60" rx="10" fill="url(#glow)" stroke="#111" stroke-opacity=".12"/></g><circle cx="60" cy="380.0" r="4" fill="#111" fill-opacity=".18"/><circle cx="230" cy="380.0" r="4" fill="#111" fill-opacity=".18"/><text x="78" y="382" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="15" fill="#111" fill-opacity=".82">notes.md</text><text x="78" y="404" font-family="ui-monospace, monospace" font-size="11" fill="#111" fill-opacity=".38">unstructured</text>
+<g filter="url(#soft)"><rect x="330" y="252" width="190" height="76" rx="14" fill="url(#glow)" stroke="#111" stroke-opacity=".12"/></g><circle cx="330" cy="290.0" r="4" fill="#111" fill-opacity=".18"/><circle cx="520" cy="290.0" r="4" fill="#111" fill-opacity=".18"/><text x="348" y="284" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="15" fill="#111" fill-opacity=".82">Embed</text><text x="348" y="306" font-family="ui-monospace, monospace" font-size="11" fill="#111" fill-opacity=".38">chunk · vectorise</text>
+<g filter="url(#soft)"><rect x="620" y="252" width="190" height="76" rx="14" fill="url(#iri)" stroke="#111" stroke-opacity=".22"/></g><circle cx="620" cy="290.0" r="4" fill="#111" fill-opacity=".18"/><circle cx="810" cy="290.0" r="4" fill="#111" fill-opacity=".18"/><text x="638" y="284" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="15" fill="#111" fill-opacity=".82">Vector store</text><text x="638" y="306" font-family="ui-monospace, monospace" font-size="11" fill="#111" fill-opacity=".38">pinecone · supabase</text>
+<g filter="url(#soft)"><rect x="910" y="252" width="190" height="76" rx="14" fill="url(#glow)" stroke="#111" stroke-opacity=".12"/></g><circle cx="910" cy="290.0" r="4" fill="#111" fill-opacity=".18"/><circle cx="1100" cy="290.0" r="4" fill="#111" fill-opacity=".18"/><text x="928" y="284" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="15" fill="#111" fill-opacity=".82">Cited answer</text><text x="928" y="306" font-family="ui-monospace, monospace" font-size="11" fill="#111" fill-opacity=".38">source-linked</text>
+<rect x="60" y="600" width="174" height="28" rx="14" fill="#111" fill-opacity=".05" stroke="#111" stroke-opacity=".10"/><text x="73" y="619" font-family="ui-monospace, monospace" font-size="11" fill="#111" fill-opacity=".55">JSON schema enforced</text>
+<rect x="258" y="600" width="152" height="28" rx="14" fill="#111" fill-opacity=".05" stroke="#111" stroke-opacity=".10"/><text x="271" y="619" font-family="ui-monospace, monospace" font-size="11" fill="#111" fill-opacity=".55">confidence scored</text>
+<rect x="430" y="600" width="144" height="28" rx="14" fill="#111" fill-opacity=".05" stroke="#111" stroke-opacity=".10"/><text x="443" y="619" font-family="ui-monospace, monospace" font-size="11" fill="#111" fill-opacity=".55">low-conf → human</text>
+</svg>

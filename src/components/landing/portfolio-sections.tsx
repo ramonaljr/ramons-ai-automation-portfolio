@@ -87,77 +87,86 @@ function ArrowIcon() {
 
 // ── Services ─────────────────────────────────────────────────────────────────
 
+const SERVICE_ICONS: ("platform" | "agents" | "workflow" | "integrations" | "pricing")[] = [
+  "agents", "workflow", "platform", "integrations", "pricing",
+]
+
 function ServicesSection() {
   const { ref, inView } = useInView(0.05)
-  const [open, setOpen] = useState(0)
 
   return (
     <section id="services" className={SECTION}>
       <div className={CONTAINER}>
         <SectionHead
           icon="platform"
-          tag="SERVICES"
+          tag="OUR SERVICES"
           title={<>What I build<br />for operators.</>}
           blurb="Five ways I remove manual work from a business. Every engagement ends with a documented workflow your team can run without me."
         />
 
-        <div ref={ref} className="border-t border-black/[0.07]">
-          {SERVICES.map((s, i) => {
-            const isOpen = open === i
+        <div ref={ref} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-16 pt-10">
+          {SERVICES.map((s, i) => (
+            <div
+              key={s.slug}
+              className="group relative flex flex-col rounded-2xl border border-black/[0.07] bg-white/50 px-7 pt-14 pb-8 text-center transition-all duration-300 hover:bg-white hover:border-black/12"
+              style={rise(inView, i * 80)}
+            >
+              {/* Icon medallion, straddling the top edge like the reference */}
+              <span className="absolute -top-9 left-1/2 -translate-x-1/2 w-[72px] h-[72px] rounded-full bg-[#F5F4F0] border border-black/10 flex items-center justify-center transition-colors duration-300 group-hover:border-black/25">
+                <PixelIcon type={SERVICE_ICONS[i] ?? "platform"} size={30} />
+              </span>
 
-            return (
-              <div
-                key={s.title}
-                className="border-b border-black/[0.07]"
-                style={rise(inView, i * 70)}
+              <h3
+                className="text-xl font-light tracking-tight text-[#111] leading-snug"
+                style={{ fontFamily: DISPLAY_FONT }}
               >
-                <button
-                  onClick={() => setOpen(isOpen ? -1 : i)}
-                  aria-expanded={isOpen}
-                  className="w-full flex items-start gap-5 py-7 text-left group"
-                >
-                  <span className="text-[11px] font-mono text-black/30 pt-2 w-8 shrink-0">
-                    0{i + 1}
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span
-                      className={`block text-xl lg:text-2xl font-light tracking-tight transition-colors ${isOpen ? "text-[#111]" : "text-black/70 group-hover:text-[#111]"}`}
-                      style={{ fontFamily: DISPLAY_FONT }}
-                    >
-                      {s.title}
-                    </span>
-                    <span className="mt-1.5 block text-[11px] font-mono tracking-wide text-black/35">
-                      {s.duration}
-                    </span>
-                  </span>
-                  <span
-                    className="mt-2 shrink-0 w-7 h-7 rounded-full border border-black/10 flex items-center justify-center text-black/40 transition-transform duration-300"
-                    style={{ transform: isOpen ? "rotate(45deg)" : "none" }}
-                  >
-                    <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true">
-                      <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-                    </svg>
-                  </span>
-                </button>
+                {s.title}
+              </h3>
 
-                <div
-                  className="overflow-hidden transition-all duration-400 ease-out"
-                  style={{ maxHeight: isOpen ? "260px" : "0px", opacity: isOpen ? 1 : 0 }}
-                >
-                  <div className="pb-8 pl-13 max-w-2xl">
-                    <p className="text-[15px] leading-relaxed text-black/55">{s.description}</p>
-                    <div className="mt-4 flex flex-wrap gap-1.5">
-                      {s.tools.map(t => (
-                        <span key={t} className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[11px] text-black/50">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+              <p className="mt-3 text-[13px] leading-relaxed text-black/50 flex-1">
+                {s.description}
+              </p>
+
+              <div className="mt-5 flex flex-wrap justify-center gap-1.5">
+                {s.tools.slice(0, 3).map(t => (
+                  <span key={t} className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[10px] text-black/45">
+                    {t}
+                  </span>
+                ))}
               </div>
-            )
-          })}
+
+              <a
+                href={`/services/${s.slug}`}
+                className="mt-7 inline-flex items-center justify-center gap-2 self-center pl-5 pr-4 py-2.5 rounded-full bg-[#111] text-white text-[12px] tracking-wide hover:bg-black transition-colors"
+              >
+                View Services
+                <ArrowIcon />
+              </a>
+            </div>
+          ))}
+
+          {/* Sixth cell balances the 3-column grid and routes to contact */}
+          <div
+            className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/12 px-7 py-12 text-center"
+            style={rise(inView, SERVICES.length * 80)}
+          >
+            <p
+              className="text-lg font-light tracking-tight text-[#111]"
+              style={{ fontFamily: DISPLAY_FONT }}
+            >
+              Not sure which<br />you need?
+            </p>
+            <p className="mt-3 text-[13px] leading-relaxed text-black/45 max-w-[22ch]">
+              Describe the process that eats your week and I will tell you where it fits.
+            </p>
+            <a
+              href="/contact"
+              className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-black/12 text-[12px] tracking-wide text-black/65 hover:text-black hover:border-black/30 hover:bg-black/[0.03] transition-all"
+            >
+              Ask me
+              <ArrowIcon />
+            </a>
+          </div>
         </div>
       </div>
     </section>
