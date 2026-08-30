@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 
 import { HERO_STATS } from '@/lib/portfolio'
+import { CountUp } from '@/components/landing/motion'
 
 const words = ['automate', 'reconcile', 'integrate', 'scale']
 
@@ -241,7 +242,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
                 className='text-3xl font-light tracking-tight text-[#111] lg:text-4xl'
                 style={{ fontFamily: DISPLAY_FONT }}
               >
-                {stat.value}
+                <CountUp start={isVisible}>{stat.value}</CountUp>
               </span>
               <span className='text-xs leading-tight text-black/70'>{stat.label}</span>
             </div>

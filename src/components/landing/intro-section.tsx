@@ -67,7 +67,7 @@ export function IntroSection() {
 
         {/* Narrower than the page container: at 1600px the two columns drifted
             ~600px apart and stopped reading as one block. */}
-        <div className="grid max-w-[1120px] gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16 items-start">
+        <div className="grid max-w-[1120px] items-center gap-12 lg:grid-cols-[minmax(0,1fr)_408px] lg:gap-16">
 
           {/* ── Left: the introduction ──────────────────────────────────── */}
           <div>

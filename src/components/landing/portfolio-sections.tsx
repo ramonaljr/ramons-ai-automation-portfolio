@@ -16,7 +16,7 @@ import { ContactSection } from "@/components/landing/contact-section"
 import { ArticlesSection } from "@/components/landing/articles-section"
 import { ChatWidget } from "@/components/landing/chat-widget"
 import { ParticleField } from "@/components/landing/particle-field"
-import { ArrowIcon, CONTAINER, DISPLAY_FONT, PAGE, SECTION, rise, useInView } from "@/components/landing/motion"
+import { ArrowIcon, CONTAINER, DISPLAY_FONT, PAGE, SECTION, rise, TextReveal, useInView } from "@/components/landing/motion"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import type { PostMetadata } from "@/lib/posts"
@@ -44,12 +44,13 @@ function SectionHead({
   return (
     <div ref={ref} className="mb-16" style={rise(inView)}>
       <Tag>{tag}</Tag>
-      <h2
+      <TextReveal
+        as="h2"
+        delay={80}
         className="mt-6 text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-tight text-[#111]"
-        style={{ fontFamily: DISPLAY_FONT }}
       >
-        {title}
-      </h2>
+        <span style={{ fontFamily: DISPLAY_FONT }}>{title}</span>
+      </TextReveal>
       {blurb && <p className="mt-5 text-[15px] leading-relaxed text-black/72 max-w-xl">{blurb}</p>}
     </div>
   )
