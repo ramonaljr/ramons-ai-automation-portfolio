@@ -8,6 +8,7 @@
 @theme inline {
   --font-sans: var(--font-satoshi);
   --font-mono: var(--font-geist-mono);
+  --font-pixel: var(--font-courier-prime), 'Courier Prime', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -180,5 +181,99 @@
   }
   html.custom-cursor-active [data-custom-cursor] {
     @apply block!;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Landing page animations
+   Ported from the Agentic template (src/components/landing/*). Additive only —
+   no existing tokens or rules above are modified.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Glitch Animation */
+@keyframes glitch-shift {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  33% {
+    transform: translate(-2px, 2px);
+  }
+  66% {
+    transform: translate(2px, -2px);
+  }
+}
+
+@keyframes glitch-opacity {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.glitch-layer {
+  animation:
+    glitch-shift 5s infinite ease-in-out,
+    glitch-opacity 3s infinite ease-in-out;
+}
+
+/* Word reveal — blur + translateY */
+@keyframes word-reveal {
+  0% {
+    opacity: 0;
+    filter: blur(24px);
+    transform: translateY(24px);
+  }
+  60% {
+    filter: blur(3px);
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0px);
+  }
+}
+
+.word-reveal {
+  opacity: 0;
+  animation: word-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+}
+
+/* Fade up for sections */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bento shimmer on hover */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* Pulse dot */
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
   }
 }
