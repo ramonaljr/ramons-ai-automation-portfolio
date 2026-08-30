@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 
 import { ProjectModal } from "@/components/landing/project-modal"
+import { READABLE } from "@/components/landing/motion"
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
@@ -95,7 +96,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+          <div className={READABLE}>
             <p className="font-mono text-[13px] tracking-[0.25em] text-black/68">SELECTED</p>
             <h2
               className="mt-2 text-[clamp(2.5rem,6vw,5rem)] font-light leading-[0.95] tracking-tight text-[#111]"

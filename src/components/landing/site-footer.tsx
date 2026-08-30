@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 
-import { CONTAINER } from '@/components/landing/motion'
+import { CONTAINER, READABLE } from '@/components/landing/motion'
 import { PROFILE } from '@/lib/portfolio'
 
 /**
@@ -26,7 +26,7 @@ export function SiteFooter() {
 
   return (
     <footer className='border-t border-black/[0.06] px-6 py-12 md:px-12 lg:px-20'>
-      <div className={CONTAINER}>
+      <div className={`${CONTAINER} ${READABLE}`}>
         <div className='flex flex-col justify-between gap-8 md:flex-row md:items-center'>
           <div>
             <p className='font-pixel text-xs tracking-[0.25em] text-black/70'>{PROFILE.shortName.toUpperCase()}</p>

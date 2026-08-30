@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 
+import { READABLE } from "@/components/landing/motion"
 import { EXPERIENCE } from "@/lib/portfolio"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
@@ -40,7 +41,7 @@ export function ExperienceSection() {
     <section id="experience" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
       <div className={CONTAINER}>
 
-        <div className="mb-16">
+        <div className={`mb-16 ${READABLE}`}>
           <Tag>EXPERIENCE</Tag>
           <h2
             className="mt-6 text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-tight text-[#111]"

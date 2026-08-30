@@ -21,6 +21,19 @@ import { useEffect, useRef } from "react"
 
 const INK = "17, 17, 17"
 
+/**
+ * Backdrop weights, kept in the same register as the rest of the page.
+ *
+ * These started at 0.40 / 0.30, which is where the field became a legibility
+ * problem: section rules on this page are `black/0.06` and tag chips are
+ * `black/0.04`, so the constellation was painting roughly ten times heavier
+ * than any other background element and reading as foreground. Particles also
+ * clump as they random-walk, and those clusters landed on body copy as dense
+ * webs of lines that broke up word shapes.
+ */
+const DOT_ALPHA = 0.14
+const LINK_ALPHA = 0.10
+
 type P = { x: number; y: number; vx: number; vy: number; r: number }
 
 export function ParticleField({ className = "" }: { className?: string }) {
@@ -105,8 +118,8 @@ export function ParticleField({ className = "" }: { className?: string }) {
           const d2 = dx * dx + dy * dy
 
           if (d2 < LINK_SQ) {
-            ctx.strokeStyle = `rgba(${INK}, ${0.30 * (1 - d2 / LINK_SQ)})`
-            ctx.lineWidth = 1.1
+            ctx.strokeStyle = `rgba(${INK}, ${LINK_ALPHA * (1 - d2 / LINK_SQ)})`
+            ctx.lineWidth = 1
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(q.x, q.y)
@@ -114,7 +127,7 @@ export function ParticleField({ className = "" }: { className?: string }) {
           }
         }
 
-        ctx.fillStyle = `rgba(${INK}, 0.40)`
+        ctx.fillStyle = `rgba(${INK}, ${DOT_ALPHA})`
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
         ctx.fill()

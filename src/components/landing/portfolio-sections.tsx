@@ -16,7 +16,7 @@ import { ContactSection } from "@/components/landing/contact-section"
 import { ArticlesSection } from "@/components/landing/articles-section"
 import { ChatWidget } from "@/components/landing/chat-widget"
 import { ParticleField } from "@/components/landing/particle-field"
-import { ArrowIcon, CONTAINER, DISPLAY_FONT, PAGE, SECTION, rise, TextReveal, useInView } from "@/components/landing/motion"
+import { ArrowIcon, CONTAINER, DISPLAY_FONT, PAGE, READABLE, SECTION, rise, TextReveal, useInView } from "@/components/landing/motion"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import type { PostMetadata } from "@/lib/posts"
@@ -42,7 +42,7 @@ function SectionHead({
   const { ref, inView } = useInView(0.2)
 
   return (
-    <div ref={ref} className="mb-16" style={rise(inView)}>
+    <div ref={ref} className={`mb-16 ${READABLE}`} style={rise(inView)}>
       <Tag>{tag}</Tag>
       <TextReveal
         as="h2"
@@ -212,7 +212,7 @@ function ProcessSection() {
       <div className={CONTAINER}>
 
         {/* Header — mono eyebrow and subtitle, matching the reference */}
-        <div className="mb-20">
+        <div className={`mb-20 ${READABLE}`}>
           <p className="font-mono text-[13px] tracking-[0.28em] text-black/68">PROCESS</p>
           <h2
             className="mt-4 text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
@@ -228,7 +228,7 @@ function ProcessSection() {
         {/* Steps */}
         <div ref={ref} className="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((p, i) => (
-            <div key={p.step} style={rise(inView, i * 110)}>
+            <div key={p.step} className={READABLE} style={rise(inView, i * 110)}>
 
               {/* Numeral with the rail running to the next step */}
               <div className="flex items-center gap-3">

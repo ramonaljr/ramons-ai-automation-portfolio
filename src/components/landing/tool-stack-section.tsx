@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 
+import { READABLE } from "@/components/landing/motion"
 import type { Tool } from "@/lib/portfolio"
 import { TOOLS_ROW_1, TOOLS_ROW_2 } from "@/lib/portfolio"
 
@@ -102,7 +103,7 @@ export function ToolStackSection() {
     <section id="stack" className="py-32 border-t border-black/[0.06] overflow-hidden">
       <div
         ref={ref}
-        className="px-6 md:px-12 lg:px-20 text-center"
+        className={`px-6 md:px-12 lg:px-20 text-center ${READABLE}`}
         style={{
           opacity: inView ? 1 : 0,
           transform: inView ? "translateY(0)" : "translateY(20px)",

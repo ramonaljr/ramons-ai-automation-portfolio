@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 
 import { GreetingWord } from "@/components/landing/greeting-word"
+import { READABLE } from "@/components/landing/motion"
 
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
@@ -72,7 +73,7 @@ export function IntroSection() {
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_408px] lg:gap-16">
 
           {/* ── Left: the introduction ──────────────────────────────────── */}
-          <div>
+          <div className={READABLE}>
             <div style={reveal(60)}>
               <h2
                 className="text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"

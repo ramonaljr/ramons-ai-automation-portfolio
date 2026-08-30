@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 
+import { READABLE } from "@/components/landing/motion"
 import type { PostMetadata } from "@/lib/posts"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
@@ -59,7 +60,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
       <div className={CONTAINER}>
 
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between mb-14">
-          <div>
+          <div className={READABLE}>
             <p className="font-mono text-[13px] tracking-[0.28em] text-black/62">WRITING</p>
             <h2
               className="mt-4 text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-tight text-[#111]"

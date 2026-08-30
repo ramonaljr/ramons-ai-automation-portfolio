@@ -24,6 +24,28 @@ export const SECTION = 'py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06
 /** Cream page ground. Applied to the outermost wrapper of every page. */
 export const PAGE = 'bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased'
 
+/**
+ * Reading surface for copy that sits over the constellation field.
+ *
+ * A blurred pseudo-element, not `backdrop-blur`: a backdrop filter re-samples
+ * the animating canvas every frame, while this is one static layer the
+ * compositor paints once. The blur is also what keeps it invisible — there is
+ * no card edge to notice, so it reads as light gathering behind the text
+ * rather than a panel sitting on top of it.
+ *
+ * Lowering the field's own alpha got the page readable, but that fix is
+ * probabilistic: the particles drift, so a dense cluster can still wander
+ * across a paragraph. This makes the reading zones unconditional.
+ *
+ * The horizontal inset has to stay inside the page gutter or the halo pushes
+ * the document wider than the viewport — `px-6` gutters at 24px against a
+ * 32px inset put 8px of horizontal scroll on a phone. It widens at `md`,
+ * where the gutter grows to `px-12`.
+ */
+export const READABLE =
+  'relative isolate before:pointer-events-none before:absolute before:-inset-x-4 before:-inset-y-6 ' +
+  'md:before:-inset-x-8 before:-z-10 before:rounded-[2.5rem] before:bg-[#F5F4F0]/78 before:blur-2xl'
+
 const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
 
 const subscribeToMotionPreference = (onChange: () => void) => {
