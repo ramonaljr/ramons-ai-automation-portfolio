@@ -58,16 +58,18 @@ export function IntroSection() {
 
   return (
     <section id="about" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
-      <div ref={ref} className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto">
+      {/* The bio is a two-column block that tops out around 1120px — a wider
+          prose column would overrun a comfortable line length. Centring it
+          keeps the leftover width as balanced margins instead of a single
+          dead strip down the right of wide screens. */}
+      <div ref={ref} className="mx-auto max-w-[1120px]">
 
         {/* ── Section header ─────────────────────────────────────────────── */}
         <div className="mb-16" style={reveal(0)}>
           <Tag>ABOUT</Tag>
         </div>
 
-        {/* Narrower than the page container: at 1600px the two columns drifted
-            ~600px apart and stopped reading as one block. */}
-        <div className="grid max-w-[1120px] items-center gap-12 lg:grid-cols-[minmax(0,1fr)_408px] lg:gap-16">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_408px] lg:gap-16">
 
           {/* ── Left: the introduction ──────────────────────────────────── */}
           <div>
