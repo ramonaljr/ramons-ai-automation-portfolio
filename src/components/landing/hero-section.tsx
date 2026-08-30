@@ -2,7 +2,9 @@
 
 import { useEffect, useState, useRef } from 'react'
 
-const words = ['automate', 'delegate', 'execute', 'scale']
+import { HERO_STATS } from '@/lib/portfolio'
+
+const words = ['automate', 'reconcile', 'integrate', 'scale']
 
 // Headline face — matches the IBM Plex Sans used by the sections below,
 // so the grafted hero and the page it sits on read as one design.
@@ -202,21 +204,21 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           >
             <span className='inline-flex items-center gap-3 font-mono text-sm text-black/50'>
               <span className='h-px w-8 bg-black/25' />
-              Autonomous AI agents for distributed computing
+              AI automation for finance &amp; business operations
             </span>
           </div>
 
           {/* Main headline */}
           <div className='mb-12'>
             <h1
-              className={`text-left text-[clamp(2rem,6vw,7rem)] leading-[0.92] font-light tracking-tight text-[#111] transition-all duration-1000 ${
+              className={`text-left text-[clamp(1.75rem,5.2vw,6rem)] leading-[0.92] font-light tracking-tight text-[#111] transition-all duration-1000 ${
                 isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
               }`}
               style={{ fontFamily: DISPLAY_FONT }}
             >
-              <span className='block whitespace-nowrap'>Distributed compute,</span>
+              <span className='block whitespace-nowrap'>n8n, Zapier and Make.</span>
               <span className='block whitespace-nowrap'>
-                agents that{' '}
+                Workflows that{' '}
                 <span className='relative inline-block'>
                   <BlurWord word={words[wordIndex]} trigger={wordIndex} />
                 </span>
@@ -233,11 +235,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
         }`}
       >
         <div className='mx-auto flex max-w-[1400px] items-start gap-10 lg:gap-20 2xl:max-w-[1600px]'>
-          {[
-            { value: '3500+', label: 'autonomous agents active' },
-            { value: '99.7%', label: 'distributed uptime' },
-            { value: '<50ms', label: 'execution latency' }
-          ].map(stat => (
+          {HERO_STATS.map(stat => (
             <div key={stat.label} className='flex flex-col gap-2'>
               <span
                 className='text-3xl font-light tracking-tight text-[#111] lg:text-4xl'

@@ -1,0 +1,63 @@
+---
+slug: 'lead-routing-and-crm-enrichment'
+title: 'Instant Lead Routing & CRM Enrichment Pipeline'
+description: 'Built a Zapier pipeline that enriches every inbound lead, scores it against fit criteria, routes it to the right rep, and posts a briefed alert to Slack in under 60 seconds.'
+organisation: 'Sales Operations'
+role: 'AI Automation Specialist'
+duration: '1 Week'
+tools: ['Zapier', 'HubSpot', 'Clearbit', 'Slack', 'Google Sheets', 'OpenAI GPT-4o']
+publishedAt: '2026-05-25'
+image: '/images/features/page-01.webp'
+heroImage: '/images/case-study/dwello-01.webp'
+logo: '/images/features/logo-01.webp'
+sample: true
+# Fill these in to reveal the buttons on the case study page.
+videoUrl: ''
+repoUrl: ''
+---
+
+{/*
+  SAMPLE CASE STUDY — illustrative, not a delivered client engagement.
+  Written to demonstrate Zapier capability while the portfolio is being built.
+  Replace with a real project (or delete) before sending this site to prospects.
+*/}
+
+## Problem
+
+A B2B services team was losing deals to response time. Inbound demo requests landed in a shared inbox and a Google Form, then sat until someone manually checked, looked the company up, decided who should own it, and pasted the details into HubSpot. Average time from form submission to first human touch was just over four hours, and roughly one in six leads was never logged at all.
+
+The team had already standardised on Zapier across marketing and sales, and had no appetite to self-host anything.
+
+## My Role
+
+I designed and built the entire routing pipeline in **Zapier**, using **Clearbit** for firmographic enrichment, **GPT-4o** for qualification summaries, and **HubSpot** as the system of record. I chose Zapier deliberately here: every system involved had a first-class Zapier connector, the logic was linear, and the team needed to own and edit it themselves after handover.
+
+## Key Outcomes
+
+- **First-touch time cut from ~4 hours to under 60 seconds** for qualified leads.
+- **Zero unlogged leads** — every submission creates a CRM record, including rejects.
+- **Reps open a briefed lead**, not a blank name: company size, funding, tech stack and a two-line summary arrive with the alert.
+- **Owned by the team**, not by me — sales ops edits the routing rules without touching code.
+
+## How I Solved It
+
+### 1. One Intake, Many Sources
+Rather than a Zap per form, I normalised every source into a single intake step:
+- Webhook catch for the website form, plus Gmail and Google Forms triggers.
+- A Formatter step maps each source's fields onto one common shape, so downstream logic never has to know where a lead came from.
+
+> The most common failure I see in Zapier builds is one Zap per source, each with its own copy of the routing logic. The moment the rules change, three Zaps drift apart. Normalise first, branch once.
+
+### 2. Enrichment and Qualification
+- Clearbit lookup by email domain returns headcount, industry, and funding stage.
+- A GPT-4o step turns the raw enrichment payload plus the prospect's own message into a two-sentence brief and a fit score against written ICP criteria.
+- The scoring prompt is pinned to explicit rules — headcount bands, excluded industries — so the model classifies rather than judges.
+
+### 3. Routing and Alerting
+- Paths split on fit score and territory: enterprise to named reps, mid-market round-robin, everything else to a nurture sequence.
+- HubSpot contact and deal are created or updated, never duplicated, keyed on email.
+- Slack alert posts into the owning rep's channel with the brief, the score, and a direct link to the CRM record.
+
+## System Resilience & Documentation
+
+Every path terminates in a logged outcome — including rejection — written to a Google Sheet that doubles as an audit trail and a weekly review queue. Zapier's built-in error notifications route to a monitored channel, and enrichment failures fall through to a "needs manual review" path rather than silently dropping the lead. The team received a one-page runbook covering how to change scoring thresholds and add a new rep to the rotation.

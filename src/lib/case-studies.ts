@@ -20,6 +20,15 @@ export type CaseStudyMetadata = {
   image?: string
   heroImage?: string
   logo?: string
+
+  /** Illustrative example rather than a delivered engagement. */
+  sample?: boolean
+
+  /** Loom (or any) walkthrough video. Button is hidden until this is set. */
+  videoUrl?: string
+
+  /** Public repo for the workflow/export. Button is hidden until this is set. */
+  repoUrl?: string
 }
 
 // local content directory (comment below line if using remote fetching)

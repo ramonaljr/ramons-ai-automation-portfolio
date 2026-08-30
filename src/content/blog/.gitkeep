@@ -1,0 +1,5 @@
+Blog posts live here as .mdx files.
+
+Frontmatter:
+  slug, title, description, publishedAt (YYYY-MM-DD), readingTime, tags[], draft
+Set `draft: true` to keep a post out of the listing.

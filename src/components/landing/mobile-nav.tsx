@@ -2,14 +2,12 @@
 
 import { useState } from "react"
 
-// Services/Portfolio/Blog point at the closest existing section for now and
-// should be re-pointed as those sections are built out.
 const NAV_LINKS = [
   { label: "Home",      href: "#top" },
   { label: "About",     href: "#about" },
-  { label: "Services",  href: "#platform" },
-  { label: "Portfolio", href: "#agents" },
-  { label: "Blog",      href: "#live" },
+  { label: "Services",  href: "#services" },
+  { label: "Portfolio", href: "#portfolio" },
+  { label: "Blog",      href: "/blog" },
   { label: "Contact",   href: "/contact" },
 ]
 
@@ -34,7 +32,7 @@ export function MobileNav() {
           className="flex items-center justify-between px-5 py-3 rounded-2xl border border-black/[0.06]"
           style={NAV_STYLE}
         >
-          <span className="font-pixel text-xs tracking-[0.25em] text-black/70">AGENTIC</span>
+          <span className="font-pixel text-xs tracking-[0.25em] text-black/70">RAMON</span>
 
           {/* Desktop links */}
           <div className="hidden md:flex items-center gap-5 lg:gap-6" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
@@ -51,7 +49,7 @@ export function MobileNav() {
 
           <div className="flex items-center gap-2">
             <button className="text-[11px] px-4 py-2 rounded-xl border border-black/10 text-black/60 hover:text-black hover:border-black/20 hover:bg-black/[0.03] transition-all duration-200 tracking-wide hidden md:block" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
-              START BUILDING
+              HIRE ME
             </button>
 
             {/* Burger — mobile only */}
@@ -108,7 +106,7 @@ export function MobileNav() {
             ))}
             <div className="mt-1 px-2 pb-1">
               <button className="w-full text-[11px] px-4 py-2.5 rounded-xl border border-black/10 text-black/60 hover:text-black hover:border-black/20 hover:bg-black/[0.03] transition-all duration-200 tracking-wide" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
-                START BUILDING
+                HIRE ME
               </button>
             </div>
           </div>

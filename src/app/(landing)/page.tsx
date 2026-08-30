@@ -1,4 +1,6 @@
-import { AgenticSections } from '@/components/landing/agentic-sections'
+import { PortfolioSections } from '@/components/landing/portfolio-sections'
+
+import { getCaseStudies } from '@/lib/case-studies'
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -16,10 +18,12 @@ const jsonLd = {
   ]
 }
 
-const Home = () => {
+const Home = async () => {
+  const caseStudies = await getCaseStudies()
+
   return (
     <>
-      <AgenticSections />
+      <PortfolioSections caseStudies={caseStudies} />
 
       {/* Add JSON-LD to your page */}
       <script

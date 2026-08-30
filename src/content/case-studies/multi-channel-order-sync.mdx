@@ -1,0 +1,63 @@
+---
+slug: 'multi-channel-order-sync'
+title: 'Multi-Channel Order Sync & Inventory Reconciliation'
+description: 'Built a Make scenario that consolidates orders from three sales channels, reconciles stock across warehouses, and flags oversells before they ship — processing 4,000+ orders a week.'
+organisation: 'E-commerce Operations'
+role: 'AI Automation Specialist'
+duration: '3 Weeks'
+tools: ['Make', 'Shopify', 'Amazon SP-API', 'Airtable', 'PostgreSQL', 'Slack']
+publishedAt: '2026-06-05'
+image: '/images/features/page-02.webp'
+heroImage: '/images/case-study/trackflow-01.webp'
+logo: '/images/features/logo-02.webp'
+sample: true
+# Fill these in to reveal the buttons on the case study page.
+videoUrl: ''
+repoUrl: ''
+---
+
+{/*
+  SAMPLE CASE STUDY — illustrative, not a delivered client engagement.
+  Written to demonstrate Make capability while the portfolio is being built.
+  Replace with a real project (or delete) before sending this site to prospects.
+*/}
+
+## Problem
+
+A retailer selling through Shopify, Amazon and a wholesale portal was running three separate stock counts that disagreed with each other by the end of every day. Each channel decremented its own inventory, nobody reconciled them until the next morning, and oversells were discovered only when a warehouse pick failed. Staff were exporting CSVs from three systems and reconciling in a spreadsheet — roughly 15 hours a week, always a day behind.
+
+Volume was the real constraint: 4,000+ orders a week, each with multiple line items, meant tens of thousands of individual operations.
+
+## My Role
+
+I built the consolidation and reconciliation scenarios in **Make**, backed by **PostgreSQL** as the single source of truth for stock. Make was the right call over Zapier here for two reasons: the work is fundamentally iterative — one order fans out into many line items — and at this volume Make's operations-based pricing was substantially cheaper than per-task billing.
+
+## Key Outcomes
+
+- **Single authoritative stock figure** across three channels, updated continuously rather than overnight.
+- **Oversells caught before picking** — flagged at order ingestion, not at the shelf.
+- **~15 hours a week of manual CSV reconciliation removed.**
+- **Full per-bundle traceability** — any order can be replayed to see exactly what the scenario did with it.
+
+## How I Solved It
+
+### 1. Ingestion and Normalisation
+- Three trigger scenarios — Shopify webhook, Amazon SP-API polling, and a wholesale portal webhook — each map their channel-specific payload onto one internal order schema.
+- An Iterator explodes each order into line items, so every downstream module handles exactly one SKU-quantity pair.
+- Normalised orders land in a staging table rather than going straight to stock, which makes the whole pipeline replayable.
+
+> Getting the fan-out right is the whole job. If you try to keep an order intact through the pipeline you end up writing array gymnastics in every module. Explode early, aggregate late.
+
+### 2. Reconciliation Against a Single Source of Truth
+- PostgreSQL holds authoritative stock per SKU per warehouse; no channel is trusted as the source.
+- Each line item runs a transactional decrement, so two channels selling the last unit at the same moment cannot both succeed.
+- A Router splits the outcome: successful allocations continue to fulfilment, failures divert to an exception path.
+
+### 3. Exception Handling and Write-Back
+- Oversell exceptions post to Slack with the order, SKU and the shortfall, and open an Airtable record for the ops team to action.
+- Successful allocations write corrected availability back to all three channels via an Aggregator, batching updates so channel APIs are not hammered per line item.
+- A nightly scenario performs a full three-way audit and reports drift, catching anything the real-time path missed.
+
+## System Resilience & Documentation
+
+Every scenario uses Make's error handlers with break directives, so a failing bundle is queued for retry rather than killing the run. Rate limits on the Amazon and Shopify APIs are handled with incremental backoff. Because the staging table retains every normalised order, a bad deploy can be recovered by replaying a time window rather than reconstructing state by hand. The team received scenario blueprints, a schema diagram, and a runbook for the three most likely failure modes.
