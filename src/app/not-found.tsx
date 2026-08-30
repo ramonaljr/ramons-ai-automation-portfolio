@@ -1,65 +1,83 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { SiteNav } from '@/components/landing/site-nav'
+import { SiteFooter } from '@/components/landing/site-footer'
+import { ArrowIcon, ArrowRight, CONTAINER, DISPLAY_FONT, PAGE } from '@/components/landing/motion'
 
-// Component Imports
-import ProfileAvailabilityCard from '@/components/layout/profile-availability-card'
-
-// Util Imports
-import { cn } from '@/lib/utils'
-
+// A dot matrix spelling 404, drawn in the landing page's ink rather than an
+// image — it inherits the palette and stays crisp at any size.
 const DIGIT_4 = ['....X', '...XX', '..X.X', '.X..X', 'X...X', 'XXXXX', '....X', '....X']
 const DIGIT_0 = ['.XXX.', 'X...X', 'X...X', 'X...X', 'X...X', 'X...X', 'X...X', '.XXX.']
 
-const SIDE_PADDING = '..'
-const DIGIT_GAP = '..'
+const GRID = DIGIT_4.map((row, i) => `${row}..${DIGIT_0[i]}..${DIGIT_4[i]}`.split(''))
 
-const DIGIT_ROWS = DIGIT_4.map(
-  (row, index) => SIDE_PADDING + row + DIGIT_GAP + DIGIT_0[index] + DIGIT_GAP + DIGIT_4[index] + SIDE_PADDING
-)
-
-const EMPTY_ROW = '.'.repeat(DIGIT_ROWS[0].length)
-
-const NOT_FOUND_GRID = [EMPTY_ROW, ...DIGIT_ROWS, EMPTY_ROW].map(row => row.split(''))
-
-const cornerCurveBackground = 'radial-gradient(circle at 100% 100%, transparent 15.5px, var(--card) 16px)'
+const LINKS = [
+  { label: 'Selected work', href: '/#portfolio' },
+  { label: 'Articles', href: '/blog' },
+  { label: 'Services', href: '/#services' }
+]
 
 const NotFound = () => {
   return (
-    <div className='relative'>
-      <div className='fixed inset-x-0 top-0 z-70 flex justify-center'>
-        <a href='/' className='bg-card relative rounded-b-[20px] shadow-lg'>
-          <ProfileAvailabilityCard />
-          <div
-            className='pointer-events-none absolute top-0 -left-4 size-4 scale-x-[-1]'
-            style={{ backgroundImage: cornerCurveBackground }}
-          />
-          <div
-            className='pointer-events-none absolute top-0 -right-4 size-4'
-            style={{ backgroundImage: cornerCurveBackground }}
-          />
-        </a>
-      </div>
-      <div className='bg-border absolute top-[10%] h-px w-full max-lg:hidden'></div>
-      <div className='bg-border absolute bottom-[10%] h-px w-full max-lg:hidden'></div>
-      <div className='mx-auto flex h-screen w-full max-w-245 flex-col items-center justify-center gap-9 border-x p-6'>
-        <Card className='w-full max-w-xl gap-6 rounded-3xl p-6 shadow-lg'>
-          <CardHeader className='gap-1 p-0'>
-            <p className='text-base font-medium'>@Oooops</p>
-            <p className='text-muted-foreground text-sm font-light'>This page took a wrong turn somewhere</p>
-          </CardHeader>
-          <CardContent className='space-y-1 p-0'>
-            {NOT_FOUND_GRID.map((row, rowIndex) => (
-              <div key={rowIndex} className='flex gap-1'>
+    <div className={PAGE}>
+      <SiteNav />
+
+      <section className='px-6 pt-36 pb-32 md:px-12 lg:px-20 lg:pt-44'>
+        <div className={CONTAINER}>
+          <span className='inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em] text-black/55'>
+            <span className='h-px w-8 bg-black/25' />
+            404
+          </span>
+
+          <h1
+            className='mt-7 max-w-[18ch] text-[clamp(2.25rem,5.5vw,4.5rem)] leading-[1.02] font-light tracking-tight text-[#111]'
+            style={{ fontFamily: DISPLAY_FONT }}
+          >
+            This page took a wrong turn.
+          </h1>
+
+          <p className='mt-7 max-w-xl text-[16px] leading-relaxed text-black/62'>
+            The address does not match anything here. The work, the writing and the contact form are
+            all still where you left them.
+          </p>
+
+          <div className='mt-12 flex flex-col gap-2' aria-hidden='true'>
+            {GRID.map((row, rowIndex) => (
+              <div key={rowIndex} className='flex gap-2'>
                 {row.map((cell, columnIndex) => (
                   <span
                     key={columnIndex}
-                    className={cn('size-3.5 rounded-xs sm:size-5', cell === 'X' ? 'bg-accent' : 'bg-background')}
+                    className={`size-2.5 rounded-[2px] sm:size-3 ${cell === 'X' ? 'bg-[#111]' : 'bg-black/[0.06]'}`}
                   />
                 ))}
               </div>
             ))}
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+
+          <div className='mt-14 flex flex-wrap items-center gap-3'>
+            <a
+              href='/'
+              className='group inline-flex items-center gap-3 rounded-full bg-[#111] py-2 pr-2 pl-6 text-[13px] tracking-wide text-white transition-colors hover:bg-black'
+            >
+              BACK TO THE START
+              <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
+                <ArrowIcon />
+              </span>
+            </a>
+
+            {LINKS.map(link => (
+              <a
+                key={link.label}
+                href={link.href}
+                className='inline-flex items-center gap-2 rounded-full border border-black/12 px-5 py-3 text-[12px] tracking-wide text-black/65 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black'
+              >
+                {link.label}
+                <ArrowRight />
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <SiteFooter />
     </div>
   )
 }

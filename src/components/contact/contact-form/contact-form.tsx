@@ -12,7 +12,7 @@ import type { ContactFormValues } from './contact-form-schema'
 import { contactFormSchema, SERVICE_OPTIONS } from './contact-form-schema'
 
 // Component Imports
-import { Button } from '@/components/ui/button'
+import { ArrowIcon } from '@/components/landing/motion'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -24,6 +24,12 @@ import { cn } from '@/lib/utils'
 type ContactFormProps = {
   className?: string
 }
+
+// Landing-page field chrome: hairline on white, mono label above.
+const FIELD =
+  'h-12 rounded-xl border-black/[0.10] bg-white/70 text-[14px] text-[#111] placeholder:text-black/30 focus-visible:border-black/30 focus-visible:ring-0'
+
+const LABEL = 'font-mono text-[11px] tracking-[0.18em] text-black/45'
 
 const ContactForm = ({ className }: ContactFormProps) => {
   const form = useForm<ContactFormValues>({
@@ -74,21 +80,17 @@ const ContactForm = ({ className }: ContactFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={cn('space-y-5', className)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className={cn('space-y-6', className)}>
         <FormField
           control={form.control}
           name='name'
           render={({ field }) => (
-            <FormItem className='gap-1'>
-              <FormLabel className='text-muted-foreground text-base'>Name*</FormLabel>
+            <FormItem className='gap-2'>
+              <FormLabel className={LABEL}>YOUR NAME</FormLabel>
               <FormControl>
-                <Input
-                  placeholder='John doe'
-                  className='border-border h-11 rounded-[12px] bg-(--background-darker)'
-                  {...field}
-                />
+                <Input placeholder='Dana Whitfield' className={FIELD} {...field} />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-[12px]' />
             </FormItem>
           )}
         />
@@ -97,17 +99,12 @@ const ContactForm = ({ className }: ContactFormProps) => {
           control={form.control}
           name='email'
           render={({ field }) => (
-            <FormItem className='gap-1'>
-              <FormLabel className='text-muted-foreground text-base'>Email*</FormLabel>
+            <FormItem className='gap-2'>
+              <FormLabel className={LABEL}>EMAIL</FormLabel>
               <FormControl>
-                <Input
-                  type='email'
-                  placeholder='john@framer.com'
-                  className='border-border h-11 rounded-[12px] bg-(--background-darker)'
-                  {...field}
-                />
+                <Input type='email' placeholder='you@company.com' className={FIELD} {...field} />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-[12px]' />
             </FormItem>
           )}
         />
@@ -116,12 +113,12 @@ const ContactForm = ({ className }: ContactFormProps) => {
           control={form.control}
           name='service'
           render={({ field }) => (
-            <FormItem className='gap-1'>
-              <FormLabel className='text-muted-foreground text-base'>Service*</FormLabel>
+            <FormItem className='gap-2'>
+              <FormLabel className={LABEL}>WHAT YOU NEED</FormLabel>
               <Select value={field.value || undefined} onValueChange={field.onChange}>
                 <FormControl>
-                  <SelectTrigger className='border-border h-11! w-full rounded-[12px] bg-(--background-darker)'>
-                    <SelectValue placeholder='Select a service' />
+                  <SelectTrigger className={cn(FIELD, 'h-12! w-full')}>
+                    <SelectValue placeholder='Pick the closest fit' />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -134,7 +131,7 @@ const ContactForm = ({ className }: ContactFormProps) => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage className='text-[12px]' />
             </FormItem>
           )}
         />
@@ -143,27 +140,29 @@ const ContactForm = ({ className }: ContactFormProps) => {
           control={form.control}
           name='message'
           render={({ field }) => (
-            <FormItem className='gap-1'>
-              <FormLabel className='text-muted-foreground text-base'>Message</FormLabel>
+            <FormItem className='gap-2'>
+              <FormLabel className={LABEL}>THE PROCESS YOU WANT TO AUTOMATE</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder='Enter your message'
-                  className='border-border min-h-25 rounded-[12px] bg-(--background-darker)'
+                  placeholder='What happens today, who does it, and how often. Rough is fine.'
+                  className={cn(FIELD, 'min-h-36 py-3 leading-relaxed')}
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-[12px]' />
             </FormItem>
           )}
         />
 
-        <Button
+        <button
           type='submit'
-          variant='outline'
-          className='hover:bg-card hover:text-accent rounded-[12px bg-card h-10 w-full'
+          className='group inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#111] py-2 pr-2 pl-6 text-[13px] tracking-wide text-white transition-colors hover:bg-black'
         >
-          Submit
-        </Button>
+          SEND IT OVER
+          <span className='flex h-9 w-9 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
+            <ArrowIcon />
+          </span>
+        </button>
       </form>
     </Form>
   )
