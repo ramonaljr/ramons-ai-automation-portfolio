@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react"
 
 import { GreetingWord } from "@/components/landing/greeting-word"
-import { READABLE } from "@/components/landing/motion"
+import { READABLE, usePrefersReducedMotion } from "@/components/landing/motion"
 import { PROFILE } from "@/lib/portfolio"
+import { SectionIntro, introStep } from "@/components/landing/section-intro"
 
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
@@ -16,13 +17,6 @@ const CONTACT = [
 ] as const
 
 // Matches the Tag used by the other sections on this page.
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] tracking-widest font-sans text-black/68 bg-black/[0.04]">
-      {children}
-    </span>
-  )
-}
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null)
@@ -44,6 +38,7 @@ function useInView(threshold = 0.15) {
 
 export function IntroSection() {
   const { ref, inView } = useInView(0.1)
+  const reducedMotion = usePrefersReducedMotion()
 
   const reveal = (delay: number) => ({
     opacity: inView ? 1 : 0,
@@ -61,15 +56,13 @@ export function IntroSection() {
       <div ref={ref} className="mx-auto max-w-[1120px]">
 
         {/* ── Section header ─────────────────────────────────────────────── */}
-        <div className="mb-16" style={reveal(0)}>
-          <Tag>ABOUT</Tag>
-        </div>
+        <SectionIntro tag="ABOUT" margin="mb-16" />
 
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_408px] lg:gap-16">
 
           {/* ── Left: the introduction ──────────────────────────────────── */}
           <div className={READABLE}>
-            <div style={reveal(60)}>
+            <div style={introStep(inView, reducedMotion, { delay: 120, y: 40, blur: 14, duration: 1.15 })}>
               <h2
                 className="text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
                 style={{ fontFamily: DISPLAY_FONT }}

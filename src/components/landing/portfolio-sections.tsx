@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/landing/site-footer"
 import { CtaSection } from "@/components/landing/cta-section"
 import { HeroSection } from "@/components/landing/hero-section"
 import { IntroSection } from "@/components/landing/intro-section"
+import { SectionIntro } from "@/components/landing/section-intro"
 import { ProjectsSection } from "@/components/landing/projects-section"
 import { PixelIcon } from "@/components/landing/pixel-icon"
 import { ToolStackSection } from "@/components/landing/tool-stack-section"
@@ -16,7 +17,7 @@ import { ContactSection } from "@/components/landing/contact-section"
 import { ArticlesSection } from "@/components/landing/articles-section"
 import { ChatWidget } from "@/components/landing/chat-widget"
 import { ParticleField } from "@/components/landing/particle-field"
-import { ArrowIcon, CONTAINER, DISPLAY_FONT, PAGE, READABLE, SECTION, rise, sweep, SWEEP_STEP, SWEEP_STEP_DENSE, TextReveal, useInView } from "@/components/landing/motion"
+import { ArrowIcon, CONTAINER, DISPLAY_FONT, PAGE, READABLE, SECTION, rise, sweep, SWEEP_STEP, SWEEP_STEP_DENSE, useInView } from "@/components/landing/motion"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import type { PostMetadata } from "@/lib/posts"
@@ -24,14 +25,12 @@ import { ENGAGEMENTS, PLATFORMS, PRINCIPLES, PROCESS, SERVICES } from "@/lib/por
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] tracking-widest font-sans text-black/68 bg-black/[0.04]">
-      {children}
-    </span>
-  )
-}
 
+/**
+ * Kept as a thin alias so these four call sites read the same as before. The
+ * cascade itself lives in SectionIntro, shared with the sections that do not
+ * route through here.
+ */
 function SectionHead({
   tag, title, blurb,
 }: {
@@ -39,21 +38,7 @@ function SectionHead({
   title: React.ReactNode
   blurb?: string
 }) {
-  const { ref, inView } = useInView(0.2)
-
-  return (
-    <div ref={ref} className={`mb-16 ${READABLE}`} style={rise(inView)}>
-      <Tag>{tag}</Tag>
-      <TextReveal
-        as="h2"
-        delay={80}
-        className="mt-6 text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-tight text-[#111]"
-      >
-        <span style={{ fontFamily: DISPLAY_FONT }}>{title}</span>
-      </TextReveal>
-      {blurb && <p className="mt-5 text-[15px] leading-relaxed text-black/72 max-w-xl">{blurb}</p>}
-    </div>
-  )
+  return <SectionIntro tag={tag} title={title} blurb={blurb} />
 }
 
 // ── Services ─────────────────────────────────────────────────────────────────
@@ -211,19 +196,16 @@ function ProcessSection() {
     <section id="process" className={SECTION}>
       <div className={CONTAINER}>
 
-        {/* Header — mono eyebrow and subtitle, matching the reference */}
-        <div className={`mb-20 ${READABLE}`}>
-          <p className="font-mono text-[13px] tracking-[0.28em] text-black/68">PROCESS</p>
-          <h2
-            className="mt-4 text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
-            style={{ fontFamily: DISPLAY_FONT }}
-          >
-            How I build automation
-          </h2>
-          <p className="mt-5 font-mono text-[14px] leading-relaxed text-black/70">
-            From business problem to a working automation system.
-          </p>
-        </div>
+        <SectionIntro
+          tag="PROCESS"
+          variant="mono"
+          margin="mb-20"
+          titleClassName="mt-4 text-[clamp(2.25rem,5vw,4rem)]"
+          title="How I build automation"
+          blurb={
+            <span className="font-mono">From business problem to a working automation system.</span>
+          }
+        />
 
         {/* Steps */}
         <div ref={ref} className="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">

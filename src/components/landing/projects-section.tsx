@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 
-import { READABLE } from "@/components/landing/motion"
 import type { CaseStudyMetadata } from "@/lib/case-studies"
+import { SectionIntro } from "@/components/landing/section-intro"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
@@ -94,19 +94,14 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <div className={READABLE}>
-            <p className="font-mono text-[13px] tracking-[0.25em] text-black/68">SELECTED</p>
-            <h2
-              className="mt-2 text-[clamp(2.5rem,6vw,5rem)] font-light leading-[0.95] tracking-tight text-[#111]"
-              style={{ fontFamily: DISPLAY_FONT }}
-            >
-              WORK
-            </h2>
-            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-black/72">
-              A selection of AI automation systems and production workflows built to eliminate
-              repetitive tasks, connect business tools, and improve operational efficiency.
-            </p>
-          </div>
+          <SectionIntro
+            tag="SELECTED"
+            variant="mono"
+            margin=""
+            titleClassName="mt-2 text-[clamp(2.5rem,6vw,5rem)]"
+            title="WORK"
+            blurb="A selection of AI automation systems and production workflows built to eliminate repetitive tasks, connect business tools, and improve operational efficiency."
+          />
 
           <div className="flex flex-col items-start gap-4 lg:items-end">
             <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/60 px-4 py-2 font-mono text-[12px] tracking-wide text-black/68">

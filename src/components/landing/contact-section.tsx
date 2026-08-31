@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 
-import { READABLE } from "@/components/landing/motion"
 import { PROFILE } from "@/lib/portfolio"
+import { SectionIntro } from "@/components/landing/section-intro"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
@@ -16,13 +16,6 @@ const MONTHS = [
   "July", "August", "September", "October", "November", "December",
 ]
 
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] tracking-widest font-sans text-black/68 bg-black/[0.04]">
-      {children}
-    </span>
-  )
-}
 
 function Icon({ d }: { d: string }) {
   return (
@@ -121,19 +114,11 @@ export function ContactSection() {
     <section id="contact" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
       <div className={CONTAINER}>
 
-        <div className={`mb-16 ${READABLE}`}>
-          <Tag>CONTACT</Tag>
-          <h2
-            className="mt-6 text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-tight text-[#111]"
-            style={{ fontFamily: DISPLAY_FONT }}
-          >
-            Book a workflow audit.
-          </h2>
-          <p className="mt-5 text-[15px] leading-relaxed text-black/72 max-w-xl">
-            Thirty minutes, no charge. Bring the process that eats your week and I will tell you
-            whether it is worth automating, and on which platform.
-          </p>
-        </div>
+        <SectionIntro
+          tag="CONTACT"
+          title={<>Book a workflow audit.</>}
+          blurb="Thirty minutes, no charge. Bring the process that eats your week and I will tell you whether it is worth automating, and on which platform."
+        />
 
         <div ref={ref} className="grid lg:grid-cols-2 gap-5 items-start">
 

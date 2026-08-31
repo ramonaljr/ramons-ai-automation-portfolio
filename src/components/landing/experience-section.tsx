@@ -2,19 +2,12 @@
 
 import { useEffect, useRef, useState } from "react"
 
-import { READABLE } from "@/components/landing/motion"
 import { EXPERIENCE } from "@/lib/portfolio"
+import { SectionIntro } from "@/components/landing/section-intro"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
 
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] tracking-widest font-sans text-black/68 bg-black/[0.04]">
-      {children}
-    </span>
-  )
-}
 
 function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
@@ -41,19 +34,11 @@ export function ExperienceSection() {
     <section id="experience" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
       <div className={CONTAINER}>
 
-        <div className={`mb-16 ${READABLE}`}>
-          <Tag>EXPERIENCE</Tag>
-          <h2
-            className="mt-6 text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-tight text-[#111]"
-            style={{ fontFamily: DISPLAY_FONT }}
-          >
-            Ten years in the<br />processes I now automate.
-          </h2>
-          <p className="mt-5 text-[15px] leading-relaxed text-black/72 max-w-xl">
-            I did AP, reconciliation and month-end close by hand before I automated any of it.
-            That is why the workflows I build match how a business actually runs, rather than how a process diagram says it should.
-          </p>
-        </div>
+        <SectionIntro
+          tag="EXPERIENCE"
+          title={<>Ten years in the<br />processes I now automate.</>}
+          blurb="I did AP, reconciliation and month-end close by hand before I automated any of it. That is why the workflows I build match how a business actually runs, rather than how a process diagram says it should."
+        />
 
         {/* Timeline */}
         <div ref={ref} className="relative">

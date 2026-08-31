@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react"
 
-import { READABLE } from "@/components/landing/motion"
 import type { PostMetadata } from "@/lib/posts"
+import { SectionIntro } from "@/components/landing/section-intro"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
@@ -60,15 +60,13 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
       <div className={CONTAINER}>
 
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between mb-14">
-          <div className={READABLE}>
-            <p className="font-mono text-[13px] tracking-[0.28em] text-black/62">WRITING</p>
-            <h2
-              className="mt-4 text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.05] tracking-tight text-[#111]"
-              style={{ fontFamily: DISPLAY_FONT }}
-            >
-              Check out my articles
-            </h2>
-          </div>
+          <SectionIntro
+            tag="WRITING"
+            variant="mono"
+            margin=""
+            titleClassName="mt-4 text-[clamp(2rem,4vw,3.25rem)]"
+            title="Check out my articles"
+          />
 
           <a
             href="/blog"

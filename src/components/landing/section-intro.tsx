@@ -1,0 +1,116 @@
+'use client'
+
+import type { CSSProperties, ReactNode } from 'react'
+
+import { DISPLAY_FONT, READABLE, useInView, usePrefersReducedMotion } from '@/components/landing/motion'
+
+/**
+ * The entrance every section heading shares.
+ *
+ * `rise` is 22px over 0.7s, which is right for a card in a grid of twelve but
+ * disappears on a single heading — by the time the eye reaches it the movement
+ * is over. This is deliberately slower and travels further, and it staggers
+ * three parts rather than moving one block, so the cascade is legible:
+ *
+ *   tag      0ms    fade + 16px
+ *   heading  200ms  blur 14px to sharp + 40px
+ *   blurb    420ms  fade + 20px
+ *
+ * Total is about 1.5s. That is long for UI and correct for a section opener,
+ * which the reader arrives at rather than clicks.
+ */
+
+const EASE = 'cubic-bezier(0.16,1,0.3,1)'
+
+export function introStep(
+  inView: boolean,
+  reduced: boolean,
+  { delay, y, blur = 0, duration }: { delay: number; y: number; blur?: number; duration: number }
+): CSSProperties {
+  if (reduced) {
+    // Opacity alone carries no vestibular risk, so the content still arrives.
+    return {
+      opacity: inView ? 1 : 0,
+      transition: `opacity 0.3s linear ${delay}ms`
+    }
+  }
+
+  return {
+    opacity: inView ? 1 : 0,
+    transform: inView ? 'translateY(0)' : `translateY(${y}px)`,
+    filter: blur ? (inView ? 'blur(0px)' : `blur(${blur}px)`) : undefined,
+    transition:
+      `opacity ${duration}s ${EASE} ${delay}ms, transform ${duration}s ${EASE} ${delay}ms` +
+      (blur ? `, filter ${duration}s ${EASE} ${delay}ms` : ''),
+    willChange: inView ? undefined : 'opacity, transform'
+  }
+}
+
+export function SectionIntro({
+  tag,
+  title,
+  blurb,
+  className = '',
+  align = 'left',
+  variant = 'pill',
+  margin = 'mb-16',
+  titleClassName = 'mt-6 text-[clamp(2rem,4vw,3.25rem)]'
+}: {
+  tag: string
+
+  /** Omit where the section's heading lives elsewhere — About puts its
+   *  name in the left column, so the intro carries only the tag. */
+  title?: ReactNode
+  blurb?: ReactNode
+  className?: string
+  align?: 'left' | 'center'
+
+  /** `mono` matches the eyebrow style used where the heading shares a row. */
+  variant?: 'pill' | 'mono'
+
+  /** Sections that own their own spacing pass `margin=""`. */
+  margin?: string
+  titleClassName?: string
+}) {
+  // A low threshold so the cascade starts as the heading enters rather than
+  // once it is already halfway up the screen and half of it has been missed.
+  const { ref, inView } = useInView(0.05)
+  const reduced = usePrefersReducedMotion()
+
+  const centred = align === 'center'
+
+  return (
+    <div
+      ref={ref}
+      className={`${margin} ${READABLE} ${centred ? 'text-center' : ''} ${className}`}
+    >
+      <div style={introStep(inView, reduced, { delay: 0, y: 16, duration: 0.8 })}>
+        {variant === 'pill' ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-black/[0.04] px-3 py-1 font-sans text-[12px] tracking-widest text-black/68">
+            {tag}
+          </span>
+        ) : (
+          <p className="font-mono text-[13px] tracking-[0.28em] text-black/68">{tag}</p>
+        )}
+      </div>
+
+      {title != null && (
+        <h2
+          className={`${titleClassName} leading-[1.05] font-light tracking-tight text-[#111]`}
+          style={{ fontFamily: DISPLAY_FONT, ...introStep(inView, reduced, { delay: 200, y: 40, blur: 14, duration: 1.15 }) }}
+        >
+          {title}
+        </h2>
+      )}
+
+      {blurb && (
+        <p
+          className={`mt-5 text-[15px] leading-relaxed text-black/72 ${centred ? 'mx-auto' : ''} max-w-xl`}
+          style={introStep(inView, reduced, { delay: 420, y: 20, duration: 0.9 })}
+        >
+          {blurb}
+        </p>
+      )}
+    </div>
+  )
+}
