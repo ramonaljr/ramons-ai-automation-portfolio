@@ -18,30 +18,51 @@ const GREETING =
   "Hi — I'm Ramon's assistant. Ask me about automation, the platforms I build on, or how an engagement works."
 
 /**
- * ── BACKEND SEAM ────────────────────────────────────────────────────────────
- * Replace this with the real call. It is the only place that needs to change:
+ * Conversation key for the agent's memory window.
  *
- *   const res = await fetch('/api/chat', {
- *     method: 'POST',
- *     headers: { 'Content-Type': 'application/json' },
- *     body: JSON.stringify({ message, history }),
- *   })
- *   const { reply } = await res.json()
- *   return reply
- *
- * Until then this returns an honest holding reply rather than pretending to
- * answer — a chatbot that invents answers about pricing or capability does
- * more damage than one that says it is not connected yet.
+ * The n8n agent keys its buffer on whatever it is handed, so a constant would
+ * pool every visitor into one conversation and let them read fragments of each
+ * other's. sessionStorage rather than localStorage: a returning visitor should
+ * start fresh rather than resume a thread the agent no longer has context for,
+ * since the memory window on the server side is finite.
  */
-async function sendMessage(message: string, history: Message[]): Promise<string> {
-  // The signature is the contract the real implementation fulfils; both become
-  // the request body the moment this calls out to the API.
-  void message
-  void history
+const SESSION_KEY = 'ramon-chat-session'
 
-  await new Promise(r => setTimeout(r, 700))
+function sessionId(): string {
+  try {
+    const existing = sessionStorage.getItem(SESSION_KEY)
 
-  return `I'm not wired up to a backend yet — Ramon is still building that part. In the meantime, email ${PROFILE.email} or book a workflow audit from the contact section and you'll get a real answer within a business day.`
+    if (existing) return existing
+
+    const fresh = `web-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
+
+    sessionStorage.setItem(SESSION_KEY, fresh)
+
+    return fresh
+  } catch {
+    // Private mode and blocked site data both throw on access. A per-call id
+    // costs conversational memory but still keeps visitors out of each
+    // other's threads, which is the part that matters.
+    return `web-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
+  }
+}
+
+/**
+ * The route handler forwards to n8n server-side, so the instance URL never
+ * reaches the browser and no CORS configuration is involved.
+ */
+async function sendMessage(message: string): Promise<string> {
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, sessionId: sessionId() })
+  })
+
+  const data = (await res.json().catch(() => null)) as { reply?: string } | null
+
+  if (!res.ok || !data?.reply) throw new Error(`chat failed: ${res.status}`)
+
+  return data.reply
 }
 
 function Ico({ d, size = 16 }: { d: string; size?: number }) {
@@ -63,6 +84,11 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([{ id: 0, role: "bot", text: GREETING }])
   const [draft, setDraft] = useState("")
   const [pending, setPending] = useState(false)
+
+  // Connection state is reported from what actually happened, never asserted
+  // up front. "idle" until a real exchange proves it either way, so the header
+  // cannot claim to be connected to a backend that is down.
+  const [status, setStatus] = useState<"idle" | "ok" | "down">("idle")
 
   const listRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -95,14 +121,16 @@ export function ChatWidget() {
     setPending(true)
 
     try {
-      const reply = await sendMessage(value, messages)
+      const reply = await sendMessage(value)
 
+      setStatus("ok")
       setMessages(prev => [...prev, { id: nextId.current++, role: "bot", text: reply }])
     } catch {
+      setStatus("down")
       setMessages(prev => [...prev, {
         id: nextId.current++,
         role: "bot",
-        text: `Something went wrong on my side. Email ${PROFILE.email} and Ramon will pick it up directly.`,
+        text: `I can't reach my backend right now. Email ${PROFILE.email} or book a workflow audit from the contact section and Ramon will pick it up directly.`,
       }])
     } finally {
       setPending(false)
@@ -142,8 +170,16 @@ export function ChatWidget() {
               Ask about automation
             </p>
             <p className="mt-0.5 flex items-center gap-1.5 text-[12px] text-black/68">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-              Assistant not connected yet
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  status === "ok" ? "bg-emerald-500" : status === "down" ? "bg-amber-500" : "bg-black/25"
+                }`}
+              />
+              {status === "ok"
+                ? "Connected"
+                : status === "down"
+                  ? "Assistant unavailable"
+                  : "Usually replies in seconds"}
             </p>
           </div>
           <button

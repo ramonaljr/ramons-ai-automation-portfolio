@@ -1,7 +1,7 @@
 'use client'
 
 // Third-party Imports
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -32,6 +32,12 @@ const FIELD =
 const LABEL = 'font-mono text-[11px] tracking-[0.18em] text-black/45'
 
 const ContactForm = ({ className }: ContactFormProps) => {
+  // A slot arriving in the query string is what separates a booking from a
+  // general enquiry, so it is held in state rather than only read once to
+  // prefill the message: submit needs it to choose an endpoint.
+  const [slot, setSlot] = useState<{ date: string; time: string } | null>(null)
+  const [pending, setPending] = useState(false)
+
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -64,6 +70,7 @@ const ContactForm = ({ className }: ContactFormProps) => {
         year: 'numeric'
       })
 
+      setSlot({ date, time })
       form.setValue(
         'message',
         `I'd like to book the ${time} slot on ${readable} (PH time).\n\nThe process I want to automate:\n`
@@ -72,10 +79,70 @@ const ContactForm = ({ className }: ContactFormProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onSubmit = (values: ContactFormValues) => {
-    console.log(values)
-    toast.success("Message sent — I'll get back to you as soon as possible.")
-    form.reset()
+  const onSubmit = async (values: ContactFormValues) => {
+    if (pending) return
+
+    setPending(true)
+
+    // With a slot the submission books a real calendar event; without one it
+    // is an enquiry. Same form, two endpoints, decided by what the landing
+    // page passed through.
+    const booking = slot !== null
+
+    const endpoint = booking ? '/api/booking' : '/api/contact'
+
+    const payload = booking
+      ? {
+          name: values.name,
+          email: values.email,
+          date: slot.date,
+          time: slot.time,
+          topic: values.service,
+          notes: values.message
+        }
+      : values
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+
+      const data = (await res.json().catch(() => null)) as
+        | { ok?: boolean; error?: string; message?: string; reference?: string }
+        | null
+
+      if (res.ok && data?.ok) {
+        toast.success(
+          booking
+            ? `Booked for ${slot.time} on ${slot.date}. Check your email for the calendar invite${data.reference ? ` — reference ${data.reference}` : ''}.`
+            : "Message sent — I'll get back to you as soon as possible."
+        )
+        form.reset()
+        setSlot(null)
+
+        return
+      }
+
+      // 409 is the interesting one: the slot went while the form was open.
+      // Saying so beats a generic failure, because the fix is to pick again.
+      if (res.status === 409) {
+        toast.error(data?.message ?? 'That slot is no longer free. Please pick another time.')
+
+        return
+      }
+
+      toast.error(
+        res.status === 503
+          ? 'Cannot reach the booking service right now. Please email me directly.'
+          : 'Something went wrong sending that. Please try again, or email me directly.'
+      )
+    } catch {
+      toast.error('Network error. Please try again, or email me directly.')
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -115,7 +182,11 @@ const ContactForm = ({ className }: ContactFormProps) => {
           render={({ field }) => (
             <FormItem className='gap-2'>
               <FormLabel className={LABEL}>WHAT YOU NEED</FormLabel>
-              <Select value={field.value || undefined} onValueChange={field.onChange}>
+              {/* `null`, not `undefined`: Base UI decides controlled-ness from
+                  the first render and treats only `undefined` as uncontrolled.
+                  With `|| undefined` the prefill below flipped the Select from
+                  uncontrolled to controlled and it warned. */}
+              <Select value={field.value || null} onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger className={cn(FIELD, 'h-12! w-full')}>
                     <SelectValue placeholder='Pick the closest fit' />
@@ -156,9 +227,10 @@ const ContactForm = ({ className }: ContactFormProps) => {
 
         <button
           type='submit'
-          className='group inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#111] py-2 pr-2 pl-6 text-[13px] tracking-wide text-white transition-colors hover:bg-black'
+          disabled={pending}
+          className='group inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#111] py-2 pr-2 pl-6 text-[13px] tracking-wide text-white transition-colors hover:bg-black disabled:opacity-60'
         >
-          SEND IT OVER
+          {pending ? 'SENDING…' : slot ? 'CONFIRM THIS SLOT' : 'SEND IT OVER'}
           <span className='flex h-9 w-9 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
             <ArrowIcon />
           </span>

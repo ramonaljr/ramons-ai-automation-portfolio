@@ -8,8 +8,18 @@ import { SectionIntro } from "@/components/landing/section-intro"
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
 
-const SLOTS = ["09:00", "10:30", "13:00", "14:30", "16:00"]
 const DAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"]
+
+/**
+ * Times shown before a date is chosen — placeholders only, to keep the row
+ * from collapsing. The real list always comes from /api/availability, which
+ * reads Ramon's calendar. Hard-coding the offered times here is what caused
+ * the site to advertise 10:30 and 14:30, which the booking endpoint then
+ * rejected as outside bookable hours.
+ */
+const PLACEHOLDER_SLOTS = ["09:00", "10:00", "11:00", "13:00", "14:00"]
+
+type Slot = { time: string; available: boolean }
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -64,6 +74,10 @@ export function ContactSection() {
   const [picked, setPicked] = useState<string | null>(null)
   const [time, setTime] = useState<string | null>(null)
 
+  const [slots, setSlots] = useState<Slot[] | null>(null)
+  const [loadingSlots, setLoadingSlots] = useState(false)
+  const [slotsError, setSlotsError] = useState(false)
+
   // `today` must resolve on the client — deriving it during render would make
   // the server and client disagree on which dates are selectable.
   useEffect(() => {
@@ -74,6 +88,38 @@ export function ContactSection() {
     setToday(now)
     setCursor({ y: now.getFullYear(), m: now.getMonth() })
   }, [])
+
+  // Choosing a date owns the reset. Doing it here rather than in the effect
+  // keeps the effect body free of synchronous setState, which cascades renders
+  // and is what `react-hooks/set-state-in-effect` exists to catch.
+  const pickDate = (key: string) => {
+    setPicked(key)
+    setTime(null)
+    setSlots(null)
+    setSlotsError(false)
+    setLoadingSlots(true)
+  }
+
+  // Real availability for the chosen day, straight from Ramon's calendar.
+  useEffect(() => {
+    if (!picked) return
+
+    // A slow response for a date the visitor has already moved on from must
+    // not overwrite the current one, so a stale reply is discarded on cleanup.
+    let live = true
+
+    fetch(`/api/availability?date=${encodeURIComponent(picked)}`)
+      .then(r => r.json())
+      .then((d: { ok?: boolean; slots?: Slot[] }) => {
+        if (!live) return
+        if (d?.ok && Array.isArray(d.slots)) setSlots(d.slots)
+        else setSlotsError(true)
+      })
+      .catch(() => { if (live) setSlotsError(true) })
+      .finally(() => { if (live) setLoadingSlots(false) })
+
+    return () => { live = false }
+  }, [picked])
 
   const cells = useMemo(() => {
     if (!cursor) return []
@@ -272,7 +318,7 @@ export function ContactSection() {
                       key={key}
                       type="button"
                       disabled={!ok}
-                      onClick={() => { setPicked(key); setTime(null) }}
+                      onClick={() => { pickDate(key) }}
                       className={`h-9 rounded-lg text-[14px] transition-all ${
                         isPicked
                           ? "bg-[#111] text-white"
@@ -291,26 +337,48 @@ export function ContactSection() {
             {/* Times */}
             <p className="mt-7 text-[11px] tracking-widest font-mono text-black/68">AVAILABLE TIMES</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {SLOTS.map(t => (
-                <button
-                  key={t}
-                  type="button"
-                  disabled={!picked}
-                  onClick={() => setTime(t)}
-                  className={`px-4 py-2.5 rounded-lg border text-[14px] transition-all ${
-                    time === t
-                      ? "bg-[#111] text-white border-[#111]"
-                      : picked
-                        ? "border-black/12 text-black/72 hover:border-black/30 hover:bg-black/[0.03]"
-                        : "border-black/[0.07] text-black/72 cursor-default"
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
+              {(slots ?? PLACEHOLDER_SLOTS.map(t => ({ time: t, available: false }))).map(s => {
+                const selectableSlot = !!picked && !loadingSlots && s.available
+
+                return (
+                  <button
+                    key={s.time}
+                    type="button"
+                    disabled={!selectableSlot}
+
+                    // "Unavailable" rather than "already booked": the endpoint
+                    // reports a single flag, and a slot can be closed because
+                    // it is booked, past, or a weekend. Naming one of those
+                    // would be wrong two times out of three.
+                    aria-label={
+                      picked && slots && !s.available ? `${s.time} — unavailable` : s.time
+                    }
+                    onClick={() => setTime(s.time)}
+                    className={`px-4 py-2.5 rounded-lg border text-[14px] transition-all ${
+                      time === s.time
+                        ? "bg-[#111] text-white border-[#111]"
+                        : selectableSlot
+                          ? "border-black/12 text-black/72 hover:border-black/30 hover:bg-black/[0.03]"
+                          : "border-black/[0.07] text-black/40 cursor-default line-through decoration-black/25"
+                    }`}
+                  >
+                    {s.time}
+                  </button>
+                )
+              })}
             </div>
-            <p className="mt-3 text-[13px] text-black/68">
-              {!picked ? "Pick a date first." : !time ? "Now pick a time." : "Confirm on the next step."}
+            <p className="mt-3 text-[13px] text-black/68" aria-live="polite">
+              {!picked
+                ? "Pick a date first."
+                : loadingSlots
+                  ? "Checking my calendar…"
+                  : slotsError
+                    ? "Could not load times just now — send a message below and I'll confirm by email."
+                    : slots && slots.every(s => !s.available)
+                      ? "Nothing free that day. Try another date."
+                      : !time
+                        ? "Now pick a time."
+                        : "Confirm on the next step."}
             </p>
 
             <a
