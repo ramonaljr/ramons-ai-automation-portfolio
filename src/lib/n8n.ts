@@ -13,6 +13,20 @@
 
 const BASE = (process.env.N8N_BASE_URL ?? 'http://localhost:5678').replace(/\/$/, '')
 
+/**
+ * Shared secret proving a call came from this app rather than the open
+ * internet. The n8n webhooks enforce it as Header Auth.
+ *
+ * This matters because the workflows behind those webhooks write to real
+ * systems — they create Google Calendar events and send mail from Ramon's
+ * Gmail. Without it, anyone who found the URL could fill his calendar.
+ *
+ * Empty in local setups that predate the key. The header is then omitted and
+ * n8n answers 403, which is the honest failure: better a visible 403 than
+ * silently sending an empty key and looking like a bug elsewhere.
+ */
+const WEBHOOK_KEY = process.env.N8N_WEBHOOK_KEY ?? ''
+
 /** The chat workflow calls an LLM, so it needs materially more headroom. */
 export const CHAT_TIMEOUT_MS = 45_000
 export const DEFAULT_TIMEOUT_MS = 15_000
@@ -33,9 +47,14 @@ export async function callN8n(
   const timer = setTimeout(() => controller.abort(), init.timeoutMs ?? DEFAULT_TIMEOUT_MS)
 
   try {
+    const headers: Record<string, string> = {}
+
+    if (init.body) headers['Content-Type'] = 'application/json'
+    if (WEBHOOK_KEY) headers['X-Portfolio-Key'] = WEBHOOK_KEY
+
     const res = await fetch(url, {
       method: init.method,
-      headers: init.body ? { 'Content-Type': 'application/json' } : undefined,
+      headers,
       body: init.body ? JSON.stringify(init.body) : undefined,
       signal: controller.signal,
       cache: 'no-store'
