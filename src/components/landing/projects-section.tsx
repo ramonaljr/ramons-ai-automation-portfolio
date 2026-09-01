@@ -211,17 +211,21 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     )}
 
                     <div className="flex flex-wrap items-center gap-2.5">
-                      {featured.videoUrl && (
-                        <a
-                          href={featured.videoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full border border-black/12 bg-white/70 px-4 py-2.5 font-mono text-[12px] tracking-wide text-black/75 transition-all hover:bg-white hover:border-black/25 hover:text-black"
-                        >
-                          <VideoIcon size={13} />
-                          Live Video Walkthrough
-                        </a>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (featured.videoUrl) {
+                            window.open(featured.videoUrl, "_blank")
+                          } else {
+                            setSelectedStudy(featured)
+                          }
+                        }}
+                        className="inline-flex items-center gap-2 rounded-full border border-black/12 bg-white/70 px-4 py-2.5 font-mono text-[12px] tracking-wide text-black/75 transition-all hover:bg-white hover:border-black/25 hover:text-black cursor-pointer"
+                        title="Live Video Walkthrough"
+                      >
+                        <VideoIcon size={13} />
+                        Live Video Walkthrough
+                      </button>
 
                       <a
                         href={featured.repoUrl || "https://github.com/ramonaljr"}

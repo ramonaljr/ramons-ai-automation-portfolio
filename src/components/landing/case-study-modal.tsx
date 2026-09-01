@@ -261,17 +261,15 @@ export function CaseStudyModal({
         {/* ── Modal Pinned Footer Actions ──────────────────────────────────── */}
         <div className="px-6 py-4 sm:px-8 border-t border-black/[0.08] bg-white flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            {study.videoUrl ? (
-              <a
-                href={study.videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-black/[0.03] px-4 py-2.5 font-mono text-[12px] tracking-wide text-black/80 hover:bg-black hover:text-white transition-all"
-              >
-                <VideoIcon size={13} />
-                Live Video Walkthrough
-              </a>
-            ) : null}
+            <a
+              href={study.videoUrl || `/case-study/${study.slug}`}
+              target={study.videoUrl ? "_blank" : undefined}
+              rel={study.videoUrl ? "noopener noreferrer" : undefined}
+              className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-black/[0.03] px-4 py-2.5 font-mono text-[12px] tracking-wide text-black/80 hover:bg-black hover:text-white transition-all"
+            >
+              <VideoIcon size={13} />
+              Live Video Walkthrough
+            </a>
 
             <a
               href={study.repoUrl || "https://github.com/ramonaljr"}
