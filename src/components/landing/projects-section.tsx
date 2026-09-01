@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useMemo, useState } from "react"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import { SectionIntro } from "@/components/landing/section-intro"
+import { useInView } from "@/components/landing/motion"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
@@ -24,24 +25,6 @@ const P = {
   expand: "M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7",
   bolt: "M13 2L4 14h7l-1 8 9-12h-7l1-8z",
   arrow: "M4 12h14M13 6l6 6-6 6",
-}
-
-function useInView(threshold = 0.1) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [inView, setInView] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-
-    if (!el) return
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true) }, { threshold })
-
-    obs.observe(el)
-
-    return () => obs.disconnect()
-  }, [threshold])
-
-  return { ref, inView }
 }
 
 /** A project matches a filter on its platform or on one of its categories. */
@@ -79,7 +62,8 @@ function SampleBadge() {
 }
 
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
-  const { ref, inView } = useInView(0.05)
+  const { ref: featuredRef, inView: featuredInView } = useInView(0.1)
+  const { ref: gridRef, inView: gridInView } = useInView(0.08)
   const [filter, setFilter] = useState<Filter>("ALL")
 
   const shown = useMemo(() => caseStudies.filter(cs => matches(cs, filter)), [caseStudies, filter])
@@ -141,14 +125,15 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
         <div className="mt-10 border-t border-black/[0.07]" />
 
         {/* ── Featured ───────────────────────────────────────────────────── */}
-        <div ref={ref} className="mt-12">
+        <div ref={featuredRef} className="mt-12">
           {featured && (
             <article
               className="group grid overflow-hidden rounded-2xl border border-black/[0.07] bg-white/50 transition-all duration-300 hover:border-black/12 hover:bg-white lg:grid-cols-[1.25fr_1fr]"
               style={{
-                opacity: inView ? 1 : 0,
-                transform: inView ? "translateY(0)" : "translateY(24px)",
-                transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1), border-color .3s, background-color .3s",
+                opacity: featuredInView ? 1 : 0,
+                transform: featuredInView ? "translateY(0)" : "translateY(36px)",
+                filter: featuredInView ? "blur(0px)" : "blur(10px)",
+                transition: "opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.85s cubic-bezier(0.16, 1, 0.3, 1), border-color .3s, background-color .3s",
               }}
             >
               {/* Canvas */}
@@ -215,15 +200,16 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           )}
 
           {/* ── Grid ─────────────────────────────────────────────────────── */}
-          <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div ref={gridRef} className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {rest.map((cs, i) => (
               <article
                 key={cs.slug}
                 className="group flex flex-col overflow-hidden rounded-2xl border border-black/[0.07] bg-white/50 transition-all duration-300 hover:border-black/12 hover:bg-white"
                 style={{
-                  opacity: inView ? 1 : 0,
-                  transform: inView ? "translateY(0)" : "translateY(24px)",
-                  transition: `opacity 0.6s cubic-bezier(0.16,1,0.3,1) ${120 + i * 80}ms, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${120 + i * 80}ms, border-color .3s, background-color .3s`,
+                  opacity: gridInView ? 1 : 0,
+                  transform: gridInView ? "translateY(0)" : "translateY(36px)",
+                  filter: gridInView ? "blur(0px)" : "blur(10px)",
+                  transition: `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, filter 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, border-color .3s, background-color .3s`,
                 }}
               >
                 <div className="border-b border-black/[0.07] bg-white p-3">

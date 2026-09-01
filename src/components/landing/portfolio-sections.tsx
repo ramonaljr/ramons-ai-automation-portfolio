@@ -48,7 +48,14 @@ const SERVICE_ICONS: ("platform" | "agents" | "workflow" | "integrations" | "pri
 ]
 
 function ServicesSection() {
-  const { ref, inView } = useInView(0.05)
+  const { ref, inView } = useInView(0.12)
+
+  const cardAnim = (i: number) => ({
+    opacity: inView ? 1 : 0,
+    transform: inView ? "translateY(0px)" : "translateY(36px)",
+    filter: inView ? "blur(0px)" : "blur(10px)",
+    transition: `opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${i * 100}ms, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${i * 100}ms, filter 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${i * 100}ms, border-color 0.3s, background-color 0.3s`,
+  })
 
   return (
     <section id="services" className={SECTION}>
@@ -64,7 +71,7 @@ function ServicesSection() {
             <div
               key={s.slug}
               className="group relative flex flex-col rounded-2xl border border-black/[0.07] bg-white/50 px-7 pt-14 pb-8 text-center transition-all duration-300 hover:bg-white hover:border-black/12"
-              style={sweep(inView, i, SWEEP_STEP_DENSE)}
+              style={cardAnim(i)}
             >
               {/* Icon medallion, straddling the top edge like the reference */}
               <span className="absolute -top-9 left-1/2 -translate-x-1/2 w-[72px] h-[72px] rounded-full bg-[#F5F4F0] border border-black/10 flex items-center justify-center transition-colors duration-300 group-hover:border-black/25">
@@ -103,7 +110,7 @@ function ServicesSection() {
           {/* Sixth cell balances the 3-column grid and routes to contact */}
           <div
             className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/12 px-7 py-12 text-center"
-            style={sweep(inView, SERVICES.length, SWEEP_STEP_DENSE)}
+            style={cardAnim(SERVICES.length)}
           >
             <p
               className="text-lg font-light tracking-tight text-[#111]"

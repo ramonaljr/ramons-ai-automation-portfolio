@@ -1,107 +1,124 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { usePrefersReducedMotion } from "@/components/landing/motion"
 
-const LETTERS = ["R", "A", "M", "O", "N"]
+const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
-const LETTER_IN_STAGGER  = 90    // ms between each letter appearing
-const LETTER_IN_DUR      = 700   // duration of each letter appear transition
-const HOLD_DURATION      = 300   // hold fully visible before exit
-const LETTERS_IN_TOTAL   = LETTER_IN_STAGGER * (LETTERS.length - 1) + LETTER_IN_DUR + HOLD_DURATION
-
-const LETTER_OUT_STAGGER = 55    // ms between each letter disappearing
-const LETTER_OUT_DUR     = 450   // duration of each letter fade out
-const LETTERS_OUT_TOTAL  = LETTER_OUT_STAGGER * (LETTERS.length - 1) + LETTER_OUT_DUR
-
-const CURTAIN_DELAY      = LETTERS_IN_TOTAL + 100
-const CURTAIN_DURATION   = 1300  // matches the CSS transition on the curtain div
-const ANIM_TOTAL         = CURTAIN_DELAY + LETTERS_OUT_TOTAL + 1400
-
-// Exported: moment the curtain finishes retracting — when the bg is fully visible
-export const INTRO_DURATION_MS = CURTAIN_DELAY + CURTAIN_DURATION
-
-// Exported: ms before curtain fully done to start hero animations (overlap for smoothness)
-export const HERO_REVEAL_MS = CURTAIN_DELAY + CURTAIN_DURATION - 150
+// Timing configuration (ms)
+const ENTER_DURATION = 1150
+const HOLD_DURATION = 650
+const EXIT_START = ENTER_DURATION + HOLD_DURATION // 1800ms
+const EXIT_DURATION = 450
+const CURTAIN_START = EXIT_START + 150 // 1950ms
+const CURTAIN_DURATION = 1200 // 1200ms
+export const HERO_REVEAL_MS = CURTAIN_START + CURTAIN_DURATION - 200 // 2950ms
+export const INTRO_DURATION_MS = CURTAIN_START + CURTAIN_DURATION // 3150ms
+const TOTAL_DURATION = INTRO_DURATION_MS + 250 // 3400ms
 
 type Phase = "idle" | "in" | "out" | "done"
 
 export function IntroAnimation({ onDone }: { onDone: () => void }) {
   const [phase, setPhase] = useState<Phase>("idle")
   const [curtainUp, setCurtainUp] = useState(false)
+  const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
-    // Tiny delay so the browser has painted before we start transitioning
-    const t0 = setTimeout(() => setPhase("in"), 80)
-    const t1 = setTimeout(() => setPhase("out"), LETTERS_IN_TOTAL)
-    const t2 = setTimeout(() => setCurtainUp(true), CURTAIN_DELAY)
-    const t3 = setTimeout(() => onDone(), HERO_REVEAL_MS)
-    const t4 = setTimeout(() => setPhase("done"), ANIM_TOTAL)
+    if (reducedMotion) {
+      onDone()
+      setPhase("done")
+      return
+    }
 
-    return () => { clearTimeout(t0); clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4) }
-  }, [onDone])
+    const t0 = setTimeout(() => setPhase("in"), 60)
+    const t1 = setTimeout(() => setPhase("out"), EXIT_START)
+    const t2 = setTimeout(() => setCurtainUp(true), CURTAIN_START)
+    const t3 = setTimeout(() => onDone(), HERO_REVEAL_MS)
+    const t4 = setTimeout(() => setPhase("done"), TOTAL_DURATION)
+
+    return () => {
+      clearTimeout(t0)
+      clearTimeout(t1)
+      clearTimeout(t2)
+      clearTimeout(t3)
+      clearTimeout(t4)
+    }
+  }, [onDone, reducedMotion])
 
   if (phase === "done") return null
 
+  const isIdle = phase === "idle"
+  const isIn = phase === "in"
+  const isOut = phase === "out"
+
+  // Base transition helper for intro elements
+  const getItemStyle = (delayIn: number, yIn = 24, blurIn = 16) => {
+    const opacity = isIdle ? 0 : isIn ? 1 : 0
+    const blur = isIdle ? blurIn : isIn ? 0 : 16
+    const translateY = isIdle ? yIn : isIn ? 0 : -18
+
+    const transition = isOut
+      ? `opacity ${EXIT_DURATION}ms cubic-bezier(0.4, 0, 1, 1), filter ${EXIT_DURATION}ms cubic-bezier(0.4, 0, 1, 1), transform ${EXIT_DURATION}ms cubic-bezier(0.4, 0, 1, 1)`
+      : isIn
+      ? `opacity 750ms cubic-bezier(0.16, 1, 0.3, 1) ${delayIn}ms, filter 750ms cubic-bezier(0.16, 1, 0.3, 1) ${delayIn}ms, transform 750ms cubic-bezier(0.16, 1, 0.3, 1) ${delayIn}ms`
+      : "none"
+
+    return {
+      opacity,
+      filter: `blur(${blur}px)`,
+      transform: `translateY(${translateY}px)`,
+      transition,
+      willChange: "opacity, filter, transform",
+    }
+  }
+
   return (
     <div className="fixed inset-0 z-[100] pointer-events-none" aria-hidden="true">
-
-      {/* Gradient curtain — retracts upward, revealing mountains from bottom */}
+      {/* Curtain background — retracts upward to reveal the hero */}
       <div
         className="absolute inset-x-0 top-0"
         style={{
           bottom: curtainUp ? "100%" : "0%",
-          transition: curtainUp ? "bottom 1.3s cubic-bezier(0.76, 0, 0.24, 1)" : "none",
-          background: "#f5f4f1",
+          transition: curtainUp ? `bottom ${CURTAIN_DURATION}ms cubic-bezier(0.76, 0, 0.24, 1)` : "none",
+          background: "#F5F4F0",
         }}
       />
 
-      {/* AGENTIC letters */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex" style={{ gap: "0.06em" }}>
-          {LETTERS.map((letter, i) => {
-            const inDelay  = i * LETTER_IN_STAGGER
-            const outDelay = i * LETTER_OUT_STAGGER
+      {/* Intro presentation card */}
+      <div className="absolute inset-0 flex items-center justify-center px-6">
+        <div className="flex flex-col items-center text-center max-w-2xl select-none">
+          {/* Eyebrow badge */}
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-black/10 bg-black/[0.03] mb-5"
+            style={getItemStyle(100, 12, 10)}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-mono text-[11px] sm:text-[12px] tracking-[0.2em] text-black/60 uppercase">
+              AI Automation &amp; Systems
+            </span>
+          </div>
 
-            // idle → invisible starting position
-            const isIdle = phase === "idle"
-            const isIn   = phase === "in"
-            const isOut  = phase === "out"
+          {/* Scaled & Refined RAMON title */}
+          <h1
+            className="text-[clamp(2.5rem,6vw,4.5rem)] font-light tracking-[0.14em] text-[#111] leading-none uppercase mb-5"
+            style={{
+              fontFamily: DISPLAY_FONT,
+              ...getItemStyle(220, 28, 20),
+            }}
+          >
+            RAMON
+          </h1>
 
-            const opacity    = isIdle ? 0 : isIn ? 1 : 0
-            const blur       = isIdle ? 36 : isIn ? 0 : 24
-            const translateY = isIdle ? 48 : isIn ? 0 : -20
-
-            const transition = isOut
-              ? `opacity ${LETTER_OUT_DUR}ms cubic-bezier(0.4,0,1,1) ${outDelay}ms,
-                 filter  ${LETTER_OUT_DUR}ms cubic-bezier(0.4,0,1,1) ${outDelay}ms,
-                 transform ${LETTER_OUT_DUR}ms cubic-bezier(0.4,0,1,1) ${outDelay}ms`
-              : isIn
-              ? `opacity ${LETTER_IN_DUR}ms cubic-bezier(0.16,1,0.3,1) ${inDelay}ms,
-                 filter  ${LETTER_IN_DUR}ms cubic-bezier(0.16,1,0.3,1) ${inDelay}ms,
-                 transform ${LETTER_IN_DUR}ms cubic-bezier(0.16,1,0.3,1) ${inDelay}ms`
-              : "none"
-
-            return (
-              <span
-                key={i}
-                className="font-sans font-bold text-[#111] leading-none select-none"
-                style={{
-                  fontSize: `calc((100vw - 64px) / ${LETTERS.length})`,
-                  letterSpacing: "0.05em",
-                  opacity,
-                  filter: `blur(${blur}px)`,
-                  transform: `translateY(${translateY}px)`,
-                  transition,
-                  willChange: "opacity, filter, transform",
-                }}
-              >
-                {letter}
-              </span>
-            )
-          })}
+          {/* Business pain-point slogan */}
+          <p
+            className="text-[15px] sm:text-lg md:text-xl font-light text-black/75 max-w-[42ch] leading-relaxed tracking-tight"
+            style={getItemStyle(380, 20, 14)}
+          >
+            Automating the manual work that quietly eats your business week.
+          </p>
         </div>
       </div>
-
     </div>
   )
 }
+
