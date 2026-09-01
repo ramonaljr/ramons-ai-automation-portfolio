@@ -5,6 +5,7 @@ import { useMemo, useState } from "react"
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import { SectionIntro } from "@/components/landing/section-intro"
 import { useInView } from "@/components/landing/motion"
+import { CaseStudyModal } from "@/components/landing/case-study-modal"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
@@ -82,6 +83,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   const { ref: featuredRef, inView: featuredInView } = useInView(0.1)
   const { ref: gridRef, inView: gridInView } = useInView(0.08)
   const [filter, setFilter] = useState<Filter>("ALL")
+  const [selectedStudy, setSelectedStudy] = useState<CaseStudyMetadata | null>(null)
 
   const shown = useMemo(() => caseStudies.filter(cs => matches(cs, filter)), [caseStudies, filter])
   const featured = shown.find(cs => cs.featured) ?? shown[0]
@@ -154,7 +156,10 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
               }}
             >
               {/* Canvas */}
-              <div className="relative border-b border-black/[0.07] bg-white p-4 lg:border-b-0 lg:border-r">
+              <div
+                className="relative border-b border-black/[0.07] bg-white p-4 lg:border-b-0 lg:border-r cursor-pointer group-hover:bg-[#fafaf8] transition-colors"
+                onClick={() => setSelectedStudy(featured)}
+              >
                 {featured.workflowImage && (
                   <img
                     src={featured.workflowImage}
@@ -162,7 +167,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     height={900}
                     loading="lazy"
                     alt={`Workflow canvas for ${featured.title}`}
-                    className="w-full rounded-lg"
+                    className="w-full rounded-lg transition-transform duration-300 group-hover:scale-[1.01]"
                   />
                 )}
               </div>
@@ -186,8 +191,9 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                 </div>
 
                 <h3
-                  className="mt-6 text-2xl font-light leading-snug tracking-tight text-[#111] lg:text-[32px]"
+                  className="mt-6 text-2xl font-light leading-snug tracking-tight text-[#111] lg:text-[32px] cursor-pointer hover:text-black transition-colors"
                   style={{ fontFamily: DISPLAY_FONT }}
+                  onClick={() => setSelectedStudy(featured)}
                 >
                   {featured.title}
                 </h3>
@@ -205,15 +211,17 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     )}
 
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <a
-                        href={featured.videoUrl || `/case-study/${featured.slug}`}
-                        target={featured.videoUrl ? "_blank" : undefined}
-                        rel={featured.videoUrl ? "noopener noreferrer" : undefined}
-                        className="inline-flex items-center gap-2 rounded-full border border-black/12 bg-white/70 px-4 py-2.5 font-mono text-[12px] tracking-wide text-black/75 transition-all hover:bg-white hover:border-black/25 hover:text-black"
-                      >
-                        <VideoIcon size={13} />
-                        Live Video Walkthrough
-                      </a>
+                      {featured.videoUrl && (
+                        <a
+                          href={featured.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full border border-black/12 bg-white/70 px-4 py-2.5 font-mono text-[12px] tracking-wide text-black/75 transition-all hover:bg-white hover:border-black/25 hover:text-black"
+                        >
+                          <VideoIcon size={13} />
+                          Live Video Walkthrough
+                        </a>
+                      )}
 
                       <a
                         href={featured.repoUrl || "https://github.com/ramonaljr"}
@@ -225,13 +233,14 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         View Github
                       </a>
 
-                      <a
-                        href={`/case-study/${featured.slug}`}
-                        className="inline-flex items-center gap-2 rounded-full bg-[#111] px-5 py-2.5 font-mono text-[12px] tracking-wide text-white transition-colors hover:bg-black"
+                      <button
+                        type="button"
+                        onClick={() => setSelectedStudy(featured)}
+                        className="inline-flex items-center gap-2 rounded-full bg-[#111] px-5 py-2.5 font-mono text-[12px] tracking-wide text-white transition-colors hover:bg-black cursor-pointer"
                       >
                         Read case study
                         <Ico d={P.arrow} size={13} />
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -252,7 +261,10 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                   transition: `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, filter 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, border-color .3s, background-color .3s`,
                 }}
               >
-                <div className="border-b border-black/[0.07] bg-white p-3">
+                <div
+                  className="border-b border-black/[0.07] bg-white p-3 cursor-pointer group-hover:bg-[#fafaf8] transition-colors"
+                  onClick={() => setSelectedStudy(cs)}
+                >
                   {cs.workflowImage && (
                     <img
                       src={cs.workflowImage}
@@ -261,7 +273,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                       loading="lazy"
                       alt=""
                       aria-hidden="true"
-                      className="h-[150px] w-full rounded object-cover object-left-top"
+                      className="h-[150px] w-full rounded object-cover object-left-top transition-transform duration-300 group-hover:scale-[1.01]"
                     />
                   )}
                 </div>
@@ -280,8 +292,9 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                   </div>
 
                   <h3
-                    className="mt-4 text-[19px] font-light leading-snug tracking-tight text-[#111]"
+                    className="mt-4 text-[19px] font-light leading-snug tracking-tight text-[#111] cursor-pointer hover:text-black transition-colors"
                     style={{ fontFamily: DISPLAY_FONT }}
+                    onClick={() => setSelectedStudy(cs)}
                   >
                     {cs.title}
                   </h3>
@@ -290,25 +303,31 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                   </p>
 
                   <div className="mt-auto pt-6 flex flex-col gap-2.5 border-t border-black/[0.07]">
-                    <a
-                      href={`/case-study/${cs.slug}`}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#111] px-5 py-2.5 font-mono text-[12px] tracking-wide text-white transition-colors hover:bg-black"
+                    <button
+                      type="button"
+                      onClick={() => setSelectedStudy(cs)}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#111] px-5 py-2.5 font-mono text-[12px] tracking-wide text-white transition-colors hover:bg-black cursor-pointer"
                     >
                       Read case study
                       <Ico d={P.arrow} size={13} />
-                    </a>
+                    </button>
 
                     <div className="grid grid-cols-2 gap-2">
-                      <a
-                        href={cs.videoUrl || `/case-study/${cs.slug}`}
-                        target={cs.videoUrl ? "_blank" : undefined}
-                        rel={cs.videoUrl ? "noopener noreferrer" : undefined}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-full border border-black/12 bg-black/[0.02] px-3 py-2 font-mono text-[11px] tracking-tight text-black/75 transition-all hover:bg-black/[0.05] hover:border-black/25 hover:text-black text-center"
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (cs.videoUrl) {
+                            window.open(cs.videoUrl, "_blank")
+                          } else {
+                            setSelectedStudy(cs)
+                          }
+                        }}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-full border border-black/12 bg-black/[0.02] px-3 py-2 font-mono text-[11px] tracking-tight text-black/75 transition-all hover:bg-black/[0.05] hover:border-black/25 hover:text-black text-center cursor-pointer"
                         title="Live Video Walkthrough"
                       >
                         <VideoIcon size={12} />
                         <span className="truncate">Live Video</span>
-                      </a>
+                      </button>
 
                       <a
                         href={cs.repoUrl || "https://github.com/ramonaljr"}
@@ -334,6 +353,12 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           )}
         </div>
       </div>
+
+      {/* ── Case Study Detail Modal ─────────────────────────────────────── */}
+      <CaseStudyModal
+        study={selectedStudy}
+        onClose={() => setSelectedStudy(null)}
+      />
     </section>
   )
 }
