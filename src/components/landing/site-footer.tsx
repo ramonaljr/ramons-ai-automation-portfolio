@@ -40,7 +40,7 @@ export function SiteFooter() {
               <a
                 key={l.label}
                 href={l.href ?? (onLanding ? l.hash : `/${l.hash}`)}
-                className='rounded-md px-2 py-1.5 text-[13px] text-ink-2 transition-colors hover:bg-ink/[0.04] hover:text-ink'
+                className='rounded-md px-2 py-1.5 text-[13px] text-ink-2 transition-colors hover:bg-ink/4 hover:text-ink'
               >
                 {l.label}
               </a>
@@ -54,7 +54,7 @@ export function SiteFooter() {
                 href={s.href}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='rounded-full border border-rule px-3.5 py-2 text-[12px] text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink'
+                className='rounded-full border border-rule px-3.5 py-2 text-[12px] text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/3 hover:text-ink'
               >
                 {s.label}
               </a>

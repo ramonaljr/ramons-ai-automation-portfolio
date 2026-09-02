@@ -88,7 +88,7 @@ export function CaseStudyModal({
               CASE STUDY
             </span>
             {study.platform && (
-              <span className="rounded-full border border-rule-strong bg-ink/[0.04] px-2.5 py-0.5 font-mono text-[11px] text-ink-2">
+              <span className="rounded-full border border-rule-strong bg-ink/4 px-2.5 py-0.5 font-mono text-[11px] text-ink-2">
                 {study.platform}
               </span>
             )}
@@ -131,7 +131,7 @@ export function CaseStudyModal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="absolute top-5 right-5 sm:top-7 sm:right-7 w-9 h-9 rounded-full border border-rule bg-ink/[0.03] text-ink-2 hover:text-ink hover:bg-ink/[0.08] hover:border-rule-strong flex items-center justify-center transition-all cursor-pointer"
+            className="absolute top-5 right-5 sm:top-7 sm:right-7 w-9 h-9 rounded-full border border-rule bg-ink/3 text-ink-2 hover:text-ink hover:bg-ink/8 hover:border-rule-strong flex items-center justify-center transition-all cursor-pointer"
           >
             <Ico d={P.close} size={15} />
           </button>
@@ -195,7 +195,7 @@ export function CaseStudyModal({
           {(study.problem || study.solution) && (
             <div className="grid gap-4 sm:grid-cols-2">
               {study.problem && (
-                <div className="rounded-2xl border border-rose-500/15 bg-rose-500/[0.04] p-5 sm:p-6">
+                <div className="rounded-2xl border border-rose-500/15 bg-rose-500/4 p-5 sm:p-6">
                   <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-rose-800/80 font-medium">
                     THE PROBLEM
                   </p>
@@ -267,7 +267,7 @@ export function CaseStudyModal({
               href={study.videoUrl || `/case-study/${study.slug}`}
               target={study.videoUrl ? "_blank" : undefined}
               rel={study.videoUrl ? "noopener noreferrer" : undefined}
-              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-ink/[0.03] px-4 py-2.5 font-mono text-meta tracking-wide text-ink hover:bg-ink/90 hover:text-ground transition-all"
+              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-ink/3 px-4 py-2.5 font-mono text-meta tracking-wide text-ink hover:bg-ink/90 hover:text-ground transition-all"
             >
               <VideoIcon size={13} />
               Walkthrough
@@ -277,7 +277,7 @@ export function CaseStudyModal({
               href={study.repoUrl || "https://github.com/ramonaljr"}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-ink/[0.03] px-4 py-2.5 font-mono text-meta tracking-wide text-ink hover:bg-ink/90 hover:text-ground transition-all"
+              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-ink/3 px-4 py-2.5 font-mono text-meta tracking-wide text-ink hover:bg-ink/90 hover:text-ground transition-all"
             >
               <GitHubIcon size={13} />
               Source

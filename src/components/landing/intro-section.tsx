@@ -147,7 +147,7 @@ export function IntroSection() {
               <a
                 href={PROFILE.cv}
                 download
-                className="inline-flex items-center gap-2 rounded-full border border-rule-strong px-5 py-3 text-[13px] tracking-wide text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink"
+                className="inline-flex items-center gap-2 rounded-full border border-rule-strong px-5 py-3 text-[13px] tracking-wide text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/3 hover:text-ink"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
@@ -162,7 +162,7 @@ export function IntroSection() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2.5 rounded-full border border-rule text-[12px] tracking-wide text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/[0.03] transition-all"
+                    className="px-4 py-2.5 rounded-full border border-rule text-[12px] tracking-wide text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/3 transition-all"
                   >
                     {s.label}
                   </a>

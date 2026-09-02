@@ -80,7 +80,7 @@ export function CtaSection({
           </a>
           <a
             href={`mailto:${PROFILE.email}`}
-            className='inline-flex items-center rounded-full border border-rule px-5 py-3 text-[13px] tracking-wide text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink'
+            className='inline-flex items-center rounded-full border border-rule px-5 py-3 text-[13px] tracking-wide text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/3 hover:text-ink'
           >
             {PROFILE.email}
           </a>

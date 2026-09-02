@@ -94,7 +94,7 @@ function ServicesSection() {
                 {s.tools.slice(0, 3).map(t => (
                   <span
                     key={t}
-                    className="rounded-md border border-rule bg-ink/[0.02] px-2.5 py-1 text-meta text-ink-3"
+                    className="rounded-md border border-rule bg-ink/2 px-2.5 py-1 text-meta text-ink-3"
                   >
                     {t}
                   </span>
@@ -122,7 +122,7 @@ function ServicesSection() {
           {/* Sixth cell balances the grid and routes to contact. It carries the
               section's one filled CTA, which is now the only one in the grid. */}
           <div
-            className="flex flex-col justify-center rounded-2xl border border-rule bg-ink/[0.025] p-7"
+            className="flex flex-col justify-center rounded-2xl border border-rule bg-ink/2.5 p-7"
             style={cardAnim(SERVICES.length)}
           >
             <p
@@ -239,7 +239,7 @@ function ProcessSection() {
                 {i < PROCESS.length - 1 && (
                   <span className="hidden lg:flex flex-1 items-center gap-2" aria-hidden="true">
                     <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-ink/25" />
-                    <span className="h-px flex-1 bg-ink/[0.12]" />
+                    <span className="h-px flex-1 bg-ink/12" />
                   </span>
                 )}
               </div>
@@ -389,7 +389,7 @@ function EngagementSection() {
                 className={`mt-8 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full text-[13px] tracking-wide transition-colors ${
                   e.featured
                     ? "bg-ink text-ground hover:bg-ink/90"
-                    : "border border-rule text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/[0.03]"
+                    : "border border-rule text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/3"
                 }`}
               >
                 {e.cta}

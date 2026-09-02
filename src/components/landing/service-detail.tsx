@@ -45,7 +45,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
               <PixelIcon type="platform" size={30} />
             </span>
             <div>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] tracking-widest font-mono text-ink-2 bg-ink/[0.04]">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] tracking-widest font-mono text-ink-2 bg-ink/4">
                 {service.duration.toUpperCase()}
               </span>
               <h1
@@ -160,7 +160,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                 </a>
                 <a
                   href={`mailto:${PROFILE.email}`}
-                  className="inline-flex items-center px-5 py-3 rounded-full border border-rule text-[13px] tracking-wide text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/[0.03] transition-all"
+                  className="inline-flex items-center px-5 py-3 rounded-full border border-rule text-[13px] tracking-wide text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/3 transition-all"
                 >
                   {PROFILE.email}
                 </a>
@@ -179,7 +179,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                 {service.tools.map(t => (
                   <span
                     key={t}
-                    className="px-2.5 py-1 rounded-md border border-rule bg-ink/[0.02] text-[12px] text-ink-2"
+                    className="px-2.5 py-1 rounded-md border border-rule bg-ink/2 text-[12px] text-ink-2"
                   >
                     {t}
                   </span>

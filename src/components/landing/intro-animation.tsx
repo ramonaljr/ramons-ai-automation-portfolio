@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+
 import { usePrefersReducedMotion } from "@/components/landing/motion"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
@@ -12,6 +13,7 @@ const EXIT_START = ENTER_DURATION + HOLD_DURATION // 1800ms
 const EXIT_DURATION = 450
 const CURTAIN_START = EXIT_START + 150 // 1950ms
 const CURTAIN_DURATION = 1200 // 1200ms
+
 export const HERO_REVEAL_MS = CURTAIN_START + CURTAIN_DURATION - 200 // 2950ms
 export const INTRO_DURATION_MS = CURTAIN_START + CURTAIN_DURATION // 3150ms
 const TOTAL_DURATION = INTRO_DURATION_MS + 250 // 3400ms
@@ -27,6 +29,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
     if (reducedMotion) {
       onDone()
       setPhase("done")
+
       return
     }
 
@@ -89,7 +92,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
         <div className="flex flex-col items-center text-center max-w-2xl select-none">
           {/* Eyebrow badge */}
           <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-rule bg-ink/[0.03] mb-5"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-rule bg-ink/3 mb-5"
             style={getItemStyle(100, 12, 10)}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />

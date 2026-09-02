@@ -236,7 +236,7 @@ export function ContactSection() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2.5 rounded-full border border-rule text-[12px] tracking-wide text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/[0.03] transition-all"
+                  className="px-4 py-2.5 rounded-full border border-rule text-[12px] tracking-wide text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/3 transition-all"
                 >
                   {s.label}
                 </a>
@@ -274,7 +274,7 @@ export function ContactSection() {
             </div>
 
             {/* Calendar */}
-            <div className="mt-7 rounded-xl border border-rule bg-ink/[0.015] p-4 sm:p-5">
+            <div className="mt-7 rounded-xl border border-rule bg-ink/1.5 p-4 sm:p-5">
               <div className="flex items-center justify-between mb-4">
                 <button
                   type="button"
@@ -323,7 +323,7 @@ export function ContactSection() {
                         isPicked
                           ? "bg-ink text-ground"
                           : ok
-                            ? "text-ink-2 hover:bg-ink/[0.06]"
+                            ? "text-ink-2 hover:bg-ink/6"
                             : "text-ink-4 cursor-default"
                       }`}
                     >
@@ -358,7 +358,7 @@ export function ContactSection() {
                       time === s.time
                         ? "bg-ink text-ground border-ink"
                         : selectableSlot
-                          ? "border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/[0.03]"
+                          ? "border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/3"
                           : "border-rule text-ink-4 cursor-default line-through decoration-ink/25"
                     }`}
                   >
@@ -387,7 +387,7 @@ export function ContactSection() {
               className={`mt-7 flex items-center justify-center gap-2.5 w-full px-5 py-3.5 rounded-full text-[14px] tracking-wide transition-colors ${
                 ready
                   ? "bg-ink text-ground hover:bg-ink/90"
-                  : "bg-ink/[0.05] text-ink-2 pointer-events-none"
+                  : "bg-ink/5 text-ink-2 pointer-events-none"
               }`}
             >
               <Icon d={PATHS.cal} />

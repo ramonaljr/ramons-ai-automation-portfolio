@@ -70,7 +70,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
 
           <a
             href="/blog"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-rule px-5 py-2.5 text-[13px] tracking-wide text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-rule px-5 py-2.5 text-[13px] tracking-wide text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/3 hover:text-ink"
           >
             All articles
             <Ico d={P.arrow} />

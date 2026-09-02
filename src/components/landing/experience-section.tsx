@@ -45,7 +45,7 @@ export function ExperienceSection() {
           {/* Spine — hidden on mobile where the rail would have nothing to align to */}
           <span
             aria-hidden="true"
-            className="hidden md:block absolute left-[7px] top-2 bottom-2 w-px bg-ink/[0.09]"
+            className="hidden md:block absolute left-[7px] top-2 bottom-2 w-px bg-ink/9"
           />
 
           <ol className="space-y-4">
@@ -93,7 +93,7 @@ export function ExperienceSection() {
                     {r.stack.map(t => (
                       <span
                         key={t}
-                        className="px-2.5 py-1 rounded-md border border-rule bg-ink/[0.02] text-[12px] text-ink-2"
+                        className="px-2.5 py-1 rounded-md border border-rule bg-ink/2 text-[12px] text-ink-2"
                       >
                         {t}
                       </span>

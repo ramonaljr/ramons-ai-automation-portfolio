@@ -69,7 +69,7 @@ export function SiteNav() {
               <a
                 key={l.label}
                 href={resolve(l)}
-                className='rounded-md px-2.5 py-2 text-fine text-ink-2 transition-colors duration-200 hover:bg-ink/[0.05] hover:text-ink'
+                className='rounded-md px-2.5 py-2 text-fine text-ink-2 transition-colors duration-200 hover:bg-ink/5 hover:text-ink'
               >
                 {l.label}
               </a>
@@ -87,7 +87,7 @@ export function SiteNav() {
             {/* Burger — mobile only */}
             <button
               onClick={() => setOpen(v => !v)}
-              className='flex h-8 w-8 flex-col items-center justify-center gap-[5px] rounded-lg transition-colors hover:bg-ink/[0.05] md:hidden'
+              className='flex h-8 w-8 flex-col items-center justify-center gap-[5px] rounded-lg transition-colors hover:bg-ink/5 md:hidden'
               aria-label={open ? 'Close menu' : 'Open menu'}
               aria-expanded={open}
             >
@@ -118,7 +118,7 @@ export function SiteNav() {
                 key={l.label}
                 href={resolve(l)}
                 onClick={close}
-                className='rounded-xl px-4 py-3 text-fine text-ink-2 transition-colors hover:bg-ink/[0.04] hover:text-ink'
+                className='rounded-xl px-4 py-3 text-fine text-ink-2 transition-colors hover:bg-ink/4 hover:text-ink'
               >
                 {l.label}
               </a>

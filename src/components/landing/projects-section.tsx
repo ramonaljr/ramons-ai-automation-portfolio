@@ -65,7 +65,7 @@ const has = (u?: string) => typeof u === "string" && u.trim().length > 0
  */
 function AuxLinks({ cs }: { cs: CaseStudyMetadata }) {
   const base =
-    "inline-flex items-center gap-2 rounded-full border border-rule px-3.5 py-2 font-mono text-meta tracking-wide text-ink-3 transition-colors duration-300 hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink"
+    "inline-flex items-center gap-2 rounded-full border border-rule px-3.5 py-2 font-mono text-meta tracking-wide text-ink-3 transition-colors duration-300 hover:border-rule-strong hover:bg-ink/3 hover:text-ink"
 
   return (
     <>
@@ -158,7 +158,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         ? "border-ink bg-ink text-ground"
                         : n === 0
                           ? "cursor-default border-rule text-ink-4"
-                          : "border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink"
+                          : "border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/3 hover:text-ink"
                     }`}
                   >
                     {f}
@@ -273,7 +273,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
                   <div className="mt-5 flex flex-wrap gap-1.5">
                     {active.tools?.map(t => (
-                      <span key={t} className="rounded-md border border-rule bg-ink/[0.02] px-2.5 py-1 font-mono text-meta text-ink-3">
+                      <span key={t} className="rounded-md border border-rule bg-ink/2 px-2.5 py-1 font-mono text-meta text-ink-3">
                         {t}
                       </span>
                     ))}
