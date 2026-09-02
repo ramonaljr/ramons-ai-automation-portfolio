@@ -31,7 +31,7 @@ export function ExperienceSection() {
   const { ref, inView } = useInView(0.06)
 
   return (
-    <section id="experience" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+    <section id="experience" className="py-32 px-6 md:px-12 lg:px-20 border-t border-rule">
       <div className={CONTAINER}>
 
         <SectionIntro
@@ -45,7 +45,7 @@ export function ExperienceSection() {
           {/* Spine — hidden on mobile where the rail would have nothing to align to */}
           <span
             aria-hidden="true"
-            className="hidden md:block absolute left-[7px] top-2 bottom-2 w-px bg-black/[0.09]"
+            className="hidden md:block absolute left-[7px] top-2 bottom-2 w-px bg-ink/[0.09]"
           />
 
           <ol className="space-y-4">
@@ -62,30 +62,30 @@ export function ExperienceSection() {
                 {/* Node */}
                 <span
                   aria-hidden="true"
-                  className="hidden md:block absolute left-0 top-8 w-[15px] h-[15px] rounded-full border-2 border-[#F5F4F0] bg-black/25"
+                  className="hidden md:block absolute left-0 top-8 w-[15px] h-[15px] rounded-full border-2 border-ground bg-ink/25"
                 />
 
-                <article className="rounded-2xl border border-black/[0.07] bg-white/50 p-7 lg:p-8 hover:bg-white hover:border-black/12 transition-all duration-300">
+                <article className="rounded-2xl border border-rule bg-surface p-7 lg:p-8 hover:bg-surface-raised hover:border-rule transition-all duration-300">
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2 mb-4">
-                    <span className="font-mono text-[12px] text-black/72">{r.index}</span>
-                    <span className="font-mono text-[12px] tracking-wide text-black/70">{r.period}</span>
+                    <span className="font-mono text-[12px] text-ink-2">{r.index}</span>
+                    <span className="font-mono text-[12px] tracking-wide text-ink-2">{r.period}</span>
                     {r.status && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/20 bg-emerald-500/[0.07] px-2.5 py-0.5 text-[11px] tracking-widest font-mono text-emerald-700/80">
+                      <span className="badge badge-accent">
                         {r.status.toUpperCase()}
                       </span>
                     )}
                   </div>
 
                   <h3
-                    className="text-xl lg:text-2xl font-light tracking-tight text-[#111]"
+                    className="text-xl lg:text-2xl font-light tracking-tight text-ink"
                     style={{ fontFamily: DISPLAY_FONT }}
                   >
                     {r.role}
                   </h3>
-                  <p className="mt-1 text-[14px] text-black/70">{r.company}</p>
+                  <p className="mt-1 text-[14px] text-ink-2">{r.company}</p>
 
-                  <p className="mt-5 text-[14px] leading-snug text-black/75">{r.achievement}</p>
-                  <p className="mt-3 text-[14px] leading-relaxed text-black/72 max-w-3xl">
+                  <p className="mt-5 text-[14px] leading-snug text-ink-2">{r.achievement}</p>
+                  <p className="mt-3 text-[14px] leading-relaxed text-ink-2 max-w-3xl">
                     {r.description}
                   </p>
 
@@ -93,7 +93,7 @@ export function ExperienceSection() {
                     {r.stack.map(t => (
                       <span
                         key={t}
-                        className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[12px] text-black/72"
+                        className="px-2.5 py-1 rounded-md border border-rule bg-ink/[0.02] text-[12px] text-ink-2"
                       >
                         {t}
                       </span>

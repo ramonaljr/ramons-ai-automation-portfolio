@@ -68,41 +68,41 @@ export function CaseStudyModal({
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-5 md:p-8 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-5 md:p-8 bg-ink/60 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-case-study-title"
     >
       <div
-        className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-white rounded-3xl border border-black/10 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-surface-raised rounded-3xl border border-rule shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
         onClick={e => e.stopPropagation()}
       >
         {/* ── Modal Top Header (Fixed inside modal) ────────────────────────── */}
-        <div className="relative px-6 pt-6 pb-5 sm:px-8 sm:pt-8 border-b border-black/[0.07] bg-white pr-16">
+        <div className="relative px-6 pt-6 pb-5 sm:px-8 sm:pt-8 border-b border-rule bg-surface-raised pr-16">
           {/* Tags */}
           <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-black/55">
+            <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-ink-3">
               CASE STUDY
             </span>
             {study.platform && (
-              <span className="rounded-full border border-black/15 bg-black/[0.04] px-2.5 py-0.5 font-mono text-[11px] text-black/75">
+              <span className="rounded-full border border-rule-strong bg-ink/[0.04] px-2.5 py-0.5 font-mono text-[11px] text-ink-2">
                 {study.platform}
               </span>
             )}
             {study.categories?.map(c => (
-              <span key={c} className="rounded-full border border-black/10 px-2.5 py-0.5 font-mono text-[11px] text-black/70">
+              <span key={c} className="rounded-full border border-rule px-2.5 py-0.5 font-mono text-[11px] text-ink-2">
                 {c}
               </span>
             ))}
             {study.speed && (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/20 bg-emerald-500/[0.08] px-2.5 py-0.5 font-mono text-[11px] text-emerald-800/85">
+              <span className="badge badge-accent">
                 <Ico d={P.bolt} size={11} />
                 {study.speed}
               </span>
             )}
             {study.sample && (
-              <span className="rounded border border-amber-600/30 bg-amber-500/[0.08] px-2 py-0.5 font-mono text-[10px] tracking-widest text-amber-700/80">
+              <span className="badge badge-accent">
                 SAMPLE
               </span>
             )}
@@ -111,7 +111,7 @@ export function CaseStudyModal({
           {/* Title */}
           <h2
             id="modal-case-study-title"
-            className="text-2xl sm:text-3xl lg:text-[34px] font-light leading-snug tracking-tight text-[#111]"
+            className="text-2xl sm:text-3xl lg:text-[34px] font-light leading-snug tracking-tight text-ink"
             style={{ fontFamily: DISPLAY_FONT }}
           >
             {study.title}
@@ -119,7 +119,7 @@ export function CaseStudyModal({
 
           {/* Description */}
           {study.description && (
-            <p className="mt-2 text-[14.5px] leading-relaxed text-black/70 max-w-2xl">
+            <p className="mt-2 text-[14.5px] leading-relaxed text-ink-2 max-w-2xl">
               {study.description}
             </p>
           )}
@@ -129,7 +129,7 @@ export function CaseStudyModal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="absolute top-5 right-5 sm:top-7 sm:right-7 w-9 h-9 rounded-full border border-black/12 bg-black/[0.03] text-black/70 hover:text-black hover:bg-black/[0.08] hover:border-black/25 flex items-center justify-center transition-all cursor-pointer"
+            className="absolute top-5 right-5 sm:top-7 sm:right-7 w-9 h-9 rounded-full border border-rule bg-ink/[0.03] text-ink-2 hover:text-ink hover:bg-ink/[0.08] hover:border-rule-strong flex items-center justify-center transition-all cursor-pointer"
           >
             <Ico d={P.close} size={15} />
           </button>
@@ -139,13 +139,13 @@ export function CaseStudyModal({
         <div className="flex-1 overflow-y-auto px-6 py-6 sm:px-8 sm:py-8 space-y-8 bg-[#FAF9F6]">
           {/* 1. Workflow Canvas Frame */}
           {leadImage && (
-            <div className="rounded-2xl border border-black/[0.08] bg-white p-3 sm:p-4 shadow-sm">
-              <div className="flex items-center justify-between gap-3 pb-3 mb-3 border-b border-black/[0.06] text-black/60 font-mono text-[11px] tracking-wide">
+            <div className="rounded-2xl border border-rule bg-surface-raised p-3 sm:p-4 shadow-sm">
+              <div className="flex items-center justify-between gap-3 pb-3 mb-3 border-b border-rule text-ink-3 font-mono text-[11px] tracking-wide">
                 <span>WORKFLOW ARCHITECTURE</span>
                 {study.stepCount && <span>{study.stepCount} STAGES</span>}
               </div>
 
-              <div className="overflow-hidden rounded-xl bg-[#F5F4F0] flex items-center justify-center">
+              <div className="overflow-hidden rounded-xl bg-ground flex items-center justify-center">
                 <img
                   src={leadImage}
                   alt={`Workflow diagram for ${study.title}`}
@@ -154,8 +154,8 @@ export function CaseStudyModal({
               </div>
 
               {study.logicSummary && (
-                <div className="mt-3 pt-3 border-t border-black/[0.06] flex items-center gap-2 font-mono text-[12px] text-black/70">
-                  <span className="text-black/40">FLOW:</span>
+                <div className="mt-3 pt-3 border-t border-rule flex items-center gap-2 font-mono text-[12px] text-ink-2">
+                  <span className="text-ink-4">FLOW:</span>
                   <span className="truncate">{study.logicSummary}</span>
                 </div>
               )}
@@ -165,22 +165,22 @@ export function CaseStudyModal({
           {/* 2. ROI & Key Metrics */}
           {study.roi && study.roi.length > 0 && (
             <div>
-              <p className="font-mono text-[11px] tracking-[0.2em] text-black/50 mb-3 uppercase">
+              <p className="font-mono text-[11px] tracking-[0.2em] text-ink-4 mb-3 uppercase">
                 KEY OUTCOMES &amp; IMPACT
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {study.roi.map((r, idx) => (
                   <div
                     key={idx}
-                    className="rounded-xl border border-black/[0.07] bg-white p-4 text-center shadow-sm"
+                    className="rounded-xl border border-rule bg-surface-raised p-4 text-center shadow-sm"
                   >
                     <div
-                      className="text-2xl sm:text-3xl font-light text-[#111]"
+                      className="text-2xl sm:text-3xl font-light text-ink"
                       style={{ fontFamily: DISPLAY_FONT }}
                     >
                       {r.value}
                     </div>
-                    <div className="mt-1 text-[12px] text-black/65 font-sans leading-tight">
+                    <div className="mt-1 text-[12px] text-ink-3 font-sans leading-tight">
                       {r.label}
                     </div>
                   </div>
@@ -197,18 +197,18 @@ export function CaseStudyModal({
                   <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-rose-800/80 font-medium">
                     THE PROBLEM
                   </p>
-                  <p className="mt-3 text-[14px] leading-relaxed text-black/75">
+                  <p className="mt-3 text-[14px] leading-relaxed text-ink-2">
                     {study.problem}
                   </p>
                 </div>
               )}
 
               {study.solution && (
-                <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.04] p-5 sm:p-6">
-                  <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-emerald-800/80 font-medium">
+                <div className="rounded-2xl border border-[color-mix(in_oklch,var(--accent)_22%,transparent)] bg-[color-mix(in_oklch,var(--accent)_5%,transparent)] p-5 sm:p-6">
+                  <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-accent font-medium">
                     WHAT I BUILT (THE SOLUTION)
                   </p>
-                  <p className="mt-3 text-[14px] leading-relaxed text-black/75">
+                  <p className="mt-3 text-[14px] leading-relaxed text-ink-2">
                     {study.solution}
                   </p>
                 </div>
@@ -219,14 +219,14 @@ export function CaseStudyModal({
           {/* 4. Active Integrations & Tech Stack */}
           {(study.integrations || study.tools) && (
             <div>
-              <p className="font-mono text-[11px] tracking-[0.2em] text-black/50 mb-3 uppercase">
+              <p className="font-mono text-[11px] tracking-[0.2em] text-ink-4 mb-3 uppercase">
                 ACTIVE INTEGRATIONS &amp; STACK
               </p>
               <div className="flex flex-wrap gap-2">
                 {(study.integrations || study.tools)?.map(tool => (
                   <span
                     key={tool}
-                    className="rounded-lg border border-black/[0.08] bg-white px-3.5 py-1.5 font-mono text-[12px] text-black/75 shadow-xs"
+                    className="rounded-lg border border-rule bg-surface-raised px-3.5 py-1.5 font-mono text-[12px] text-ink-2 shadow-xs"
                   >
                     {tool}
                   </span>
@@ -237,20 +237,20 @@ export function CaseStudyModal({
 
           {/* 5. Fail-safes & Resilience */}
           {study.failsafes && study.failsafes.length > 0 && (
-            <div className="rounded-2xl border border-black/[0.07] bg-white p-5 sm:p-6 shadow-sm">
-              <p className="font-mono text-[11px] tracking-[0.2em] text-emerald-800/85 font-medium uppercase mb-2">
+            <div className="rounded-2xl border border-rule bg-surface-raised p-5 sm:p-6 shadow-sm">
+              <p className="font-mono text-[11px] tracking-[0.2em] text-accent font-medium uppercase mb-2">
                 SYSTEM RESILIENCE &amp; ERROR HANDLING
               </p>
               {study.failsafeDesc && (
-                <p className="text-[13.5px] text-black/70 mb-4">{study.failsafeDesc}</p>
+                <p className="text-[13.5px] text-ink-2 mb-4">{study.failsafeDesc}</p>
               )}
-              <div className="grid gap-3 sm:grid-cols-2 pt-2 border-t border-black/[0.06]">
+              <div className="grid gap-3 sm:grid-cols-2 pt-2 border-t border-rule">
                 {study.failsafes.map((f, i) => (
                   <div key={i} className="text-[13px]">
-                    <span className="font-mono text-black/85 font-medium block mb-1">
+                    <span className="font-mono text-ink font-medium block mb-1">
                       {f.title}
                     </span>
-                    <span className="text-black/65 leading-relaxed block">{f.desc}</span>
+                    <span className="text-ink-3 leading-relaxed block">{f.desc}</span>
                   </div>
                 ))}
               </div>
@@ -259,13 +259,13 @@ export function CaseStudyModal({
         </div>
 
         {/* ── Modal Pinned Footer Actions ──────────────────────────────────── */}
-        <div className="px-6 py-4 sm:px-8 border-t border-black/[0.08] bg-white flex flex-wrap items-center justify-between gap-3">
+        <div className="px-6 py-4 sm:px-8 border-t border-rule bg-surface-raised flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <a
               href={study.videoUrl || `/case-study/${study.slug}`}
               target={study.videoUrl ? "_blank" : undefined}
               rel={study.videoUrl ? "noopener noreferrer" : undefined}
-              className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-black/[0.03] px-4 py-2.5 font-mono text-[12px] tracking-wide text-black/80 hover:bg-black hover:text-white transition-all"
+              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-ink/[0.03] px-4 py-2.5 font-mono text-[12px] tracking-wide text-ink hover:bg-ink/90 hover:text-ground transition-all"
             >
               <VideoIcon size={13} />
               Live Video Walkthrough
@@ -275,27 +275,27 @@ export function CaseStudyModal({
               href={study.repoUrl || "https://github.com/ramonaljr"}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-black/[0.03] px-4 py-2.5 font-mono text-[12px] tracking-wide text-black/80 hover:bg-black hover:text-white transition-all"
+              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-ink/[0.03] px-4 py-2.5 font-mono text-[12px] tracking-wide text-ink hover:bg-ink/90 hover:text-ground transition-all"
             >
               <GitHubIcon size={13} />
-              View Github
+              View on GitHub
             </a>
           </div>
 
           <div className="flex items-center gap-3">
             <a
               href={`/case-study/${study.slug}`}
-              className="inline-flex items-center gap-1.5 text-[13px] font-mono text-black/60 hover:text-black transition-colors"
+              className="inline-flex items-center gap-1.5 text-[13px] font-mono text-ink-3 hover:text-ink transition-colors"
             >
-              Full Page Read
+              Read full case study
               <Ico d={P.external} size={12} />
             </a>
 
             <a
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-full bg-[#111] px-5 py-2.5 font-mono text-[12.5px] tracking-wide text-white transition-colors hover:bg-black"
+              className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-[12.5px] tracking-wide text-ground transition-colors hover:bg-ink/90"
             >
-              Hire Me For This
+              Start a project
               <Ico d={P.arrow} size={12} />
             </a>
           </div>

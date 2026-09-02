@@ -18,11 +18,35 @@ export const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 /** Page gutter width. Sections set their own horizontal padding. */
 export const CONTAINER = 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto'
 
-/** A full landing section: vertical rhythm, gutters, and the hairline divider. */
-export const SECTION = 'py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]'
+/** Page gutters, shared by every section variant. */
+const GUTTER = 'px-6 md:px-12 lg:px-20'
+
+/**
+ * Section rhythm.
+ *
+ * Every section on the page was `py-32` with a `border-t`, which is what made
+ * a 13-section page read as a stack of identical blocks rather than a composed
+ * document. Three variants restore a cadence:
+ *
+ *   `SECTION`        the default measure
+ *   `SECTION_ANCHOR` more air, no rule — for the moments the page should rest
+ *                    on (the work, the close)
+ *   `SECTION_CONT`   tighter, and deliberately *no* rule, so the section reads
+ *                    as a continuation of the one above rather than a new
+ *                    chapter (platforms under services, tools under process)
+ *
+ * The asymmetry is intentional: bottom padding runs slightly heavier than top
+ * because a heading sits optically higher in its own space than a block of
+ * cards does, so equal padding reads as bottom-light.
+ */
+export const SECTION = `pt-28 pb-32 ${GUTTER} border-t border-rule`
+
+export const SECTION_ANCHOR = `pt-36 pb-44 ${GUTTER}`
+
+export const SECTION_CONT = `pt-6 pb-28 ${GUTTER}`
 
 /** Cream page ground. Applied to the outermost wrapper of every page. */
-export const PAGE = 'bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased'
+export const PAGE = 'bg-ground text-ink min-h-dvh font-sans antialiased'
 
 /**
  * Reading surface for copy that sits over the constellation field.
@@ -44,7 +68,7 @@ export const PAGE = 'bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased
  */
 export const READABLE =
   'relative isolate before:pointer-events-none before:absolute before:-inset-x-4 before:-inset-y-6 ' +
-  'md:before:-inset-x-8 before:-z-10 before:rounded-[2.5rem] before:bg-[#F5F4F0]/78 before:blur-2xl'
+  'md:before:-inset-x-8 before:-z-10 before:rounded-[2.5rem] before:bg-ground/78 before:blur-2xl'
 
 const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
 
@@ -309,5 +333,61 @@ export function CountUp({
       {shown}
       {suffix}
     </span>
+  )
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Call to action
+   The audit found four casing conventions competing on one page — `START A
+   CONVERSATION`, `Hire Me For This`, `Read case study`, `View Github` — plus
+   four different labels all meaning "contact me". One component, one voice:
+   sentence case, always. Caps are reserved for the eyebrow, which is the only
+   place they carry meaning.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * The page's three CTA weights.
+ *
+ * `primary` is the ink pill and should appear once per section at most —
+ * a page where everything is primary has no hierarchy at all.
+ * `secondary` is the outlined companion. `quiet` is a text link with a rule,
+ * for tertiary actions that were previously being given full button chrome.
+ */
+export type CtaTone = 'primary' | 'secondary' | 'quiet'
+
+const CTA_BASE =
+  'group inline-flex items-center gap-2.5 rounded-full text-fine tracking-[0.01em] ' +
+  'transition-[background-color,border-color,color,transform,box-shadow] duration-300 ' +
+  'ease-[cubic-bezier(0.4,0,0.2,1)] active:translate-y-px active:scale-[0.985] ' +
+  'motion-reduce:active:translate-y-0 motion-reduce:active:scale-100'
+
+const CTA_TONE: Record<CtaTone, string> = {
+  primary: 'bg-ink text-ground px-6 py-3 hover:bg-ink/90 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0',
+  secondary:
+    'border border-rule-strong text-ink-2 px-6 py-3 hover:text-ink hover:border-ink/35 hover:bg-ink/[0.03]',
+  quiet: 'text-ink-2 hover:text-ink underline-offset-[6px] hover:underline decoration-ink/25 px-0 py-1'
+}
+
+export function Cta({
+  href,
+  children,
+  tone = 'primary',
+  className = '',
+  ...rest
+}: {
+  href: string
+  children: ReactNode
+  tone?: CtaTone
+  className?: string
+} & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'className'>) {
+  return (
+    <a href={href} className={`${CTA_BASE} ${CTA_TONE[tone]} ${className}`} {...rest}>
+      {children}
+      {/* The arrow leans into the direction of travel on hover. A 2px nudge is
+          enough to register as intent without becoming a bouncing distraction. */}
+      <span className='transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0'>
+        <ArrowIcon />
+      </span>
+    </a>
   )
 }

@@ -19,7 +19,7 @@ import { useEffect, useRef } from "react"
  *    derived from distance without a sqrt in the inner comparison.
  */
 
-const INK = "17, 17, 17"
+const INK = "42, 39, 36"
 
 /**
  * Backdrop weights, kept in the same register as the rest of the page.
@@ -31,8 +31,8 @@ const INK = "17, 17, 17"
  * clump as they random-walk, and those clusters landed on body copy as dense
  * webs of lines that broke up word shapes.
  */
-const DOT_ALPHA = 0.14
-const LINK_ALPHA = 0.10
+const DOT_ALPHA = 0.10
+const LINK_ALPHA = 0.055
 
 type P = { x: number; y: number; vx: number; vy: number; r: number }
 

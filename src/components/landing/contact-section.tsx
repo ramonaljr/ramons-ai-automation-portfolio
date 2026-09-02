@@ -157,7 +157,7 @@ export function ContactSection() {
     : "/contact"
 
   return (
-    <section id="contact" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+    <section id="contact" className="py-32 px-6 md:px-12 lg:px-20 border-t border-rule">
       <div className={CONTAINER}>
 
         <SectionIntro
@@ -170,7 +170,7 @@ export function ContactSection() {
 
           {/* ── Profile card ────────────────────────────────────────────── */}
           <div
-            className="rounded-2xl border border-black/[0.07] bg-white/60 p-8 lg:p-10"
+            className="rounded-2xl border border-rule bg-surface p-8 lg:p-10"
             style={{
               opacity: inView ? 1 : 0,
               transform: inView ? "translateY(0)" : "translateY(20px)",
@@ -178,23 +178,23 @@ export function ContactSection() {
             }}
           >
             <h3
-              className="text-2xl lg:text-3xl font-light tracking-tight text-[#111]"
+              className="text-2xl lg:text-3xl font-light tracking-tight text-ink"
               style={{ fontFamily: DISPLAY_FONT }}
             >
               {PROFILE.name}
             </h3>
-            <p className="mt-1.5 text-[14px] text-black/70">
+            <p className="mt-1.5 text-[14px] text-ink-2">
               {PROFILE.title} · {PROFILE.credential}
             </p>
 
             <div className="mt-9 grid sm:grid-cols-2 gap-x-6 gap-y-7">
               <div className="flex gap-3">
-                <span className="mt-0.5 text-black/68"><Icon d={PATHS.mail} /></span>
+                <span className="mt-0.5 text-ink-2"><Icon d={PATHS.mail} /></span>
                 <div className="min-w-0">
-                  <p className="text-[11px] tracking-widest font-mono text-black/68">EMAIL</p>
+                  <p className="text-[11px] tracking-widest font-mono text-ink-2">EMAIL</p>
                   <a
                     href={`mailto:${PROFILE.email}`}
-                    className="mt-1 block text-[14px] text-black/70 hover:text-black transition-colors break-all"
+                    className="mt-1 block text-[14px] text-ink-2 hover:text-ink transition-colors break-all"
                   >
                     {PROFILE.email}
                   </a>
@@ -202,41 +202,41 @@ export function ContactSection() {
               </div>
 
               <div className="flex gap-3">
-                <span className="mt-0.5 text-black/68"><Icon d={PATHS.pin} /></span>
+                <span className="mt-0.5 text-ink-2"><Icon d={PATHS.pin} /></span>
                 <div>
-                  <p className="text-[11px] tracking-widest font-mono text-black/68">LOCATION</p>
-                  <p className="mt-1 text-[14px] text-black/70">{PROFILE.location}</p>
-                  <p className="text-[13px] text-black/68">Working across time zones</p>
+                  <p className="text-[11px] tracking-widest font-mono text-ink-2">LOCATION</p>
+                  <p className="mt-1 text-[14px] text-ink-2">{PROFILE.location}</p>
+                  <p className="text-[13px] text-ink-2">Working across time zones</p>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="mt-0.5 text-black/68"><Icon d={PATHS.cal} /></span>
+                <span className="mt-0.5 text-ink-2"><Icon d={PATHS.cal} /></span>
                 <div>
-                  <p className="text-[11px] tracking-widest font-mono text-black/68">AVAILABILITY</p>
-                  <p className="mt-1 text-[14px] text-black/70">
+                  <p className="text-[11px] tracking-widest font-mono text-ink-2">AVAILABILITY</p>
+                  <p className="mt-1 text-[14px] text-ink-2">
                     Open for workflow audits &amp; custom builds
                   </p>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="mt-0.5 text-black/68"><Icon d={PATHS.arrow} /></span>
+                <span className="mt-0.5 text-ink-2"><Icon d={PATHS.arrow} /></span>
                 <div>
-                  <p className="text-[11px] tracking-widest font-mono text-black/68">RESPONSE</p>
-                  <p className="mt-1 text-[14px] text-black/70">Usually within one business day</p>
+                  <p className="text-[11px] tracking-widest font-mono text-ink-2">RESPONSE</p>
+                  <p className="mt-1 text-[14px] text-ink-2">Usually within one business day</p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-10 pt-8 border-t border-black/[0.07] flex flex-wrap gap-2">
+            <div className="mt-10 pt-8 border-t border-rule flex flex-wrap gap-2">
               {PROFILE.socials.map(s => (
                 <a
                   key={s.label}
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2.5 rounded-full border border-black/10 text-[12px] tracking-wide text-black/68 hover:text-black hover:border-black/25 hover:bg-black/[0.03] transition-all"
+                  className="px-4 py-2.5 rounded-full border border-rule text-[12px] tracking-wide text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/[0.03] transition-all"
                 >
                   {s.label}
                 </a>
@@ -246,7 +246,7 @@ export function ContactSection() {
 
           {/* ── Booking panel ───────────────────────────────────────────── */}
           <div
-            className="rounded-2xl border border-black/[0.07] bg-white p-8 lg:p-10"
+            className="rounded-2xl border border-rule bg-surface-raised p-8 lg:p-10"
             style={{
               opacity: inView ? 1 : 0,
               transform: inView ? "translateY(0)" : "translateY(20px)",
@@ -255,44 +255,44 @@ export function ContactSection() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-[11px] tracking-widest font-mono text-black/68">
+                <p className="text-[11px] tracking-widest font-mono text-ink-2">
                   WORKFLOW AUDIT · 30 MIN · FREE
                 </p>
                 <h3
-                  className="mt-2 text-2xl font-light tracking-tight text-[#111]"
+                  className="mt-2 text-2xl font-light tracking-tight text-ink"
                   style={{ fontFamily: DISPLAY_FONT }}
                 >
                   Book a slot
                 </h3>
-                <p className="mt-1.5 text-[14px] text-black/70">
+                <p className="mt-1.5 text-[14px] text-ink-2">
                   Pick a weekday, then a time (PH time, UTC+8).
                 </p>
               </div>
-              <span className="hidden sm:flex w-10 h-10 shrink-0 rounded-xl border border-black/10 items-center justify-center text-black/68">
+              <span className="hidden sm:flex w-10 h-10 shrink-0 rounded-xl border border-rule items-center justify-center text-ink-2">
                 <Icon d={PATHS.cal} />
               </span>
             </div>
 
             {/* Calendar */}
-            <div className="mt-7 rounded-xl border border-black/[0.07] bg-black/[0.015] p-4 sm:p-5">
+            <div className="mt-7 rounded-xl border border-rule bg-ink/[0.015] p-4 sm:p-5">
               <div className="flex items-center justify-between mb-4">
                 <button
                   type="button"
                   onClick={() => shift(-1)}
                   disabled={atEarliestMonth}
                   aria-label="Previous month"
-                  className="w-8 h-8 rounded-lg border border-black/10 flex items-center justify-center text-black/72 hover:text-black hover:border-black/25 disabled:opacity-30 disabled:pointer-events-none transition-all"
+                  className="w-8 h-8 rounded-lg border border-rule flex items-center justify-center text-ink-2 hover:text-ink hover:border-rule-strong disabled:opacity-30 disabled:pointer-events-none transition-all"
                 >
                   <Icon d={PATHS.chevL} />
                 </button>
-                <p className="text-[13px] tracking-widest font-mono text-black/70">
+                <p className="text-[13px] tracking-widest font-mono text-ink-2">
                   {cursor ? `${MONTHS[cursor.m].toUpperCase()} ${cursor.y}` : " "}
                 </p>
                 <button
                   type="button"
                   onClick={() => shift(1)}
                   aria-label="Next month"
-                  className="w-8 h-8 rounded-lg border border-black/10 flex items-center justify-center text-black/72 hover:text-black hover:border-black/25 transition-all"
+                  className="w-8 h-8 rounded-lg border border-rule flex items-center justify-center text-ink-2 hover:text-ink hover:border-rule-strong transition-all"
                 >
                   <Icon d={PATHS.chevR} />
                 </button>
@@ -300,7 +300,7 @@ export function ContactSection() {
 
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {DAY_LABELS.map((d, i) => (
-                  <span key={i} className="text-center text-[12px] font-mono text-black/72 py-1">
+                  <span key={i} className="text-center text-[12px] font-mono text-ink-2 py-1">
                     {d}
                   </span>
                 ))}
@@ -321,10 +321,10 @@ export function ContactSection() {
                       onClick={() => { pickDate(key) }}
                       className={`h-9 rounded-lg text-[14px] transition-all ${
                         isPicked
-                          ? "bg-[#111] text-white"
+                          ? "bg-ink text-ground"
                           : ok
-                            ? "text-black/70 hover:bg-black/[0.06]"
-                            : "text-black/20 cursor-default"
+                            ? "text-ink-2 hover:bg-ink/[0.06]"
+                            : "text-ink-4 cursor-default"
                       }`}
                     >
                       {d.getDate()}
@@ -335,7 +335,7 @@ export function ContactSection() {
             </div>
 
             {/* Times */}
-            <p className="mt-7 text-[11px] tracking-widest font-mono text-black/68">AVAILABLE TIMES</p>
+            <p className="mt-7 text-[11px] tracking-widest font-mono text-ink-2">AVAILABLE TIMES</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {(slots ?? PLACEHOLDER_SLOTS.map(t => ({ time: t, available: false }))).map(s => {
                 const selectableSlot = !!picked && !loadingSlots && s.available
@@ -356,10 +356,10 @@ export function ContactSection() {
                     onClick={() => setTime(s.time)}
                     className={`px-4 py-2.5 rounded-lg border text-[14px] transition-all ${
                       time === s.time
-                        ? "bg-[#111] text-white border-[#111]"
+                        ? "bg-ink text-ground border-ink"
                         : selectableSlot
-                          ? "border-black/12 text-black/72 hover:border-black/30 hover:bg-black/[0.03]"
-                          : "border-black/[0.07] text-black/40 cursor-default line-through decoration-black/25"
+                          ? "border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/[0.03]"
+                          : "border-rule text-ink-4 cursor-default line-through decoration-ink/25"
                     }`}
                   >
                     {s.time}
@@ -367,7 +367,7 @@ export function ContactSection() {
                 )
               })}
             </div>
-            <p className="mt-3 text-[13px] text-black/68" aria-live="polite">
+            <p className="mt-3 text-[13px] text-ink-2" aria-live="polite">
               {!picked
                 ? "Pick a date first."
                 : loadingSlots
@@ -386,8 +386,8 @@ export function ContactSection() {
               aria-disabled={!ready}
               className={`mt-7 flex items-center justify-center gap-2.5 w-full px-5 py-3.5 rounded-full text-[14px] tracking-wide transition-colors ${
                 ready
-                  ? "bg-[#111] text-white hover:bg-black"
-                  : "bg-black/[0.05] text-black/68 pointer-events-none"
+                  ? "bg-ink text-ground hover:bg-ink/90"
+                  : "bg-ink/[0.05] text-ink-2 pointer-events-none"
               }`}
             >
               <Icon d={PATHS.cal} />

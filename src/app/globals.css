@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
@@ -8,7 +7,7 @@
 @theme inline {
   --font-sans: var(--font-satoshi);
   --font-mono: var(--font-geist-mono);
-  --font-pixel: var(--font-courier-prime), 'Courier Prime', monospace;
+  --font-pixel: var(--font-geist-mono), ui-monospace, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -48,8 +47,40 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
   --shadow-realistic:
-    0px 2px 2px rgba(0, 0, 0, 0.02), 0px 6px 5px rgba(0, 0, 0, 0.035), 0px 13px 11px rgba(0, 0, 0, 0.045),
-    0px 24px 19px rgba(0, 0, 0, 0.055), 0px 60px 35px -10px rgba(0, 0, 0, 0.09);
+    0px 2px 2px oklch(0.28 0.014 70 / 0.03), 0px 6px 5px oklch(0.28 0.014 70 / 0.04),
+    0px 13px 11px oklch(0.28 0.014 70 / 0.05), 0px 24px 19px oklch(0.28 0.014 70 / 0.06),
+    0px 60px 35px -10px oklch(0.28 0.014 70 / 0.09);
+
+  /* ── Art-direction system ──────────────────────────────────────────────
+     Registered here so components use `text-ink-2` / `border-rule` instead of
+     inventing a new black-alpha value at every call site. The audit found 15
+     distinct `text-black/NN` values and 11 border values doing the work of
+     these nine tokens. */
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-ground: var(--ground);
+
+  /* Type scale — a 1.125 minor-third at the small end, opening up for display.
+     Replaces 17 arbitrary px values (13.5px, 15.5px, 14.5px…). */
+  --text-meta: 0.6875rem;      /* 11px — eyebrows, badges, legal */
+  --text-meta--line-height: 1.45;
+  --text-fine: 0.8125rem;      /* 13px — captions, list items, chips */
+  --text-fine--line-height: 1.55;
+  --text-body: 0.9375rem;      /* 15px — default paragraph */
+  --text-body--line-height: 1.7;
+  --text-lead: 1.0625rem;      /* 17px — section blurbs */
+  --text-lead--line-height: 1.65;
+
+  /* One easing vocabulary. `exit` is the fast-out companion `entrance` lacked. */
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 :root {
@@ -60,12 +91,12 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.2178 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.36 0 0);
+  --secondary: oklch(0.957 0.0035 84.5);
   --secondary-foreground: oklch(0.2178 0 0);
-  --muted: oklch(0.36 0 0);
+  --muted: oklch(0.957 0.0035 84.5);
   --muted-foreground: oklch(0.5795 0 0);
-  --accent: oklch(0.6837 0.212 40.59);
-  --accent-foreground: oklch(1 0 0);
+  --accent: oklch(0.532 0.126 42);
+  --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.8601 0.0128 75.35);
   --input: oklch(0.922 0 0);
@@ -87,6 +118,20 @@
   --background-darker: oklch(0.947 0.0074 80.72);
   --foreground: oklch(0.36 0 0);
   --fade-circle-width: 70%;
+
+  /* Ink: four steps, each a real perceptual jump. The old 68/70/72 trio was
+     three names for one colour. Warm-tinted (hue 70) so text belongs to the
+     cream ground rather than sitting on it as neutral grey. */
+  --ink: oklch(0.205 0.006 70);
+  --ink-2: oklch(0.402 0.008 70);
+  --ink-3: oklch(0.523 0.009 70);
+  --ink-4: oklch(0.617 0.007 70);
+  --rule: oklch(0.205 0.006 70 / 0.09);
+  --rule-strong: oklch(0.205 0.006 70 / 0.18);
+  --ground: oklch(0.9623 0.0045 84.5);
+  --surface: oklch(1 0 0 / 0.55);
+  --surface-raised: oklch(1 0 0 / 0.92);
+  --ring-contrast: oklch(0.205 0.006 70);
 }
 
 .dark {
@@ -94,6 +139,16 @@
   --background-darker: oklch(0.235 0 0);
   --foreground: oklch(0.985 0 0);
   --fade-circle-width: 100%;
+  --ink: oklch(0.97 0.004 70);
+  --ink-2: oklch(0.79 0.006 70);
+  --ink-3: oklch(0.638 0.007 70);
+  --ink-4: oklch(0.492 0.007 70);
+  --rule: oklch(1 0 0 / 0.1);
+  --rule-strong: oklch(1 0 0 / 0.2);
+  --ground: oklch(0.178 0.004 70);
+  --surface: oklch(1 0 0 / 0.04);
+  --surface-raised: oklch(1 0 0 / 0.07);
+  --ring-contrast: oklch(0.97 0.004 70);
   --card: oklch(0.1913 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
@@ -320,4 +375,149 @@ button:focus-visible,
   outline: 2px solid #111 !important;
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Art direction — surface, optical and rhythm layer
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Film grain. A flat cream ground reads as "unstyled default"; a trace of grain
+   reads as a printed surface. feTurbulence is generated by the browser, so this
+   costs no network request and no image decode. Sits above the page ground but
+   below every painted element, and never intercepts a pointer. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+.dark body::after {
+  mix-blend-mode: screen;
+  opacity: 0.2;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  body::after {
+    display: none;
+  }
+}
+
+/* ── Optical typography ──────────────────────────────────────────────────────
+   Headlines here are set in a light weight at display sizes, where a lone
+   trailing word ("…across your\nbusiness.") is conspicuous. `balance` evens the
+   ragged edge across lines; `pretty` only protects the last line, which is the
+   right trade for long body copy where `balance` would be costly. */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+/* Figures must not shift width as they count up. Proportional digits make a
+   CountUp jitter horizontally on every frame; tabular figures hold the box. */
+.tabular,
+[data-countup] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Optical letter-spacing. A light weight at 6rem needs negative tracking to
+   stop the counters opening up; small caps need positive tracking to stay
+   legible. Applied by size rather than per component. */
+.display-xl {
+  letter-spacing: -0.034em;
+}
+.display-lg {
+  letter-spacing: -0.026em;
+}
+.display-md {
+  letter-spacing: -0.018em;
+}
+
+/* The one eyebrow treatment. Replaces the pill/mono split and the ad-hoc
+   tracking values scattered across sections. */
+.eyebrow {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* ── Depth ───────────────────────────────────────────────────────────────────
+   One light source, top-centre, for every raised surface on the page. The audit
+   found shadows declared inline per component with differing spreads and pure
+   black tints, which reads as several inconsistent light sources. */
+.lift {
+  box-shadow:
+    0 1px 1px oklch(0.28 0.014 70 / 0.04),
+    0 4px 8px -2px oklch(0.28 0.014 70 / 0.05),
+    0 16px 32px -12px oklch(0.28 0.014 70 / 0.1);
+}
+
+.lift-hover {
+  transition:
+    box-shadow 0.35s var(--ease-standard),
+    transform 0.35s var(--ease-standard),
+    border-color 0.35s var(--ease-standard);
+}
+
+.lift-hover:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 2px 3px oklch(0.28 0.014 70 / 0.05),
+    0 10px 20px -4px oklch(0.28 0.014 70 / 0.07),
+    0 28px 52px -16px oklch(0.28 0.014 70 / 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lift-hover:hover {
+    transform: none;
+  }
+}
+
+/* ── Badges ──────────────────────────────────────────────────────────────────
+   One accent, one badge treatment.
+   These were three different colour stories: amber for SAMPLE and FEATURED,
+   emerald for the experience status, terracotta for the site accent — so the
+   page carried three accents and no hierarchy between them. Each also set its
+   text at 70–80% alpha, which is what put them under 4.5:1.
+
+   Square-ish rather than a pill, so a badge never reads as a button. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* The accent badge. Full-opacity text on a tinted ground — the tint carries the
+   colour, the text carries the contrast. */
+.badge-accent {
+  color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 9%, transparent);
+  border: 1px solid color-mix(in oklch, var(--accent) 26%, transparent);
+}
+
+/* The neutral badge, for labels that are metadata rather than status. */
+.badge-quiet {
+  color: var(--ink-2);
+  background: color-mix(in oklch, var(--ink) 4%, transparent);
+  border: 1px solid var(--rule);
 }

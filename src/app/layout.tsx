@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { Geist_Mono, Delicious_Handrawn, IBM_Plex_Sans, Courier_Prime } from 'next/font/google'
+import { Geist_Mono, IBM_Plex_Sans } from 'next/font/google'
 import localFont from 'next/font/local'
 import type { Metadata } from 'next'
 
@@ -20,23 +20,10 @@ const geistMono = Geist_Mono({
   subsets: ['latin']
 })
 
-const deliciousHandrawn = Delicious_Handrawn({
-  variable: '--font-delicious-handrawn',
-  weight: '400',
-  subsets: ['latin']
-})
-
 // Landing page display face — used by the hero headline and stat figures.
 const ibmPlexSans = IBM_Plex_Sans({
   variable: '--font-ibm-plex',
   weight: ['300', '400', '500', '600'],
-  subsets: ['latin']
-})
-
-// Landing page `font-pixel` face — see --font-pixel in globals.css.
-const courierPrime = Courier_Prime({
-  variable: '--font-courier-prime',
-  weight: ['400', '700'],
   subsets: ['latin']
 })
 
@@ -151,9 +138,7 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
       className={cn(
         geistMono.variable,
         satoshi.variable,
-        deliciousHandrawn.variable,
         ibmPlexSans.variable,
-        courierPrime.variable,
         'flex min-h-full w-full scroll-smooth antialiased'
       )}
       suppressHydrationWarning

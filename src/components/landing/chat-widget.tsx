@@ -146,7 +146,7 @@ export function ChatWidget() {
         aria-expanded={open}
         aria-controls="chat-panel"
         aria-label={open ? "Close chat" : "Chat with Ramon's assistant"}
-        className="fixed bottom-5 right-5 z-[110] flex h-14 w-14 items-center justify-center rounded-full bg-[#111] text-white shadow-[0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:scale-105 active:scale-95"
+        className="fixed bottom-5 right-5 z-[110] flex h-14 w-14 items-center justify-center rounded-full bg-ink text-ground shadow-[0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:scale-105 active:scale-95"
       >
         <Ico d={open ? P.close : P.chat} size={22} />
       </button>
@@ -157,22 +157,22 @@ export function ChatWidget() {
         role="dialog"
         aria-label="Chat with Ramon's assistant"
         hidden={!open}
-        className="fixed bottom-24 right-5 z-[110] flex w-[calc(100vw-2.5rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-black/10 bg-[#F5F4F0] shadow-[0_24px_60px_-16px_rgba(0,0,0,0.35)]"
+        className="fixed bottom-24 right-5 z-[110] flex w-[calc(100vw-2.5rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-rule bg-ground shadow-[0_24px_60px_-16px_rgba(0,0,0,0.35)]"
         style={{ height: "min(560px, calc(100vh - 8rem))" }}
       >
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 border-b border-black/[0.08] bg-white/60 px-5 py-4">
+        <div className="flex items-start justify-between gap-3 border-b border-rule bg-surface px-5 py-4">
           <div>
             <p
-              className="text-[15px] font-medium text-[#111]"
+              className="text-[15px] font-medium text-ink"
               style={{ fontFamily: DISPLAY_FONT }}
             >
               Ask about automation
             </p>
-            <p className="mt-0.5 flex items-center gap-1.5 text-[12px] text-black/68">
+            <p className="mt-0.5 flex items-center gap-1.5 text-[12px] text-ink-2">
               <span
                 className={`h-1.5 w-1.5 rounded-full ${
-                  status === "ok" ? "bg-emerald-500" : status === "down" ? "bg-amber-500" : "bg-black/25"
+                  status === "ok" ? "bg-emerald-500" : status === "down" ? "bg-amber-500" : "bg-ink/25"
                 }`}
               />
               {status === "ok"
@@ -186,7 +186,7 @@ export function ChatWidget() {
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close chat"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/68 transition-all hover:border-black/25 hover:text-black"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-rule text-ink-2 transition-all hover:border-rule-strong hover:text-ink"
           >
             <Ico d={P.close} size={14} />
           </button>
@@ -199,8 +199,8 @@ export function ChatWidget() {
               <p
                 className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-[13.5px] leading-relaxed ${
                   m.role === "user"
-                    ? "rounded-br-sm bg-[#111] text-white"
-                    : "rounded-bl-sm border border-black/[0.08] bg-white text-black/75"
+                    ? "rounded-br-sm bg-ink text-ground"
+                    : "rounded-bl-sm border border-rule bg-surface-raised text-ink-2"
                 }`}
               >
                 {m.text}
@@ -210,11 +210,11 @@ export function ChatWidget() {
 
           {pending && (
             <div className="flex justify-start" aria-live="polite">
-              <p className="flex gap-1.5 rounded-2xl rounded-bl-sm border border-black/[0.08] bg-white px-4 py-3.5">
+              <p className="flex gap-1.5 rounded-2xl rounded-bl-sm border border-rule bg-surface-raised px-4 py-3.5">
                 {[0, 1, 2].map(i => (
                   <span
                     key={i}
-                    className="h-1.5 w-1.5 rounded-full bg-black/35"
+                    className="h-1.5 w-1.5 rounded-full bg-ink/35"
                     style={{ animation: `pulse-dot 1.2s ease-in-out ${i * 0.15}s infinite` }}
                   />
                 ))}
@@ -231,7 +231,7 @@ export function ChatWidget() {
                 key={s}
                 type="button"
                 onClick={() => submit(s)}
-                className="rounded-full border border-black/12 bg-white/60 px-3 py-1.5 text-[11.5px] text-black/72 transition-all hover:border-black/30 hover:text-black"
+                className="rounded-full border border-rule bg-surface px-3 py-1.5 text-[11.5px] text-ink-2 transition-all hover:border-rule-strong hover:text-ink"
               >
                 {s}
               </button>
@@ -242,7 +242,7 @@ export function ChatWidget() {
         {/* Composer */}
         <form
           onSubmit={e => { e.preventDefault(); submit(draft) }}
-          className="flex items-center gap-2 border-t border-black/[0.08] bg-white/60 px-4 py-3"
+          className="flex items-center gap-2 border-t border-rule bg-surface px-4 py-3"
         >
           <label htmlFor="chat-input" className="sr-only">Message</label>
           <input
@@ -252,13 +252,13 @@ export function ChatWidget() {
             onChange={e => setDraft(e.target.value)}
             placeholder="Ask a question…"
             autoComplete="off"
-            className="flex-1 bg-transparent px-1 text-[13.5px] text-[#111] placeholder:text-black/58 focus:outline-none"
+            className="flex-1 bg-transparent px-1 text-[13.5px] text-ink placeholder:text-ink-3 focus:outline-none"
           />
           <button
             type="submit"
             disabled={!draft.trim() || pending}
             aria-label="Send message"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#111] text-white transition-opacity hover:bg-black disabled:opacity-30"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-ground transition-opacity hover:bg-ink/90 disabled:opacity-30"
           >
             <Ico d={P.send} size={15} />
           </button>

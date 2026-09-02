@@ -18,7 +18,7 @@ function ToolMark({ tool }: { tool: Tool }) {
     return (
       <span
         aria-hidden="true"
-        className="flex items-center justify-center w-[22px] h-[22px] rounded-full text-[12px] font-semibold text-white shrink-0"
+        className="flex items-center justify-center w-[22px] h-[22px] rounded-full text-[12px] font-semibold text-ground shrink-0"
         style={{ backgroundColor: tool.color }}
       >
         {tool.name.charAt(0)}
@@ -49,9 +49,9 @@ function ToolMark({ tool }: { tool: Tool }) {
 
 function Pill({ tool }: { tool: Tool }) {
   return (
-    <span className="flex items-center gap-2.5 shrink-0 rounded-full border border-black/[0.08] bg-white/70 px-5 py-3 transition-colors duration-300 hover:bg-white hover:border-black/20">
+    <span className="flex items-center gap-2.5 shrink-0 rounded-full border border-rule bg-surface px-5 py-3 transition-colors duration-300 hover:bg-surface-raised hover:border-rule-strong">
       <ToolMark tool={tool} />
-      <span className="text-[14px] whitespace-nowrap text-black/72">{tool.name}</span>
+      <span className="text-[14px] whitespace-nowrap text-ink-2">{tool.name}</span>
     </span>
   )
 }
@@ -100,7 +100,7 @@ export function ToolStackSection() {
   const { ref, inView } = useInView(0.2)
 
   return (
-    <section id="stack" className="py-32 border-t border-black/[0.06] overflow-hidden">
+    <section id="stack" className="py-32 border-t border-rule overflow-hidden">
       <div
         ref={ref}
         className={`px-6 md:px-12 lg:px-20 text-center ${READABLE}`}
@@ -110,17 +110,17 @@ export function ToolStackSection() {
           transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
-        <p className="font-mono text-[13px] tracking-[0.25em] text-black/68">{'// TOOL STACK'}</p>
+        <p className="font-mono text-[13px] tracking-[0.25em] text-ink-2">{'// TOOL STACK'}</p>
 
         <h2
-          className="mt-5 text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] tracking-tight text-[#111]"
+          className="mt-5 text-[clamp(2rem,5vw,4rem)] font-light leading-[1.05] tracking-tight text-ink"
           style={{ fontFamily: DISPLAY_FONT }}
         >
           Tools I{" "}
           <span className="text-[#6d28d9]">Build With</span>
         </h2>
 
-        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-black/72">
+        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-ink-2">
           The platforms behind every system I ship — connected, automated, and running in
           production.
         </p>

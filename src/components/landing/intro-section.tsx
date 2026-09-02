@@ -48,7 +48,7 @@ export function IntroSection() {
   })
 
   return (
-    <section id="about" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+    <section id="about" className="py-32 px-6 md:px-12 lg:px-20 border-t border-rule">
       {/* The bio is a two-column block that tops out around 1120px — a wider
           prose column would overrun a comfortable line length. Centring it
           keeps the leftover width as balanced margins instead of a single
@@ -64,37 +64,37 @@ export function IntroSection() {
           <div className={READABLE}>
             <div style={introStep(inView, reducedMotion, { delay: 120, y: 40, blur: 14, duration: 1.15 })}>
               <h2
-                className="text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-[#111]"
+                className="text-[clamp(2.25rem,5vw,4rem)] font-light leading-[1.02] tracking-tight text-ink"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
-                <GreetingWord className="text-black/58" />
-                <span className="text-black/58">, I&apos;m</span>
+                <GreetingWord className="text-ink-3" />
+                <span className="text-ink-3">, I&apos;m</span>
                 <br />
                 Ramon A. Vallejera, Jr.
               </h2>
               <p
-                className="mt-4 text-xl sm:text-2xl font-light text-black/70"
+                className="mt-4 text-xl sm:text-2xl font-light text-ink-2"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 AI Automation Specialist
-                <span className="text-black/58"> · MBA</span>
+                <span className="text-ink-3"> · MBA</span>
               </p>
             </div>
 
             <div className="mt-8 max-w-[58ch] space-y-4" style={reveal(140)}>
-              <p className="text-[15.5px] leading-[1.7] text-black/72">
+              <p className="text-[15.5px] leading-[1.7] text-ink-2">
                 I automate the work that quietly eats a company&apos;s week — client intake and
                 onboarding, approvals and handoffs, reporting, invoicing, and the copying
                 between systems that someone is currently doing by hand.
               </p>
-              <p className="text-[15.5px] leading-[1.7] text-black/72">
+              <p className="text-[15.5px] leading-[1.7] text-ink-2">
                 Today I build production automation on{" "}
-                <span className="font-medium text-[#111]">n8n, Zapier and Make</span> — AI agents,{" "}
-                <span className="font-medium text-[#111]">Claude and OpenAI integrations</span>,{" "}
-                <span className="font-medium text-[#111]">RAG knowledge systems</span> and
+                <span className="font-medium text-ink">n8n, Zapier and Make</span> — AI agents,{" "}
+                <span className="font-medium text-ink">Claude and OpenAI integrations</span>,{" "}
+                <span className="font-medium text-ink">RAG knowledge systems</span> and
                 multi-system pipelines across Google Workspace, Airtable and Telegram.
               </p>
-              <p className="text-[15.5px] leading-[1.7] text-black/72">
+              <p className="text-[15.5px] leading-[1.7] text-ink-2">
                 Before that I spent ten years running those processes rather than automating
                 them — as an accountant, then a financial analyst. That is the part most
                 automation work is missing: someone who knows what an approval rule is
@@ -107,18 +107,18 @@ export function IntroSection() {
             <div className="mt-10 space-y-3" style={reveal(220)}>
               {CONTACT.map(c => (
                 <div key={c.label} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="text-[12px] tracking-widest text-black/68 font-mono w-24 shrink-0">
+                  <span className="text-[12px] tracking-widest text-ink-2 font-mono w-24 shrink-0">
                     {c.label.toUpperCase()}
                   </span>
                   {c.href ? (
                     <a
                       href={c.href}
-                      className="text-sm text-black/70 hover:text-black transition-colors border-b border-black/10 hover:border-black/40"
+                      className="text-sm text-ink-2 hover:text-ink transition-colors border-b border-rule hover:border-rule-strong"
                     >
                       {c.value}
                     </a>
                   ) : (
-                    <span className="text-sm text-black/70">{c.value}</span>
+                    <span className="text-sm text-ink-2">{c.value}</span>
                   )}
                 </div>
               ))}
@@ -128,9 +128,9 @@ export function IntroSection() {
             <div className="mt-10 flex flex-wrap items-center gap-4" style={reveal(300)}>
               <a
                 href="/contact"
-                className="group inline-flex items-center gap-3 pl-6 pr-2 py-2 rounded-full bg-[#111] text-white text-[14px] tracking-wide hover:bg-black transition-colors"
+                className="group inline-flex items-center gap-3 pl-6 pr-2 py-2 rounded-full bg-ink text-ground text-[14px] tracking-wide hover:bg-ink/90 transition-colors"
               >
-                HIRE ME
+                Start a project
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/15 group-hover:bg-white/25 transition-colors">
                   <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                     <path
@@ -147,7 +147,7 @@ export function IntroSection() {
               <a
                 href={PROFILE.cv}
                 download
-                className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-3 text-[13px] tracking-wide text-black/72 transition-all hover:border-black/35 hover:bg-black/[0.03] hover:text-black"
+                className="inline-flex items-center gap-2 rounded-full border border-rule-strong px-5 py-3 text-[13px] tracking-wide text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
@@ -162,7 +162,7 @@ export function IntroSection() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2.5 rounded-full border border-black/10 text-[12px] tracking-wide text-black/68 hover:text-black hover:border-black/25 hover:bg-black/[0.03] transition-all"
+                    className="px-4 py-2.5 rounded-full border border-rule text-[12px] tracking-wide text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/[0.03] transition-all"
                   >
                     {s.label}
                   </a>
@@ -177,7 +177,7 @@ export function IntroSection() {
               {/* Office background lifted out with the Vision framework and
                   composited on white, so the portrait sits on a white card
                   rather than clashing with the cream ground. */}
-              <div className="rounded-2xl overflow-hidden bg-white border border-black/[0.07] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-12px_rgba(0,0,0,0.12)]">
+              <div className="rounded-2xl overflow-hidden bg-surface-raised border border-rule shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-12px_rgba(0,0,0,0.12)]">
                 <img
                   src="/images/landing/ramon-portrait.webp"
                   alt="Ramon A. Vallejera, Jr."
@@ -188,27 +188,27 @@ export function IntroSection() {
               </div>
 
               {/* Availability chip */}
-              <div className="absolute left-4 bottom-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/85 border border-black/[0.07] backdrop-blur-sm">
+              <div className="absolute left-4 bottom-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-raised border border-rule backdrop-blur-sm">
                 <span className="relative flex w-1.5 h-1.5">
                   <span className="absolute -inset-1 rounded-full bg-emerald-500/30 animate-[pulse-dot_2s_ease-in-out_infinite]" />
                   <span className="relative w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 </span>
-                <span className="text-[11px] tracking-widest text-black/68 font-mono">AVAILABLE</span>
+                <span className="text-[11px] tracking-widest text-ink-2 font-mono">AVAILABLE</span>
               </div>
             </div>
 
             {/* Credentials strip */}
-            <div className="mt-6 grid grid-cols-3 divide-x divide-black/[0.07] border border-black/[0.07] rounded-xl overflow-hidden bg-white/50">
+            <div className="mt-6 grid grid-cols-3 divide-x divide-rule border border-rule rounded-xl overflow-hidden bg-surface">
               {[
                 { value: "10", label: "yrs in business ops" },
                 { value: "MBA", label: "business strategy" },
                 { value: "n8n", label: "cloud + self-hosted" },
               ].map(s => (
                 <div key={s.label} className="px-3 py-4 text-center">
-                  <div className="text-lg font-light text-[#111]" style={{ fontFamily: DISPLAY_FONT }}>
+                  <div className="text-lg font-light text-ink" style={{ fontFamily: DISPLAY_FONT }}>
                     {s.value}
                   </div>
-                  <div className="mt-1 text-[11px] leading-tight text-black/68">{s.label}</div>
+                  <div className="mt-1 text-[11px] leading-tight text-ink-2">{s.label}</div>
                 </div>
               ))}
             </div>

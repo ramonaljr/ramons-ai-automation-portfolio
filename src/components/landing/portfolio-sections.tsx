@@ -17,7 +17,7 @@ import { ContactSection } from "@/components/landing/contact-section"
 import { ArticlesSection } from "@/components/landing/articles-section"
 import { ChatWidget } from "@/components/landing/chat-widget"
 import { ParticleField } from "@/components/landing/particle-field"
-import { ArrowIcon, CONTAINER, DISPLAY_FONT, PAGE, READABLE, SECTION, rise, sweep, SWEEP_STEP, SWEEP_STEP_DENSE, useInView } from "@/components/landing/motion"
+import { ArrowIcon, CONTAINER, Cta, DISPLAY_FONT, PAGE, READABLE, SECTION, SECTION_ANCHOR, SECTION_CONT, rise, sweep, SWEEP_STEP, useInView } from "@/components/landing/motion"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import type { PostMetadata } from "@/lib/posts"
@@ -61,73 +61,82 @@ function ServicesSection() {
     <section id="services" className={SECTION}>
       <div className={CONTAINER}>
         <SectionHead
-          tag="OUR SERVICES"
+          tag="SERVICES"
           title={<>What I automate<br />across your business.</>}
           blurb="Five ways I take manual work out of a business — from intake and onboarding through approvals, reporting and reconciliation. Every engagement ends with a documented workflow your team can run without me."
         />
 
-        <div ref={ref} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-16 pt-10">
+        <div ref={ref} className="grid gap-x-5 gap-y-5 pt-4 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((s, i) => (
             <div
               key={s.slug}
-              className="group relative flex flex-col rounded-2xl border border-black/[0.07] bg-white/50 px-7 pt-14 pb-8 text-center transition-all duration-300 hover:bg-white hover:border-black/12"
+              className="group lift-hover relative flex flex-col rounded-2xl border border-rule bg-surface p-7 hover:border-rule-strong hover:bg-surface-raised"
               style={cardAnim(i)}
             >
-              {/* Icon medallion, straddling the top edge like the reference */}
-              <span className="absolute -top-9 left-1/2 -translate-x-1/2 w-[72px] h-[72px] rounded-full bg-[#F5F4F0] border border-black/10 flex items-center justify-center transition-colors duration-300 group-hover:border-black/25">
-                <PixelIcon type={SERVICE_ICONS[i] ?? "platform"} size={30} />
+              {/* Icon sits inline at the top-left rather than as a medallion
+                  straddling the card edge. The medallion forced the whole card
+                  to centre-align under it — which is what put ragged-left body
+                  copy in every one of these. */}
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-rule bg-ground transition-colors duration-300 group-hover:border-rule-strong">
+                <PixelIcon type={SERVICE_ICONS[i] ?? "platform"} size={28} />
               </span>
 
               <h3
-                className="text-xl font-light tracking-tight text-[#111] leading-snug"
+                className="display-md mt-6 text-xl leading-snug font-light text-ink"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 {s.title}
               </h3>
 
-              <p className="mt-3 text-[14px] leading-relaxed text-black/72 flex-1">
-                {s.description}
-              </p>
+              <p className="mt-3 flex-1 text-fine text-ink-2">{s.description}</p>
 
-              <div className="mt-5 flex flex-wrap justify-center gap-1.5">
+              <div className="mt-5 flex flex-wrap gap-1.5">
                 {s.tools.slice(0, 3).map(t => (
-                  <span key={t} className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[11px] text-black/70">
+                  <span
+                    key={t}
+                    className="rounded-md border border-rule bg-ink/[0.02] px-2.5 py-1 text-meta text-ink-3"
+                  >
                     {t}
                   </span>
                 ))}
               </div>
 
+              {/* A quiet link, not a filled pill. Five ink pills in one grid
+                  gave the section five equal shouts and no hierarchy — the
+                  card itself is the affordance, so the link only has to name
+                  the destination. */}
               <a
                 href={`/services/${s.slug}`}
-                className="mt-7 inline-flex items-center justify-center gap-2 self-center pl-5 pr-4 py-2.5 rounded-full bg-[#111] text-white text-[13px] tracking-wide hover:bg-black transition-colors"
+                className="mt-6 inline-flex items-center gap-2 self-start border-t border-transparent pt-1 text-fine text-ink transition-colors"
               >
-                View Services
-                <ArrowIcon />
+                <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-[position:0_100%] bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:bg-[length:100%_1px]">
+                  View service
+                </span>
+                <span className="transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1">
+                  <ArrowIcon />
+                </span>
               </a>
             </div>
           ))}
 
-          {/* Sixth cell balances the 3-column grid and routes to contact */}
+          {/* Sixth cell balances the grid and routes to contact. It carries the
+              section's one filled CTA, which is now the only one in the grid. */}
           <div
-            className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/12 px-7 py-12 text-center"
+            className="flex flex-col justify-center rounded-2xl border border-rule bg-ink/[0.025] p-7"
             style={cardAnim(SERVICES.length)}
           >
             <p
-              className="text-lg font-light tracking-tight text-[#111]"
+              className="display-md text-xl leading-snug font-light text-ink"
               style={{ fontFamily: DISPLAY_FONT }}
             >
-              Not sure which<br />you need?
+              Not sure which you need?
             </p>
-            <p className="mt-3 text-[14px] leading-relaxed text-black/70 max-w-[22ch]">
+            <p className="mt-3 max-w-[30ch] text-fine text-ink-2">
               Describe the process that eats your week and I will tell you where it fits.
             </p>
-            <a
-              href="/contact"
-              className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-black/12 text-[13px] tracking-wide text-black/72 hover:text-black hover:border-black/30 hover:bg-black/[0.03] transition-all"
-            >
+            <Cta href="/contact" className="mt-6 self-start">
               Ask me
-              <ArrowIcon />
-            </a>
+            </Cta>
           </div>
         </div>
       </div>
@@ -141,7 +150,7 @@ function PlatformsSection() {
   const { ref, inView } = useInView(0.08)
 
   return (
-    <section id="platforms" className={SECTION}>
+    <section id="platforms" className={SECTION_CONT}>
       <div className={CONTAINER}>
         <SectionHead
           tag="PLATFORMS"
@@ -155,35 +164,35 @@ function PlatformsSection() {
               key={p.name}
               className={`relative rounded-2xl border p-8 transition-all duration-300 ${
                 p.primary
-                  ? "border-black/15 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]"
-                  : "border-black/[0.07] bg-white/50 hover:bg-white hover:border-black/12"
+                  ? "border-rule-strong bg-surface-raised shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]"
+                  : "border-rule bg-surface hover:bg-surface-raised hover:border-rule"
               }`}
               style={sweep(inView, i)}
             >
               {p.primary && (
-                <span className="absolute top-6 right-6 text-[11px] tracking-widest font-mono text-white bg-[#111] rounded px-2 py-1">
+                <span className="absolute top-6 right-6 text-[11px] tracking-widest font-mono text-ground bg-ink rounded px-2 py-1">
                   PRIMARY
                 </span>
               )}
 
               <h3
-                className="text-3xl font-light tracking-tight text-[#111]"
+                className="text-3xl font-light tracking-tight text-ink"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 {p.name}
               </h3>
-              <p className="mt-2 text-sm text-black/72 leading-relaxed">{p.tagline}</p>
+              <p className="mt-2 text-sm text-ink-2 leading-relaxed">{p.tagline}</p>
 
               <ul className="mt-6 space-y-2.5">
                 {p.bestFor.map(b => (
-                  <li key={b} className="flex items-start gap-2.5 text-[14px] text-black/70 leading-snug">
-                    <span className="mt-[7px] w-1 h-1 rounded-full bg-black/30 shrink-0" />
+                  <li key={b} className="flex items-start gap-2.5 text-[14px] text-ink-2 leading-snug">
+                    <span className="mt-[7px] w-1 h-1 rounded-full bg-ink/30 shrink-0" />
                     {b}
                   </li>
                 ))}
               </ul>
 
-              <p className="mt-6 pt-5 border-t border-black/[0.07] text-[13px] leading-relaxed text-black/68 italic">
+              <p className="mt-6 pt-5 border-t border-rule text-[13px] leading-relaxed text-ink-2 italic">
                 {p.note}
               </p>
             </div>
@@ -222,45 +231,45 @@ function ProcessSection() {
               {/* Numeral with the rail running to the next step */}
               <div className="flex items-center gap-3">
                 <span
-                  className="text-[42px] leading-none font-light text-[#111]"
+                  className="text-[42px] leading-none font-light text-ink"
                   style={{ fontFamily: DISPLAY_FONT }}
                 >
                   {p.step}
                 </span>
                 {i < PROCESS.length - 1 && (
                   <span className="hidden lg:flex flex-1 items-center gap-2" aria-hidden="true">
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-black/25" />
-                    <span className="h-px flex-1 bg-black/[0.12]" />
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-ink/25" />
+                    <span className="h-px flex-1 bg-ink/[0.12]" />
                   </span>
                 )}
               </div>
 
-              <h3 className="mt-7 font-mono text-[14px] font-semibold tracking-[0.18em] text-[#111]">
+              <h3 className="mt-7 font-mono text-[14px] font-semibold tracking-[0.18em] text-ink">
                 {p.label}
               </h3>
 
-              <p className="mt-3.5 text-[14px] font-medium leading-snug text-black/80">
+              <p className="mt-3.5 text-[14px] font-medium leading-snug text-ink">
                 {p.summary}
               </p>
 
-              <p className="mt-3 text-[13.5px] leading-relaxed text-black/72">{p.desc}</p>
+              <p className="mt-3 text-[13.5px] leading-relaxed text-ink-2">{p.desc}</p>
             </div>
           ))}
         </div>
 
         {/* Closing prompt */}
         <div
-          className="mt-24 rounded-2xl border border-black/[0.09] bg-white/40 px-6 py-14 text-center"
+          className="mt-24 rounded-2xl border border-rule bg-surface px-6 py-14 text-center"
           style={rise(inView, PROCESS.length * SWEEP_STEP)}
         >
-          <p className="font-mono text-[14px] tracking-[0.18em] text-black/68">
+          <p className="font-mono text-[14px] tracking-[0.18em] text-ink-2">
             HAVE A PROCESS THAT FEELS TOO MANUAL?
           </p>
           <a
             href="/#contact"
-            className="mt-7 inline-flex items-center gap-2.5 rounded-full bg-[#111] px-7 py-3.5 font-mono text-[13px] tracking-[0.14em] text-white transition-colors hover:bg-black"
+            className="mt-7 inline-flex items-center gap-2.5 rounded-full bg-ink px-7 py-3.5 font-mono text-[13px] tracking-[0.14em] text-ground transition-colors hover:bg-ink/90"
           >
-            LET&apos;S AUTOMATE IT
+            Book a workflow audit
             <ArrowIcon />
           </a>
         </div>
@@ -283,24 +292,34 @@ function PrinciplesSection() {
           blurb="An automation that silently does the wrong thing is worse than no automation. Three rules I do not bend."
         />
 
-        <div ref={ref} className="grid lg:grid-cols-3 gap-5">
+        <div ref={ref} className="border-t border-rule">
           {PRINCIPLES.map((p, i) => (
             <div
               key={p.n}
-              className="rounded-2xl border border-black/[0.07] bg-white/50 p-8 hover:bg-white hover:border-black/12 transition-all duration-300"
+              className="group grid gap-x-10 gap-y-4 border-b border-rule py-10 md:grid-cols-[5rem_minmax(0,22rem)_1fr] md:py-12"
               style={sweep(inView, i)}
             >
-              <span className="text-[12px] font-mono text-black/72">{p.n}</span>
-              <h3
-                className="mt-4 text-xl font-light leading-snug tracking-tight text-[#111]"
+              {/* The numeral carries the indexing here, so it is set at display
+                  size in the faintest ink — present, but never louder than the
+                  claim it numbers. */}
+              <span
+                className="text-[2.75rem] leading-none font-light text-ink-4 transition-colors duration-500 group-hover:text-ink-3"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
-                {p.title}
-              </h3>
-              <p className="mt-2 text-[13px] text-black/68 leading-relaxed">{p.sub}</p>
-              <p className="mt-5 pt-5 border-t border-black/[0.07] text-[14px] leading-relaxed text-black/68">
-                {p.body}
-              </p>
+                {p.n}
+              </span>
+
+              <div>
+                <h3
+                  className="display-md text-2xl leading-snug font-light text-ink md:text-[1.75rem]"
+                  style={{ fontFamily: DISPLAY_FONT }}
+                >
+                  {p.title}
+                </h3>
+                <p className="mt-2 text-fine text-ink-3">{p.sub}</p>
+              </div>
+
+              <p className="max-w-[58ch] text-body text-ink-2 md:pt-1.5">{p.body}</p>
             </div>
           ))}
         </div>
@@ -315,7 +334,7 @@ function EngagementSection() {
   const { ref, inView } = useInView(0.08)
 
   return (
-    <section id="engagement" className={SECTION}>
+    <section id="engagement" className={SECTION_ANCHOR}>
       <div className={CONTAINER}>
         <SectionHead
           tag="WORKING TOGETHER"
@@ -329,26 +348,26 @@ function EngagementSection() {
               key={e.name}
               className={`flex flex-col rounded-2xl border p-8 transition-all duration-300 ${
                 e.featured
-                  ? "border-black/15 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]"
-                  : "border-black/[0.07] bg-white/50 hover:bg-white hover:border-black/12"
+                  ? "border-rule-strong bg-surface-raised shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]"
+                  : "border-rule bg-surface hover:bg-surface-raised hover:border-rule"
               }`}
               style={sweep(inView, i)}
             >
-              <span className="text-[12px] tracking-widest font-mono text-black/68">
+              <span className="text-[12px] tracking-widest font-mono text-ink-2">
                 {e.duration.toUpperCase()}
               </span>
               <h3
-                className="mt-3 text-2xl font-light tracking-tight text-[#111]"
+                className="mt-3 text-2xl font-light tracking-tight text-ink"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 {e.name}
               </h3>
-              <p className="mt-3 text-[14px] leading-relaxed text-black/72">{e.summary}</p>
+              <p className="mt-3 text-[14px] leading-relaxed text-ink-2">{e.summary}</p>
 
               <ul className="mt-6 space-y-2.5 flex-1">
                 {e.includes.map(it => (
-                  <li key={it} className="flex items-start gap-2.5 text-[14px] text-black/70 leading-snug">
-                    <span className="mt-[7px] w-1 h-1 rounded-full bg-black/30 shrink-0" />
+                  <li key={it} className="flex items-start gap-2.5 text-[14px] text-ink-2 leading-snug">
+                    <span className="mt-[7px] w-1 h-1 rounded-full bg-ink/30 shrink-0" />
                     {it}
                   </li>
                 ))}
@@ -358,8 +377,8 @@ function EngagementSection() {
                 href="/contact"
                 className={`mt-8 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full text-[13px] tracking-wide transition-colors ${
                   e.featured
-                    ? "bg-[#111] text-white hover:bg-black"
-                    : "border border-black/12 text-black/72 hover:text-black hover:border-black/30 hover:bg-black/[0.03]"
+                    ? "bg-ink text-ground hover:bg-ink/90"
+                    : "border border-rule text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/[0.03]"
                 }`}
               >
                 {e.cta}

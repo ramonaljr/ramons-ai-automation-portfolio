@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 
 import { HERO_STATS } from '@/lib/portfolio'
-import { CountUp } from '@/components/landing/motion'
+import { CountUp, Cta } from '@/components/landing/motion'
 
 const words = ['automate', 'reconcile', 'integrate', 'scale']
 
@@ -11,14 +11,17 @@ const words = ['automate', 'reconcile', 'integrate', 'scale']
 // so the grafted hero and the page it sits on read as one design.
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
-// Settled colour once a letter's gradient pass has finished. The dark original
-// resolved to white; on the cream ground it resolves to the page's ink.
-const INK = '#111'
+// Settled colour once a letter's illumination pass has finished.
+const INK = '#2A2724'
 
-// Retuned for a light ground. The dark template used pastels (#eca8d6, #a78bfa,
-// #67e8f9, #fbbf24) chosen to glow against black — on #F5F4F0 they wash out to
-// near-invisible, so these are the deeper, more saturated cousins.
-const gradientColors = ['#c026a3', '#6d28d9', '#0e7490', '#c2620a', '#c026a3']
+// A single-hue heat ramp, not a rainbow.
+//
+// This was magenta → violet → cyan → orange: four unrelated hues, which is the
+// most recognisable "AI-generated site" signature there is, and none of them
+// belonged to the page's own warm palette. The word now warms from ink to the
+// site's terracotta accent at its centre and cools back — the letters still
+// illuminate as they land, but in one colour the rest of the page also speaks.
+const gradientColors = ['#4A3F36', '#8C4E2A', '#B4652F', '#8C4E2A', '#4A3F36']
 
 function BlurWord({ word, trigger }: { word: string; trigger: number }) {
   const letters = word.split('')
@@ -157,9 +160,13 @@ export function HeroSection({ ready }: { ready?: boolean }) {
   const isVisible = ready ?? mounted
 
   return (
-    <section className='relative flex min-h-screen flex-col items-start justify-center overflow-hidden bg-[#F5F4F0]'>
-      {/* Background video — dark footage, dialled back and warmed so it reads
-          as a soft backdrop on cream rather than a black hole. */}
+    <section className='relative flex min-h-dvh flex-col justify-center overflow-hidden bg-ground'>
+      {/* Background video, graded into the palette.
+          It was running `saturate(1.35)` — boosting the footage's pink toward
+          the loudest thing on the page, in a hue the rest of the site never
+          uses. Pulling saturation down and adding a trace of sepia lands it in
+          the same warm neutral family as the ground, so it reads as atmosphere
+          behind the headline instead of a photograph competing with it. */}
       <div className='absolute inset-0 z-0'>
         <video
           autoPlay
@@ -167,84 +174,113 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           loop
           playsInline
           aria-hidden='true'
-          className='h-full w-full object-cover object-center opacity-[0.78]'
-          style={{ filter: 'saturate(1.35) brightness(1.06) contrast(1.02)' }}
+          className='h-full w-full object-cover object-center opacity-[0.62]'
+          style={{ filter: 'saturate(0.42) sepia(0.22) brightness(1.04) contrast(1.06)' }}
         >
           <source src='/video/hero-compute.mp4' type='video/mp4' />
         </video>
         {/* Cream veil from the left so the headline always has a clean ground */}
-        <div className='absolute inset-0 bg-gradient-to-r from-[#F5F4F0] via-[#F5F4F0]/70 to-[#F5F4F0]/5' />
-        <div className='absolute inset-0 bg-gradient-to-b from-[#F5F4F0]/60 via-transparent to-[#F5F4F0]/85' />
+        <div className='absolute inset-0 bg-gradient-to-r from-ground via-ground/82 to-ground/10' />
+        <div className='absolute inset-0 bg-gradient-to-b from-ground/60 via-transparent to-ground/85' />
       </div>
 
-      {/* Subtle grid lines — inverted from white/10 to ink for the light ground */}
-      <div className='pointer-events-none absolute inset-0 z-[2] overflow-hidden opacity-40'>
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={`h-${i}`}
-            className='absolute h-px bg-black/[0.06]'
-            style={{ top: `${12.5 * (i + 1)}%`, left: 0, right: 0 }}
-          />
-        ))}
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={`v-${i}`}
-            className='absolute w-px bg-black/[0.06]'
-            style={{ left: `${8.33 * (i + 1)}%`, top: 0, bottom: 0 }}
-          />
-        ))}
-      </div>
+      {/* Architectural grid. Two repeating-linear-gradients rather than the 20
+          absolutely-positioned divs this used to be — same drawing, no DOM, and
+          it scales with the viewport instead of snapping to hardcoded percents.
+          Masked to fade toward the right so it never competes with the video. */}
+      <div
+        className='pointer-events-none absolute inset-0 z-[2]'
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(to right, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 8.333%),' +
+            'repeating-linear-gradient(to bottom, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 12.5%)',
+          maskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)',
+          WebkitMaskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)'
+        }}
+      />
 
-      <div className='relative z-10 mx-auto w-full max-w-[1560px] px-6 py-32 md:px-12 lg:px-20 lg:py-40 2xl:max-w-[1760px]'>
-        <div className='lg:max-w-[55%]'>
+      <div className='relative z-10 mx-auto flex w-full max-w-[1560px] flex-1 flex-col justify-center px-6 pt-36 pb-10 md:px-12 lg:px-20 2xl:max-w-[1760px]'>
+        <div className='lg:max-w-[62%]'>
           {/* Eyebrow */}
           <div
             className={`mb-8 transition-all duration-700 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
-            <span className='inline-flex items-center gap-3 font-mono text-sm text-black/72'>
-              <span className='h-px w-8 bg-black/25' />
-              End-to-end AI automation for business operations
+            <span className='inline-flex items-center gap-3'>
+              <span className='h-px w-8 bg-ink/25' />
+              <span className='eyebrow'>End-to-end AI automation for business operations</span>
             </span>
           </div>
 
-          {/* Main headline */}
-          <div className='mb-12'>
-            <h1
-              className={`text-left text-[clamp(1.75rem,5.2vw,6rem)] leading-[0.92] font-light tracking-tight text-[#111] transition-all duration-1000 ${
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-              }`}
-              style={{ fontFamily: DISPLAY_FONT }}
-            >
-              <span className='block whitespace-nowrap'>n8n, Zapier and Make.</span>
-              <span className='block whitespace-nowrap'>
-                Workflows that{' '}
-                <span className='relative inline-block'>
-                  <BlurWord word={words[wordIndex]} trigger={wordIndex} />
-                </span>
+          {/* Main headline. The nowrap was forcing the clamp floor down to
+              1.75rem so the longest line could fit a phone — which made the
+              headline tiny on exactly the device where it needs the most
+              presence. Line one is allowed to wrap below `md`, which lets the
+              floor rise to 2.5rem. */}
+          <h1
+            className={`display-xl text-left text-[clamp(2.5rem,5.4vw,6rem)] leading-[0.94] font-light text-ink transition-all duration-1000 ${
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            }`}
+            style={{ fontFamily: DISPLAY_FONT }}
+          >
+            <span className='block md:whitespace-nowrap'>n8n, Zapier and Make.</span>
+            {/* Line two also has to wrap on a phone. The rotating word changes
+                length every 2.5s ("scale" vs "reconcile"), so a hard nowrap
+                here clipped the longest ones off the right edge at 375px. The
+                word is `inline-block`, so it moves as a unit rather than
+                breaking mid-word when it does wrap. */}
+            <span className='block md:whitespace-nowrap'>
+              Workflows that{' '}
+              <span className='relative inline-block'>
+                <BlurWord word={words[wordIndex]} trigger={wordIndex} />
               </span>
-            </h1>
+            </span>
+          </h1>
+
+          {/* Supporting line + actions. The hero previously ran headline →
+              stats with no call to action anywhere above the fold, so the
+              first thing a visitor could act on was ten sections down. */}
+          <p
+            className={`mt-8 max-w-[52ch] text-lead text-ink-2 transition-all delay-200 duration-1000 ${
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+            }`}
+          >
+            I design and ship the automations that take intake, approvals, reporting and reconciliation
+            off your team&rsquo;s desk — then hand over documentation they can run without me.
+          </p>
+
+          <div
+            className={`mt-10 flex flex-wrap items-center gap-x-3 gap-y-3 transition-all delay-300 duration-1000 ${
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+            }`}
+          >
+            <Cta href='/contact'>Book a workflow audit</Cta>
+            <Cta href='#portfolio' tone='secondary'>
+              See the work
+            </Cta>
           </div>
         </div>
       </div>
 
-      {/* Stats — 3 metrics static, no auto-scroll */}
+      {/* Stats. Previously `absolute bottom-12`, which on a short viewport put
+          them straight through the headline. In flow, the hero simply grows. */}
       <div
-        className={`absolute right-0 bottom-12 left-0 z-30 px-6 transition-all delay-500 duration-700 md:px-12 lg:px-20 ${
+        className={`relative z-30 mx-auto w-full max-w-[1560px] px-6 pb-14 transition-all delay-500 duration-700 md:px-12 lg:px-20 2xl:max-w-[1760px] ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <div className='mx-auto flex max-w-[1400px] items-start gap-10 lg:gap-20 2xl:max-w-[1600px]'>
+        <div className='flex flex-wrap items-start gap-x-12 gap-y-8 border-t border-rule pt-8 lg:gap-x-20'>
           {HERO_STATS.map(stat => (
-            <div key={stat.label} className='flex flex-col gap-2'>
+            <div key={stat.label} className='flex flex-col gap-1.5'>
               <span
-                className='text-3xl font-light tracking-tight text-[#111] lg:text-4xl'
+                data-countup
+                className='display-md text-3xl font-light text-ink lg:text-[2.5rem]'
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 <CountUp start={isVisible}>{stat.value}</CountUp>
               </span>
-              <span className='text-xs leading-tight text-black/70'>{stat.label}</span>
+              <span className='text-meta max-w-[18ch] text-ink-3'>{stat.label}</span>
             </div>
           ))}
         </div>
@@ -258,7 +294,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
         style={{
           height: '30%',
           background:
-            'linear-gradient(to top, #F5F4F0 0%, rgba(245,244,240,0.85) 35%, rgba(245,244,240,0.4) 65%, transparent 100%)'
+            'linear-gradient(to top, var(--ground) 0%, color-mix(in oklch, var(--ground) 85%, transparent) 35%,' +
+            ' color-mix(in oklch, var(--ground) 40%, transparent) 65%, transparent 100%)'
         }}
       />
       <div

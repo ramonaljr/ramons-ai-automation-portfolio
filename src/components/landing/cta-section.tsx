@@ -23,16 +23,20 @@ export function CtaSection({
   const { ref, inView } = useInView(0.15)
 
   return (
-    <section className='relative overflow-hidden border-t border-black/[0.06] px-6 py-32 md:px-12 lg:px-20'>
-      {/* Glass panels, anchored bottom-centre — the template's own footer
-          treatment. Light by design; it fades up into the cream page. */}
-      {}
+    <section className='relative overflow-hidden border-t border-rule px-6 py-32 md:px-12 lg:px-20'>
+      {/* Glass panels anchored bottom-centre, graded into the palette.
+          The source art is a cool pastel spectrum — lavender, mint, peach —
+          which made the page's most important conversion surface the only
+          place a rainbow appears, and put the same multi-hue signature here
+          that the hero headline used to carry. Desaturating and warming it
+          keeps the refracted-glass geometry, which is the part worth having,
+          and drops the colour story that never belonged. */}
       <img
         src='/images/landing/footer.png'
         alt=''
         aria-hidden='true'
         className='pointer-events-none absolute bottom-0 left-0 w-full object-cover object-bottom select-none'
-        style={{ opacity: 0.85 }}
+        style={{ opacity: 0.55, filter: 'saturate(0.2) sepia(0.32) brightness(1.04) contrast(1.04)' }}
       />
 
       {/* Progressive blur from the bottom */}
@@ -57,26 +61,26 @@ export function CtaSection({
 
       <div ref={ref} className={`relative z-10 ${CONTAINER} text-center`} style={rise(inView)}>
         <h2
-          className='text-[clamp(2rem,5vw,4rem)] leading-[1.05] font-light tracking-tight text-[#111]'
+          className='text-[clamp(2rem,5vw,4rem)] leading-[1.05] font-light tracking-tight text-ink'
           style={{ fontFamily: DISPLAY_FONT }}
         >
           {title}
         </h2>
-        <p className='mx-auto mt-6 max-w-lg text-[15px] leading-relaxed text-black/68'>{blurb}</p>
+        <p className='mx-auto mt-6 max-w-lg text-[15px] leading-relaxed text-ink-2'>{blurb}</p>
 
         <div className='mt-10 flex flex-wrap items-center justify-center gap-3'>
           <a
             href='/contact'
-            className='group inline-flex items-center gap-3 rounded-full bg-[#111] py-2 pr-2 pl-6 text-[14px] tracking-wide text-white transition-colors hover:bg-black'
+            className='group inline-flex items-center gap-3 rounded-full bg-ink py-2 pr-2 pl-6 text-[14px] tracking-wide text-ground transition-colors hover:bg-ink/90'
           >
-            START A CONVERSATION
+            Start a conversation
             <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
               <ArrowIcon />
             </span>
           </a>
           <a
             href={`mailto:${PROFILE.email}`}
-            className='inline-flex items-center rounded-full border border-black/12 px-5 py-3 text-[13px] tracking-wide text-black/72 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black'
+            className='inline-flex items-center rounded-full border border-rule px-5 py-3 text-[13px] tracking-wide text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink'
           >
             {PROFILE.email}
           </a>

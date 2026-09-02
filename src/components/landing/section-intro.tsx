@@ -52,7 +52,6 @@ export function SectionIntro({
   blurb,
   className = '',
   align = 'left',
-  variant = 'pill',
   margin = 'mb-16',
   titleClassName = 'mt-6 text-[clamp(2rem,4vw,3.25rem)]'
 }: {
@@ -65,7 +64,8 @@ export function SectionIntro({
   className?: string
   align?: 'left' | 'center'
 
-  /** `mono` matches the eyebrow style used where the heading shares a row. */
+  /** @deprecated The eyebrow has one treatment now. Accepted and ignored
+   *  so existing call sites keep compiling. */
   variant?: 'pill' | 'mono'
 
   /** Sections that own their own spacing pass `margin=""`. */
@@ -84,19 +84,21 @@ export function SectionIntro({
       ref={ref}
       className={`${margin} ${READABLE} ${centred ? 'text-center' : ''} ${className}`}
     >
+      {/* One eyebrow treatment for the whole page.
+          This used to branch between a grey pill and tracked mono, so the same
+          element changed costume from section to section while the hero used a
+          third style. The rule is the shared signal — it also gives the eye a
+          consistent left anchor as the page scrolls. */}
       <div style={introStep(inView, reduced, { delay: 0, y: 16, duration: 0.8 })}>
-        {variant === 'pill' ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-black/[0.04] px-3 py-1 font-sans text-[12px] tracking-widest text-black/68">
-            {tag}
-          </span>
-        ) : (
-          <p className="font-mono text-[13px] tracking-[0.28em] text-black/68">{tag}</p>
-        )}
+        <p className={`flex items-center gap-3 ${centred ? 'justify-center' : ''}`}>
+          <span className="h-px w-8 bg-ink/25" aria-hidden="true" />
+          <span className="eyebrow">{tag}</span>
+        </p>
       </div>
 
       {title != null && (
         <h2
-          className={`${titleClassName} leading-[1.05] font-light tracking-tight text-[#111]`}
+          className={`${titleClassName} leading-[1.05] font-light tracking-tight text-ink`}
           style={{ fontFamily: DISPLAY_FONT, ...introStep(inView, reduced, { delay: 200, y: 40, blur: 14, duration: 1.15 }) }}
         >
           {title}
@@ -105,7 +107,7 @@ export function SectionIntro({
 
       {blurb && (
         <p
-          className={`mt-5 text-[15px] leading-relaxed text-black/72 ${centred ? 'mx-auto' : ''} max-w-xl`}
+          className={`mt-5 text-lead text-ink-2 ${centred ? 'mx-auto' : ''} max-w-[54ch]`}
           style={introStep(inView, reduced, { delay: 420, y: 20, duration: 0.9 })}
         >
           {blurb}

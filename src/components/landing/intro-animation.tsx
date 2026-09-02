@@ -80,7 +80,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
         style={{
           bottom: curtainUp ? "100%" : "0%",
           transition: curtainUp ? `bottom ${CURTAIN_DURATION}ms cubic-bezier(0.76, 0, 0.24, 1)` : "none",
-          background: "#F5F4F0",
+          background: "var(--ground)",
         }}
       />
 
@@ -89,18 +89,18 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
         <div className="flex flex-col items-center text-center max-w-2xl select-none">
           {/* Eyebrow badge */}
           <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-black/10 bg-black/[0.03] mb-5"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-rule bg-ink/[0.03] mb-5"
             style={getItemStyle(100, 12, 10)}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="font-mono text-[11px] sm:text-[12px] tracking-[0.2em] text-black/60 uppercase">
+            <span className="font-mono text-[11px] sm:text-[12px] tracking-[0.2em] text-ink-3 uppercase">
               AI Automation &amp; Systems
             </span>
           </div>
 
           {/* Scaled & Refined RAMON title */}
           <h1
-            className="text-[clamp(2.5rem,6vw,4.5rem)] font-light tracking-[0.14em] text-[#111] leading-none uppercase mb-5"
+            className="text-[clamp(2.5rem,6vw,4.5rem)] font-light tracking-[0.14em] text-ink leading-none uppercase mb-5"
             style={{
               fontFamily: DISPLAY_FONT,
               ...getItemStyle(220, 28, 20),
@@ -111,7 +111,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
 
           {/* Business pain-point slogan */}
           <p
-            className="text-[15px] sm:text-lg md:text-xl font-light text-black/75 max-w-[42ch] leading-relaxed tracking-tight"
+            className="text-[15px] sm:text-lg md:text-xl font-light text-ink-2 max-w-[42ch] leading-relaxed tracking-tight"
             style={getItemStyle(380, 20, 14)}
           >
             Automating the manual work that quietly eats your business week.

@@ -27,7 +27,7 @@ function CheckIcon() {
 
 export function ServiceDetail({ service, others }: { service: Service; others: Service[] }) {
   return (
-    <div className="bg-[#F5F4F0] text-[#111] min-h-screen font-sans antialiased">
+    <div className="bg-ground text-ink min-h-screen font-sans antialiased">
       <SiteNav />
 
       {/* ── Header ───────────────────────────────────────────────────────── */}
@@ -35,21 +35,21 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
         <div className={CONTAINER}>
           <a
             href="/#services"
-            className="inline-flex items-center gap-2 text-[13px] text-black/70 hover:text-black transition-colors mb-10"
+            className="inline-flex items-center gap-2 text-[13px] text-ink-2 hover:text-ink transition-colors mb-10"
           >
             <span aria-hidden="true">←</span> All services
           </a>
 
           <div className="flex items-start gap-5">
-            <span className="hidden sm:flex w-[72px] h-[72px] shrink-0 rounded-full bg-white border border-black/10 items-center justify-center">
+            <span className="hidden sm:flex w-[72px] h-[72px] shrink-0 rounded-full bg-surface-raised border border-rule items-center justify-center">
               <PixelIcon type="platform" size={30} />
             </span>
             <div>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] tracking-widest font-mono text-black/68 bg-black/[0.04]">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] tracking-widest font-mono text-ink-2 bg-ink/[0.04]">
                 {service.duration.toUpperCase()}
               </span>
               <h1
-                className="mt-4 text-[clamp(2rem,4.5vw,3.5rem)] font-light leading-[1.05] tracking-tight text-[#111]"
+                className="mt-4 text-[clamp(2rem,4.5vw,3.5rem)] font-light leading-[1.05] tracking-tight text-ink"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 {service.title}
@@ -65,11 +65,11 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
 
           {/* Main column */}
           <div className="min-w-0">
-            <p className="text-[16px] leading-relaxed text-black/70 max-w-2xl">{service.description}</p>
-            <p className="mt-5 text-[15px] leading-relaxed text-black/68 max-w-2xl">{service.detail}</p>
+            <p className="text-[16px] leading-relaxed text-ink-2 max-w-2xl">{service.description}</p>
+            <p className="mt-5 text-[15px] leading-relaxed text-ink-2 max-w-2xl">{service.detail}</p>
 
             {/* Workflow mockup */}
-            <div className="mt-12 rounded-2xl overflow-hidden border border-black/[0.07] bg-white">
+            <div className="mt-12 rounded-2xl overflow-hidden border border-rule bg-surface-raised">
               { }
               <img
                 src={`/images/services/${service.slug}.svg`}
@@ -82,15 +82,15 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
 
             {/* What's included */}
             <h2
-              className="mt-16 text-2xl lg:text-3xl font-light tracking-tight text-[#111]"
+              className="mt-16 text-2xl lg:text-3xl font-light tracking-tight text-ink"
               style={{ fontFamily: DISPLAY_FONT }}
             >
               What the engagement covers
             </h2>
             <ul className="mt-6 grid sm:grid-cols-2 gap-x-8 gap-y-3.5">
               {service.includes.map(it => (
-                <li key={it} className="flex items-start gap-2.5 text-[14px] leading-snug text-black/70">
-                  <span className="text-black/70"><CheckIcon /></span>
+                <li key={it} className="flex items-start gap-2.5 text-[14px] leading-snug text-ink-2">
+                  <span className="text-ink-2"><CheckIcon /></span>
                   {it}
                 </li>
               ))}
@@ -98,7 +98,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
 
             {/* Deliverables */}
             <h2
-              className="mt-16 text-2xl lg:text-3xl font-light tracking-tight text-[#111]"
+              className="mt-16 text-2xl lg:text-3xl font-light tracking-tight text-ink"
               style={{ fontFamily: DISPLAY_FONT }}
             >
               What you receive
@@ -107,13 +107,13 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
               {service.deliverables.map(d => (
                 <div
                   key={d.title}
-                  className="rounded-xl border border-black/[0.07] bg-white/60 p-5 hover:bg-white hover:border-black/12 transition-all duration-300"
+                  className="rounded-xl border border-rule bg-surface p-5 hover:bg-surface-raised hover:border-rule transition-all duration-300"
                 >
                   <div className="flex items-start gap-2.5">
-                    <span className="text-black/70"><CheckIcon /></span>
+                    <span className="text-ink-2"><CheckIcon /></span>
                     <div>
-                      <h3 className="text-[15px] font-medium text-[#111]">{d.title}</h3>
-                      <p className="mt-1.5 text-[14px] leading-relaxed text-black/72">{d.desc}</p>
+                      <h3 className="text-[15px] font-medium text-ink">{d.title}</h3>
+                      <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2">{d.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -122,45 +122,45 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
 
             {/* Qualities */}
             <h2
-              className="mt-16 text-2xl lg:text-3xl font-light tracking-tight text-[#111]"
+              className="mt-16 text-2xl lg:text-3xl font-light tracking-tight text-ink"
               style={{ fontFamily: DISPLAY_FONT }}
             >
               How it is built
             </h2>
             <ul className="mt-6 grid sm:grid-cols-2 gap-x-8 gap-y-3.5">
               {service.qualities.map(q => (
-                <li key={q} className="flex items-start gap-2.5 text-[14px] leading-snug text-black/70">
-                  <span className="text-black/70"><CheckIcon /></span>
+                <li key={q} className="flex items-start gap-2.5 text-[14px] leading-snug text-ink-2">
+                  <span className="text-ink-2"><CheckIcon /></span>
                   {q}
                 </li>
               ))}
             </ul>
 
             {/* CTA */}
-            <div className="mt-16 rounded-2xl border border-black/[0.07] bg-white p-8 sm:p-10">
+            <div className="mt-16 rounded-2xl border border-rule bg-surface-raised p-8 sm:p-10">
               <h2
-                className="text-2xl font-light tracking-tight text-[#111]"
+                className="text-2xl font-light tracking-tight text-ink"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 Think this is what you need?
               </h2>
-              <p className="mt-3 text-[14px] leading-relaxed text-black/68 max-w-lg">
+              <p className="mt-3 text-[14px] leading-relaxed text-ink-2 max-w-lg">
                 Tell me the process and the systems involved. I will confirm whether this is the
                 right fit and quote a fixed scope.
               </p>
               <div className="mt-7 flex flex-wrap items-center gap-3">
                 <a
                   href="/contact"
-                  className="group inline-flex items-center gap-3 pl-6 pr-2 py-2 rounded-full bg-[#111] text-white text-[14px] tracking-wide hover:bg-black transition-colors"
+                  className="group inline-flex items-center gap-3 pl-6 pr-2 py-2 rounded-full bg-ink text-ground text-[14px] tracking-wide hover:bg-ink/90 transition-colors"
                 >
-                  REQUEST A QUOTE
+                  Request a quote
                   <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/15 group-hover:bg-white/25 transition-colors">
                     <ArrowIcon />
                   </span>
                 </a>
                 <a
                   href={`mailto:${PROFILE.email}`}
-                  className="inline-flex items-center px-5 py-3 rounded-full border border-black/12 text-[13px] tracking-wide text-black/72 hover:text-black hover:border-black/30 hover:bg-black/[0.03] transition-all"
+                  className="inline-flex items-center px-5 py-3 rounded-full border border-rule text-[13px] tracking-wide text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/[0.03] transition-all"
                 >
                   {PROFILE.email}
                 </a>
@@ -171,15 +171,15 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
           {/* Sidebar */}
           <aside className="lg:sticky lg:top-28 space-y-5">
             {/* Tools */}
-            <div className="rounded-2xl border border-black/[0.07] bg-white/60 p-6">
-              <h2 className="text-[12px] tracking-widest font-mono text-black/68 pb-3 mb-4 border-b border-black/[0.07]">
+            <div className="rounded-2xl border border-rule bg-surface p-6">
+              <h2 className="text-[12px] tracking-widest font-mono text-ink-2 pb-3 mb-4 border-b border-rule">
                 TOOLS USED
               </h2>
               <div className="flex flex-wrap gap-1.5">
                 {service.tools.map(t => (
                   <span
                     key={t}
-                    className="px-2.5 py-1 rounded-md border border-black/[0.08] bg-black/[0.02] text-[12px] text-black/68"
+                    className="px-2.5 py-1 rounded-md border border-rule bg-ink/[0.02] text-[12px] text-ink-2"
                   >
                     {t}
                   </span>
@@ -188,8 +188,8 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
             </div>
 
             {/* Other services */}
-            <div className="rounded-2xl border border-black/[0.07] bg-white/60 p-6">
-              <h2 className="text-[12px] tracking-widest font-mono text-black/68 pb-3 mb-4 border-b border-black/[0.07]">
+            <div className="rounded-2xl border border-rule bg-surface p-6">
+              <h2 className="text-[12px] tracking-widest font-mono text-ink-2 pb-3 mb-4 border-b border-rule">
                 OTHER SERVICES
               </h2>
               <ul className="space-y-2">
@@ -197,12 +197,12 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                   <li key={o.slug}>
                     <a
                       href={`/services/${o.slug}`}
-                      className="group flex items-center justify-between gap-3 rounded-xl border border-black/[0.06] bg-white px-4 py-3 hover:border-black/20 transition-all"
+                      className="group flex items-center justify-between gap-3 rounded-xl border border-rule bg-surface-raised px-4 py-3 hover:border-rule-strong transition-all"
                     >
-                      <span className="text-[14px] text-black/72 group-hover:text-black transition-colors">
+                      <span className="text-[14px] text-ink-2 group-hover:text-ink transition-colors">
                         {o.short}
                       </span>
-                      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#111] text-white shrink-0 transition-transform group-hover:translate-x-0.5">
+                      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-ink text-ground shrink-0 transition-transform group-hover:translate-x-0.5">
                         <ArrowIcon />
                       </span>
                     </a>
@@ -212,20 +212,20 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
             </div>
 
             {/* Availability */}
-            <div className="rounded-2xl border border-black/[0.07] bg-white/60 p-6">
+            <div className="rounded-2xl border border-rule bg-surface p-6">
               <div className="flex items-center gap-2">
                 <span className="relative flex w-1.5 h-1.5">
                   <span className="absolute -inset-1 rounded-full bg-emerald-500/30 animate-[pulse-dot_2s_ease-in-out_infinite]" />
                   <span className="relative w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 </span>
-                <span className="text-[12px] tracking-widest font-mono text-black/72">AVAILABLE</span>
+                <span className="text-[12px] tracking-widest font-mono text-ink-2">AVAILABLE</span>
               </div>
-              <p className="mt-3 text-[14px] leading-relaxed text-black/68">
+              <p className="mt-3 text-[14px] leading-relaxed text-ink-2">
                 {PROFILE.name} — {PROFILE.title}, {PROFILE.location}.
               </p>
               <a
                 href="/#portfolio"
-                className="mt-4 inline-flex items-center gap-2 text-[13px] text-black/68 hover:text-black transition-colors"
+                className="mt-4 inline-flex items-center gap-2 text-[13px] text-ink-2 hover:text-ink transition-colors"
               >
                 See the work
                 <ArrowIcon />

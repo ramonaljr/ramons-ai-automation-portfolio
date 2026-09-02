@@ -56,7 +56,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
   if (!posts.length) return null
 
   return (
-    <section id="articles" className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06]">
+    <section id="articles" className="py-32 px-6 md:px-12 lg:px-20 border-t border-rule">
       <div className={CONTAINER}>
 
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between mb-14">
@@ -70,7 +70,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
 
           <a
             href="/blog"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-black/12 px-5 py-2.5 text-[13px] tracking-wide text-black/72 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-rule px-5 py-2.5 text-[13px] tracking-wide text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink"
           >
             All articles
             <Ico d={P.arrow} />
@@ -81,14 +81,14 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
           {posts.slice(0, 3).map((post, i) => (
             <article
               key={post.slug}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-black/[0.07] bg-white/50 transition-all duration-300 hover:border-black/12 hover:bg-white"
+              className="group flex flex-col overflow-hidden rounded-2xl border border-rule bg-surface transition-all duration-300 hover:border-rule hover:bg-surface-raised"
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? "translateY(0)" : "translateY(22px)",
                 transition: `opacity 0.6s cubic-bezier(0.16,1,0.3,1) ${i * 90}ms, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${i * 90}ms, border-color .3s, background-color .3s`,
               }}
             >
-              <a href={`/blog/${post.slug}`} className="block border-b border-black/[0.07] bg-white">
+              <a href={`/blog/${post.slug}`} className="block border-b border-rule bg-surface-raised">
                 {post.coverImage && (
                   <img
                     src={post.coverImage}
@@ -103,7 +103,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
               </a>
 
               <div className="flex flex-1 flex-col p-6">
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-black/68">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-ink-2">
                   <span className="inline-flex items-center gap-1.5">
                     <Ico d={P.user} size={12} />
                     Ramon
@@ -118,28 +118,28 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
 
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
                   {post.category && (
-                    <span className="rounded-full border border-black/12 px-3.5 py-1.5 font-mono text-[12px] text-black/70">
+                    <span className="rounded-full border border-rule px-3.5 py-1.5 font-mono text-[12px] text-ink-2">
                       {post.category}
                     </span>
                   )}
                   {formatDate(post.publishedAt) && (
-                    <span className="font-mono text-[12px] text-black/62">
+                    <span className="font-mono text-[12px] text-ink-3">
                       {formatDate(post.publishedAt)}
                     </span>
                   )}
                 </div>
 
                 <h3
-                  className="mt-5 text-[20px] font-light leading-snug tracking-tight text-[#111]"
+                  className="mt-5 text-[20px] font-light leading-snug tracking-tight text-ink"
                   style={{ fontFamily: DISPLAY_FONT }}
                 >
-                  <a href={`/blog/${post.slug}`} className="transition-colors hover:text-black">
+                  <a href={`/blog/${post.slug}`} className="transition-colors hover:text-ink">
                     {post.title}
                   </a>
                 </h3>
 
                 {post.description && (
-                  <p className="mt-3 line-clamp-3 text-[14px] leading-relaxed text-black/72">
+                  <p className="mt-3 line-clamp-3 text-[14px] leading-relaxed text-ink-2">
                     {post.description}
                   </p>
                 )}
@@ -147,9 +147,9 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
                 <div className="mt-auto pt-6">
                   <a
                     href={`/blog/${post.slug}`}
-                    className="inline-flex items-center gap-2 font-mono text-[13px] tracking-wide text-black/72 transition-colors hover:text-black"
+                    className="inline-flex items-center gap-2 font-mono text-[13px] tracking-wide text-ink-2 transition-colors hover:text-ink"
                   >
-                    READ ARTICLE
+                    Read article
                     <Ico d={P.arrow} />
                   </a>
                 </div>
