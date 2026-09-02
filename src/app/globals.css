@@ -521,3 +521,19 @@ li {
   background: color-mix(in oklch, var(--ink) 4%, transparent);
   border: 1px solid var(--rule);
 }
+
+/* Hero footage drift. Static footage reads as a photograph; movement slow
+   enough to be imperceptible frame-to-frame reads as atmosphere. 44s for a 6%
+   scale means roughly a pixel every two seconds — felt, not seen. */
+@keyframes hero-drift {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
+}
+
+.hero-drift {
+  animation: hero-drift 44s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-drift { animation: none; }
+}

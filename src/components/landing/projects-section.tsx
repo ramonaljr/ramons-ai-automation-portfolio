@@ -4,11 +4,8 @@ import { useMemo, useState } from "react"
 
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 import { SectionIntro } from "@/components/landing/section-intro"
-import { useInView } from "@/components/landing/motion"
+import { CONTAINER, DISPLAY_FONT, SECTION_ANCHOR, useInView } from "@/components/landing/motion"
 import { CaseStudyModal } from "@/components/landing/case-study-modal"
-
-const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
-const CONTAINER = "max-w-[1400px] 2xl:max-w-[1600px] mx-auto"
 
 const FILTERS = ["ALL", "AI AGENTS", "N8N", "ZAPIER", "MAKE"] as const
 
@@ -40,7 +37,6 @@ function GitHubIcon({ size = 13 }: { size?: number }) {
 }
 
 const P = {
-  expand: "M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7",
   bolt: "M13 2L4 14h7l-1 8 9-12h-7l1-8z",
   arrow: "M4 12h14M13 6l6 6-6 6",
 }
@@ -54,28 +50,90 @@ function matches(cs: CaseStudyMetadata, f: Filter) {
   return platform === f || cats.includes(f)
 }
 
-function Chips({ items }: { items?: string[] }) {
-  if (!items?.length) return null
-
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {items.map(t => (
-        <span key={t} className="rounded-md border border-rule bg-ink/[0.02] px-2.5 py-1 font-mono text-[12px] text-ink-2">
-          {t}
-        </span>
-      ))}
-    </div>
-  )
-}
+/**
+ * A URL only counts if it is a non-empty string.
+ *
+ * Every `videoUrl` and `repoUrl` in the case-study front matter is currently
+ * `''`, and the previous markup rendered the controls anyway: the video button
+ * fell through to opening the case-study modal, and the GitHub link fell back
+ * to the profile page. Six projects therefore advertised a walkthrough and a
+ * repository and delivered neither. Controls now appear only where the thing
+ * they point at exists — which also drops each card from three competing
+ * actions to one.
+ */
+const has = (u?: string) => typeof u === "string" && u.trim().length > 0
 
 function SampleBadge() {
   return (
-    <span
-      className="badge badge-accent"
-      title="Illustrative example, not a delivered client engagement"
-    >
+    <span className="badge badge-accent" title="Illustrative example, not a delivered client engagement">
       SAMPLE
     </span>
+  )
+}
+
+/**
+ * Platform and category chips, in one treatment.
+ *
+ * `max` caps the categories shown. Cards in a row share a baseline grid, and a
+ * project carrying one extra category wrapped its meta row onto a second line
+ * — which pushed that card's heading about 30px below its neighbours' and made
+ * the whole row look broken. The featured card passes no cap, since it owns its
+ * own column and has the width to spend.
+ */
+function Meta({ cs, size = "sm", max }: { cs: CaseStudyMetadata; size?: "sm" | "md"; max?: number }) {
+  const pad = size === "md" ? "px-3 py-1 text-fine" : "px-2.5 py-0.5 text-meta"
+  const cats = max ? (cs.categories ?? []).slice(0, max) : (cs.categories ?? [])
+
+  return (
+    <>
+      {cs.platform && (
+        <span className={`rounded-md border border-rule-strong bg-ink/[0.04] font-mono text-ink-2 ${pad}`}>
+          {cs.platform}
+        </span>
+      )}
+      {cats.map(c => (
+        <span key={c} className={`rounded-md border border-rule font-mono text-ink-3 ${pad}`}>
+          {c}
+        </span>
+      ))}
+    </>
+  )
+}
+
+/**
+ * The secondary links on a card.
+ *
+ * `relative z-10` lifts these above the stretched primary hit area, so a click
+ * on an icon opens the video or the repo rather than the modal underneath.
+ */
+function AuxLinks({ cs }: { cs: CaseStudyMetadata }) {
+  if (!has(cs.videoUrl) && !has(cs.repoUrl)) return null
+
+  return (
+    <div className="relative z-10 flex items-center gap-1">
+      {has(cs.videoUrl) && (
+        <a
+          href={cs.videoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Watch the walkthrough for ${cs.title}`}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-rule text-ink-3 transition-colors hover:border-rule-strong hover:bg-ink/[0.04] hover:text-ink"
+        >
+          <VideoIcon size={13} />
+        </a>
+      )}
+      {has(cs.repoUrl) && (
+        <a
+          href={cs.repoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Source for ${cs.title} on GitHub`}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-rule text-ink-3 transition-colors hover:border-rule-strong hover:bg-ink/[0.04] hover:text-ink"
+        >
+          <GitHubIcon size={13} />
+        </a>
+      )}
+    </div>
   )
 }
 
@@ -89,30 +147,29 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   const featured = shown.find(cs => cs.featured) ?? shown[0]
   const rest = shown.filter(cs => cs.slug !== featured?.slug)
 
-  const count = String(caseStudies.length).padStart(2, "0")
-
   return (
-    <section id="portfolio" className="py-32 px-6 md:px-12 lg:px-20 border-t border-rule">
+    <section id="portfolio" className={SECTION_ANCHOR}>
       <div className={CONTAINER}>
 
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <SectionIntro
             tag="SELECTED"
-            variant="mono"
             margin=""
-            titleClassName="mt-2 text-[clamp(2.5rem,6vw,5rem)]"
+            titleClassName="display-xl mt-2 text-[clamp(2.5rem,6vw,5rem)]"
             title="WORK"
             blurb="A selection of AI automation systems and production workflows built to eliminate repetitive tasks, connect business tools, and improve operational efficiency."
           />
 
           <div className="flex flex-col items-start gap-4 lg:items-end">
-            <span className="inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-4 py-2 font-mono text-[12px] tracking-wide text-ink-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              {count}+ AUTOMATION PROJECTS
+            {/* The count is exact, so it is stated exactly. "06+" padded a real
+                number into looking like a date and added a "+" it had not
+                earned. */}
+            <span className="font-mono text-meta tracking-[0.18em] text-ink-3 uppercase">
+              {caseStudies.length} automation projects
             </span>
 
-            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filter projects">
+            <div className="flex flex-wrap gap-2 lg:justify-end" role="tablist" aria-label="Filter projects">
               {FILTERS.map(f => {
                 const active = filter === f
                 const n = caseStudies.filter(cs => matches(cs, f)).length
@@ -125,15 +182,18 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     aria-selected={active}
                     disabled={n === 0}
                     onClick={() => setFilter(f)}
-                    className={`rounded-full border px-4 py-2 font-mono text-[12px] tracking-wide transition-all ${
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-mono text-meta tracking-wide transition-all duration-300 ${
                       active
-                        ? "border-rule-strong bg-ink text-ground"
+                        ? "border-ink bg-ink text-ground"
                         : n === 0
-                          ? "border-rule text-ink-4"
-                          : "border-rule text-ink-2 hover:border-rule-strong hover:text-ink"
+                          ? "cursor-default border-rule text-ink-4"
+                          : "border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink"
                     }`}
                   >
                     {f}
+                    {/* The count tells you what is behind a filter before you
+                        spend a click finding out. */}
+                    <span className={active ? "text-ground/65" : "text-ink-3"}>{n}</span>
                   </button>
                 )
               })}
@@ -147,7 +207,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
         <div ref={featuredRef} className="mt-12">
           {featured && (
             <article
-              className="group grid overflow-hidden rounded-2xl border border-rule bg-surface transition-all duration-300 hover:border-rule hover:bg-surface-raised lg:grid-cols-[1.25fr_1fr]"
+              className="group relative grid overflow-hidden rounded-2xl border border-rule bg-surface transition-[border-color,background-color,box-shadow] duration-300 hover:border-rule-strong hover:bg-surface-raised lg:grid-cols-[1.25fr_1fr]"
               style={{
                 opacity: featuredInView ? 1 : 0,
                 transform: featuredInView ? "translateY(0)" : "translateY(36px)",
@@ -155,11 +215,9 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                 transition: "opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.85s cubic-bezier(0.16, 1, 0.3, 1), border-color .3s, background-color .3s",
               }}
             >
-              {/* Canvas */}
-              <div
-                className="relative border-b border-rule bg-surface-raised p-4 lg:border-b-0 lg:border-r cursor-pointer group-hover:bg-[#fafaf8] transition-colors"
-                onClick={() => setSelectedStudy(featured)}
-              >
+              {/* The workflow canvas is the strongest asset on this site, so the
+                  featured card shows it whole rather than cropped. */}
+              <div className="relative border-b border-rule bg-surface-raised p-4 lg:border-b-0 lg:border-r">
                 {featured.workflowImage && (
                   <img
                     src={featured.workflowImage}
@@ -167,80 +225,53 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     height={900}
                     loading="lazy"
                     alt={`Workflow canvas for ${featured.title}`}
-                    className="w-full rounded-lg transition-transform duration-300 group-hover:scale-[1.01]"
+                    className="w-full rounded-lg transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.012]"
                   />
                 )}
               </div>
 
-              {/* Detail */}
               <div className="flex flex-col p-7 lg:p-9">
                 <div className="flex flex-wrap items-center gap-2">
-                  {featured.platform && (
-                    <span className="rounded-full border border-rule-strong bg-ink/[0.04] px-3 py-1 font-mono text-[12px] text-ink-2">
-                      {featured.platform}
-                    </span>
-                  )}
-                  {featured.categories?.map(c => (
-                    <span key={c} className="rounded-full border border-rule px-3 py-1 font-mono text-[12px] text-ink-2">
-                      {c}
-                    </span>
-                  ))}
-                  <span className="badge badge-accent ml-auto">
-                    FEATURED
-                  </span>
+                  <Meta cs={featured} size="md" />
+                  <span className="badge badge-accent ml-auto">FEATURED</span>
                 </div>
 
                 <h3
-                  className="mt-6 text-2xl font-light leading-snug tracking-tight text-ink lg:text-[32px] cursor-pointer hover:text-ink transition-colors"
+                  className="display-md mt-6 text-2xl leading-snug font-light text-ink lg:text-[2rem]"
                   style={{ fontFamily: DISPLAY_FONT }}
-                  onClick={() => setSelectedStudy(featured)}
                 >
                   {featured.title}
                 </h3>
-                <p className="mt-4 text-[14px] leading-relaxed text-ink-2">{featured.description}</p>
+                <p className="mt-4 text-body text-ink-2">{featured.description}</p>
                 {featured.sample && <div className="mt-4"><SampleBadge /></div>}
 
                 <div className="mt-auto pt-8">
-                  <Chips items={featured.tools} />
+                  <div className="flex flex-wrap gap-1.5">
+                    {featured.tools?.map(t => (
+                      <span key={t} className="rounded-md border border-rule bg-ink/[0.02] px-2.5 py-1 font-mono text-meta text-ink-3">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+
                   <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-rule pt-6">
                     {featured.speed && (
-                      <span className="inline-flex items-center gap-2 rounded-lg border border-[color-mix(in_oklch,var(--accent)_22%,transparent)] bg-[color-mix(in_oklch,var(--accent)_6%,transparent)] px-3 py-2 font-mono text-[13px] text-accent">
+                      <span className="inline-flex items-center gap-2 font-mono text-fine text-accent">
                         <Ico d={P.bolt} size={12} />
                         {featured.speed}
                       </span>
                     )}
 
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (featured.videoUrl) {
-                            window.open(featured.videoUrl, "_blank")
-                          } else {
-                            setSelectedStudy(featured)
-                          }
-                        }}
-                        className="inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-4 py-2.5 font-mono text-[12px] tracking-wide text-ink-2 transition-all hover:bg-surface-raised hover:border-rule-strong hover:text-ink cursor-pointer"
-                        title="Live Video Walkthrough"
-                      >
-                        <VideoIcon size={13} />
-                        Live Video Walkthrough
-                      </button>
-
-                      <a
-                        href={featured.repoUrl || "https://github.com/ramonaljr"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full border border-rule bg-surface px-4 py-2.5 font-mono text-[12px] tracking-wide text-ink-2 transition-all hover:bg-surface-raised hover:border-rule-strong hover:text-ink"
-                      >
-                        <GitHubIcon size={13} />
-                        View on GitHub
-                      </a>
-
+                    <div className="ml-auto flex items-center gap-2.5">
+                      <AuxLinks cs={featured} />
+                      {/* One primary action. Its ::after stretches over the
+                          whole card, so the image and heading are clickable
+                          without needing their own mouse-only handlers — and
+                          the card becomes a single keyboard stop. */}
                       <button
                         type="button"
                         onClick={() => setSelectedStudy(featured)}
-                        className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-[12px] tracking-wide text-ground transition-colors hover:bg-ink/90 cursor-pointer"
+                        className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-meta tracking-wide text-ground transition-[background-color,transform] duration-300 after:absolute after:inset-0 after:content-[''] hover:bg-ink/90 active:scale-[0.98] motion-reduce:active:scale-100"
                       >
                         Read case study
                         <Ico d={P.arrow} size={13} />
@@ -257,93 +288,73 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
             {rest.map((cs, i) => (
               <article
                 key={cs.slug}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-rule bg-surface transition-all duration-300 hover:border-rule hover:bg-surface-raised"
+                className="group lift-hover relative flex flex-col overflow-hidden rounded-2xl border border-rule bg-surface hover:border-rule-strong hover:bg-surface-raised"
                 style={{
                   opacity: gridInView ? 1 : 0,
                   transform: gridInView ? "translateY(0)" : "translateY(36px)",
                   filter: gridInView ? "blur(0px)" : "blur(10px)",
-                  transition: `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, filter 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, border-color .3s, background-color .3s`,
+                  transition: `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, filter 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, border-color .3s, background-color .3s, box-shadow .35s`,
                 }}
               >
-                <div
-                  className="border-b border-rule bg-surface-raised p-3 cursor-pointer group-hover:bg-[#fafaf8] transition-colors"
-                  onClick={() => setSelectedStudy(cs)}
-                >
+                {/* A fixed 150px crop crippled the one asset worth showing —
+                    a workflow diagram sliced from the top-left is unreadable.
+                    A 16:10 box keeps the canvas legible at any card width. */}
+                <div className="relative overflow-hidden border-b border-rule bg-surface-raised p-3">
+                  {cs.sample && (
+                    <span className="badge badge-accent absolute top-5 left-5 z-10 bg-ground/90 backdrop-blur-sm">
+                      SAMPLE
+                    </span>
+                  )}
                   {cs.workflowImage && (
                     <img
                       src={cs.workflowImage}
                       width={1400}
                       height={900}
                       loading="lazy"
-                      alt=""
-                      aria-hidden="true"
-                      className="h-[150px] w-full rounded object-cover object-left-top transition-transform duration-300 group-hover:scale-[1.01]"
+                      alt={`Workflow canvas for ${cs.title}`}
+                      className="aspect-[16/10] w-full rounded object-cover object-top transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.03]"
                     />
                   )}
                 </div>
 
                 <div className="flex flex-1 flex-col p-6">
-                  <div className="flex flex-wrap items-center gap-2">
-                    {cs.platform && (
-                      <span className="rounded-full border border-rule-strong bg-ink/[0.04] px-2.5 py-0.5 font-mono text-[11px] text-ink-2">
-                        {cs.platform}
+                  <div className="flex min-h-[1.75rem] flex-wrap items-center gap-2">
+                    <Meta cs={cs} max={2} />
+                    {cs.speed && (
+                      <span className="inline-flex items-center gap-1.5 font-mono text-meta text-accent">
+                        <Ico d={P.bolt} size={11} />
+                        {cs.speed}
                       </span>
                     )}
-                    {cs.speed && (
-                      <span className="font-mono text-[11px] text-ink-2">{cs.speed}</span>
-                    )}
-                    {cs.sample && <SampleBadge />}
                   </div>
 
                   <h3
-                    className="mt-4 text-[19px] font-light leading-snug tracking-tight text-ink cursor-pointer hover:text-ink transition-colors"
+                    className="display-md mt-4 text-[1.2rem] leading-snug font-light text-ink"
                     style={{ fontFamily: DISPLAY_FONT }}
-                    onClick={() => setSelectedStudy(cs)}
                   >
                     {cs.title}
                   </h3>
-                  <p className="mt-3 line-clamp-3 text-[14px] leading-relaxed text-ink-2">
-                    {cs.description}
-                  </p>
+                  <p className="mt-3 line-clamp-3 text-fine text-ink-2">{cs.description}</p>
 
-                  <div className="mt-auto pt-6 flex flex-col gap-2.5 border-t border-rule">
+                  <div className="mt-auto flex items-center justify-between gap-3 border-t border-rule pt-5">
+                    {/* The whole card is this button's hit area; the label is a
+                        quiet link because the card itself is the affordance.
+                        Three stacked pills per card made the chrome louder than
+                        the work it was framing. */}
                     <button
                       type="button"
                       onClick={() => setSelectedStudy(cs)}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-[12px] tracking-wide text-ground transition-colors hover:bg-ink/90 cursor-pointer"
+                      className="inline-flex items-center gap-2 font-mono text-meta tracking-wide text-ink transition-colors after:absolute after:inset-0 after:content-['']"
                     >
-                      Read case study
-                      <Ico d={P.arrow} size={13} />
+                      <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-[position:0_100%] bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:bg-[length:100%_1px]">
+                        Read case study
+                      </span>
+                      <span className="transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1">
+                        <Ico d={P.arrow} size={13} />
+                      </span>
                     </button>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (cs.videoUrl) {
-                            window.open(cs.videoUrl, "_blank")
-                          } else {
-                            setSelectedStudy(cs)
-                          }
-                        }}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-ink/[0.02] px-3 py-2 font-mono text-[11px] tracking-tight text-ink-2 transition-all hover:bg-ink/[0.05] hover:border-rule-strong hover:text-ink text-center cursor-pointer"
-                        title="Live Video Walkthrough"
-                      >
-                        <VideoIcon size={12} />
-                        <span className="truncate">Live Video</span>
-                      </button>
-
-                      <a
-                        href={cs.repoUrl || "https://github.com/ramonaljr"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-1.5 rounded-full border border-rule bg-ink/[0.02] px-3 py-2 font-mono text-[11px] tracking-tight text-ink-2 transition-all hover:bg-ink/[0.05] hover:border-rule-strong hover:text-ink text-center"
-                        title="View GitHub Repository"
-                      >
-                        <GitHubIcon size={12} />
-                        <span className="truncate">View on GitHub</span>
-                      </a>
-                    </div>
+                    <AuxLinks cs={cs} />
                   </div>
                 </div>
               </article>
@@ -351,19 +362,14 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           </div>
 
           {shown.length === 0 && (
-            <p className="py-16 text-center text-[14px] text-ink-2">
+            <p className="py-16 text-center text-fine text-ink-3">
               Nothing built on this platform yet.
             </p>
           )}
         </div>
       </div>
 
-      {/* ── Case Study Detail Modal ─────────────────────────────────────── */}
-      <CaseStudyModal
-        study={selectedStudy}
-        onClose={() => setSelectedStudy(null)}
-      />
+      <CaseStudyModal study={selectedStudy} onClose={() => setSelectedStudy(null)} />
     </section>
   )
 }
-

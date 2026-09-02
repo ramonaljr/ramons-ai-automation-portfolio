@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 
 import { HERO_STATS } from '@/lib/portfolio'
 import { CountUp, Cta } from '@/components/landing/motion'
+import { PetalField } from '@/components/landing/petal-field'
 
 const words = ['automate', 'reconcile', 'integrate', 'scale']
 
@@ -174,8 +175,13 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           loop
           playsInline
           aria-hidden='true'
-          className='h-full w-full object-cover object-center opacity-[0.62]'
-          style={{ filter: 'saturate(0.42) sepia(0.22) brightness(1.04) contrast(1.06)' }}
+          className='hero-drift h-full w-full object-cover opacity-[0.62]'
+          style={{
+            // Pushed right of centre: the trunk was landing in the same optical
+            // column as the headline's right edge and competing with it.
+            objectPosition: '72% center',
+            filter: 'saturate(0.42) sepia(0.22) brightness(1.04) contrast(1.06)'
+          }}
         >
           <source src='/video/hero-compute.mp4' type='video/mp4' />
         </video>
@@ -198,6 +204,10 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           WebkitMaskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)'
         }}
       />
+
+      {/* Petals fall through the hero and settle into the constellation the
+          rest of the page is drawn in — see PetalField for why. */}
+      <PetalField className='z-[3]' />
 
       <div className='relative z-10 mx-auto flex w-full max-w-[1560px] flex-1 flex-col justify-center px-6 pt-36 pb-10 md:px-12 lg:px-20 2xl:max-w-[1760px]'>
         <div className='lg:max-w-[62%]'>
