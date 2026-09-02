@@ -2,13 +2,7 @@ import type { SVGProps } from 'react'
 
 export const RamonSignature = ({ className, ...props }: SVGProps<SVGSVGElement>) => {
   return (
-    <svg
-      viewBox='0 0 360 130'
-      fill='currentColor'
-      xmlns='http://www.w3.org/2000/svg'
-      className={className}
-      {...props}
-    >
+    <svg viewBox='0 0 360 130' fill='currentColor' xmlns='http://www.w3.org/2000/svg' className={className} {...props}>
       {/* 
         Ultra-sleek, dynamic italic signature: "Ramon"
         Features: 
@@ -20,10 +14,10 @@ export const RamonSignature = ({ className, ...props }: SVGProps<SVGSVGElement>)
         {/* === Capital 'R' === */}
         {/* Main slanted downstem with top-hook entry */}
         <path d='M 42 32 C 40 26, 46 22, 53 23 C 51 38, 43 65, 34 94 C 32 99, 29 101, 26 99 C 24 97, 26 91, 29 82 C 37 57, 45 36, 48 26 C 45 28, 43 30, 42 32 Z' />
-        
+
         {/* Upper rounded loop of 'R' */}
         <path d='M 48 25 C 60 21, 78 20, 89 27 C 98 33, 99 44, 93 51 C 86 58, 72 61, 57 60 C 50 59, 44 58, 41 57 C 42 54, 46 54, 55 55 C 68 56, 80 53, 86 48 C 91 43, 91 35, 84 30 C 75 25, 59 25, 48 27 Z' />
-        
+
         {/* Sweeping diagonal leg of 'R' transitioning into 'a' */}
         <path d='M 62 58 C 67 58, 73 63, 79 72 C 86 82, 94 95, 102 96 C 106 97, 109 93, 114 83 C 117 76, 120 71, 124 72 C 127 73, 126 79, 122 88 C 116 100, 108 103, 101 101 C 91 98, 81 83, 74 72 C 70 65, 65 61, 60 60 Z' />
 
@@ -48,7 +42,10 @@ export const RamonSignature = ({ className, ...props }: SVGProps<SVGSVGElement>)
         <path d='M 257 77 C 261 70, 268 68, 274 72 C 278 76, 277 84, 271 95 C 268 101, 268 102, 275 97 C 285 90, 298 78, 312 65 C 315 62, 317 64, 314 67 C 298 83, 282 98, 269 104 C 263 107, 259 104, 261 95 C 264 87, 268 78, 266 74 C 263 71, 258 75, 253 83 Z' />
 
         {/* === Sharp, Dynamic Underline Flourish === */}
-        <path d='M 55 106 C 95 103, 175 100, 255 96 C 290 94, 325 90, 345 84 C 352 82, 356 78, 350 76 C 342 74, 322 78, 298 82 C 248 89, 155 96, 52 101 C 45 102, 44 107, 55 106 Z' opacity='0.9' />
+        <path
+          d='M 55 106 C 95 103, 175 100, 255 96 C 290 94, 325 90, 345 84 C 352 82, 356 78, 350 76 C 342 74, 322 78, 298 82 C 248 89, 155 96, 52 101 C 45 102, 44 107, 55 106 Z'
+          opacity='0.9'
+        />
       </g>
     </svg>
   )

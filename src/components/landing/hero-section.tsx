@@ -161,7 +161,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
   const isVisible = ready ?? mounted
 
   return (
-    <section className='relative flex min-h-dvh flex-col justify-center overflow-hidden bg-ground'>
+    <section className='bg-ground relative flex min-h-dvh flex-col justify-center overflow-hidden'>
       {/* Background video, graded into the palette.
           It was running `saturate(1.35)` — boosting the footage's pink toward
           the loudest thing on the page, in a hue the rest of the site never
@@ -186,8 +186,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           <source src='/video/hero-compute.mp4' type='video/mp4' />
         </video>
         {/* Cream veil from the left so the headline always has a clean ground */}
-        <div className='absolute inset-0 bg-gradient-to-r from-ground via-ground/82 to-ground/10' />
-        <div className='absolute inset-0 bg-gradient-to-b from-ground/60 via-transparent to-ground/85' />
+        <div className='from-ground via-ground/82 to-ground/10 absolute inset-0 bg-gradient-to-r' />
+        <div className='from-ground/60 to-ground/85 absolute inset-0 bg-gradient-to-b via-transparent' />
       </div>
 
       {/* Architectural grid. Two repeating-linear-gradients rather than the 20
@@ -218,7 +218,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             }`}
           >
             <span className='inline-flex items-center gap-3'>
-              <span className='h-px w-8 bg-ink/25' />
+              <span className='bg-ink/25 h-px w-8' />
               <span className='eyebrow'>End-to-end AI automation for business operations</span>
             </span>
           </div>
@@ -229,7 +229,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               presence. Line one is allowed to wrap below `md`, which lets the
               floor rise to 2.5rem. */}
           <h1
-            className={`display-xl text-left text-[clamp(2.5rem,5.4vw,6rem)] leading-[0.94] font-light text-ink transition-all duration-1000 ${
+            className={`display-xl text-ink text-left text-[clamp(2.5rem,5.4vw,6rem)] leading-[0.94] font-light transition-all duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
             style={{ fontFamily: DISPLAY_FONT }}
@@ -252,12 +252,12 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               stats with no call to action anywhere above the fold, so the
               first thing a visitor could act on was ten sections down. */}
           <p
-            className={`mt-8 max-w-[52ch] text-lead text-ink-2 transition-all delay-200 duration-1000 ${
+            className={`text-lead text-ink-2 mt-8 max-w-[52ch] transition-all delay-200 duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            I design and ship the automations that take intake, approvals, reporting and reconciliation
-            off your team&rsquo;s desk — then hand over documentation they can run without me.
+            I design and ship the automations that take intake, approvals, reporting and reconciliation off your
+            team&rsquo;s desk — then hand over documentation they can run without me.
           </p>
 
           <div
@@ -280,17 +280,17 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <div className='flex flex-wrap items-start gap-x-12 gap-y-8 border-t border-rule pt-8 lg:gap-x-20'>
+        <div className='border-rule flex flex-wrap items-start gap-x-12 gap-y-8 border-t pt-8 lg:gap-x-20'>
           {HERO_STATS.map(stat => (
             <div key={stat.label} className='flex flex-col gap-1.5'>
               <span
                 data-countup
-                className='display-md text-3xl font-light text-ink lg:text-[2.5rem]'
+                className='display-md text-ink text-3xl font-light lg:text-[2.5rem]'
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 <CountUp start={isVisible}>{stat.value}</CountUp>
               </span>
-              <span className='text-meta max-w-[18ch] text-ink-3'>{stat.label}</span>
+              <span className='text-meta text-ink-3 max-w-[18ch]'>{stat.label}</span>
             </div>
           ))}
         </div>

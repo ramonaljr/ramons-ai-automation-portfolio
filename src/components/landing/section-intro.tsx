@@ -80,10 +80,7 @@ export function SectionIntro({
   const centred = align === 'center'
 
   return (
-    <div
-      ref={ref}
-      className={`${margin} ${READABLE} ${centred ? 'text-center' : ''} ${className}`}
-    >
+    <div ref={ref} className={`${margin} ${READABLE} ${centred ? 'text-center' : ''} ${className}`}>
       {/* One eyebrow treatment for the whole page.
           This used to branch between a grey pill and tracked mono, so the same
           element changed costume from section to section while the hero used a
@@ -91,15 +88,18 @@ export function SectionIntro({
           consistent left anchor as the page scrolls. */}
       <div style={introStep(inView, reduced, { delay: 0, y: 16, duration: 0.8 })}>
         <p className={`flex items-center gap-3 ${centred ? 'justify-center' : ''}`}>
-          <span className="h-px w-8 bg-ink/25" aria-hidden="true" />
-          <span className="eyebrow">{tag}</span>
+          <span className='bg-ink/25 h-px w-8' aria-hidden='true' />
+          <span className='eyebrow'>{tag}</span>
         </p>
       </div>
 
       {title != null && (
         <h2
-          className={`${titleClassName} leading-[1.05] font-light tracking-tight text-ink`}
-          style={{ fontFamily: DISPLAY_FONT, ...introStep(inView, reduced, { delay: 200, y: 40, blur: 14, duration: 1.15 }) }}
+          className={`${titleClassName} text-ink leading-[1.05] font-light tracking-tight`}
+          style={{
+            fontFamily: DISPLAY_FONT,
+            ...introStep(inView, reduced, { delay: 200, y: 40, blur: 14, duration: 1.15 })
+          }}
         >
           {title}
         </h2>
@@ -107,7 +107,7 @@ export function SectionIntro({
 
       {blurb && (
         <p
-          className={`mt-5 text-lead text-ink-2 ${centred ? 'mx-auto' : ''} max-w-[54ch]`}
+          className={`text-lead text-ink-2 mt-5 ${centred ? 'mx-auto' : ''} max-w-[54ch]`}
           style={introStep(inView, reduced, { delay: 420, y: 20, duration: 0.9 })}
         >
           {blurb}

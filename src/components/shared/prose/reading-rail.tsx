@@ -98,15 +98,15 @@ export function ReadingRail({ headings, contentId }: { headings: Heading[]; cont
           <nav aria-label='On this page' className='hidden lg:sticky lg:top-28 lg:block lg:self-start'>
             <p className='eyebrow'>ON THIS PAGE</p>
 
-            <ul className='mt-5 border-l border-rule'>
+            <ul className='border-rule mt-5 border-l'>
               {headings.map(h => (
                 <li key={h.slug}>
                   <a
                     href={`#${h.slug}`}
                     className={`-ml-px block border-l py-1.5 text-[12.5px] leading-snug transition-colors ${
                       h.slug === activeSlug
-                        ? 'border-[#111] text-ink'
-                        : 'border-transparent text-ink-3 hover:border-rule-strong hover:text-ink'
+                        ? 'text-ink border-[#111]'
+                        : 'text-ink-3 hover:border-rule-strong hover:text-ink border-transparent'
                     }`}
                     style={{ paddingLeft: 16 + h.depth * 12 }}
                   >
@@ -116,7 +116,7 @@ export function ReadingRail({ headings, contentId }: { headings: Heading[]; cont
               ))}
             </ul>
 
-            <p className='mt-6 border-t border-rule pt-4 font-mono text-meta tracking-wide text-ink-3'>
+            <p className='border-rule text-meta text-ink-3 mt-6 border-t pt-4 font-mono tracking-wide'>
               {percent}% READ
             </p>
           </nav>

@@ -25,12 +25,12 @@ export function SiteFooter() {
   const onLanding = pathname === '/'
 
   return (
-    <footer className='border-t border-rule px-6 py-12 md:px-12 lg:px-20'>
+    <footer className='border-rule border-t px-6 py-12 md:px-12 lg:px-20'>
       <div className={`${CONTAINER} ${READABLE}`}>
         <div className='flex flex-col justify-between gap-8 md:flex-row md:items-center'>
           <div>
-            <p className='font-pixel text-xs tracking-[0.25em] text-ink-2'>{PROFILE.shortName.toUpperCase()}</p>
-            <p className='mt-2 text-[14px] text-ink-2'>
+            <p className='font-pixel text-ink-2 text-xs tracking-[0.25em]'>{PROFILE.shortName.toUpperCase()}</p>
+            <p className='text-ink-2 mt-2 text-[14px]'>
               {PROFILE.title} · {PROFILE.location}
             </p>
           </div>
@@ -40,7 +40,7 @@ export function SiteFooter() {
               <a
                 key={l.label}
                 href={l.href ?? (onLanding ? l.hash : `/${l.hash}`)}
-                className='rounded-md px-2 py-1.5 text-[13px] text-ink-2 transition-colors hover:bg-ink/4 hover:text-ink'
+                className='text-ink-2 hover:bg-ink/4 hover:text-ink rounded-md px-2 py-1.5 text-[13px] transition-colors'
               >
                 {l.label}
               </a>
@@ -54,7 +54,7 @@ export function SiteFooter() {
                 href={s.href}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='rounded-full border border-rule px-3.5 py-2 text-[12px] text-ink-2 transition-all hover:border-rule-strong hover:bg-ink/3 hover:text-ink'
+                className='border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/3 hover:text-ink rounded-full border px-3.5 py-2 text-[12px] transition-all'
               >
                 {s.label}
               </a>
@@ -64,7 +64,7 @@ export function SiteFooter() {
 
         {/* TODO: privacy + terms links belong here — the routes do not exist
             yet, and linking them before they do would only ship two 404s. */}
-        <p className='mt-10 border-t border-rule pt-6 text-meta text-ink-3'>
+        <p className='border-rule text-meta text-ink-3 mt-10 border-t pt-6'>
           © {new Date().getFullYear()} {PROFILE.name}. Built and maintained in-house.
         </p>
       </div>

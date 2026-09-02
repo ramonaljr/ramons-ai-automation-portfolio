@@ -1,6 +1,6 @@
-"use client"
+'use client'
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from 'react'
 
 /**
  * Constellation backdrop for the lower half of the page.
@@ -19,7 +19,7 @@ import { useEffect, useRef } from "react"
  *    derived from distance without a sqrt in the inner comparison.
  */
 
-const INK = "42, 39, 36"
+const INK = '42, 39, 36'
 
 /**
  * Backdrop weights, kept in the same register as the rest of the page.
@@ -31,12 +31,12 @@ const INK = "42, 39, 36"
  * clump as they random-walk, and those clusters landed on body copy as dense
  * webs of lines that broke up word shapes.
  */
-const DOT_ALPHA = 0.10
+const DOT_ALPHA = 0.1
 const LINK_ALPHA = 0.055
 
 type P = { x: number; y: number; vx: number; vy: number; r: number }
 
-export function ParticleField({ className = "" }: { className?: string }) {
+export function ParticleField({ className = '' }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const boxRef = useRef<HTMLDivElement>(null)
@@ -48,11 +48,11 @@ export function ParticleField({ className = "" }: { className?: string }) {
 
     if (!canvas || !wrap || !box) return
 
-    const ctx = canvas.getContext("2d", { alpha: true })
+    const ctx = canvas.getContext('2d', { alpha: true })
 
     if (!ctx) return
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     let w = 0
     let h = 0
@@ -93,7 +93,7 @@ export function ParticleField({ className = "" }: { className?: string }) {
         y: Math.random() * h,
         vx: (Math.random() - 0.5) * 0.28,
         vy: (Math.random() - 0.5) * 0.28,
-        r: 1.1 + Math.random() * 1.9,
+        r: 1.1 + Math.random() * 1.9
       }))
     }
 
@@ -158,10 +158,7 @@ export function ParticleField({ className = "" }: { className?: string }) {
     resize()
 
     // Only run while the section is actually on screen.
-    const io = new IntersectionObserver(
-      ([e]) => (e.isIntersecting ? start() : stop()),
-      { threshold: 0 }
-    )
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { threshold: 0 })
 
     io.observe(wrap)
 
@@ -174,20 +171,20 @@ export function ParticleField({ className = "" }: { className?: string }) {
 
     const onVisibility = () => (document.hidden ? stop() : start())
 
-    document.addEventListener("visibilitychange", onVisibility)
+    document.addEventListener('visibilitychange', onVisibility)
 
     return () => {
       stop()
       io.disconnect()
       ro.disconnect()
-      document.removeEventListener("visibilitychange", onVisibility)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])
 
   return (
     <div
       ref={wrapRef}
-      aria-hidden="true"
+      aria-hidden='true'
 
       // No overflow-hidden here: `overflow: hidden` turns this into a scroll
       // container, and a sticky child then sticks to *it* rather than the
@@ -196,8 +193,8 @@ export function ParticleField({ className = "" }: { className?: string }) {
       className={`pointer-events-none absolute inset-0 ${className}`}
     >
       {/* Sticky so one viewport of canvas covers the whole scroll range. */}
-      <div ref={boxRef} className="sticky top-0 h-screen w-full overflow-hidden">
-        <canvas ref={canvasRef} className="h-full w-full" />
+      <div ref={boxRef} className='sticky top-0 h-screen w-full overflow-hidden'>
+        <canvas ref={canvasRef} className='h-full w-full' />
       </div>
     </div>
   )

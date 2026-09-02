@@ -55,11 +55,11 @@ export function SiteNav() {
     <div className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4'>
       <div className='pointer-events-auto w-full max-w-5xl'>
         {/* Main bar */}
-        <nav
-          className='flex items-center justify-between rounded-2xl border border-rule px-5 py-3'
-          style={NAV_STYLE}
-        >
-          <a href={onLanding ? '#top' : '/'} className='font-pixel text-xs tracking-[0.25em] text-ink transition-opacity hover:opacity-70'>
+        <nav className='border-rule flex items-center justify-between rounded-2xl border px-5 py-3' style={NAV_STYLE}>
+          <a
+            href={onLanding ? '#top' : '/'}
+            className='font-pixel text-ink text-xs tracking-[0.25em] transition-opacity hover:opacity-70'
+          >
             RAMON
           </a>
 
@@ -69,7 +69,7 @@ export function SiteNav() {
               <a
                 key={l.label}
                 href={resolve(l)}
-                className='rounded-md px-2.5 py-2 text-fine text-ink-2 transition-colors duration-200 hover:bg-ink/5 hover:text-ink'
+                className='text-fine text-ink-2 hover:bg-ink/5 hover:text-ink rounded-md px-2.5 py-2 transition-colors duration-200'
               >
                 {l.label}
               </a>
@@ -79,7 +79,7 @@ export function SiteNav() {
           <div className='flex items-center gap-2'>
             <a
               href={contactHref}
-              className='hidden rounded-full bg-ink px-5 py-2 text-fine text-ground transition-[background-color,transform] duration-300 hover:bg-ink/90 active:scale-[0.97] motion-reduce:active:scale-100 md:block'
+              className='bg-ink text-fine text-ground hover:bg-ink/90 hidden rounded-full px-5 py-2 transition-[background-color,transform] duration-300 active:scale-[0.97] motion-reduce:active:scale-100 md:block'
             >
               Start a project
             </a>
@@ -87,20 +87,20 @@ export function SiteNav() {
             {/* Burger — mobile only */}
             <button
               onClick={() => setOpen(v => !v)}
-              className='flex h-8 w-8 flex-col items-center justify-center gap-[5px] rounded-lg transition-colors hover:bg-ink/5 md:hidden'
+              className='hover:bg-ink/5 flex h-8 w-8 flex-col items-center justify-center gap-[5px] rounded-lg transition-colors md:hidden'
               aria-label={open ? 'Close menu' : 'Open menu'}
               aria-expanded={open}
             >
               <span
-                className='block h-px origin-center bg-ink/60 transition-all duration-300'
+                className='bg-ink/60 block h-px origin-center transition-all duration-300'
                 style={{ width: '18px', transform: open ? 'translateY(6px) rotate(45deg)' : 'none' }}
               />
               <span
-                className='block h-px bg-ink/60 transition-all duration-300'
+                className='bg-ink/60 block h-px transition-all duration-300'
                 style={{ width: '18px', opacity: open ? 0 : 1, transform: open ? 'scaleX(0)' : 'none' }}
               />
               <span
-                className='block h-px origin-center bg-ink/60 transition-all duration-300'
+                className='bg-ink/60 block h-px origin-center transition-all duration-300'
                 style={{ width: '18px', transform: open ? 'translateY(-6px) rotate(-45deg)' : 'none' }}
               />
             </button>
@@ -112,13 +112,13 @@ export function SiteNav() {
           className='mt-2 overflow-hidden transition-all duration-300 ease-in-out md:hidden'
           style={{ maxHeight: open ? '320px' : '0px', opacity: open ? 1 : 0 }}
         >
-          <div className='flex flex-col rounded-2xl border border-rule px-2 py-2' style={NAV_STYLE}>
+          <div className='border-rule flex flex-col rounded-2xl border px-2 py-2' style={NAV_STYLE}>
             {NAV_LINKS.map(l => (
               <a
                 key={l.label}
                 href={resolve(l)}
                 onClick={close}
-                className='rounded-xl px-4 py-3 text-fine text-ink-2 transition-colors hover:bg-ink/4 hover:text-ink'
+                className='text-fine text-ink-2 hover:bg-ink/4 hover:text-ink rounded-xl px-4 py-3 transition-colors'
               >
                 {l.label}
               </a>
@@ -127,7 +127,7 @@ export function SiteNav() {
               <a
                 href={contactHref}
                 onClick={close}
-                className='block w-full rounded-full bg-ink px-4 py-3 text-center text-fine text-ground transition-colors duration-300 hover:bg-ink/90'
+                className='bg-ink text-fine text-ground hover:bg-ink/90 block w-full rounded-full px-4 py-3 text-center transition-colors duration-300'
               >
                 Start a project
               </a>

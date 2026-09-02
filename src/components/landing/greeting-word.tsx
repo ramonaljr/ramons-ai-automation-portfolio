@@ -21,7 +21,7 @@ const FALLBACK_STACK = [
   '"Noto Sans JP"',
   '"Noto Sans SC"',
   '"Noto Sans Devanagari"',
-  'sans-serif',
+  'sans-serif'
 ].join(', ')
 
 export function GreetingWord({ className = '' }: { className?: string }) {
@@ -39,20 +39,17 @@ export function GreetingWord({ className = '' }: { className?: string }) {
   const shift = reduced ? 0 : 24
 
   return (
-    <span
-      className={`inline-flex overflow-hidden align-baseline ${className}`}
-      style={{ fontFamily: FALLBACK_STACK }}
-    >
+    <span className={`inline-flex overflow-hidden align-baseline ${className}`} style={{ fontFamily: FALLBACK_STACK }}>
       {/* The live region announces each greeting rather than leaving screen
           readers with silently swapping text. */}
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode='wait' initial={false}>
         <motion.span
           key={GREETINGS[index]}
           initial={{ y: shift, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -shift, opacity: 0 }}
           transition={{ duration: reduced ? 0.15 : 0.3, ease: 'easeInOut' }}
-          className="inline-block whitespace-nowrap"
+          className='inline-block whitespace-nowrap'
         >
           {GREETINGS[index]}
         </motion.span>

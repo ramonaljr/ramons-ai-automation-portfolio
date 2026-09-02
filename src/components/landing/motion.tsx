@@ -307,7 +307,6 @@ export function CountUp({
     const tick = (now: number) => {
       const p = Math.min((now - t0) / duration, 1)
 
-
       // Quintic ease-out: fast start, long settle, never overshoots.
       setN(Math.round(target * (1 - Math.pow(1 - p, 5))))
       if (p < 1) raf = requestAnimationFrame(tick)
@@ -363,8 +362,7 @@ const CTA_BASE =
 
 const CTA_TONE: Record<CtaTone, string> = {
   primary: 'bg-ink text-ground px-6 py-3 hover:bg-ink/90 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0',
-  secondary:
-    'border border-rule-strong text-ink-2 px-6 py-3 hover:text-ink hover:border-ink/35 hover:bg-ink/3',
+  secondary: 'border border-rule-strong text-ink-2 px-6 py-3 hover:text-ink hover:border-ink/35 hover:bg-ink/3',
   quiet: 'text-ink-2 hover:text-ink underline-offset-[6px] hover:underline decoration-ink/25 px-0 py-1'
 }
 

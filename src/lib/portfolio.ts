@@ -76,10 +76,22 @@ export const SERVICES: Service[] = [
       'Credential and environment setup'
     ],
     deliverables: [
-      { title: 'The workflow', desc: 'Built, tested against your real data, and running in your own n8n instance — not mine.' },
-      { title: 'Exported JSON', desc: 'The full workflow export, so you are never locked to me or to a single instance.' },
-      { title: 'Runbook', desc: 'What each branch does, what the failure modes are, and how to recover from each one.' },
-      { title: 'Handover walkthrough', desc: 'A recorded session covering how to operate, monitor and extend the workflow.' }
+      {
+        title: 'The workflow',
+        desc: 'Built, tested against your real data, and running in your own n8n instance — not mine.'
+      },
+      {
+        title: 'Exported JSON',
+        desc: 'The full workflow export, so you are never locked to me or to a single instance.'
+      },
+      {
+        title: 'Runbook',
+        desc: 'What each branch does, what the failure modes are, and how to recover from each one.'
+      },
+      {
+        title: 'Handover walkthrough',
+        desc: 'A recorded session covering how to operate, monitor and extend the workflow.'
+      }
     ],
     qualities: [
       'Error handling designed before the happy path',
@@ -109,9 +121,15 @@ export const SERVICES: Service[] = [
       'Human-in-the-loop gates on high-value steps'
     ],
     deliverables: [
-      { title: 'Process map', desc: 'The current state documented, including the exceptions that only live in people heads.' },
+      {
+        title: 'Process map',
+        desc: 'The current state documented, including the exceptions that only live in people heads.'
+      },
       { title: 'Automated pipeline', desc: 'The chain running end to end, with approvals routed to the right people.' },
-      { title: 'Audit trail', desc: 'Every run logged, so finance and compliance can reconstruct what happened and when.' },
+      {
+        title: 'Audit trail',
+        desc: 'Every run logged, so finance and compliance can reconstruct what happened and when.'
+      },
       { title: 'Exception queue', desc: 'A place for the cases the automation should not decide alone, with alerting.' }
     ],
     qualities: [
@@ -142,10 +160,16 @@ export const SERVICES: Service[] = [
       'Model choice matched to cost and accuracy needs'
     ],
     deliverables: [
-      { title: 'Extraction pipeline', desc: 'Documents in, validated structured data out, with confidence attached to every field.' },
+      {
+        title: 'Extraction pipeline',
+        desc: 'Documents in, validated structured data out, with confidence attached to every field.'
+      },
       { title: 'Knowledge base', desc: 'Your documentation indexed and queryable, with citations back to the source.' },
       { title: 'Prompt library', desc: 'The prompts and schemas as versioned artefacts you can review and change.' },
-      { title: 'Evaluation set', desc: 'A held-out set of real documents used to measure accuracy before and after changes.' }
+      {
+        title: 'Evaluation set',
+        desc: 'A held-out set of real documents used to measure accuracy before and after changes.'
+      }
     ],
     qualities: [
       'Schema-enforced output, never free text into a database',
@@ -175,10 +199,19 @@ export const SERVICES: Service[] = [
       'Webhook and polling triggers as appropriate'
     ],
     deliverables: [
-      { title: 'Integration map', desc: 'Which system owns which field, and which direction each piece of data flows.' },
+      {
+        title: 'Integration map',
+        desc: 'Which system owns which field, and which direction each piece of data flows.'
+      },
       { title: 'Sync pipelines', desc: 'Running connections between your tools, with retry and backoff handled.' },
-      { title: 'Reconciliation job', desc: 'A scheduled audit that reports drift rather than letting it accumulate silently.' },
-      { title: 'Schema documentation', desc: 'Field mappings written down, so the next change does not start from scratch.' }
+      {
+        title: 'Reconciliation job',
+        desc: 'A scheduled audit that reports drift rather than letting it accumulate silently.'
+      },
+      {
+        title: 'Schema documentation',
+        desc: 'Field mappings written down, so the next change does not start from scratch.'
+      }
     ],
     qualities: [
       'One system of record, never three',
@@ -208,8 +241,14 @@ export const SERVICES: Service[] = [
       'SMS or WhatsApp follow-up after the call'
     ],
     deliverables: [
-      { title: 'Live voice agent', desc: 'Answering a real number, following your script, booking into your real calendar.' },
-      { title: 'Conversation design', desc: 'The script, the branches, and the explicit points where it hands off to a person.' },
+      {
+        title: 'Live voice agent',
+        desc: 'Answering a real number, following your script, booking into your real calendar.'
+      },
+      {
+        title: 'Conversation design',
+        desc: 'The script, the branches, and the explicit points where it hands off to a person.'
+      },
       { title: 'Call log', desc: 'Every call transcribed and stored, so you can audit what was actually said.' },
       { title: 'Escalation rules', desc: 'Defined conditions under which the agent stops and a human takes over.' }
     ],
@@ -239,19 +278,34 @@ export const PLATFORMS: Platform[] = [
     name: 'n8n',
     primary: true,
     tagline: 'Complex logic, AI agents, full ownership',
-    bestFor: ['Self-hosted & data-sensitive work', 'AI agents and RAG pipelines', 'Custom code inside a workflow', 'Unlimited steps, no per-task billing'],
+    bestFor: [
+      'Self-hosted & data-sensitive work',
+      'AI agents and RAG pipelines',
+      'Custom code inside a workflow',
+      'Unlimited steps, no per-task billing'
+    ],
     note: 'My default, and where most of my production work lives — cloud or self-hosted.'
   },
   {
     name: 'Zapier',
     tagline: 'Fastest path between mainstream SaaS apps',
-    bestFor: ['8,000+ app connectors', 'Simple trigger-to-action flows', 'Teams already standardised on it', 'Shipping something this afternoon'],
+    bestFor: [
+      '8,000+ app connectors',
+      'Simple trigger-to-action flows',
+      'Teams already standardised on it',
+      'Shipping something this afternoon'
+    ],
     note: 'When speed to value matters more than flexibility, Zapier wins.'
   },
   {
     name: 'Make',
     tagline: 'Visual branching and high-volume data ops',
-    bestFor: ['Complex routers and iterators', 'High operation volumes, lower cost', 'Visual debugging of each bundle', 'Heavy data transformation'],
+    bestFor: [
+      'Complex routers and iterators',
+      'High operation volumes, lower cost',
+      'Visual debugging of each bundle',
+      'Heavy data transformation'
+    ],
     note: 'The middle ground: more power than Zapier, gentler than self-hosting.'
   }
 ]
@@ -431,14 +485,24 @@ export const ENGAGEMENTS = [
     name: 'Automation Audit',
     duration: '1 week',
     summary: 'Map what you do manually and what is worth automating.',
-    includes: ['Process and SOP mapping', 'Automation opportunity list', 'Platform recommendation', 'Prioritised roadmap'],
+    includes: [
+      'Process and SOP mapping',
+      'Automation opportunity list',
+      'Platform recommendation',
+      'Prioritised roadmap'
+    ],
     cta: 'Request a quote'
   },
   {
     name: 'Fixed-Scope Build',
     duration: '1 to 4 weeks',
     summary: 'One pipeline, built, tested against real data and documented.',
-    includes: ['Architecture and error design', 'Build on n8n, Zapier or Make', 'Testing against your edge cases', 'Documentation and handover'],
+    includes: [
+      'Architecture and error design',
+      'Build on n8n, Zapier or Make',
+      'Testing against your edge cases',
+      'Documentation and handover'
+    ],
     cta: 'Request a quote',
     featured: true
   },
@@ -446,7 +510,12 @@ export const ENGAGEMENTS = [
     name: 'Ongoing Retainer',
     duration: 'Monthly',
     summary: 'Keep existing workflows healthy and keep extending them.',
-    includes: ['Monitoring and failure alerts', 'Fixes and platform changes', 'New workflows as they come up', 'Priority availability'],
+    includes: [
+      'Monitoring and failure alerts',
+      'Fixes and platform changes',
+      'New workflows as they come up',
+      'Priority availability'
+    ],
     cta: 'Request a quote'
   }
 ]
