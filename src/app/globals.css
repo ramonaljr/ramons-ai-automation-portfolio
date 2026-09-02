@@ -537,3 +537,89 @@ li {
 @media (prefers-reduced-motion: reduce) {
   .hero-drift { animation: none; }
 }
+
+/* ── Cursor ──────────────────────────────────────────────────────────────────
+   Drawn, not loaded — see custom-cursor.tsx for why. `.cursor-root` is the
+   element `html.custom-cursor-active [data-custom-cursor]` unhides; its two
+   children are positioned by the rAF loop and styled entirely from here. */
+.cursor-root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.cursor-root[data-visible='true'] {
+  opacity: 1;
+}
+
+.cursor-ring,
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+/* The ring. Hairline at rest, so it reads as a measuring instrument rather
+   than a blob following the pointer. */
+.cursor-ring {
+  width: 26px;
+  height: 26px;
+  border: 1px solid color-mix(in oklch, var(--ink) 38%, transparent);
+  transition:
+    width 0.28s var(--ease-standard),
+    height 0.28s var(--ease-standard),
+    border-color 0.28s var(--ease-standard),
+    background-color 0.28s var(--ease-standard);
+}
+
+.cursor-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--ink);
+  transition:
+    width 0.28s var(--ease-standard),
+    height 0.28s var(--ease-standard),
+    opacity 0.28s var(--ease-standard);
+}
+
+/* Over anything interactive the ring opens and takes the accent, and the dot
+   steps back — the ring becomes the target, so the accent appears exactly
+   where the site's one accent colour is meant to: on the thing you can act on. */
+.cursor-root[data-interactive='true'] .cursor-ring {
+  width: 44px;
+  height: 44px;
+  border-color: color-mix(in oklch, var(--accent) 70%, transparent);
+  background: color-mix(in oklch, var(--accent) 8%, transparent);
+}
+
+.cursor-root[data-interactive='true'] .cursor-dot {
+  width: 3px;
+  height: 3px;
+  opacity: 0.45;
+}
+
+/* Press gives the ring somewhere to go, so a click has physical feedback even
+   where the element under it has none. */
+.cursor-root[data-pressed='true'] .cursor-ring {
+  width: 20px;
+  height: 20px;
+}
+
+.cursor-root[data-pressed='true'][data-interactive='true'] .cursor-ring {
+  width: 34px;
+  height: 34px;
+}
+
+/* A cursor that lags is a motion effect; readers who opt out get the ring
+   pinned to the pointer (handled in the component) and no size transitions. */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-ring,
+  .cursor-dot {
+    transition: none;
+  }
+}

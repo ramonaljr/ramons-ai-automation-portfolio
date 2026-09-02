@@ -285,25 +285,34 @@ function PrinciplesSection() {
 
   return (
     <section id="principles" className={SECTION}>
-      <div className={CONTAINER}>
-        <SectionHead
-          tag="HOW I BUILD"
-          title={<>Reliability is<br />the feature.</>}
-          blurb="An automation that silently does the wrong thing is worse than no automation. Three rules I do not bend."
-        />
+      {/* Two columns, not a stacked heading.
+          Body copy has to stay near a 60-character measure to stay readable, so
+          a full-width row of numeral + title + body could never reach the right
+          edge of a 1400px container — it left roughly a third of the section
+          empty. Moving the heading into a left rail gives that space a job: the
+          claim stays on screen while the rules that support it scroll past it,
+          and the list gets a column narrow enough that its measure fills it. */}
+      <div className={`${CONTAINER} grid gap-x-20 gap-y-14 lg:grid-cols-[minmax(0,22rem)_1fr] 2xl:gap-x-28`}>
+        <div className="lg:sticky lg:top-32 lg:self-start">
+          <SectionHead
+            tag="HOW I BUILD"
+            title={<>Reliability is<br />the feature.</>}
+            blurb="An automation that silently does the wrong thing is worse than no automation. Three rules I do not bend."
+          />
+        </div>
 
         <div ref={ref} className="border-t border-rule">
           {PRINCIPLES.map((p, i) => (
             <div
               key={p.n}
-              className="group grid gap-x-10 gap-y-4 border-b border-rule py-10 md:grid-cols-[5rem_minmax(0,22rem)_1fr] md:py-12"
+              className="group grid gap-x-10 gap-y-4 border-b border-rule py-10 md:grid-cols-[3.5rem_minmax(0,17rem)_1fr] md:py-12"
               style={sweep(inView, i)}
             >
-              {/* The numeral carries the indexing here, so it is set at display
-                  size in the faintest ink — present, but never louder than the
-                  claim it numbers. */}
+              {/* The numeral indexes the rule; it is set at display size in the
+                  faintest legible ink so it is present without ever competing
+                  with the claim beside it. */}
               <span
-                className="text-[2.75rem] leading-none font-light text-ink-4 transition-colors duration-500 group-hover:text-ink-3"
+                className="text-[2.5rem] leading-none font-light text-ink-4 transition-colors duration-500 group-hover:text-accent"
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 {p.n}
@@ -311,15 +320,17 @@ function PrinciplesSection() {
 
               <div>
                 <h3
-                  className="display-md text-2xl leading-snug font-light text-ink md:text-[1.75rem]"
+                  className="display-md text-xl leading-snug font-light text-ink md:text-[1.5rem]"
                   style={{ fontFamily: DISPLAY_FONT }}
                 >
                   {p.title}
                 </h3>
-                <p className="mt-2 text-fine text-ink-3">{p.sub}</p>
+                <p className="mt-2.5 border-t border-rule pt-2.5 text-meta tracking-[0.02em] text-ink-3">
+                  {p.sub}
+                </p>
               </div>
 
-              <p className="max-w-[58ch] text-body text-ink-2 md:pt-1.5">{p.body}</p>
+              <p className="max-w-[60ch] text-body text-ink-2 md:pt-1">{p.body}</p>
             </div>
           ))}
         </div>
