@@ -11,6 +11,9 @@ const FILTERS = ["ALL", "AI AGENTS", "N8N", "ZAPIER", "MAKE"] as const
 
 type Filter = (typeof FILTERS)[number]
 
+/** Where the aux links point until a project has its own recording or repo. */
+const PROFILE_REPO = "https://github.com/ramonaljr"
+
 function Ico({ d, size = 13 }: { d: string; size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -50,102 +53,73 @@ function matches(cs: CaseStudyMetadata, f: Filter) {
   return platform === f || cats.includes(f)
 }
 
-/**
- * A URL only counts if it is a non-empty string.
- *
- * Every `videoUrl` and `repoUrl` in the case-study front matter is currently
- * `''`, and the previous markup rendered the controls anyway: the video button
- * fell through to opening the case-study modal, and the GitHub link fell back
- * to the profile page. Six projects therefore advertised a walkthrough and a
- * repository and delivered neither. Controls now appear only where the thing
- * they point at exists — which also drops each card from three competing
- * actions to one.
- */
 const has = (u?: string) => typeof u === "string" && u.trim().length > 0
 
-function SampleBadge() {
-  return (
-    <span className="badge badge-accent" title="Illustrative example, not a delivered client engagement">
-      SAMPLE
-    </span>
-  )
-}
-
 /**
- * Platform and category chips, in one treatment.
+ * Walkthrough and source links.
  *
- * `max` caps the categories shown. Cards in a row share a baseline grid, and a
- * project carrying one extra category wrapped its meta row onto a second line
- * — which pushed that card's heading about 30px below its neighbours' and made
- * the whole row look broken. The featured card passes no cap, since it owns its
- * own column and has the width to spend.
+ * Per-project URLs are still being filled in, so these fall back to the profile
+ * while the recordings and repos are in progress. What changed is where they
+ * live: one set in the preview panel, rather than a pair repeated on all six
+ * cards, which is what made the old grid more chrome than work.
  */
-function Meta({ cs, size = "sm", max }: { cs: CaseStudyMetadata; size?: "sm" | "md"; max?: number }) {
-  const pad = size === "md" ? "px-3 py-1 text-fine" : "px-2.5 py-0.5 text-meta"
-  const cats = max ? (cs.categories ?? []).slice(0, max) : (cs.categories ?? [])
+function AuxLinks({ cs }: { cs: CaseStudyMetadata }) {
+  const base =
+    "inline-flex items-center gap-2 rounded-full border border-rule px-3.5 py-2 font-mono text-meta tracking-wide text-ink-3 transition-colors duration-300 hover:border-rule-strong hover:bg-ink/[0.03] hover:text-ink"
 
   return (
     <>
-      {cs.platform && (
-        <span className={`rounded-md border border-rule-strong bg-ink/[0.04] font-mono text-ink-2 ${pad}`}>
-          {cs.platform}
-        </span>
-      )}
-      {cats.map(c => (
-        <span key={c} className={`rounded-md border border-rule font-mono text-ink-3 ${pad}`}>
-          {c}
-        </span>
-      ))}
+      <a href={has(cs.videoUrl) ? cs.videoUrl : PROFILE_REPO} target="_blank" rel="noopener noreferrer" className={base}>
+        <VideoIcon size={12} />
+        Walkthrough
+      </a>
+      <a href={has(cs.repoUrl) ? cs.repoUrl : PROFILE_REPO} target="_blank" rel="noopener noreferrer" className={base}>
+        <GitHubIcon size={12} />
+        Source
+      </a>
     </>
   )
 }
 
-/**
- * The secondary links on a card.
- *
- * `relative z-10` lifts these above the stretched primary hit area, so a click
- * on an icon opens the video or the repo rather than the modal underneath.
- */
-function AuxLinks({ cs }: { cs: CaseStudyMetadata }) {
-  if (!has(cs.videoUrl) && !has(cs.repoUrl)) return null
+/** The workflow canvas, framed. Shared by the preview panel and the mobile rows. */
+function Canvas({ cs, priority = false }: { cs: CaseStudyMetadata; priority?: boolean }) {
+  if (!cs.workflowImage) return null
 
   return (
-    <div className="relative z-10 flex items-center gap-1">
-      {has(cs.videoUrl) && (
-        <a
-          href={cs.videoUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Watch the walkthrough for ${cs.title}`}
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-rule text-ink-3 transition-colors hover:border-rule-strong hover:bg-ink/[0.04] hover:text-ink"
-        >
-          <VideoIcon size={13} />
-        </a>
-      )}
-      {has(cs.repoUrl) && (
-        <a
-          href={cs.repoUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Source for ${cs.title} on GitHub`}
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-rule text-ink-3 transition-colors hover:border-rule-strong hover:bg-ink/[0.04] hover:text-ink"
-        >
-          <GitHubIcon size={13} />
-        </a>
-      )}
+    <div className="relative overflow-hidden rounded-xl border border-rule bg-surface-raised p-3">
+      {/* Keyed on the slug so React swaps the element rather than mutating src
+          — without it the browser paints the previous canvas until the new one
+          decodes, and the panel appears to lag a row behind the cursor. */}
+      <img
+        key={cs.slug}
+        src={cs.workflowImage}
+        width={1400}
+        height={900}
+        loading={priority ? "eager" : "lazy"}
+        alt={`Workflow canvas for ${cs.title}`}
+        className="w-full rounded-lg"
+      />
     </div>
   )
 }
 
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
-  const { ref: featuredRef, inView: featuredInView } = useInView(0.1)
-  const { ref: gridRef, inView: gridInView } = useInView(0.08)
+  const { ref, inView } = useInView(0.06)
   const [filter, setFilter] = useState<Filter>("ALL")
+  const [activeSlug, setActiveSlug] = useState<string | null>(null)
   const [selectedStudy, setSelectedStudy] = useState<CaseStudyMetadata | null>(null)
 
   const shown = useMemo(() => caseStudies.filter(cs => matches(cs, filter)), [caseStudies, filter])
-  const featured = shown.find(cs => cs.featured) ?? shown[0]
-  const rest = shown.filter(cs => cs.slug !== featured?.slug)
+
+  /**
+   * The panel always has something to show, so the section reads correctly at
+   * rest rather than waiting for a hover.
+   *
+   * `activeSlug` is validated against the current filter rather than reset in an
+   * effect: when a filter hides the active project the lookup simply misses and
+   * falls through to the featured one, costing no extra render.
+   */
+  const active = shown.find(cs => cs.slug === activeSlug) ?? shown.find(cs => cs.featured) ?? shown[0]
 
   return (
     <section id="portfolio" className={SECTION_ANCHOR}>
@@ -162,16 +136,13 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           />
 
           <div className="flex flex-col items-start gap-4 lg:items-end">
-            {/* The count is exact, so it is stated exactly. "06+" padded a real
-                number into looking like a date and added a "+" it had not
-                earned. */}
             <span className="font-mono text-meta tracking-[0.18em] text-ink-3 uppercase">
               {caseStudies.length} automation projects
             </span>
 
             <div className="flex flex-wrap gap-2 lg:justify-end" role="tablist" aria-label="Filter projects">
               {FILTERS.map(f => {
-                const active = filter === f
+                const on = filter === f
                 const n = caseStudies.filter(cs => matches(cs, f)).length
 
                 return (
@@ -179,11 +150,11 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     key={f}
                     type="button"
                     role="tab"
-                    aria-selected={active}
+                    aria-selected={on}
                     disabled={n === 0}
                     onClick={() => setFilter(f)}
                     className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-mono text-meta tracking-wide transition-all duration-300 ${
-                      active
+                      on
                         ? "border-ink bg-ink text-ground"
                         : n === 0
                           ? "cursor-default border-rule text-ink-4"
@@ -191,9 +162,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     }`}
                   >
                     {f}
-                    {/* The count tells you what is behind a filter before you
-                        spend a click finding out. */}
-                    <span className={active ? "text-ground/65" : "text-ink-3"}>{n}</span>
+                    <span className={on ? "text-ground/65" : "text-ink-3"}>{n}</span>
                   </button>
                 )
               })}
@@ -201,172 +170,137 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           </div>
         </div>
 
-        <div className="mt-10 border-t border-rule" />
+        {/* ── Index + preview ────────────────────────────────────────────────
+            A card grid gave six workflow canvases a 150px thumbnail each, which
+            is the one economy this section cannot make: the canvas is the
+            evidence. An index trades those thumbnails for a single large
+            preview, and reads as a catalogue of work rather than a shop shelf.
 
-        {/* ── Featured ───────────────────────────────────────────────────── */}
-        <div ref={featuredRef} className="mt-12">
-          {featured && (
-            <article
-              className="group relative grid overflow-hidden rounded-2xl border border-rule bg-surface transition-[border-color,background-color,box-shadow] duration-300 hover:border-rule-strong hover:bg-surface-raised lg:grid-cols-[1.25fr_1fr]"
-              style={{
-                opacity: featuredInView ? 1 : 0,
-                transform: featuredInView ? "translateY(0)" : "translateY(36px)",
-                filter: featuredInView ? "blur(0px)" : "blur(10px)",
-                transition: "opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.85s cubic-bezier(0.16, 1, 0.3, 1), border-color .3s, background-color .3s",
-              }}
-            >
-              {/* The workflow canvas is the strongest asset on this site, so the
-                  featured card shows it whole rather than cropped. */}
-              <div className="relative border-b border-rule bg-surface-raised p-4 lg:border-b-0 lg:border-r">
-                {featured.workflowImage && (
-                  <img
-                    src={featured.workflowImage}
-                    width={1400}
-                    height={900}
-                    loading="lazy"
-                    alt={`Workflow canvas for ${featured.title}`}
-                    className="w-full rounded-lg transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.012]"
-                  />
-                )}
-              </div>
+            Below `lg` there is no room for a side-by-side, so each row carries
+            its own canvas and the whole thing degrades to a plain stack. */}
+        <div
+          ref={ref}
+          className="mt-14 grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]"
+          style={{
+            opacity: inView ? 1 : 0,
+            transform: inView ? "translateY(0)" : "translateY(28px)",
+            transition:
+              "opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1)"
+          }}
+        >
+          <ol className="border-t border-rule">
+            {shown.map((cs, i) => {
+              const isActive = cs.slug === active?.slug
 
-              <div className="flex flex-col p-7 lg:p-9">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Meta cs={featured} size="md" />
-                  <span className="badge badge-accent ml-auto">FEATURED</span>
-                </div>
+              return (
+                <li key={cs.slug} className="border-b border-rule">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStudy(cs)}
+                    onMouseEnter={() => setActiveSlug(cs.slug)}
 
-                <h3
-                  className="display-md mt-6 text-2xl leading-snug font-light text-ink lg:text-[2rem]"
-                  style={{ fontFamily: DISPLAY_FONT }}
-                >
-                  {featured.title}
-                </h3>
-                <p className="mt-4 text-body text-ink-2">{featured.description}</p>
-                {featured.sample && <div className="mt-4"><SampleBadge /></div>}
+                    // Focus drives the preview as well as hover, so a keyboard
+                    // reader tabbing the index sees the same canvas change.
+                    onFocus={() => setActiveSlug(cs.slug)}
+                    aria-current={isActive ? "true" : undefined}
+                    className="group grid w-full grid-cols-[2.5rem_1fr_auto] items-baseline gap-x-4 py-6 text-left lg:py-7"
+                  >
+                    <span className={`font-mono text-fine transition-colors duration-300 ${isActive ? "text-accent" : "text-ink-3"}`}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
 
-                <div className="mt-auto pt-8">
-                  <div className="flex flex-wrap gap-1.5">
-                    {featured.tools?.map(t => (
+                    <span className="min-w-0">
+                      <span
+                        className={`display-md block text-[1.2rem] leading-snug font-light transition-colors duration-300 lg:text-[1.45rem] ${
+                          isActive ? "text-ink" : "text-ink-2 group-hover:text-ink"
+                        }`}
+                        style={{ fontFamily: DISPLAY_FONT }}
+                      >
+                        {cs.title}
+                      </span>
+
+                      <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                        {cs.platform && (
+                          <span className="font-mono text-meta tracking-[0.14em] text-ink-3 uppercase">
+                            {cs.platform}
+                          </span>
+                        )}
+                        {cs.speed && (
+                          <span className="inline-flex items-center gap-1.5 font-mono text-meta text-accent">
+                            <Ico d={P.bolt} size={11} />
+                            {cs.speed}
+                          </span>
+                        )}
+                        {cs.sample && <span className="badge badge-accent">SAMPLE</span>}
+                      </span>
+
+                      {/* Below lg the preview panel is gone, so the row carries
+                          its own canvas and copy. */}
+                      <span className="mt-5 block lg:hidden">
+                        <Canvas cs={cs} />
+                        <span className="mt-4 block text-fine text-ink-2">{cs.description}</span>
+                      </span>
+                    </span>
+
+                    <span
+                      className={`transition-[color,transform] duration-300 group-hover:translate-x-1 ${
+                        isActive ? "text-accent" : "text-ink-3"
+                      }`}
+                    >
+                      <Ico d={P.arrow} size={16} />
+                    </span>
+                  </button>
+                </li>
+              )
+            })}
+          </ol>
+
+          {/* Preview panel, sticky so the canvas stays with the reader as they
+              work down the index. */}
+          <aside className="hidden lg:block">
+            {active && (
+              <div className="sticky top-28">
+                <Canvas cs={active} priority />
+
+                <div className="mt-6">
+                  <h3
+                    className="display-md text-[1.6rem] leading-snug font-light text-ink"
+                    style={{ fontFamily: DISPLAY_FONT }}
+                  >
+                    {active.title}
+                  </h3>
+                  <p className="mt-3 max-w-[56ch] text-body text-ink-2">{active.description}</p>
+
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {active.tools?.map(t => (
                       <span key={t} className="rounded-md border border-rule bg-ink/[0.02] px-2.5 py-1 font-mono text-meta text-ink-3">
                         {t}
                       </span>
                     ))}
                   </div>
 
-                  <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-rule pt-6">
-                    {featured.speed && (
-                      <span className="inline-flex items-center gap-2 font-mono text-fine text-accent">
-                        <Ico d={P.bolt} size={12} />
-                        {featured.speed}
-                      </span>
-                    )}
-
-                    <div className="ml-auto flex items-center gap-2.5">
-                      <AuxLinks cs={featured} />
-                      {/* One primary action. Its ::after stretches over the
-                          whole card, so the image and heading are clickable
-                          without needing their own mouse-only handlers — and
-                          the card becomes a single keyboard stop. */}
-                      <button
-                        type="button"
-                        onClick={() => setSelectedStudy(featured)}
-                        className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-meta tracking-wide text-ground transition-[background-color,transform] duration-300 after:absolute after:inset-0 after:content-[''] hover:bg-ink/90 active:scale-[0.98] motion-reduce:active:scale-100"
-                      >
-                        Read case study
-                        <Ico d={P.arrow} size={13} />
-                      </button>
-                    </div>
+                  <div className="mt-7 flex flex-wrap items-center gap-2.5 border-t border-rule pt-6">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedStudy(active)}
+                      className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-meta tracking-wide text-ground transition-[background-color,transform] duration-300 hover:bg-ink/90 active:scale-[0.98] motion-reduce:active:scale-100"
+                    >
+                      Read case study
+                      <Ico d={P.arrow} size={13} />
+                    </button>
+                    <AuxLinks cs={active} />
                   </div>
                 </div>
               </div>
-            </article>
-          )}
-
-          {/* ── Grid ─────────────────────────────────────────────────────── */}
-          <div ref={gridRef} className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {rest.map((cs, i) => (
-              <article
-                key={cs.slug}
-                className="group lift-hover relative flex flex-col overflow-hidden rounded-2xl border border-rule bg-surface hover:border-rule-strong hover:bg-surface-raised"
-                style={{
-                  opacity: gridInView ? 1 : 0,
-                  transform: gridInView ? "translateY(0)" : "translateY(36px)",
-                  filter: gridInView ? "blur(0px)" : "blur(10px)",
-                  transition: `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, filter 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${(i % 3) * 120}ms, border-color .3s, background-color .3s, box-shadow .35s`,
-                }}
-              >
-                {/* A fixed 150px crop crippled the one asset worth showing —
-                    a workflow diagram sliced from the top-left is unreadable.
-                    A 16:10 box keeps the canvas legible at any card width. */}
-                <div className="relative overflow-hidden border-b border-rule bg-surface-raised p-3">
-                  {cs.sample && (
-                    <span className="badge badge-accent absolute top-5 left-5 z-10 bg-ground/90 backdrop-blur-sm">
-                      SAMPLE
-                    </span>
-                  )}
-                  {cs.workflowImage && (
-                    <img
-                      src={cs.workflowImage}
-                      width={1400}
-                      height={900}
-                      loading="lazy"
-                      alt={`Workflow canvas for ${cs.title}`}
-                      className="aspect-[16/10] w-full rounded object-cover object-top transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.03]"
-                    />
-                  )}
-                </div>
-
-                <div className="flex flex-1 flex-col p-6">
-                  <div className="flex min-h-[1.75rem] flex-wrap items-center gap-2">
-                    <Meta cs={cs} max={2} />
-                    {cs.speed && (
-                      <span className="inline-flex items-center gap-1.5 font-mono text-meta text-accent">
-                        <Ico d={P.bolt} size={11} />
-                        {cs.speed}
-                      </span>
-                    )}
-                  </div>
-
-                  <h3
-                    className="display-md mt-4 text-[1.2rem] leading-snug font-light text-ink"
-                    style={{ fontFamily: DISPLAY_FONT }}
-                  >
-                    {cs.title}
-                  </h3>
-                  <p className="mt-3 line-clamp-3 text-fine text-ink-2">{cs.description}</p>
-
-                  <div className="mt-auto flex items-center justify-between gap-3 border-t border-rule pt-5">
-                    {/* The whole card is this button's hit area; the label is a
-                        quiet link because the card itself is the affordance.
-                        Three stacked pills per card made the chrome louder than
-                        the work it was framing. */}
-                    <button
-                      type="button"
-                      onClick={() => setSelectedStudy(cs)}
-                      className="inline-flex items-center gap-2 font-mono text-meta tracking-wide text-ink transition-colors after:absolute after:inset-0 after:content-['']"
-                    >
-                      <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-[position:0_100%] bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:bg-[length:100%_1px]">
-                        Read case study
-                      </span>
-                      <span className="transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1">
-                        <Ico d={P.arrow} size={13} />
-                      </span>
-                    </button>
-
-                    <AuxLinks cs={cs} />
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {shown.length === 0 && (
-            <p className="py-16 text-center text-fine text-ink-3">
-              Nothing built on this platform yet.
-            </p>
-          )}
+            )}
+          </aside>
         </div>
+
+        {shown.length === 0 && (
+          <p className="py-16 text-center text-fine text-ink-3">
+            Nothing built on this platform yet.
+          </p>
+        )}
       </div>
 
       <CaseStudyModal study={selectedStudy} onClose={() => setSelectedStudy(null)} />

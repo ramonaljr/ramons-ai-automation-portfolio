@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
+
 import type { CaseStudyMetadata } from "@/lib/case-studies"
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
@@ -53,6 +54,7 @@ export function CaseStudyModal({
     }
 
     const prevOverflow = document.body.style.overflow
+
     document.body.style.overflow = "hidden"
     window.addEventListener("keydown", handleKeyDown)
 
@@ -265,27 +267,27 @@ export function CaseStudyModal({
               href={study.videoUrl || `/case-study/${study.slug}`}
               target={study.videoUrl ? "_blank" : undefined}
               rel={study.videoUrl ? "noopener noreferrer" : undefined}
-              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-ink/[0.03] px-4 py-2.5 font-mono text-[12px] tracking-wide text-ink hover:bg-ink/90 hover:text-ground transition-all"
+              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-ink/[0.03] px-4 py-2.5 font-mono text-meta tracking-wide text-ink hover:bg-ink/90 hover:text-ground transition-all"
             >
               <VideoIcon size={13} />
-              Live Video Walkthrough
+              Walkthrough
             </a>
 
             <a
               href={study.repoUrl || "https://github.com/ramonaljr"}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-ink/[0.03] px-4 py-2.5 font-mono text-[12px] tracking-wide text-ink hover:bg-ink/90 hover:text-ground transition-all"
+              className="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-ink/[0.03] px-4 py-2.5 font-mono text-meta tracking-wide text-ink hover:bg-ink/90 hover:text-ground transition-all"
             >
               <GitHubIcon size={13} />
-              View on GitHub
+              Source
             </a>
           </div>
 
           <div className="flex items-center gap-3">
             <a
               href={`/case-study/${study.slug}`}
-              className="inline-flex items-center gap-1.5 text-[13px] font-mono text-ink-3 hover:text-ink transition-colors"
+              className="inline-flex items-center gap-1.5 font-mono text-fine text-ink-3 hover:text-ink transition-colors"
             >
               Read full case study
               <Ico d={P.external} size={12} />
@@ -293,7 +295,7 @@ export function CaseStudyModal({
 
             <a
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-[12.5px] tracking-wide text-ground transition-colors hover:bg-ink/90"
+              className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 font-mono text-meta tracking-wide text-ground transition-colors hover:bg-ink/90"
             >
               Start a project
               <Ico d={P.arrow} size={12} />
