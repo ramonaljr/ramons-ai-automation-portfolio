@@ -27,9 +27,9 @@ type ContactFormProps = {
 
 // Landing-page field chrome: hairline on white, mono label above.
 const FIELD =
-  'h-12 rounded-xl border-black/[0.10] bg-white/70 text-[14px] text-[#111] placeholder:text-black/30 focus-visible:border-black/30 focus-visible:ring-0'
+  'h-12 rounded-xl border-rule bg-surface text-[14px] text-ink placeholder:text-ink-4 focus-visible:border-rule-strong focus-visible:ring-0'
 
-const LABEL = 'font-mono text-[11px] tracking-[0.18em] text-black/45'
+const LABEL = 'font-mono text-[11px] tracking-[0.18em] text-ink-3'
 
 const ContactForm = ({ className }: ContactFormProps) => {
   // A slot arriving in the query string is what separates a booking from a
@@ -228,7 +228,7 @@ const ContactForm = ({ className }: ContactFormProps) => {
         <button
           type='submit'
           disabled={pending}
-          className='group inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#111] py-2 pr-2 pl-6 text-[13px] tracking-wide text-white transition-colors hover:bg-black disabled:opacity-60'
+          className='group inline-flex w-full items-center justify-center gap-3 rounded-full bg-ink py-2 pr-2 pl-6 text-[13px] tracking-wide text-ground transition-colors hover:bg-ink/90 disabled:opacity-60'
         >
           {pending ? 'SENDING…' : slot ? 'CONFIRM THIS SLOT' : 'SEND IT OVER'}
           <span className='flex h-9 w-9 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>

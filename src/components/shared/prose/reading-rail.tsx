@@ -86,7 +86,7 @@ export function ReadingRail({ headings, contentId }: { headings: Heading[]; cont
                 className={`shrink-0 rounded-full border px-4 py-2 font-mono text-[11px] tracking-wide whitespace-nowrap transition-all ${
                   h.slug === activeSlug
                     ? 'border-rule-strong bg-[#111] text-white'
-                    : 'border-rule text-ink-3 hover:border-rule-strong hover:text-black'
+                    : 'border-rule text-ink-3 hover:border-rule-strong hover:text-ink'
                 }`}
               >
                 {h.text}
@@ -96,7 +96,7 @@ export function ReadingRail({ headings, contentId }: { headings: Heading[]; cont
 
           {/* Wide screens: a sticky rail beside the column */}
           <nav aria-label='On this page' className='hidden lg:sticky lg:top-28 lg:block lg:self-start'>
-            <p className='font-mono text-[11px] tracking-[0.28em] text-black/45'>ON THIS PAGE</p>
+            <p className='eyebrow'>ON THIS PAGE</p>
 
             <ul className='mt-5 border-l border-rule'>
               {headings.map(h => (
@@ -106,7 +106,7 @@ export function ReadingRail({ headings, contentId }: { headings: Heading[]; cont
                     className={`-ml-px block border-l py-1.5 text-[12.5px] leading-snug transition-colors ${
                       h.slug === activeSlug
                         ? 'border-[#111] text-ink'
-                        : 'border-transparent text-ink-4 hover:border-rule-strong hover:text-black'
+                        : 'border-transparent text-ink-3 hover:border-rule-strong hover:text-ink'
                     }`}
                     style={{ paddingLeft: 16 + h.depth * 12 }}
                   >
@@ -116,7 +116,7 @@ export function ReadingRail({ headings, contentId }: { headings: Heading[]; cont
               ))}
             </ul>
 
-            <p className='mt-6 border-t border-rule pt-4 font-mono text-[11px] tracking-wide text-ink-4'>
+            <p className='mt-6 border-t border-rule pt-4 font-mono text-meta tracking-wide text-ink-3'>
               {percent}% READ
             </p>
           </nav>

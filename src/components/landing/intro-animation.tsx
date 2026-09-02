@@ -26,9 +26,13 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
   const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
+    // Reduced motion still has to release the hero, but it sets no local state:
+    // `reducedMotion` is known at render time, so "there is no intro" is derived
+    // below rather than assigned here. Writing `setPhase("done")` in an effect
+    // body scheduled a second render purely to reach a conclusion the first
+    // render already had.
     if (reducedMotion) {
       onDone()
-      setPhase("done")
 
       return
     }
@@ -48,7 +52,8 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
     }
   }, [onDone, reducedMotion])
 
-  if (phase === "done") return null
+  // Nothing to play: either the intro has finished, or it never started.
+  if (reducedMotion || phase === "done") return null
 
   const isIdle = phase === "idle"
   const isIn = phase === "in"

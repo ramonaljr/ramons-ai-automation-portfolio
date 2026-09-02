@@ -44,17 +44,17 @@ export const dynamicParams = false
 // ── Page furniture ───────────────────────────────────────────────────────────
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
-  <span className='inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em] text-black/55'>
-    <span className='h-px w-8 bg-black/25' />
+  <span className='inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em] text-ink-3'>
+    <span className='h-px w-8 bg-ink/25' />
     {children}
   </span>
 )
 
 const Chip = ({ children, tone = 'quiet' }: { children: React.ReactNode; tone?: 'quiet' | 'solid' | 'warn' }) => {
   const tones = {
-    quiet: 'border-black/10 text-black/60',
-    solid: 'border-black/15 bg-black/[0.04] text-black/70',
-    warn: 'border-amber-600/30 bg-amber-500/[0.08] text-amber-700/80'
+    quiet: 'border-rule text-ink-3',
+    solid: 'border-rule-strong bg-ink/4 text-ink-2',
+    warn: 'border-[color-mix(in_oklch,var(--accent)_26%,transparent)] bg-[color-mix(in_oklch,var(--accent)_9%,transparent)] text-accent'
   }
 
   return (
@@ -69,13 +69,13 @@ const OtherWork = ({ items }: { items: CaseStudyMetadata[] }) => {
   if (!items.length) return null
 
   return (
-    <section className='border-t border-black/[0.06] px-6 py-32 md:px-12 lg:px-20'>
+    <section className='border-t border-rule px-6 py-32 md:px-12 lg:px-20'>
       <div className={CONTAINER}>
         <div className='mb-14 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between'>
           <div>
-            <p className='font-mono text-[12px] tracking-[0.28em] text-black/50'>KEEP READING</p>
+            <p className='font-mono text-[12px] tracking-[0.28em] text-ink-3'>KEEP READING</p>
             <h2
-              className='mt-4 text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] font-light tracking-tight text-[#111]'
+              className='mt-4 text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] font-light tracking-tight text-ink'
               style={{ fontFamily: DISPLAY_FONT }}
             >
               Other builds
@@ -84,7 +84,7 @@ const OtherWork = ({ items }: { items: CaseStudyMetadata[] }) => {
 
           <a
             href='/#portfolio'
-            className='inline-flex shrink-0 items-center gap-2 rounded-full border border-black/12 px-5 py-2.5 text-[12px] tracking-wide text-black/62 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black'
+            className='inline-flex shrink-0 items-center gap-2 rounded-full border border-rule px-5 py-2.5 text-[12px] tracking-wide text-ink-3 transition-all hover:border-rule-strong hover:bg-ink/3 hover:text-ink'
           >
             All work
             <ArrowRight />
@@ -96,10 +96,10 @@ const OtherWork = ({ items }: { items: CaseStudyMetadata[] }) => {
             <Reveal key={cs.slug} delay={i * 90}>
               <a
                 href={`/case-study/${cs.slug}`}
-                className='group flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.07] bg-white/50 transition-all duration-300 hover:border-black/12 hover:bg-white'
+                className='group flex h-full flex-col overflow-hidden rounded-2xl border border-rule bg-surface transition-all duration-300 hover:border-rule hover:bg-surface-raised'
               >
                 {cs.workflowImage && (
-                  <div className='border-b border-black/[0.07] bg-white p-3'>
+                  <div className='border-b border-rule bg-surface-raised p-3'>
                     <img
                       src={cs.workflowImage}
                       alt=''
@@ -115,19 +115,19 @@ const OtherWork = ({ items }: { items: CaseStudyMetadata[] }) => {
                 <div className='flex flex-1 flex-col p-6'>
                   <div className='flex flex-wrap items-center gap-2'>
                     {cs.platform && <Chip tone='solid'>{cs.platform}</Chip>}
-                    {cs.speed && <span className='font-mono text-[11px] text-black/50'>{cs.speed}</span>}
+                    {cs.speed && <span className='font-mono text-[11px] text-ink-3'>{cs.speed}</span>}
                   </div>
 
                   <h3
-                    className='mt-4 text-[20px] leading-snug font-light tracking-tight text-[#111]'
+                    className='mt-4 text-[20px] leading-snug font-light tracking-tight text-ink'
                     style={{ fontFamily: DISPLAY_FONT }}
                   >
                     {cs.title}
                   </h3>
 
-                  <p className='mt-3 line-clamp-3 text-[13px] leading-relaxed text-black/62'>{cs.description}</p>
+                  <p className='mt-3 line-clamp-3 text-[13px] leading-relaxed text-ink-3'>{cs.description}</p>
 
-                  <span className='mt-auto inline-flex items-center gap-2 pt-6 font-mono text-[12px] tracking-wide text-black/62 transition-colors group-hover:text-black'>
+                  <span className='mt-auto inline-flex items-center gap-2 pt-6 font-mono text-[12px] tracking-wide text-ink-3 transition-colors group-hover:text-ink'>
                     READ CASE STUDY
                     <ArrowRight />
                   </span>
@@ -200,7 +200,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
         <div className={CONTAINER}>
           <a
             href='/#portfolio'
-            className='inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] text-black/50 transition-colors hover:text-black'
+            className='inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] text-ink-3 transition-colors hover:text-ink'
           >
             <span aria-hidden='true'>←</span>
             SELECTED WORK
@@ -216,23 +216,23 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
           </div>
 
           <h1
-            className='mt-7 max-w-[19ch] text-[clamp(2.1rem,5.2vw,4.5rem)] leading-[1.02] font-light tracking-tight text-[#111]'
+            className='mt-7 max-w-[19ch] text-[clamp(2.1rem,5.2vw,4.5rem)] leading-[1.02] font-light tracking-tight text-ink'
             style={{ fontFamily: DISPLAY_FONT }}
           >
             {metadata.title}
           </h1>
 
           {metadata.description && (
-            <p className='mt-7 max-w-2xl text-[16px] leading-relaxed text-black/62'>{metadata.description}</p>
+            <p className='mt-7 max-w-2xl text-[16px] leading-relaxed text-ink-3'>{metadata.description}</p>
           )}
 
           {/* Facts strip */}
           {facts.length > 0 && (
-            <dl className='mt-14 grid grid-cols-2 gap-y-8 border-t border-black/[0.07] pt-8 sm:grid-cols-4'>
+            <dl className='mt-14 grid grid-cols-2 gap-y-8 border-t border-rule pt-8 sm:grid-cols-4'>
               {facts.map(fact => (
                 <div key={fact.label}>
-                  <dt className='font-mono text-[11px] tracking-[0.2em] text-black/45'>{fact.label.toUpperCase()}</dt>
-                  <dd className='mt-2 text-[15px] text-black/75'>{fact.value}</dd>
+                  <dt className='font-mono text-[11px] tracking-[0.2em] text-ink-3'>{fact.label.toUpperCase()}</dt>
+                  <dd className='mt-2 text-[15px] text-ink-2'>{fact.value}</dd>
                 </div>
               ))}
             </dl>
@@ -240,12 +240,12 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
 
           {metadata.tools && metadata.tools.length > 0 && (
             <div className='mt-10'>
-              <p className='font-mono text-[11px] tracking-[0.2em] text-black/45'>STACK</p>
+              <p className='font-mono text-[11px] tracking-[0.2em] text-ink-3'>STACK</p>
               <div className='mt-3 flex flex-wrap gap-1.5'>
                 {metadata.tools.map(tool => (
                   <span
                     key={tool}
-                    className='rounded-md border border-black/[0.08] bg-black/[0.02] px-2.5 py-1 font-mono text-[11px] text-black/62'
+                    className='rounded-md border border-rule bg-ink/2 px-2.5 py-1 font-mono text-[11px] text-ink-3'
                   >
                     {tool}
                   </span>
@@ -257,14 +257,14 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
           {leadImage && (
             <Reveal className='mt-14' threshold={0.05}>
               <figure>
-                <div className='rounded-2xl border border-black/[0.07] bg-white p-3'>
+                <div className='rounded-2xl border border-rule bg-surface-raised p-3'>
                   <img
                     src={leadImage}
                     alt={`What the team sees when ${metadata.title} runs`}
                     className='w-full rounded-xl'
                   />
                 </div>
-                <figcaption className='mt-3 font-mono text-[11px] tracking-[0.18em] text-black/45'>
+                <figcaption className='mt-3 font-mono text-[11px] tracking-[0.18em] text-ink-3'>
                   WHAT THE TEAM SEES
                 </figcaption>
               </figure>
@@ -279,12 +279,12 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
       <>
         {/* The mechanism behind the mock-up above */}
         {metadata.workflowImage && (
-          <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+          <section className='border-t border-rule px-6 py-24 md:px-12 lg:px-20'>
             <div className={CONTAINER}>
-              <p className='font-mono text-[12px] tracking-[0.28em] text-black/50'>THE WORKFLOW</p>
+              <p className='font-mono text-[12px] tracking-[0.28em] text-ink-3'>THE WORKFLOW</p>
               {metadata.logicSummary && (
                 <p
-                  className='mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight text-[#111]'
+                  className='mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight text-ink'
                   style={{ fontFamily: DISPLAY_FONT }}
                 >
                   {metadata.logicSummary}
@@ -293,7 +293,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
 
               <Reveal className='mt-10' threshold={0.05}>
                 <figure>
-                  <div className='rounded-2xl border border-black/[0.07] bg-white p-3'>
+                  <div className='rounded-2xl border border-rule bg-surface-raised p-3'>
                     <img
                       src={metadata.workflowImage}
                       alt={`Workflow canvas for ${metadata.title}`}
@@ -301,7 +301,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
                       className='w-full rounded-xl'
                     />
                   </div>
-                  <figcaption className='mt-3 font-mono text-[11px] tracking-[0.18em] text-black/45'>
+                  <figcaption className='mt-3 font-mono text-[11px] tracking-[0.18em] text-ink-3'>
                     {metadata.platform ? `${metadata.platform.toUpperCase()} CANVAS` : 'WORKFLOW CANVAS'}
                     {metadata.stepCount ? ` · ${metadata.stepCount} STAGES` : ''}
                   </figcaption>
@@ -315,20 +315,20 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
             Figures first: these are the fields a reader scans for, and prose
             is the wrong shape for them. The article below tells the story. */}
         {(metadata.impactHighlight || metadata.roi) && (
-          <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+          <section className='border-t border-rule px-6 py-24 md:px-12 lg:px-20'>
             <div className={CONTAINER}>
-              <p className='font-mono text-[12px] tracking-[0.28em] text-black/50'>OUTCOME</p>
+              <p className='font-mono text-[12px] tracking-[0.28em] text-ink-3'>OUTCOME</p>
 
               {metadata.impactHighlight && (
                 <p
-                  className='mt-4 max-w-3xl text-[clamp(1.35rem,2.4vw,2rem)] leading-snug font-light tracking-tight text-[#111]'
+                  className='mt-4 max-w-3xl text-[clamp(1.35rem,2.4vw,2rem)] leading-snug font-light tracking-tight text-ink'
                   style={{ fontFamily: DISPLAY_FONT }}
                 >
                   {metadata.impactHighlight}
                 </p>
               )}
               {metadata.impactHighlightDesc && (
-                <p className='mt-4 max-w-2xl text-[15px] leading-relaxed text-black/68'>
+                <p className='mt-4 max-w-2xl text-[15px] leading-relaxed text-ink-2'>
                   {metadata.impactHighlightDesc}
                 </p>
               )}
@@ -337,14 +337,14 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
                 <div className='mt-12 grid gap-4 sm:grid-cols-3'>
                   {metadata.roi.map((r, i) => (
                     <Reveal key={r.label} delay={i * 90}>
-                      <div className='rounded-2xl border border-black/[0.07] bg-white/60 p-8 text-center'>
+                      <div className='rounded-2xl border border-rule bg-surface p-8 text-center'>
                         <p
-                          className='text-[clamp(2rem,4vw,2.75rem)] leading-none font-light text-[#111]'
+                          className='text-[clamp(2rem,4vw,2.75rem)] leading-none font-light text-ink'
                           style={{ fontFamily: DISPLAY_FONT }}
                         >
                           {r.value}
                         </p>
-                        <p className='mt-3 text-[13px] text-black/62'>{r.label}</p>
+                        <p className='mt-3 text-[13px] text-ink-3'>{r.label}</p>
                       </div>
                     </Reveal>
                   ))}
@@ -358,38 +358,34 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
             A scannable summary ahead of the long read, so someone deciding
             whether to read at all can get the shape of it in two paragraphs. */}
         {(metadata.problem || metadata.solution) && (
-          <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+          <section className='border-t border-rule px-6 py-24 md:px-12 lg:px-20'>
             <div className={CONTAINER}>
-              <p className='font-mono text-[12px] tracking-[0.28em] text-black/50'>IN SHORT</p>
+              <p className='font-mono text-[12px] tracking-[0.28em] text-ink-3'>IN SHORT</p>
               <div className='mt-10 grid gap-5 md:grid-cols-2'>
                 {metadata.problem && (
-                  <div className='rounded-2xl border border-rose-600/15 bg-rose-500/[0.04] p-8'>
-                    <p className='font-mono text-[12px] tracking-[0.18em] text-rose-800/70'>
-                      THE PROBLEM
-                    </p>
-                    <p className='mt-4 text-[15px] leading-relaxed text-black/72'>{metadata.problem}</p>
+                  <div className='rounded-2xl border border-rule bg-ink/[0.025] p-8'>
+                    <p className='eyebrow'>THE PROBLEM</p>
+                    <p className='mt-4 text-[15px] leading-relaxed text-ink-2'>{metadata.problem}</p>
                   </div>
                 )}
                 {metadata.solution && (
-                  <div className='rounded-2xl border border-emerald-600/20 bg-emerald-500/[0.05] p-8'>
-                    <p className='font-mono text-[12px] tracking-[0.18em] text-emerald-800/70'>
-                      WHAT I BUILT
-                    </p>
-                    <p className='mt-4 text-[15px] leading-relaxed text-black/72'>{metadata.solution}</p>
+                  <div className='rounded-2xl border-[color-mix(in_oklch,var(--accent)_22%,transparent)] border bg-[color-mix(in_oklch,var(--accent)_5%,transparent)] p-8'>
+                    <p className='eyebrow text-accent'>WHAT I BUILT</p>
+                    <p className='mt-4 text-[15px] leading-relaxed text-ink-2'>{metadata.solution}</p>
                   </div>
                 )}
               </div>
 
               {metadata.integrations && metadata.integrations.length > 0 && (
                 <>
-                  <p className='mt-14 font-mono text-[12px] tracking-[0.18em] text-black/50'>
+                  <p className='mt-14 font-mono text-[12px] tracking-[0.18em] text-ink-3'>
                     ACTIVE INTEGRATIONS
                   </p>
                   <div className='mt-4 flex flex-wrap gap-2'>
                     {metadata.integrations.map(i => (
                       <span
                         key={i}
-                        className='rounded-lg border border-black/[0.09] bg-white px-4 py-2.5 font-mono text-[13px] text-black/68'
+                        className='rounded-lg border border-rule bg-surface-raised px-4 py-2.5 font-mono text-[13px] text-ink-2'
                       >
                         {i}
                       </span>
@@ -401,7 +397,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
           </section>
         )}
 
-        <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+        <section className='border-t border-rule px-6 py-24 md:px-12 lg:px-20'>
           <div className='mx-auto max-w-[1080px]'>
             <div className='grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20'>
               <ReadingRail headings={headings} contentId='case-study-content' />
@@ -417,20 +413,20 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
             "what happens when it breaks", which only lands once the reader
             knows what "it" is. */}
         {(metadata.failsafeHeadline || metadata.failsafes) && (
-          <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+          <section className='border-t border-rule px-6 py-24 md:px-12 lg:px-20'>
             <div className={CONTAINER}>
-              <p className='font-mono text-[12px] tracking-[0.28em] text-black/50'>WHEN IT BREAKS</p>
+              <p className='font-mono text-[12px] tracking-[0.28em] text-ink-3'>WHEN IT BREAKS</p>
 
               {metadata.failsafeHeadline && (
                 <p
-                  className='mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight text-[#111]'
+                  className='mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight text-ink'
                   style={{ fontFamily: DISPLAY_FONT }}
                 >
                   {metadata.failsafeHeadline}
                 </p>
               )}
               {metadata.failsafeDesc && (
-                <p className='mt-4 max-w-2xl text-[15px] leading-relaxed text-black/68'>
+                <p className='mt-4 max-w-2xl text-[15px] leading-relaxed text-ink-2'>
                   {metadata.failsafeDesc}
                 </p>
               )}
@@ -439,9 +435,9 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
                 <div className='mt-10 grid gap-5 md:grid-cols-2'>
                   {metadata.failsafes.map((f, i) => (
                     <Reveal key={f.title} delay={i * 90}>
-                      <div className='rounded-2xl border border-black/[0.07] bg-white/60 p-8'>
-                        <p className='font-mono text-[14px] text-emerald-800/80'>{f.title}</p>
-                        <p className='mt-3 text-[14px] leading-relaxed text-black/68'>{f.desc}</p>
+                      <div className='rounded-2xl border border-rule bg-surface p-8'>
+                        <p className='font-mono text-fine text-accent'>{f.title}</p>
+                        <p className='mt-3 text-[14px] leading-relaxed text-ink-2'>{f.desc}</p>
                       </div>
                     </Reveal>
                   ))}

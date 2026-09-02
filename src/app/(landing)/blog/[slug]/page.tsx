@@ -50,13 +50,13 @@ const MoreWriting = ({ items }: { items: PostMetadata[] }) => {
   if (!items.length) return null
 
   return (
-    <section className='border-t border-black/[0.06] px-6 py-32 md:px-12 lg:px-20'>
+    <section className='border-t border-rule px-6 py-32 md:px-12 lg:px-20'>
       <div className={CONTAINER}>
         <div className='mb-14 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between'>
           <div>
-            <p className='font-mono text-[12px] tracking-[0.28em] text-black/50'>KEEP READING</p>
+            <p className='font-mono text-[12px] tracking-[0.28em] text-ink-3'>KEEP READING</p>
             <h2
-              className='mt-4 text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] font-light tracking-tight text-[#111]'
+              className='mt-4 text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] font-light tracking-tight text-ink'
               style={{ fontFamily: DISPLAY_FONT }}
             >
               More writing
@@ -65,7 +65,7 @@ const MoreWriting = ({ items }: { items: PostMetadata[] }) => {
 
           <a
             href='/blog'
-            className='inline-flex shrink-0 items-center gap-2 rounded-full border border-black/12 px-5 py-2.5 text-[12px] tracking-wide text-black/62 transition-all hover:border-black/30 hover:bg-black/[0.03] hover:text-black'
+            className='inline-flex shrink-0 items-center gap-2 rounded-full border border-rule px-5 py-2.5 text-[12px] tracking-wide text-ink-3 transition-all hover:border-rule-strong hover:bg-ink/3 hover:text-ink'
           >
             All articles
             <ArrowRight />
@@ -77,29 +77,29 @@ const MoreWriting = ({ items }: { items: PostMetadata[] }) => {
             <Reveal key={post.slug} delay={i * 90}>
               <a
                 href={`/blog/${post.slug}`}
-                className='group flex h-full flex-col rounded-2xl border border-black/[0.07] bg-white/50 p-6 transition-all duration-300 hover:border-black/12 hover:bg-white'
+                className='group flex h-full flex-col rounded-2xl border border-rule bg-surface p-6 transition-all duration-300 hover:border-rule hover:bg-surface-raised'
               >
                 <div className='flex flex-wrap items-center justify-between gap-3'>
                   {post.category && (
-                    <span className='rounded-full border border-black/12 px-3.5 py-1.5 font-mono text-[11px] text-black/70'>
+                    <span className='rounded-full border border-rule px-3.5 py-1.5 font-mono text-[11px] text-ink-2'>
                       {post.category}
                     </span>
                   )}
-                  {post.readingTime && <span className='font-mono text-[11px] text-black/45'>{post.readingTime}</span>}
+                  {post.readingTime && <span className='font-mono text-[11px] text-ink-3'>{post.readingTime}</span>}
                 </div>
 
                 <h3
-                  className='mt-5 text-[19px] leading-snug font-light tracking-tight text-[#111]'
+                  className='mt-5 text-[19px] leading-snug font-light tracking-tight text-ink'
                   style={{ fontFamily: DISPLAY_FONT }}
                 >
                   {post.title ?? post.slug}
                 </h3>
 
                 {post.description && (
-                  <p className='mt-3 line-clamp-3 text-[13px] leading-relaxed text-black/62'>{post.description}</p>
+                  <p className='mt-3 line-clamp-3 text-[13px] leading-relaxed text-ink-3'>{post.description}</p>
                 )}
 
-                <span className='mt-auto inline-flex items-center gap-2 pt-6 font-mono text-[12px] tracking-wide text-black/62 transition-colors group-hover:text-black'>
+                <span className='mt-auto inline-flex items-center gap-2 pt-6 font-mono text-[12px] tracking-wide text-ink-3 transition-colors group-hover:text-ink'>
                   READ ARTICLE
                   <ArrowRight />
                 </span>
@@ -136,21 +136,21 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
         <div className={CONTAINER}>
           <a
             href='/blog'
-            className='inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] text-black/50 transition-colors hover:text-black'
+            className='inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] text-ink-3 transition-colors hover:text-ink'
           >
             <span aria-hidden='true'>←</span>
             ALL ARTICLES
           </a>
 
           <div className='mt-12 flex flex-wrap items-center gap-x-5 gap-y-3'>
-            <span className='inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em] text-black/55'>
-              <span className='h-px w-8 bg-black/25' />
+            <span className='inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em] text-ink-3'>
+              <span className='h-px w-8 bg-ink/25' />
               {metadata.category?.toUpperCase() ?? 'WRITING'}
             </span>
             {metadata.tags?.map(tag => (
               <span
                 key={tag}
-                className='rounded-full border border-black/10 px-3 py-1 font-mono text-[11px] tracking-wide text-black/60'
+                className='rounded-full border border-rule px-3 py-1 font-mono text-[11px] tracking-wide text-ink-3'
               >
                 {tag}
               </span>
@@ -158,17 +158,17 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
           </div>
 
           <h1
-            className='mt-7 max-w-[20ch] text-[clamp(2.1rem,5.2vw,4.25rem)] leading-[1.02] font-light tracking-tight text-[#111]'
+            className='mt-7 max-w-[20ch] text-[clamp(2.1rem,5.2vw,4.25rem)] leading-[1.02] font-light tracking-tight text-ink'
             style={{ fontFamily: DISPLAY_FONT }}
           >
             {metadata.title}
           </h1>
 
           {metadata.description && (
-            <p className='mt-7 max-w-2xl text-[16px] leading-relaxed text-black/62'>{metadata.description}</p>
+            <p className='mt-7 max-w-2xl text-[16px] leading-relaxed text-ink-3'>{metadata.description}</p>
           )}
 
-          <div className='mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-black/[0.07] pt-6 font-mono text-[11px] tracking-[0.18em] text-black/45'>
+          <div className='mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-rule pt-6 font-mono text-[11px] tracking-[0.18em] text-ink-3'>
             <span>RAMON VALLEJERA JR.</span>
             {published && <span>{published.toUpperCase()}</span>}
             {metadata.readingTime && <span>{metadata.readingTime.toUpperCase()}</span>}
@@ -176,7 +176,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
 
           {metadata.coverImage && (
             <Reveal className='mt-14' threshold={0.05}>
-              <div className='rounded-2xl border border-black/[0.07] bg-white p-3'>
+              <div className='rounded-2xl border border-rule bg-surface-raised p-3'>
                 <img src={metadata.coverImage} alt={metadata.title ?? ''} className='w-full rounded-xl' />
               </div>
             </Reveal>
@@ -188,7 +188,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
           constellation field competes with the text. It picks up again below
           the article, where the content is card-based. */}
       <>
-        <section className='border-t border-black/[0.06] px-6 py-24 md:px-12 lg:px-20'>
+        <section className='border-t border-rule px-6 py-24 md:px-12 lg:px-20'>
           <div className='mx-auto max-w-[1080px]'>
             <div className='grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20'>
               <ReadingRail headings={headings} contentId='post-content' />
