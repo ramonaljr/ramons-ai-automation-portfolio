@@ -10,6 +10,7 @@ import { HeroSection } from '@/components/landing/hero-section'
 import { IntroSection } from '@/components/landing/intro-section'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ProjectsSection } from '@/components/landing/projects-section'
+import { PrinciplesSection } from '@/components/landing/principles-section'
 import { PixelIcon } from '@/components/landing/pixel-icon'
 import { ToolStackSection } from '@/components/landing/tool-stack-section'
 import { ExperienceSection } from '@/components/landing/experience-section'
@@ -35,7 +36,7 @@ import {
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import type { PostMetadata } from '@/lib/posts'
-import { ENGAGEMENTS, PLATFORMS, PRINCIPLES, PROCESS, SERVICES } from '@/lib/portfolio'
+import { ENGAGEMENTS, PLATFORMS, PROCESS, SERVICES } from '@/lib/portfolio'
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 
@@ -278,69 +279,6 @@ function ProcessSection() {
 }
 
 // ── Principles ───────────────────────────────────────────────────────────────
-
-function PrinciplesSection() {
-  const { ref, inView } = useInView(0.08)
-
-  return (
-    <section id='principles' className={SECTION}>
-      {/* Two columns, not a stacked heading.
-          Body copy has to stay near a 60-character measure to stay readable, so
-          a full-width row of numeral + title + body could never reach the right
-          edge of a 1400px container — it left roughly a third of the section
-          empty. Moving the heading into a left rail gives that space a job: the
-          claim stays on screen while the rules that support it scroll past it,
-          and the list gets a column narrow enough that its measure fills it. */}
-      <div className={`${CONTAINER} grid gap-x-20 gap-y-14 lg:grid-cols-[minmax(0,22rem)_1fr] 2xl:gap-x-28`}>
-        <div className='lg:sticky lg:top-32 lg:self-start'>
-          <SectionHead
-            tag='HOW I BUILD'
-            title={
-              <>
-                Reliability is
-                <br />
-                the feature.
-              </>
-            }
-            blurb='An automation that silently does the wrong thing is worse than no automation. Three rules I do not bend.'
-          />
-        </div>
-
-        <div ref={ref} className='border-rule border-t'>
-          {PRINCIPLES.map((p, i) => (
-            <div
-              key={p.n}
-              className='group border-rule grid gap-x-10 gap-y-4 border-b py-10 md:grid-cols-[3.5rem_minmax(0,17rem)_1fr] md:py-12'
-              style={sweep(inView, i)}
-            >
-              {/* The numeral indexes the rule; it is set at display size in the
-                  faintest legible ink so it is present without ever competing
-                  with the claim beside it. */}
-              <span
-                className='text-ink-4 group-hover:text-accent text-[2.5rem] leading-none font-light transition-colors duration-500'
-                style={{ fontFamily: DISPLAY_FONT }}
-              >
-                {p.n}
-              </span>
-
-              <div>
-                <h3
-                  className='display-md text-ink text-xl leading-snug font-light md:text-[1.5rem]'
-                  style={{ fontFamily: DISPLAY_FONT }}
-                >
-                  {p.title}
-                </h3>
-                <p className='border-rule text-meta text-ink-3 mt-2.5 border-t pt-2.5 tracking-[0.02em]'>{p.sub}</p>
-              </div>
-
-              <p className='text-body text-ink-2 max-w-[60ch] md:pt-1'>{p.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
 
 // ── Engagement ───────────────────────────────────────────────────────────────
 
