@@ -11,13 +11,15 @@ const CONTAINER = 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto'
 const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
 /**
- * Times shown before a date is chosen — placeholders only, to keep the row
- * from collapsing. The real list always comes from /api/availability, which
- * reads Ramon's calendar. Hard-coding the offered times here is what caused
- * the site to advertise 10:30 and 14:30, which the booking endpoint then
- * rejected as outside bookable hours.
+ * The times row reserves its height rather than filling with placeholder
+ * times. Fake times rendered struck through said "everything is taken" before
+ * a date had even been chosen — a state the data could not support. The real
+ * list always comes from /api/availability, which reads Ramon's calendar;
+ * hard-coding offered times here is what once made the site advertise 10:30
+ * and 14:30, which the booking endpoint then rejected as outside bookable
+ * hours.
  */
-const PLACEHOLDER_SLOTS = ['09:00', '10:00', '11:00', '13:00', '14:00']
+const TIMES_ROW_MIN_H = 'min-h-[2.75rem]'
 
 type Slot = { time: string; available: boolean }
 
@@ -159,10 +161,16 @@ export function ContactSection() {
     const days = new Date(cursor.y, cursor.m + 1, 0).getDate()
     const lead = first.getDay()
 
-    return [
+    const grid: (Date | null)[] = [
       ...Array.from({ length: lead }, () => null),
       ...Array.from({ length: days }, (_, i) => new Date(cursor.y, cursor.m, i + 1))
     ]
+
+    // Padded to whole weeks so the weekend wash reads as two continuous
+    // columns rather than stopping partway down the last row.
+    while (grid.length % 7 !== 0) grid.push(null)
+
+    return grid
   }, [cursor])
 
   const selectable = (d: Date) => {
@@ -182,6 +190,18 @@ export function ContactSection() {
   const atEarliestMonth = !!today && !!cursor && cursor.y === today.getFullYear() && cursor.m === today.getMonth()
 
   const ready = picked && time
+
+  // Naming the slot on the button means the confirmation step is never a
+  // surprise. Safe during render because both values start null and are only
+  // ever set by a click.
+  const slotLabel =
+    picked && time
+      ? `${new Date(`${picked}T00:00:00`).toLocaleDateString('en-GB', {
+          weekday: 'short',
+          day: 'numeric',
+          month: 'short'
+        })}, ${time}`
+      : ''
 
   const bookHref = ready
     ? `/contact?date=${encodeURIComponent(picked)}&time=${encodeURIComponent(time)}&topic=${encodeURIComponent('Workflow Audit')}`
@@ -222,7 +242,7 @@ export function ContactSection() {
                   <Icon d={PATHS.mail} />
                 </span>
                 <div className='min-w-0'>
-                  <p className='text-ink-2 font-mono text-[11px] tracking-widest'>EMAIL</p>
+                  <p className='eyebrow'>EMAIL</p>
                   <a
                     href={`mailto:${PROFILE.email}`}
                     className='text-ink-2 hover:text-ink mt-1 block text-[14px] break-all transition-colors'
@@ -237,7 +257,7 @@ export function ContactSection() {
                   <Icon d={PATHS.pin} />
                 </span>
                 <div>
-                  <p className='text-ink-2 font-mono text-[11px] tracking-widest'>LOCATION</p>
+                  <p className='eyebrow'>LOCATION</p>
                   <p className='text-ink-2 mt-1 text-[14px]'>{PROFILE.location}</p>
                   <p className='text-ink-2 text-[13px]'>Working across time zones</p>
                 </div>
@@ -248,7 +268,7 @@ export function ContactSection() {
                   <Icon d={PATHS.cal} />
                 </span>
                 <div>
-                  <p className='text-ink-2 font-mono text-[11px] tracking-widest'>AVAILABILITY</p>
+                  <p className='eyebrow'>AVAILABILITY</p>
                   <p className='text-ink-2 mt-1 text-[14px]'>Open for workflow audits &amp; custom builds</p>
                 </div>
               </div>
@@ -258,7 +278,7 @@ export function ContactSection() {
                   <Icon d={PATHS.arrow} />
                 </span>
                 <div>
-                  <p className='text-ink-2 font-mono text-[11px] tracking-widest'>RESPONSE</p>
+                  <p className='eyebrow'>RESPONSE</p>
                   <p className='text-ink-2 mt-1 text-[14px]'>Usually within one business day</p>
                 </div>
               </div>
@@ -291,11 +311,12 @@ export function ContactSection() {
           >
             <div className='flex items-start justify-between gap-4'>
               <div>
-                <p className='text-ink-2 font-mono text-[11px] tracking-widest'>WORKFLOW AUDIT · 30 MIN · FREE</p>
-                <h3 className='text-ink mt-2 text-2xl font-light tracking-tight' style={{ fontFamily: DISPLAY_FONT }}>
+                <h3 className='text-ink text-2xl font-light tracking-tight' style={{ fontFamily: DISPLAY_FONT }}>
                   Book a slot
                 </h3>
-                <p className='text-ink-2 mt-1.5 text-[14px]'>Pick a weekday, then a time (PH time, UTC+8).</p>
+                <p className='text-ink-2 mt-1.5 text-[14px]'>
+                  Thirty minutes, free. All times Philippine time (UTC+8).
+                </p>
               </div>
               <span className='border-rule text-ink-2 hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border sm:flex'>
                 <Icon d={PATHS.cal} />
@@ -314,8 +335,8 @@ export function ContactSection() {
                 >
                   <Icon d={PATHS.chevL} />
                 </button>
-                <p className='text-ink-2 font-mono text-[13px] tracking-widest'>
-                  {cursor ? `${MONTHS[cursor.m].toUpperCase()} ${cursor.y}` : ' '}
+                <p className='text-ink text-[15px]' style={{ fontFamily: DISPLAY_FONT }}>
+                  {cursor ? `${MONTHS[cursor.m]} ${cursor.y}` : ' '}
                 </p>
                 <button
                   type='button'
@@ -329,7 +350,12 @@ export function ContactSection() {
 
               <div className='mb-2 grid grid-cols-7 gap-1'>
                 {DAY_LABELS.map((d, i) => (
-                  <span key={i} className='text-ink-2 py-1 text-center font-mono text-[12px]'>
+                  <span
+                    key={i}
+                    className={`py-1 text-center font-mono text-[12px] ${
+                      i === 0 || i === 6 ? 'text-ink-4 bg-ink/2 rounded-lg' : 'text-ink-2'
+                    }`}
+                  >
                     {d}
                   </span>
                 ))}
@@ -337,24 +363,44 @@ export function ContactSection() {
 
               <div className='grid grid-cols-7 gap-1'>
                 {cells.map((d, i) => {
-                  if (!d) return <span key={`pad-${i}`} />
+                  // Saturday and Sunday carry a wash so the grid states the
+                  // working week, rather than leaving a visitor to discover it
+                  // by clicking a dead square.
+                  const weekend = i % 7 === 0 || i % 7 === 6
+
+                  if (!d) return <span key={`pad-${i}`} className={weekend ? 'bg-ink/2 rounded-lg' : undefined} />
+
                   const key = iso(d)
                   const ok = selectable(d)
                   const isPicked = picked === key
+                  const isToday = !!today && key === iso(today)
 
+                  // A chosen date is a selection, not an action, so it takes a
+                  // ring. The solid ink fill belongs to the one thing worth
+                  // pressing next, at the foot of the panel.
                   return (
                     <button
                       key={key}
                       type='button'
                       disabled={!ok}
+                      aria-pressed={isPicked}
                       onClick={() => {
                         pickDate(key)
                       }}
-                      className={`h-9 rounded-lg text-[14px] transition-all ${
-                        isPicked ? 'bg-ink text-ground' : ok ? 'text-ink-2 hover:bg-ink/6' : 'text-ink-4 cursor-default'
+                      className={`relative h-9 rounded-lg text-[14px] tabular-nums transition-all ${
+                        weekend ? 'bg-ink/2' : ''
+                      } ${
+                        isPicked
+                          ? 'ring-ink text-ink bg-ink/6 font-medium ring-1'
+                          : ok
+                            ? 'text-ink-2 hover:bg-ink/6'
+                            : 'text-ink-4 cursor-default'
                       }`}
                     >
                       {d.getDate()}
+                      {isToday && !isPicked && (
+                        <span className='bg-ink-4 absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full' />
+                      )}
                     </button>
                   )
                 })}
@@ -362,39 +408,48 @@ export function ContactSection() {
             </div>
 
             {/* Times */}
-            <p className='text-ink-2 mt-7 font-mono text-[11px] tracking-widest'>AVAILABLE TIMES</p>
-            <div className='mt-3 flex flex-wrap gap-2'>
-              {(slots ?? PLACEHOLDER_SLOTS.map(t => ({ time: t, available: false }))).map(s => {
-                const selectableSlot = !!picked && !loadingSlots && s.available
-
-                return (
-                  <button
-                    key={s.time}
-                    type='button'
-                    disabled={!selectableSlot}
-
-                    // "Unavailable" rather than "already booked": the endpoint
-                    // reports a single flag, and a slot can be closed because
-                    // it is booked, past, or a weekend. Naming one of those
-                    // would be wrong two times out of three.
-                    aria-label={picked && slots && !s.available ? `${s.time} — unavailable` : s.time}
-                    onClick={() => setTime(s.time)}
-                    className={`rounded-lg border px-4 py-2.5 text-[14px] transition-all ${
-                      time === s.time
-                        ? 'bg-ink text-ground border-ink'
-                        : selectableSlot
-                          ? 'border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/3'
-                          : 'border-rule text-ink-4 decoration-ink/25 cursor-default line-through'
-                    }`}
-                  >
-                    {s.time}
-                  </button>
-                )
-              })}
+            <p className='eyebrow mt-7'>Available times</p>
+            <div className={`mt-3 flex flex-wrap gap-2 ${TIMES_ROW_MIN_H}`}>
+              {!picked ? (
+                <p className='text-ink-3 self-center text-[14px]'>Pick a weekday to see what is open.</p>
+              ) : loadingSlots ? (
+                Array.from({ length: 4 }, (_, i) => (
+                  <span
+                    key={`loading-${i}`}
+                    className='border-rule bg-ink/4 h-[42px] w-[76px] animate-pulse rounded-lg border'
+                  />
+                ))
+              ) : (
+                (slots ?? []).map(s => {
+                  // "Unavailable" rather than "already booked": the endpoint
+                  // reports a single flag, and a slot can be closed because it
+                  // is booked, past, or a weekend. Naming one of those would be
+                  // wrong two times out of three.
+                  return (
+                    <button
+                      key={s.time}
+                      type='button'
+                      disabled={!s.available}
+                      aria-pressed={time === s.time}
+                      aria-label={s.available ? s.time : `${s.time} — unavailable`}
+                      onClick={() => setTime(s.time)}
+                      className={`rounded-lg border px-4 py-2.5 text-[14px] tabular-nums transition-all ${
+                        time === s.time
+                          ? 'border-ink bg-ink/6 text-ink font-medium'
+                          : s.available
+                            ? 'border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/3'
+                            : 'border-rule text-ink-4 decoration-ink/25 cursor-default line-through'
+                      }`}
+                    >
+                      {s.time}
+                    </button>
+                  )
+                })
+              )}
             </div>
-            <p className='text-ink-2 mt-3 text-[13px]' aria-live='polite'>
+            <p className='text-ink-3 mt-3 min-h-[1.25rem] text-[13px]' aria-live='polite'>
               {!picked
-                ? 'Pick a date first.'
+                ? ''
                 : loadingSlots
                   ? 'Checking my calendar…'
                   : slotsError
@@ -414,7 +469,7 @@ export function ContactSection() {
               }`}
             >
               <Icon d={PATHS.cal} />
-              {ready ? 'Continue with this slot' : 'Select a date and time'}
+              {ready ? `Continue with ${slotLabel}` : 'Select a date and time'}
             </a>
           </div>
         </div>
