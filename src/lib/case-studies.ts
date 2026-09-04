@@ -51,6 +51,17 @@ export type CaseStudyMetadata = {
   keyOutcome?: { value: string; label: string }
   integrations?: string[]
   problem?: string
+
+  /**
+   * `problem` compressed to a single sentence, for the opening section.
+   *
+   * The full `problem` runs two to three sentences, which is right on a case
+   * study page and far too heavy immediately below the hero. This is the same
+   * claim at scanning length. Only set it on delivered work: the section that
+   * reads it excludes `sample` studies, so a demo scenario can never appear
+   * on the landing page as something a client actually paid for.
+   */
+  problemShort?: string
   solution?: string
   stepCount?: number
   impactHighlight?: string

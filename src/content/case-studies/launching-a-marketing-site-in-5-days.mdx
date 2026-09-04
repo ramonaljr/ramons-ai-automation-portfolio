@@ -24,6 +24,7 @@ keyOutcome:
   value: '100%'
   label: 'Cited Answers'
 integrations: ['n8n', 'Claude 3.5 Sonnet', 'Pinecone', 'Supabase', 'Telegram']
+problemShort: 'Nobody could find an authoritative answer, so the same questions were re-answered by whoever happened to know.'
 problem: 'Company documentation was spread across Drive folders and nobody could find authoritative answers, so the same questions were re-asked and re-answered by whoever happened to know.'
 solution: 'Engineered a semantic RAG pipeline in n8n that watches Drive, chunks and embeds new documents into Pinecone, and answers questions in Telegram with citations linking back to the source document.'
 stepCount: 4

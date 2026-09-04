@@ -8,6 +8,7 @@ import { SiteFooter } from '@/components/landing/site-footer'
 import { CtaSection } from '@/components/landing/cta-section'
 import { HeroSection } from '@/components/landing/hero-section'
 import { IntroSection } from '@/components/landing/intro-section'
+import { ProblemsSection } from '@/components/landing/problems-section'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ProjectsSection } from '@/components/landing/projects-section'
 import { PrinciplesSection } from '@/components/landing/principles-section'
@@ -365,6 +366,9 @@ export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStu
         <ParticleField />
 
         <div className='relative z-10'>
+          {/* The reader's problem before Ramon's biography. About used to sit
+              here, which opened the page on a stranger's CV. */}
+          <ProblemsSection caseStudies={caseStudies} />
           <IntroSection />
           <ServicesSection />
           <PlatformsSection />

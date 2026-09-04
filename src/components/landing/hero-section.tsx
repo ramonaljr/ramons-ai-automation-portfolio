@@ -6,7 +6,17 @@ import { HERO_STATS } from '@/lib/portfolio'
 import { CountUp, Cta } from '@/components/landing/motion'
 import { PetalField } from '@/components/landing/petal-field'
 
-const words = ['automate', 'reconcile', 'integrate', 'scale']
+/**
+ * The rotating verb names the reader's manual work, not the service on offer.
+ *
+ * This was ['automate', 'reconcile', 'integrate', 'scale'] — the things Ramon
+ * does. Under a headline that now asks the reader a question, the word has to
+ * belong to their sentence instead: it is *their* team still doing these by
+ * hand. 'doing' leads because it matches the closing section verbatim, so the
+ * page's first and last words are the same question, and the specifics that
+ * follow read as that question narrowing.
+ */
+const words = ['doing', 'reconciling', 'approving', 'retyping']
 
 // Headline face — matches the IBM Plex Sans used by the sections below,
 // so the grafted hero and the page it sits on read as one design.
@@ -219,33 +229,38 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           >
             <span className='inline-flex items-center gap-3'>
               <span className='bg-ink/25 h-px w-8' />
-              <span className='eyebrow'>End-to-end AI automation for business operations</span>
+              <span className='eyebrow'>n8n · Zapier · Make</span>
             </span>
           </div>
 
-          {/* Main headline. The nowrap was forcing the clamp floor down to
-              1.75rem so the longest line could fit a phone — which made the
-              headline tiny on exactly the device where it needs the most
-              presence. Line one is allowed to wrap below `md`, which lets the
-              floor rise to 2.5rem. */}
+          {/* Main headline — the reader's question, not the service on offer.
+              This led with "n8n, Zapier and Make." above "Workflows that
+              automate", which only lands on someone already shopping for a
+              platform. The buyer here is an ops or finance lead who knows
+              their week is being eaten and has not yet decided the answer is a
+              workflow tool, so the platform names moved to the eyebrow and the
+              supporting line, where they still carry the search terms.
+
+              Three lines rather than two, because the rotating word has to be
+              the last thing on its line. `BlurWord` is inline-block, so any
+              text after it shifts horizontally every 2.5s as the word length
+              changes ("doing" against "reconciling" is six characters). No
+              nowrap anywhere: every line is short enough now to survive 375px
+              intact, and wrapping is the safety net if a longer word is added. */}
           <h1
             className={`display-xl text-ink text-left text-[clamp(2.5rem,5.4vw,6rem)] leading-[0.94] font-light transition-all duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
             style={{ fontFamily: DISPLAY_FONT }}
           >
-            <span className='block md:whitespace-nowrap'>n8n, Zapier and Make.</span>
-            {/* Line two also has to wrap on a phone. The rotating word changes
-                length every 2.5s ("scale" vs "reconcile"), so a hard nowrap
-                here clipped the longest ones off the right edge at 375px. The
-                word is `inline-block`, so it moves as a unit rather than
-                breaking mid-word when it does wrap. */}
-            <span className='block md:whitespace-nowrap'>
-              Workflows that{' '}
+            <span className='block'>What is your team</span>
+            <span className='block'>
+              still{' '}
               <span className='relative inline-block'>
                 <BlurWord word={words[wordIndex]} trigger={wordIndex} />
               </span>
             </span>
+            <span className='block'>by hand?</span>
           </h1>
 
           {/* Supporting line + actions. The hero previously ran headline →
@@ -256,8 +271,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            I design and ship the automations that take intake, approvals, reporting and reconciliation off your
-            team&rsquo;s desk — then hand over documentation they can run without me.
+            Intake, approvals, reporting, reconciliation — the work that quietly eats your team&rsquo;s week. I build it
+            into automation on n8n, Zapier or Make, then hand it over documented so your team runs it without me.
           </p>
 
           <div
