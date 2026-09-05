@@ -71,7 +71,7 @@ export function ProblemsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
         {/* One reading halo behind the whole list rather than one per row —
             four overlapping `READABLE` pseudo-elements would blur as a band. */}
-        <ol ref={ref} className={`border-rule border-t ${READABLE}`}>
+        <ol ref={ref} className={`border-rule max-w-[1000px] border-t ${READABLE}`}>
           {shown.map((cs, i) => (
             <li
               key={cs.slug}
@@ -86,7 +86,7 @@ export function ProblemsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
                 <span className='min-w-0'>
                   <span
-                    className='display-md text-ink block max-w-[34ch] text-[1.25rem] leading-snug font-light lg:text-[1.6rem]'
+                    className='display-md text-ink block max-w-[40ch] text-[1.25rem] leading-snug font-light lg:text-[1.6rem]'
                     style={{ fontFamily: DISPLAY_FONT }}
                   >
                     {cs.problemShort}

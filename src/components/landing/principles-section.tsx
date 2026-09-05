@@ -116,125 +116,130 @@ export function PrinciplesSection() {
 
   return (
     <section id='principles' className={SECTION}>
-      <div className={`${CONTAINER} grid gap-x-20 gap-y-14 lg:grid-cols-[minmax(0,22rem)_1fr] 2xl:gap-x-28`}>
-        {/* Sticky rail: the claim, and where you are inside it. */}
-        <div className='lg:sticky lg:top-32 lg:self-start'>
-          <SectionIntro
-            tag='HOW I BUILD'
-            margin='mb-10'
-            title={
-              <>
-                Reliability is
-                <br />
-                the feature.
-              </>
-            }
-            blurb='An automation that silently does the wrong thing is worse than no automation. Three rules I do not bend.'
-          />
+      <div className={CONTAINER}>
+        {/* Rail and rules share a grid; the strip below must not. The rail is
+            sticky, and its containing block is this grid — a col-span row
+            inside it scrolls underneath the pinned rail and collides. */}
+        <div className='grid gap-x-20 gap-y-14 lg:grid-cols-[minmax(0,22rem)_1fr] 2xl:gap-x-28'>
+          {/* Sticky rail: the claim, and where you are inside it. */}
+          <div className='lg:sticky lg:top-32 lg:self-start'>
+            <SectionIntro
+              tag='HOW I BUILD'
+              margin='mb-10'
+              title={
+                <>
+                  Reliability is
+                  <br />
+                  the feature.
+                </>
+              }
+              blurb='An automation that silently does the wrong thing is worse than no automation. Three rules I do not bend.'
+            />
 
-          {/* Counter and progress. The rail was a static block; this makes it
+            {/* Counter and progress. The rail was a static block; this makes it
               report the sequence the reader is moving through. */}
-          <div className='hidden lg:block' style={{ opacity: inView ? 1 : 0, transition: 'opacity .6s ease .5s' }}>
-            <div className='text-meta text-ink-3 flex items-baseline gap-2 font-mono'>
-              <span
-                className='text-accent text-[1.75rem] leading-none font-light tabular-nums transition-[color,opacity] duration-500'
-                style={{ fontFamily: DISPLAY_FONT }}
-              >
-                {PRINCIPLES[active]?.n}
-              </span>
-              <span aria-hidden='true'>/ {String(PRINCIPLES.length).padStart(2, '0')}</span>
-            </div>
+            <div className='hidden lg:block' style={{ opacity: inView ? 1 : 0, transition: 'opacity .6s ease .5s' }}>
+              <div className='text-meta text-ink-3 flex items-baseline gap-2 font-mono'>
+                <span
+                  className='text-accent text-[1.75rem] leading-none font-light tabular-nums transition-[color,opacity] duration-500'
+                  style={{ fontFamily: DISPLAY_FONT }}
+                >
+                  {PRINCIPLES[active]?.n}
+                </span>
+                <span aria-hidden='true'>/ {String(PRINCIPLES.length).padStart(2, '0')}</span>
+              </div>
 
-            <div className='bg-rule mt-4 h-px w-full overflow-hidden'>
-              <div
-                className='bg-accent h-full origin-left'
-                style={{
-                  transform: `scaleX(${(active + 1) / PRINCIPLES.length})`,
-                  transition: 'transform 0.7s cubic-bezier(0.16,1,0.3,1)'
-                }}
-              />
+              <div className='bg-rule mt-4 h-px w-full overflow-hidden'>
+                <div
+                  className='bg-accent h-full origin-left'
+                  style={{
+                    transform: `scaleX(${(active + 1) / PRINCIPLES.length})`,
+                    transition: 'transform 0.7s cubic-bezier(0.16,1,0.3,1)'
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div ref={ref} className='border-rule border-t'>
-          {PRINCIPLES.map((p, i) => {
-            const on = i === active
+          <div ref={ref} className='border-rule border-t'>
+            {PRINCIPLES.map((p, i) => {
+              const on = i === active
 
-            return (
-              <div
-                key={p.n}
-                ref={el => {
-                  rowsRef.current[i] = el
-                }}
-                data-active={on ? 'true' : 'false'}
-                aria-current={on ? 'true' : undefined}
-                className='border-rule grid gap-x-10 gap-y-4 border-b border-l-2 py-12 pl-6 transition-[border-color,background-color] duration-700 md:grid-cols-[3.5rem_minmax(0,17rem)_1fr] md:py-20 md:pl-8'
-                style={{
-                  ...enter(i),
-
-                  // The accent rail travels down the list as you read.
-                  borderLeftColor: on ? 'var(--accent)' : 'transparent',
-                  backgroundColor: on ? 'color-mix(in oklch, var(--ink) 1.5%, transparent)' : 'transparent'
-                }}
-              >
-                {/* The numeral is the focal object: it lifts and takes the
-                    accent as its rule becomes current, and settles back when
-                    the next one does. */}
-                <span
-                  className='text-[2.5rem] leading-none font-light tabular-nums md:text-[3rem]'
+              return (
+                <div
+                  key={p.n}
+                  ref={el => {
+                    rowsRef.current[i] = el
+                  }}
+                  data-active={on ? 'true' : 'false'}
+                  aria-current={on ? 'true' : undefined}
+                  className='border-rule grid gap-x-10 gap-y-4 border-b border-l-2 py-12 pl-6 transition-[border-color,background-color] duration-700 md:grid-cols-[3.5rem_minmax(0,17rem)_1fr] md:py-20 md:pl-8'
                   style={{
-                    fontFamily: DISPLAY_FONT,
-                    color: on ? 'var(--accent)' : 'var(--ink-4)',
-                    transform: reduced ? undefined : `translateY(${on ? '-2px' : '0'}) scale(${on ? 1.06 : 1})`,
-                    transformOrigin: 'left top',
-                    transition: 'color .55s cubic-bezier(0.4,0,0.2,1), transform .55s cubic-bezier(0.16,1,0.3,1)'
+                    ...enter(i),
+
+                    // The accent rail travels down the list as you read.
+                    borderLeftColor: on ? 'var(--accent)' : 'transparent',
+                    backgroundColor: on ? 'color-mix(in oklch, var(--ink) 1.5%, transparent)' : 'transparent'
                   }}
                 >
-                  {p.n}
-                </span>
-
-                <div>
-                  <h3
-                    className='display-md text-xl leading-snug font-light md:text-[1.55rem]'
+                  {/* The numeral is the focal object: it lifts and takes the
+                    accent as its rule becomes current, and settles back when
+                    the next one does. */}
+                  <span
+                    className='text-[2.5rem] leading-none font-light tabular-nums md:text-[3rem]'
                     style={{
                       fontFamily: DISPLAY_FONT,
-                      color: on ? 'var(--ink)' : 'var(--ink-3)',
+                      color: on ? 'var(--accent)' : 'var(--ink-4)',
+                      transform: reduced ? undefined : `translateY(${on ? '-2px' : '0'}) scale(${on ? 1.06 : 1})`,
+                      transformOrigin: 'left top',
+                      transition: 'color .55s cubic-bezier(0.4,0,0.2,1), transform .55s cubic-bezier(0.16,1,0.3,1)'
+                    }}
+                  >
+                    {p.n}
+                  </span>
+
+                  <div>
+                    <h3
+                      className='display-md text-xl leading-snug font-light md:text-[1.55rem]'
+                      style={{
+                        fontFamily: DISPLAY_FONT,
+                        color: on ? 'var(--ink)' : 'var(--ink-3)',
+                        transition: 'color .55s cubic-bezier(0.4,0,0.2,1)'
+                      }}
+                    >
+                      {p.title}
+                    </h3>
+                    <p
+                      className='text-meta mt-2.5 border-t pt-2.5 tracking-[0.02em]'
+                      style={{
+                        color: 'var(--ink-3)',
+                        borderColor: on ? 'color-mix(in oklch, var(--accent) 35%, transparent)' : 'var(--rule)',
+                        transition: 'border-color .55s cubic-bezier(0.4,0,0.2,1)'
+                      }}
+                    >
+                      {p.sub}
+                    </p>
+                  </div>
+
+                  <p
+                    className='text-body max-w-[60ch] md:pt-1'
+                    style={{
+                      color: on ? 'var(--ink-2)' : 'var(--ink-3)',
                       transition: 'color .55s cubic-bezier(0.4,0,0.2,1)'
                     }}
                   >
-                    {p.title}
-                  </h3>
-                  <p
-                    className='text-meta mt-2.5 border-t pt-2.5 tracking-[0.02em]'
-                    style={{
-                      color: 'var(--ink-3)',
-                      borderColor: on ? 'color-mix(in oklch, var(--accent) 35%, transparent)' : 'var(--rule)',
-                      transition: 'border-color .55s cubic-bezier(0.4,0,0.2,1)'
-                    }}
-                  >
-                    {p.sub}
+                    {p.body}
                   </p>
                 </div>
-
-                <p
-                  className='text-body max-w-[60ch] md:pt-1'
-                  style={{
-                    color: on ? 'var(--ink-2)' : 'var(--ink-3)',
-                    transition: 'color .55s cubic-bezier(0.4,0,0.2,1)'
-                  }}
-                >
-                  {p.body}
-                </p>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
 
-        {/* The sequence those rules run inside. Spans both columns so it reads
-            as the closing movement of the section rather than a fourth rule.
-            Keeps `id='process'` so any link that predates the merge resolves. */}
-        <div id='process' className='lg:col-span-2'>
+        {/* The sequence those rules run inside — full width, so it reads as the
+            closing movement of the section rather than a fourth rule. Keeps
+            `id='process'` so any link that predates the merge resolves. */}
+        <div id='process' className='mt-24 lg:mt-32'>
           <p className='eyebrow'>THE SEQUENCE</p>
 
           <ol className='mt-8 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4'>
