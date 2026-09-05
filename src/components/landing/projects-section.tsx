@@ -11,9 +11,6 @@ const FILTERS = ['ALL', 'AI AGENTS', 'N8N', 'ZAPIER', 'MAKE'] as const
 
 type Filter = (typeof FILTERS)[number]
 
-/** Where the aux links point until a project has its own recording or repo. */
-const PROFILE_REPO = 'https://github.com/ramonaljr'
-
 function Ico({ d, size = 13 }: { d: string; size?: number }) {
   return (
     <svg
@@ -83,12 +80,14 @@ function matches(cs: CaseStudyMetadata, f: Filter) {
 const has = (u?: string) => typeof u === 'string' && u.trim().length > 0
 
 /**
- * Walkthrough and source links.
+ * Walkthrough and source links — shown only where they exist.
  *
- * Per-project URLs are still being filled in, so these fall back to the profile
- * while the recordings and repos are in progress. What changed is where they
- * live: one set in the preview panel, rather than a pair repeated on all six
- * cards, which is what made the old grid more chrome than work.
+ * These used to fall back to the GitHub profile when a project had no
+ * recording or repo, so a reader clicking "Source" at the moment of peak
+ * interest landed on a profile page. A link that promises evidence and
+ * delivers a bio costs more trust than an absent link does. Nothing renders
+ * until `videoUrl` / `repoUrl` are filled in, the same way ArticlesSection
+ * renders nothing rather than an empty shelf.
  */
 function AuxLinks({ cs }: { cs: CaseStudyMetadata }) {
   const base =
@@ -96,19 +95,18 @@ function AuxLinks({ cs }: { cs: CaseStudyMetadata }) {
 
   return (
     <>
-      <a
-        href={has(cs.videoUrl) ? cs.videoUrl : PROFILE_REPO}
-        target='_blank'
-        rel='noopener noreferrer'
-        className={base}
-      >
-        <VideoIcon size={12} />
-        Walkthrough
-      </a>
-      <a href={has(cs.repoUrl) ? cs.repoUrl : PROFILE_REPO} target='_blank' rel='noopener noreferrer' className={base}>
-        <GitHubIcon size={12} />
-        Source
-      </a>
+      {has(cs.videoUrl) && (
+        <a href={cs.videoUrl} target='_blank' rel='noopener noreferrer' className={base}>
+          <VideoIcon size={12} />
+          Walkthrough
+        </a>
+      )}
+      {has(cs.repoUrl) && (
+        <a href={cs.repoUrl} target='_blank' rel='noopener noreferrer' className={base}>
+          <GitHubIcon size={12} />
+          Source
+        </a>
+      )}
     </>
   )
 }

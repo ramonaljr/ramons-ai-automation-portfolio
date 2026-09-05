@@ -158,7 +158,7 @@ export function ChatWidget() {
         aria-expanded={open}
         aria-controls='chat-panel'
         aria-label={open ? 'Close chat' : "Chat with Ramon's assistant"}
-        className='bg-ink text-ground fixed right-5 bottom-5 z-[110] flex h-14 w-14 items-center justify-center rounded-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:scale-105 active:scale-95'
+        className='bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 w-12 items-center justify-center rounded-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:scale-105 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:w-14'
       >
         <Ico d={open ? P.close : P.chat} size={22} />
       </button>

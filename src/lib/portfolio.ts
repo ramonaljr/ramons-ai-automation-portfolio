@@ -537,10 +537,20 @@ export const EXPERIENCE: Role[] = [
 
 // ─── Engagement models ───────────────────────────────────────────────────────
 
+/**
+ * Engagement tiers.
+ *
+ * `startingAt` is deliberately unset. The audit found that three tiers with no
+ * price anchor and (at the time) three identical CTAs give a reader no basis
+ * to self-select, which is what "Three ways to start" is for. Fill these in —
+ * "from $X" or "$X–$Y" — and the figure renders above each tier name. Left
+ * blank, the tiers read exactly as they do now.
+ */
 export const ENGAGEMENTS = [
   {
     name: 'Automation Audit',
     duration: '1 week',
+    startingAt: '',
     summary: 'Map what you do manually and what is worth automating.',
     includes: [
       'Process and SOP mapping',
