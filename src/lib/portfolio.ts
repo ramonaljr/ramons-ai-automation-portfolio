@@ -420,6 +420,63 @@ export const PRINCIPLES = [
   }
 ]
 
+// ─── Testimonials ────────────────────────────────────────────────────────────
+
+export type Testimonial = {
+  quote: string
+  name: string
+  role: string
+  company?: string
+
+  /** Matches public/images/testimonials/<file>. Optional. */
+  avatar?: string
+
+  /**
+   * Not a real quote yet. Draft entries are filtered out before render and the
+   * section disappears entirely when nothing survives, so the site never shows
+   * praise nobody gave. Same guarantee `sample` provides on a case study.
+   *
+   * To publish one: replace every bracketed field with the person's own words,
+   * confirm they are happy to be named, then delete this line.
+   */
+  draft?: boolean
+}
+
+/**
+ * Placeholders, deliberately unmistakable.
+ *
+ * They exist so the component, the data shape and the layout are all in place
+ * and can be reviewed at realistic copy lengths. The text is written so that
+ * flipping `draft` by accident produces something obviously unfinished rather
+ * than a plausible-looking fake endorsement.
+ */
+export const TESTIMONIALS: Testimonial[] = [
+  {
+    draft: true,
+    quote:
+      '[Placeholder] Replace with the client\u2019s own words. Two or three sentences reads best in this column \u2014 what the work looked like before, what changed, and what it freed the team up to do.',
+    name: '[Name]',
+    role: '[Role]',
+    company: '[Company]'
+  },
+  {
+    draft: true,
+    quote:
+      '[Placeholder] A shorter quote works here too. One sharp sentence about a specific outcome carries more than a paragraph of general praise.',
+    name: '[Name]',
+    role: '[Role]',
+    company: '[Company]'
+  },
+  {
+    draft: true,
+    quote:
+      '[Placeholder] If a colleague can speak to the handover \u2014 that they could run and extend the workflow without you \u2014 that is the one worth putting third.',
+    name: '[Name]',
+    role: '[Role]',
+    company: '[Company]'
+  }
+]
+
 // ─── Work history ────────────────────────────────────────────────────────────
 
 export type Role = {

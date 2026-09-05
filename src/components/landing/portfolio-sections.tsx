@@ -15,6 +15,7 @@ import { PixelIcon } from '@/components/landing/pixel-icon'
 import { ToolStackSection } from '@/components/landing/tool-stack-section'
 import { ExperienceSection } from '@/components/landing/experience-section'
 import { ContactSection } from '@/components/landing/contact-section'
+import { TestimonialsSection } from '@/components/landing/testimonials-section'
 import { ArticlesSection } from '@/components/landing/articles-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
@@ -300,14 +301,25 @@ export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStu
         <ParticleField />
 
         <div className='relative z-10'>
+          {/* Proof before biography. The hero makes a specific promise, and
+              this used to answer it with "Hola, I'm Ramon" and three capability
+              sections — the reader had to extend credit until beat 6. */}
+          <ProjectsSection caseStudies={caseStudies} />
           <IntroSection />
           <ServicesSection />
           <PlatformsSection />
-          <ToolStackSection />
-          <ProjectsSection caseStudies={caseStudies} />
           <PrinciplesSection />
           <ExperienceSection />
+
+          {/* Twenty-eight logos. Credibility by association, so it reads late
+              rather than standing between the promise and the evidence. */}
+          <ToolStackSection />
           <ArticlesSection posts={posts} />
+
+          {/* Corroboration immediately before the offer — the last thing read
+              before the ask should be somebody other than Ramon. Renders
+              nothing until a real quote replaces the drafts. */}
+          <TestimonialsSection />
           <EngagementSection />
           <ContactSection />
           <CtaSection contactHref='#contact' />
