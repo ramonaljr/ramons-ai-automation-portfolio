@@ -77,12 +77,12 @@ function ServicesSection() {
           tag='SERVICES'
           title={
             <>
-              What I automate
+              What comes off
               <br />
-              across your business.
+              your team&rsquo;s desk.
             </>
           }
-          blurb='Five ways I take manual work out of a business — from intake and onboarding through approvals, reporting and reconciliation. Every engagement ends with a documented workflow your team can run without me.'
+          blurb='Five kinds of work that stop being anyone&rsquo;s job — intake and onboarding, approvals, reporting, reconciliation. Every engagement ends with a documented workflow your team runs without me.'
         />
 
         <div ref={ref} className='grid gap-x-5 gap-y-5 pt-4 sm:grid-cols-2 lg:grid-cols-3'>
@@ -147,8 +147,8 @@ function ServicesSection() {
             <p className='text-fine text-ink-2 mt-3 max-w-[30ch]'>
               Describe the process that eats your week and I will tell you where it fits.
             </p>
-            <Cta href='/contact' className='mt-6 self-start'>
-              Ask me
+            <Cta href='#contact' className='mt-6 self-start'>
+              Book a workflow audit
             </Cta>
           </div>
         </div>
@@ -267,7 +267,7 @@ function ProcessSection() {
         >
           <p className='text-ink-2 font-mono text-[14px] tracking-[0.18em]'>HAVE A PROCESS THAT FEELS TOO MANUAL?</p>
           <a
-            href='/#contact'
+            href='#contact'
             className='bg-ink text-ground hover:bg-ink/90 mt-7 inline-flex items-center gap-2.5 rounded-full px-7 py-3.5 font-mono text-[13px] tracking-[0.14em] transition-colors'
           >
             Book a workflow audit
@@ -328,7 +328,7 @@ function EngagementSection() {
               </ul>
 
               <a
-                href='/contact'
+                href={e.href ?? '/contact'}
                 className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[13px] tracking-wide transition-colors ${
                   e.featured
                     ? 'bg-ink text-ground hover:bg-ink/90'
@@ -380,7 +380,7 @@ export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStu
           <ArticlesSection posts={posts} />
           <EngagementSection />
           <ContactSection />
-          <CtaSection />
+          <CtaSection contactHref='#contact' />
           <SiteFooter />
         </div>
       </div>

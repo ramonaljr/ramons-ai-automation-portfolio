@@ -160,7 +160,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
             margin=''
             titleClassName='display-xl mt-2 text-[clamp(2.5rem,6vw,5rem)]'
             title='WORK'
-            blurb='A selection of AI automation systems and production workflows built to eliminate repetitive tasks, connect business tools, and improve operational efficiency.'
+            blurb='Automation systems running in production. Each one replaced a job somebody was doing by hand — the workflow canvas shows exactly how.'
           />
 
           <div className='flex flex-col items-start gap-4 lg:items-end'>
@@ -219,15 +219,17 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
             {shown.map((cs, i) => {
               const isActive = cs.slug === active?.slug
 
+              // `onFocus` drives the preview as well as `onMouseEnter`, so a
+              // keyboard reader tabbing the index sees the same canvas change.
+              // Kept above the element rather than between the attributes:
+              // prettier strips the blank line that @stylistic/lines-around-
+              // comment then demands, and neither formatter can win in place.
               return (
                 <li key={cs.slug} className='border-rule border-b'>
                   <button
                     type='button'
                     onClick={() => setSelectedStudy(cs)}
                     onMouseEnter={() => setActiveSlug(cs.slug)}
-
-                    // Focus drives the preview as well as hover, so a keyboard
-                    // reader tabbing the index sees the same canvas change.
                     onFocus={() => setActiveSlug(cs.slug)}
                     aria-current={isActive ? 'true' : undefined}
                     className='group grid w-full grid-cols-[2.5rem_1fr_auto] items-baseline gap-x-4 py-6 text-left lg:py-7'

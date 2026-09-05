@@ -15,10 +15,14 @@ export function CtaSection({
       doing by hand?
     </>
   ),
-  blurb = 'Tell me the process that eats your week. I will tell you whether it is worth automating, and on which platform.'
+  blurb = 'Tell me the process that eats your week. I will tell you whether it is worth automating, and on which platform.',
+  contactHref = '/#contact'
 }: {
   title?: React.ReactNode
   blurb?: string
+
+  /** Landing passes the bare hash; article pages take the default. */
+  contactHref?: string
 }) {
   const { ref, inView } = useInView(0.15)
 
@@ -70,10 +74,10 @@ export function CtaSection({
 
         <div className='mt-10 flex flex-wrap items-center justify-center gap-3'>
           <a
-            href='/contact'
+            href={contactHref}
             className='group bg-ink text-ground hover:bg-ink/90 inline-flex items-center gap-3 rounded-full py-2 pr-2 pl-6 text-[14px] tracking-wide transition-colors'
           >
-            Start a conversation
+            Book a workflow audit
             <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
               <ArrowIcon />
             </span>

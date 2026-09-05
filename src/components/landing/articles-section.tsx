@@ -80,7 +80,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
             variant='mono'
             margin=''
             titleClassName='mt-4 text-[clamp(2rem,4vw,3.25rem)]'
-            title='Check out my articles'
+            title={'Notes on building automation that doesn\u2019t break'}
           />
 
           <a

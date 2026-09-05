@@ -288,10 +288,10 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
             </a>
 
             <a
-              href='/contact'
+              href='/#contact'
               className='bg-ink text-meta text-ground hover:bg-ink/90 inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono tracking-wide transition-colors'
             >
-              Start a project
+              Book a workflow audit
               <Ico d={P.arrow} size={12} />
             </a>
           </div>

@@ -280,7 +280,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            <Cta href='/contact'>Book a workflow audit</Cta>
+            <Cta href='#contact'>Book a workflow audit</Cta>
             <Cta href='#portfolio' tone='secondary'>
               See the work
             </Cta>
