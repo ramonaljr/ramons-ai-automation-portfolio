@@ -135,6 +135,11 @@ function BlurWord({ word, trigger }: { word: string; trigger: number }) {
             key={i}
             style={{
               display: 'inline-block',
+
+              // Each letter is its own inline-block, and an inline-block whose
+              // only content is whitespace collapses to zero width — which
+              // rendered "on a retry" as "onaretry". `pre` holds the space.
+              whiteSpace: 'pre',
               opacity: letterStates[i]?.opacity ?? 0,
               filter: `blur(${letterStates[i]?.blur ?? 20}px)`,
               color: showGradient ? `rgb(${r},${g},${b})` : INK,
