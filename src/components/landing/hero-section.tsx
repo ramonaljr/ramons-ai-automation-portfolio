@@ -7,21 +7,23 @@ import { CountUp, Cta, ParallaxLayer } from '@/components/landing/motion'
 import { PetalField } from '@/components/landing/petal-field'
 
 /**
- * The rotating word is the failure mode, not the capability.
+ * The rotating word names something the reader recognises.
  *
- * This was ['automate', 'reconcile', 'integrate', 'scale'] — four words any
- * automation freelancer could claim, which made the headline generic at the
- * exact moment it needed to differentiate. Each of these instead states
- * something the rest of the site actually argues: 'quietly' is the thesis of
- * the principles section ("an automation that silently does the wrong thing is
- * worse than no automation"), 'at month-end' is the ten years in finance ops,
- * 'under load' and 'on a retry' are the idempotency and rate-limit guarantees
- * in the integrations service.
+ * This has been through three sets. It started as ['automate', 'reconcile',
+ * 'integrate', 'scale'] — the services on offer, which any automation
+ * freelancer could claim. It became the failure modes prevented ('quietly',
+ * 'under load', 'on a retry'), which differentiated but put the two most
+ * technical words on the page in its largest type: a buyer who is not an
+ * engineer does not know what failing "on a retry" means.
  *
- * Still terminal on its line: BlurWord is inline-block, so anything after it —
- * a full stop included — shifts every 2.5s as the word length changes.
+ * These are the jobs themselves, in the words the person paying for the work
+ * already uses. The headline reads "Save hours every week by automating
+ * invoicing" and stays true for every option.
+ *
+ * Terminal on its line, as always: BlurWord is inline-block, so anything after
+ * it shifts every 2.5s as the word length changes.
  */
-const words = ['quietly', 'at month-end', 'under load', 'on a retry']
+const words = ['invoicing', 'approvals', 'reporting', 'data entry']
 
 // Headline face — matches the IBM Plex Sans used by the sections below,
 // so the grafted hero and the page it sits on read as one design.
@@ -244,7 +246,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           >
             <span className='inline-flex items-center gap-3'>
               <span className='bg-ink/25 h-px w-8' />
-              <span className='eyebrow'>AI automation for business operations</span>
+              <span className='eyebrow'>n8n · Zapier · Make</span>
             </span>
           </div>
 
@@ -268,10 +270,9 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             }`}
             style={{ fontFamily: DISPLAY_FONT }}
           >
-            <span className='block'>n8n, Zapier and Make.</span>
-            <span className='block'>Workflows that don&rsquo;t</span>
+            <span className='block'>Save hours every week</span>
+            <span className='block'>by automating</span>
             <span className='block'>
-              fail{' '}
               <span className='relative inline-block'>
                 <BlurWord word={words[wordIndex]} trigger={wordIndex} />
               </span>
@@ -286,8 +287,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            Intake, approvals, reporting and reconciliation come off your team&rsquo;s desk — with error branches,
-            failure alerting and documentation, so it keeps running when nobody is watching it.
+            Forms, approvals, reports, invoices, and copying data between apps &mdash; handled automatically, with
+            alerts if anything breaks, and written down so your team can run it without me.
           </p>
 
           <div
