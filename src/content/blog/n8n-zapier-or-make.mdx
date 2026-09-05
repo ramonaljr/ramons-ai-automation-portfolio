@@ -1,44 +1,110 @@
 ---
 slug: 'n8n-zapier-or-make'
 title: 'n8n, Zapier or Make: how I actually choose'
-description: 'There is no best platform, only a best fit for your data, your volume, and whoever has to maintain the thing after I leave. A practical decision guide.'
+description: 'There is no best automation platform, only a best fit for your data, your volume, and whoever maintains the thing after I leave. Four criteria in the order they actually decide it, and the one that overrides all the others.'
 publishedAt: '2026-08-05'
+updatedAt: '2026-09-05'
 category: 'Platforms'
-tags: ['n8n', 'Zapier', 'Make']
+tags: ['n8n', 'Zapier', 'Make', 'Platform Selection']
 coverImage: '/images/blog/n8n-zapier-or-make.svg'
-# DRAFT SEED — written to fill the section while the blog is new.
-# Review, edit in your own voice, or replace before promoting the site.
+# DRAFT — expanded 2026-09-05. Structure and technical claims are accurate;
+# the voice is not yet yours. Read it through and make it sound like you
+# before dropping this flag. No prices are quoted on purpose — see the
+# billing section.
 needsReview: true
 ---
 
 ## The question behind the question
 
-Clients ask "which is best". The useful question is "which is right for this, given who maintains it".
+Clients ask "which is best". It is the wrong question, and answering it honestly produces a useless answer: it depends.
 
-Three things decide it: where the data can live, how many operations a month, and who edits it after handover.
+The useful question is narrower. **Which is right for this workflow, given who has to maintain it after I hand it over?**
 
-## Where the data can live
+That reframe matters because the platform decision is not really a technology decision. All three will move data between two systems. What separates them is where your data is allowed to live, how the bill scales, what the logic looks like, and who touches it in six months. Those four, roughly in that order of how hard they bind.
 
-If the data cannot leave your infrastructure — patient records, financial ledgers, anything with a compliance officer attached — the conversation ends at self-hosted n8n. Zapier and Make are both cloud-only.
+## Criterion 1: where the data is allowed to live
 
-This is the one criterion that overrides everything else.
+This one is different from the others because it is a hard constraint rather than a trade-off. If it applies, it decides, and you can stop reading the rest.
 
-## Volume and billing shape
+If the data cannot leave your infrastructure — patient records, financial ledgers, anything with a compliance officer attached to it — then the conversation ends at **self-hosted n8n**. Zapier and Make are both cloud-only. There is no configuration that changes this. Your records transit and are processed on their infrastructure, under their terms.
 
-Zapier bills per task. Make bills per operation. n8n self-hosted bills you for a server.
+Self-hosting n8n means the workflow runs on a server you control, the credentials sit in a database you control, and the data never leaves your boundary. That is not a marginal advantage in a regulated environment; it is often the entire reason the project is possible.
 
-At low volume Zapier is cheapest in total cost, because your time configuring it is the dominant cost and Zapier takes the least of it. Somewhere in the low thousands of runs a month, that flips hard. A workflow that explodes one order into twenty line items burns twenty tasks in Zapier and twenty operations in Make — but Make's operations are an order of magnitude cheaper.
+The cost is real and worth naming: you now own a server. Updates, backups, uptime and TLS become yours. If nobody on the team wants that, be honest about it early rather than discovering it during handover.
 
-## Who maintains it
+## Criterion 2: the shape of the bill, not the price
 
-This is the criterion people skip and then regret.
+I am not going to quote prices here, because they change and a stale number in a blog post is worse than no number. What does not change is the *shape*:
 
-If your ops team wants to change the routing rules themselves without calling me, Zapier is the right answer even when n8n is technically superior. A worse tool that your team will actually maintain beats a better tool that calcifies the moment I hand it over.
+- **Zapier bills per task** — roughly, per action step that runs.
+- **Make bills per operation** — a similar unit, but historically priced far lower per unit.
+- **Self-hosted n8n bills you for a server** — flat, regardless of how many steps run.
+
+That difference in shape, not price, is what produces the surprise.
+
+At low volume, Zapier is usually cheapest in *total* cost, because at low volume the dominant cost is your time configuring the thing, and Zapier takes the least of it. Total cost of ownership is not the invoice.
+
+Somewhere in the low thousands of runs a month, that flips, and it flips harder than people expect — because of fan-out.
+
+### The fan-out problem
+
+Here is the case that catches everyone. An order comes in with twenty line items, and each line item needs a stock check and a write.
+
+- On **Zapier**, that is roughly twenty tasks. One order.
+- On **Make**, an Iterator explodes the order into twenty bundles, and you pay twenty operations — but operations are cheap enough that this is usually fine.
+- On **self-hosted n8n**, an item list of twenty flows through the same nodes and costs nothing extra. The server does not care.
+
+Now multiply by four thousand orders a week. This is why "how many runs a month" is the wrong metric and "how many *steps* a month, after fan-out" is the right one. A workflow that looks small at the trigger can be enormous three nodes later.
+
+If your workflow only ever handles one record at a time — a form submission creating one CRM contact — none of this applies and the cheapest thing is whatever you configure fastest.
+
+## Criterion 3: who maintains it after handover
+
+This is the criterion people skip, and then regret.
+
+If your operations team wants to change the routing rules themselves, next quarter, without calling me — **Zapier is the right answer even when n8n is technically superior.**
+
+I mean that. A worse tool your team will actually maintain beats a better tool that calcifies the moment I hand it over. An n8n instance nobody on staff can edit is not an asset, it is a dependency with my phone number attached, and I do not want to build those.
+
+The honest test is to ask who is going to open this thing in three months, and what they are comfortable with. If the answer is "a marketing ops person who is very good at Zapier", build it in Zapier. If it is "our backend developer", n8n is not intimidating and the ceiling is much higher.
+
+Whatever the platform, the handover matters more than the choice. Every build I ship comes with the exported workflow file, written instructions covering each branch and its failure modes, and a recorded walkthrough — so the team can change it later without me. On n8n that export is a JSON file that imports into any other instance, which is a meaningful property: it means the work is portable even if I am not.
+
+## Criterion 4: what the logic actually looks like
+
+Only once the first three are settled does the shape of the workflow itself matter.
+
+**Zapier** is a linear pipeline. Trigger, then steps, with Paths for branching. It has by far the largest connector library — if you need to talk to some niche SaaS product, Zapier probably already has it and the others probably do not. That connector coverage is a genuine, underrated advantage. When the requirement is "when a form is submitted, create a record and notify a channel", Zapier is done in an afternoon and anything else is overengineering.
+
+**Make** is a visual graph, and its strength is data manipulation. Routers, Iterators and Aggregators make explode-and-recombine patterns natural: split an order into line items, process each, aggregate the results back into one payload for a single write. It also shows you each bundle as it moves, which makes debugging a transformation genuinely pleasant. If the job is heavy data reshaping at volume, Make is the specialist.
+
+**n8n** is the one that stops being a no-code tool when you need it to. You can drop a Code node into the middle of a workflow and write actual JavaScript against the items. That matters more than it sounds, because real business rules are full of conditions that no visual builder expresses cleanly, and the alternative is a chain of nine IF nodes nobody can read.
+
+It is also where I build anything involving an LLM. AI agent steps with tool calling, RAG pipelines, retries around model calls — this is the area where n8n is not just an option but the default.
+
+## What I actually run
+
+This site's own booking, contact and chat run on self-hosted n8n. Four webhooks behind header auth, called server-side by the site's own route handlers so the instance URL never reaches the browser and the webhooks need no CORS configuration at all.
+
+I mention it because it is the smallest possible version of criterion one: even here, where the data is just enquiries and calendar slots, self-hosting meant I could put the whole thing behind a shared secret and keep the surface area to nothing. That is the kind of control you are buying.
 
 ## Where I land, most of the time
 
-- **Complex logic, AI agents, sensitive data, high volume** — n8n
-- **Mainstream SaaS apps, linear logic, team already on it** — Zapier
+- **Sensitive data, complex logic, AI agents, high volume** — n8n, usually self-hosted
+- **Mainstream SaaS, linear logic, a team already fluent in it, shipping this week** — Zapier
 - **Heavy iteration and data transformation at volume** — Make
 
-And often the answer is more than one. There is no rule saying a business runs on a single platform.
+And often the answer is more than one. There is no rule that a business runs on a single platform, and pretending otherwise usually means forcing one tool into a job it is bad at. A marketing team can stay on Zapier for their form-to-CRM flows while the finance pipeline runs on self-hosted n8n because the ledger cannot go to the cloud. Those two facts do not conflict.
+
+The failure mode to avoid is not picking the wrong platform. It is picking one for a reason that will not survive contact with the person who inherits it.
+
+## The short version
+
+Ask, in this order:
+
+1. **Can the data leave your building?** If no, self-hosted n8n. Stop here.
+2. **How many steps a month, after fan-out?** Low, Zapier. High, n8n or Make.
+3. **Who edits this in six months?** Build for that person, not for me.
+4. **What does the logic look like?** Linear, Zapier. Reshaping, Make. Branching, code or AI, n8n.
+
+Most arguments about automation platforms are really arguments about one of those four, conducted without naming which.
