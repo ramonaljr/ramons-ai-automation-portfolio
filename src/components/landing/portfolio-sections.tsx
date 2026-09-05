@@ -8,7 +8,6 @@ import { SiteFooter } from '@/components/landing/site-footer'
 import { CtaSection } from '@/components/landing/cta-section'
 import { HeroSection } from '@/components/landing/hero-section'
 import { IntroSection } from '@/components/landing/intro-section'
-import { ProblemsSection } from '@/components/landing/problems-section'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ProjectsSection } from '@/components/landing/projects-section'
 import { PrinciplesSection } from '@/components/landing/principles-section'
@@ -122,7 +121,7 @@ function ServicesSection() {
                 href={`/services/${s.slug}`}
                 className='text-fine text-ink mt-6 inline-flex items-center gap-2 self-start border-t border-transparent pt-1 transition-colors'
               >
-                <span className='bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-[position:0_100%] bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:bg-[length:100%_1px]'>
+                <span className='bg-[linear-gradient(currentColor,currentColor)] bg-size-[0%_1px] bg-position-[0_100%] bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:bg-size-[100%_1px]'>
                   View service
                 </span>
                 <span className='transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1'>
@@ -199,7 +198,7 @@ function PlatformsSection() {
               <ul className='mt-6 space-y-2.5'>
                 {p.bestFor.map(b => (
                   <li key={b} className='text-ink-2 flex items-start gap-2.5 text-[14px] leading-snug'>
-                    <span className='bg-ink/30 mt-[7px] h-1 w-1 shrink-0 rounded-full' />
+                    <span className='bg-ink/30 mt-1.75 h-1 w-1 shrink-0 rounded-full' />
                     {b}
                   </li>
                 ))}
@@ -256,7 +255,7 @@ function EngagementSection() {
               <ul className='mt-6 flex-1 space-y-2.5'>
                 {e.includes.map(it => (
                   <li key={it} className='text-ink-2 flex items-start gap-2.5 text-[14px] leading-snug'>
-                    <span className='bg-ink/30 mt-[7px] h-1 w-1 shrink-0 rounded-full' />
+                    <span className='bg-ink/30 mt-1.75 h-1 w-1 shrink-0 rounded-full' />
                     {it}
                   </li>
                 ))}
@@ -301,9 +300,6 @@ export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStu
         <ParticleField />
 
         <div className='relative z-10'>
-          {/* The reader's problem before Ramon's biography. About used to sit
-              here, which opened the page on a stranger's CV. */}
-          <ProblemsSection caseStudies={caseStudies} />
           <IntroSection />
           <ServicesSection />
           <PlatformsSection />

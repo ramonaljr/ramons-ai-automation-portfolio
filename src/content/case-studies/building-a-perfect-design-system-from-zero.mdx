@@ -25,7 +25,6 @@ keyOutcome:
   value: '92%'
   label: 'Less Processing Time'
 integrations: ['n8n', 'Claude 3.5 Sonnet', 'QuickBooks', 'Google Drive']
-problemShort: 'Twenty-five hours a week cross-referencing vendor invoices against purchase orders, then typing the GL entries by hand.'
 problem: 'AP staff spent over 25 hours a week cross-referencing 200+ vendor invoices per week against purchase orders, calculating withholding tax, and typing GL entries by hand — causing errors and delayed month-end closes.'
 solution: 'Built a self-hosted n8n pipeline that ingests invoices from Gmail and Drive, extracts line items with Claude vision under an enforced JSON schema, validates against active POs, and pushes draft GL entries to QuickBooks with human review on variances.'
 stepCount: 4
