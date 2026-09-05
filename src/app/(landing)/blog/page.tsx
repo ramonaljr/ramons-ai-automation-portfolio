@@ -8,13 +8,40 @@ import { ParticleField } from '@/components/landing/particle-field'
 import { ArrowRight, CONTAINER, DISPLAY_FONT, PAGE, Reveal } from '@/components/landing/motion'
 
 import { getPosts } from '@/lib/posts'
-import { abs } from '@/lib/site'
+import { abs, SITE_URL } from '@/lib/site'
+import { blogIndexLd, breadcrumbLd, graph, socialImage } from '@/lib/seo'
+
+const INDEX_TITLE = 'Notes on automation'
+
+const INDEX_DESCRIPTION =
+  'Working notes on AI automation — n8n, Zapier and Make, LLM and RAG integrations, error handling, and what actually holds up in production.'
 
 export const metadata: Metadata = {
-  title: 'Blog',
-  description:
-    'Notes on AI automation — n8n, Zapier and Make, LLM integrations, and lessons from building workflows that run in production.',
-  alternates: { canonical: abs('/blog') }
+  // "Blog" told a search result nothing. The title template appends the name,
+  // so this reads as "Notes on automation - Ramon Vallejera Jr." in a SERP.
+  title: INDEX_TITLE,
+  description: INDEX_DESCRIPTION,
+  keywords: ['n8n', 'Zapier', 'Make.com', 'workflow automation', 'RAG', 'AI agents', 'error handling'],
+  alternates: {
+    canonical: abs('/blog'),
+
+    // Advertises the feed, so readers and aggregators find it without being
+    // pointed at the URL.
+    types: { 'application/rss+xml': abs('/blog/rss.xml') }
+  },
+  openGraph: {
+    type: 'website',
+    title: INDEX_TITLE,
+    description: INDEX_DESCRIPTION,
+    url: abs('/blog'),
+    images: [{ url: socialImage(), width: 1200, height: 630, alt: INDEX_TITLE }]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: INDEX_TITLE,
+    description: INDEX_DESCRIPTION,
+    images: [socialImage()]
+  }
 }
 
 const formatDate = (value?: string) => {
@@ -29,6 +56,14 @@ const formatDate = (value?: string) => {
 
 const BlogPage = async () => {
   const posts = await getPosts()
+
+  const jsonLd = graph(
+    blogIndexLd(posts),
+    breadcrumbLd([
+      { name: 'Home', url: SITE_URL },
+      { name: 'Writing', url: abs('/blog') }
+    ])
+  )
 
   return (
     <div className={PAGE}>
@@ -111,7 +146,9 @@ const BlogPage = async () => {
                               </span>
                             )}
                             {formatDate(post.publishedAt) && (
-                              <span className='text-ink-3 font-mono text-[11px]'>{formatDate(post.publishedAt)}</span>
+                              <time dateTime={post.publishedAt} className='text-ink-3 font-mono text-[11px]'>
+                                {formatDate(post.publishedAt)}
+                              </time>
                             )}
                           </div>
 
@@ -157,6 +194,11 @@ const BlogPage = async () => {
       </div>
 
       <ChatWidget />
+
+      <script
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
     </div>
   )
 }

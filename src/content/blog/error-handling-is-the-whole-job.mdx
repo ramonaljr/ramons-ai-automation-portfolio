@@ -1,45 +1,145 @@
 ---
 slug: 'error-handling-is-the-whole-job'
 title: 'Error handling is the whole job'
-description: 'Most automations do not fail loudly. They fail quietly, for weeks, and someone finds out at month-end. Here is the error architecture I put on every workflow before I call it done.'
+description: 'Most automations do not fail loudly. They fail quietly, for weeks, and someone finds out at month-end. Here is the five-layer error architecture I put on every n8n workflow before I call it done — with the real bugs that taught me each layer.'
 publishedAt: '2026-08-12'
-readingTime: '6 min read'
+updatedAt: '2026-09-05'
 category: 'n8n'
-tags: ['n8n', 'Reliability']
+tags: ['n8n', 'Reliability', 'Error Handling', 'Workflow Design']
 coverImage: '/images/blog/error-handling-is-the-whole-job.svg'
-# DRAFT SEED — written to fill the section while the blog is new.
-# Review, edit in your own voice, or replace before promoting the site.
+# DRAFT — expanded 2026-09-05 from real failure modes in the booking workflow
+# behind this site. Facts and code are accurate; the voice is not yet yours.
+# Read it through and make it sound like you before dropping this flag.
 needsReview: true
 ---
 
 ## The failure mode nobody plans for
 
-An automation that crashes is easy. You get an alert, you fix it, everyone moves on.
+An automation that crashes is easy. You get an alert, you open the execution, you fix the node, everyone moves on. A crash is a gift — it is the system telling you precisely where it stopped.
 
-The dangerous one is the automation that keeps running while doing the wrong thing. A field goes missing upstream, your workflow writes `undefined` into a ledger for three weeks, and nobody notices until reconciliation.
+The dangerous one is the automation that keeps running while doing the wrong thing.
 
-Every production workflow I build assumes this will happen.
+A field goes missing upstream. Your workflow writes `undefined` into a ledger for three weeks. The runs are all green. The dashboard says 100% success. Nobody notices until reconciliation, and by then you are not fixing a bug, you are unpicking a month of bad data across three systems.
 
-## Three layers, in this order
+Every production workflow I build starts from the assumption that this will happen. Not that it might — that it will, and the only question is whether the system notices before a human does.
 
-### 1. Validate before you write
+## "It errored" is the good outcome
 
-The cheapest place to catch a bad record is before it reaches a system of record. Every write step is preceded by a check that the fields it depends on actually exist and are the right shape.
+This is the reframe that changes how you build.
 
-In n8n this is usually an IF node with an explicit condition per required field. It is boring. It is also the difference between a bad afternoon and a bad quarter.
+A workflow has three possible endings: it succeeds correctly, it fails loudly, or it succeeds incorrectly. Most people design for the first and treat the second as the thing to prevent. That is backwards. Loud failure is not the problem — it is the safety mechanism. The thing to prevent is the third ending.
 
-### 2. Route failures somewhere a human looks
+So the design question is never "how do I stop this from erroring". It is: **when this goes wrong, does it stop, or does it keep going?**
 
-A try/catch branch that logs to the execution history is not error handling. Nobody reads execution history.
+Everything below is five ways of forcing the answer to be "it stops".
 
-Failures need to land somewhere with a person attached to it: a Slack channel, a Telegram message, an Airtable view someone opens each morning. The alert should carry enough context to act on — which record, which step, what the payload looked like.
+## Layer 1: validate shape and rules separately
 
-### 3. Make the whole run replayable
+The cheapest place to catch a bad record is before it reaches a system of record. But "validate the input" is two different jobs, and conflating them is where most workflows leak.
 
-When something does go wrong, you want to re-run a window rather than reconstruct state by hand. That means writing incoming data to a staging table before you transform it, and keying your writes so a replay updates rather than duplicates.
+**Shape validation** asks whether the payload is the right form: are the required fields present, is the date a date, is the email an email. This is boring and mechanical, and an IF node with an explicit condition per required field handles it.
 
-## The test I actually run
+**Rule validation** asks whether the request is *allowed*. Not "is this a valid date" but "is this date a Tuesday inside working hours, and is that slot actually free".
 
-Before handover I break the workflow on purpose. Malformed PDF. Missing email field. Duplicate submission. API returning a 429.
+The booking workflow behind this site keeps these in two separate nodes on purpose. `Validate Booking` checks only shape. `Judge Slot` checks the rules — and it is the second one that stops somebody POSTing a booking for 03:00 on a Sunday straight to the webhook, bypassing the calendar UI entirely.
 
-If any of those produce a silent success, it is not finished.
+If you only write shape validation, your workflow is protected against typos and completely open to anyone who reads your network tab.
+
+## Layer 2: fail closed, not open
+
+Here is a bug that cost me a day, and it is the best argument for this layer I have.
+
+The site's availability endpoint needs to know which slots are free. The obvious tool is Google Calendar's `freeBusy` query — that is literally what it is for. So the first version used it.
+
+It silently marked every working slot as unavailable, on and off, for reasons that made no sense.
+
+The cause: `freeBusy` cannot distinguish a meeting from an all-day entry. A birthday, a public holiday, an out-of-office marker — each came back as a busy block spanning the entire day. The tell was subtle: the returned `end` was exactly equal to the `timeMax` I had sent, because the all-day block had been clipped to my query window.
+
+Nothing errored. The API returned 200. The workflow ran green. It just quietly told every visitor there was no time available.
+
+The fix was to stop asking a question whose answer I could not inspect, and instead pull the actual events with `event: getAll` and filter them in code:
+
+```js
+// Every one of these is a real event that must NOT block a slot.
+if (event.status === 'cancelled') continue          // deleted, still returned
+if (event.transparency === 'transparent') continue  // marked "Free"
+if (event.start.date && !event.start.dateTime) continue  // all-day entry
+if (selfAttendee?.responseStatus === 'declined') continue // I said no
+```
+
+More code, and the right trade: when a new kind of calendar entry appears, I get a visible wrong result I can debug, not an opaque busy block I have to reverse-engineer.
+
+The general rule: **prefer the API that returns data you can inspect over the one that returns a verdict you have to trust.** A convenience endpoint that collapses many cases into one boolean is exactly where silent failure hides.
+
+## Layer 3: route failures where a person actually looks
+
+A try/catch branch that logs to the execution history is not error handling. Nobody reads execution history. Execution history is where you look *after* somebody tells you there is a problem.
+
+Failures need to land somewhere with a person attached: a Slack channel, a Telegram message, an email that is not from a no-reply address. And the alert has to carry enough to act on without opening n8n — which record, which step, what the payload looked like, and what the workflow did instead.
+
+Two details that make the difference between an alert channel people watch and one they mute:
+
+**Alert on the exception, not the run.** If your workflow processes 200 invoices and three fail, send one message listing three failures. Sending 200 messages, 197 of which say "fine", trains everybody to ignore the channel.
+
+**Every path ends in a logged outcome — including the rejections.** This is the one people skip. It is easy to log successes and errors and forget the middle case: the record the workflow deliberately declined to act on. A lead that failed enrichment, an invoice below threshold, a booking outside hours. If a rejection is not written down, it is indistinguishable from a record that never arrived, and "did we get their form?" becomes unanswerable.
+
+## Layer 4: make the run replayable
+
+When something does go wrong, you want to re-run a window, not reconstruct state by hand from a Slack thread.
+
+Two properties make that possible:
+
+**Stage before you transform.** Write incoming data somewhere durable in its original shape before you touch it. If a transform turns out to be wrong, you re-run it against the staging table instead of asking the upstream system to resend three weeks of webhooks it no longer has.
+
+**Key your writes so a replay updates instead of duplicating.** This is idempotency, and the practical form is: pick a stable identifier from the source system and upsert on it, rather than inserting and hoping.
+
+Choosing that key matters more than it looks. In the booking workflow, Calendly bookings are recorded against the Google Calendar event id, not the Calendly invitee id — because the calendar id is stable across creation *and* cancellation. That means a cancellation updates the row its booking created, rather than adding a second, contradictory row that says the same meeting is both confirmed and cancelled.
+
+Get the key wrong and every retry doubles your data. Get it right and a replay is free.
+
+## Layer 5: put a human in front of the expensive decisions
+
+Not every decision should be automated, and knowing which ones is judgement rather than engineering.
+
+The line I use: **automate the decision, gate the consequence.** The workflow can decide; whether that decision writes to a ledger or sends a contract is a separate question.
+
+In practice that means thresholds:
+
+- On an AP pipeline, anything over 2% variance or a thousand dollars stops for approval before it reaches the ledger. Under that, it posts.
+- On document extraction, every field carries a confidence score. Low-resolution scans and handwritten vouchers divert to a manual queue instead of the model guessing.
+- On a voice agent, the moment a caller goes outside the script it hands to a person rather than improvising.
+
+That last one is worth stating plainly, because it is the AI-specific version of this whole article: **an LLM does not have a failure mode where it stops.** It always produces something. Left ungated, "I do not know" comes out as a confident, plausible, wrong answer — which is precisely the silent-success ending you have spent four layers preventing.
+
+So keep deterministic work in deterministic code. Arithmetic, balances, routing rules and thresholds do not go through a model. The model reads messy input and proposes structure; code decides what happens next.
+
+## Three silent failures worth looking for specifically
+
+These are the ones that survive all the obvious testing.
+
+**Fields that disagree with each other.** I found one in my own booking recorder while writing this. It computed `date` and `time` correctly in Manila time, then recorded a `timezone` field copied straight from the calendar event — which Google had stamped as `America/New_York`. Every value was individually defensible. Read together, the row was twelve hours wrong. Consistency between fields is not something a schema check catches.
+
+**Filters that stop matching.** If you match on a provider's email footer or subject format, that filter will one day silently match nothing when they change their template. Match in code and log the skips, so a format change shows up as "47 events skipped" rather than as a trigger that appears to be working and is doing nothing.
+
+**Empty results that look like success.** A branch returning zero items is not an error, so a workflow can complete green having done nothing. Decide deliberately which nodes are allowed to return empty and which should alert when they do.
+
+## The test I run before handover
+
+I break the workflow on purpose, and I do it in front of the client.
+
+- A malformed PDF, and a PDF that is a photo of a screen
+- A record with the key field missing entirely, and one where it is an empty string
+- The same submission sent twice, three seconds apart
+- The upstream API returning 429, then 500, then a timeout
+- A payload with the right shape and nonsense values — a date in 1970, a negative quantity
+- Someone POSTing straight to the webhook, skipping the form
+
+For each one, the question is not "did it error". It is: **did it stop, did it say something, and can I tell tomorrow that it happened?**
+
+If any of them produce a silent success, the workflow is not finished. It does not matter how well the happy path runs — the happy path is the part that was never going to be the problem.
+
+## The short version
+
+Error handling is not a step you add at the end. It is most of the design, and it is the entire difference between an automation that saves a team time and one that quietly generates a month of work for whoever finds it.
+
+Build the failure path before the happy path. The happy path is the easy half.
