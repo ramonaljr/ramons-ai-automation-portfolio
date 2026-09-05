@@ -25,19 +25,16 @@ import {
   Cta,
   DISPLAY_FONT,
   PAGE,
-  READABLE,
   SECTION,
   SECTION_ANCHOR,
   SECTION_CONT,
-  rise,
   sweep,
-  SWEEP_STEP,
   useInView
 } from '@/components/landing/motion'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import type { PostMetadata } from '@/lib/posts'
-import { ENGAGEMENTS, PLATFORMS, PROCESS, SERVICES } from '@/lib/portfolio'
+import { ENGAGEMENTS, PLATFORMS, SERVICES } from '@/lib/portfolio'
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 
@@ -217,68 +214,6 @@ function PlatformsSection() {
   )
 }
 
-// ── Process ──────────────────────────────────────────────────────────────────
-
-function ProcessSection() {
-  const { ref, inView } = useInView(0.08)
-
-  return (
-    <section id='process' className={SECTION}>
-      <div className={CONTAINER}>
-        <SectionIntro
-          tag='PROCESS'
-          variant='mono'
-          margin='mb-20'
-          titleClassName='mt-4 text-[clamp(2.25rem,5vw,4rem)]'
-          title='How I build automation'
-          blurb={<span className='font-mono'>From business problem to a working automation system.</span>}
-        />
-
-        {/* Steps */}
-        <div ref={ref} className='grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-4'>
-          {PROCESS.map((p, i) => (
-            <div key={p.step} className={READABLE} style={sweep(inView, i)}>
-              {/* Numeral with the rail running to the next step */}
-              <div className='flex items-center gap-3'>
-                <span className='text-ink text-[42px] leading-none font-light' style={{ fontFamily: DISPLAY_FONT }}>
-                  {p.step}
-                </span>
-                {i < PROCESS.length - 1 && (
-                  <span className='hidden flex-1 items-center gap-2 lg:flex' aria-hidden='true'>
-                    <span className='bg-ink/25 h-1.5 w-1.5 shrink-0 rounded-full' />
-                    <span className='bg-ink/12 h-px flex-1' />
-                  </span>
-                )}
-              </div>
-
-              <h3 className='text-ink mt-7 font-mono text-[14px] font-semibold tracking-[0.18em]'>{p.label}</h3>
-
-              <p className='text-ink mt-3.5 text-[14px] leading-snug font-medium'>{p.summary}</p>
-
-              <p className='text-ink-2 mt-3 text-[13.5px] leading-relaxed'>{p.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Closing prompt */}
-        <div
-          className='border-rule bg-surface mt-24 rounded-2xl border px-6 py-14 text-center'
-          style={rise(inView, PROCESS.length * SWEEP_STEP)}
-        >
-          <p className='text-ink-2 font-mono text-[14px] tracking-[0.18em]'>HAVE A PROCESS THAT FEELS TOO MANUAL?</p>
-          <a
-            href='#contact'
-            className='bg-ink text-ground hover:bg-ink/90 mt-7 inline-flex items-center gap-2.5 rounded-full px-7 py-3.5 font-mono text-[13px] tracking-[0.14em] transition-colors'
-          >
-            Book a workflow audit
-            <ArrowIcon />
-          </a>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 // ── Principles ───────────────────────────────────────────────────────────────
 
 // ── Engagement ───────────────────────────────────────────────────────────────
@@ -372,9 +307,8 @@ export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStu
           <IntroSection />
           <ServicesSection />
           <PlatformsSection />
-          <ProjectsSection caseStudies={caseStudies} />
-          <ProcessSection />
           <ToolStackSection />
+          <ProjectsSection caseStudies={caseStudies} />
           <PrinciplesSection />
           <ExperienceSection />
           <ArticlesSection posts={posts} />

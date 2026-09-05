@@ -3,17 +3,28 @@
 import { useEffect, useRef, useState } from 'react'
 
 import {
+  ArrowRight,
   CONTAINER,
   DISPLAY_FONT,
   SECTION,
+  sweep,
   useInView,
   usePrefersReducedMotion
 } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
-import { PRINCIPLES } from '@/lib/portfolio'
+import { PRINCIPLES, PROCESS } from '@/lib/portfolio'
 
 /**
- * How I build.
+ * How I build — the rules, then the sequence they run in.
+ *
+ * The page used to answer "how do you work" twice: a PROCESS section titled
+ * "How I build automation" (four boxes reading DISCOVER / DESIGN / BUILD /
+ * OPTIMIZE, copy that would describe any automation agency) and this one,
+ * whose eyebrow was literally "HOW I BUILD". A tool-logo marquee sat between
+ * them, so the two never connected and the weaker one came first. They are one
+ * section now: the three rules carry the argument, and the four stages follow
+ * as a compact strip — label and one-line summary only. The longer `desc`
+ * fields were the generic half and are not rendered here.
  *
  * The three rules are read in sequence, so the motion tracks reading position
  * rather than firing once on entry. A focal band sits about two fifths down the
@@ -164,9 +175,7 @@ export function PrinciplesSection() {
 
                   // The accent rail travels down the list as you read.
                   borderLeftColor: on ? 'var(--accent)' : 'transparent',
-                  backgroundColor: on
-                    ? 'color-mix(in oklch, var(--ink) 1.5%, transparent)'
-                    : 'transparent'
+                  backgroundColor: on ? 'color-mix(in oklch, var(--ink) 1.5%, transparent)' : 'transparent'
                 }}
               >
                 {/* The numeral is the focal object: it lifts and takes the
@@ -220,6 +229,47 @@ export function PrinciplesSection() {
               </div>
             )
           })}
+        </div>
+
+        {/* The sequence those rules run inside. Spans both columns so it reads
+            as the closing movement of the section rather than a fourth rule.
+            Keeps `id='process'` so any link that predates the merge resolves. */}
+        <div id='process' className='lg:col-span-2'>
+          <p className='eyebrow'>THE SEQUENCE</p>
+
+          <ol className='mt-8 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4'>
+            {PROCESS.map((p, i) => (
+              <li key={p.step} style={sweep(inView, i)}>
+                <div className='flex items-center gap-3'>
+                  <span className='text-ink-3 text-[28px] leading-none font-light' style={{ fontFamily: DISPLAY_FONT }}>
+                    {p.step}
+                  </span>
+                  {i < PROCESS.length - 1 && (
+                    <span className='bg-ink/12 hidden h-px flex-1 lg:block' aria-hidden='true' />
+                  )}
+                </div>
+
+                <h3 className='text-ink mt-4 font-mono text-[13px] font-semibold tracking-[0.18em]'>{p.label}</h3>
+                <p className='text-fine text-ink-2 mt-2.5'>{p.summary}</p>
+              </li>
+            ))}
+          </ol>
+
+          {/* The standalone panel this replaces was a 14rem centred block with
+              its own heading and pill — an interruption between two credibility
+              sections. One quiet line does the same job. */}
+          <p className='text-fine text-ink-3 border-rule mt-12 border-t pt-6'>
+            Have a process that feels too manual?{' '}
+            <a
+              href='#contact'
+              className='text-ink decoration-ink/25 underline-offset-[6px] transition-colors hover:underline'
+            >
+              Book a workflow audit
+            </a>
+            <span className='text-ink ml-1.5 inline-block align-[-1px]'>
+              <ArrowRight size={12} />
+            </span>
+          </p>
         </div>
       </div>
     </section>
