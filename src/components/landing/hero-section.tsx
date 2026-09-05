@@ -27,16 +27,16 @@ const words = ['quietly', 'at month-end', 'under load', 'on a retry']
 // so the grafted hero and the page it sits on read as one design.
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
-// Settled colour once a letter's illumination pass has finished.
+// Settled color once a letter's illumination pass has finished.
 const INK = '#2A2724'
 
 // A single-hue heat ramp, not a rainbow.
 //
 // This was magenta → violet → cyan → orange: four unrelated hues, which is the
-// most recognisable "AI-generated site" signature there is, and none of them
+// most recognizable "AI-generated site" signature there is, and none of them
 // belonged to the page's own warm palette. The word now warms from ink to the
-// site's terracotta accent at its centre and cools back — the letters still
-// illuminate as they land, but in one colour the rest of the page also speaks.
+// site's terracotta accent at its center and cools back — the letters still
+// illuminate as they land, but in one color the rest of the page also speaks.
 const gradientColors = ['#4A3F36', '#8C4E2A', '#B4652F', '#8C4E2A', '#4A3F36']
 
 function BlurWord({ word, trigger }: { word: string; trigger: number }) {
@@ -115,7 +115,7 @@ function BlurWord({ word, trigger }: { word: string; trigger: number }) {
         const upper = Math.min(lower + 1, gradientColors.length - 1)
         const t = colorIndex - lower
 
-        // lerp hex colours
+        // Interpolate hex colors
         const hex2rgb = (hex: string) => {
           const r = parseInt(hex.slice(1, 3), 16)
           const g = parseInt(hex.slice(3, 5), 16)
@@ -138,7 +138,7 @@ function BlurWord({ word, trigger }: { word: string; trigger: number }) {
 
               // Each letter is its own inline-block, and an inline-block whose
               // only content is whitespace collapses to zero width — which
-              // rendered "on a retry" as "onaretry". `pre` holds the space.
+              // rendered "on a retry" with words run together. `pre` holds the space.
               whiteSpace: 'pre',
               opacity: letterStates[i]?.opacity ?? 0,
               filter: `blur(${letterStates[i]?.blur ?? 20}px)`,
@@ -209,15 +209,15 @@ export function HeroSection({ ready }: { ready?: boolean }) {
         </ParallaxLayer>
         {/* The veils stay put: they are what guarantees the headline a clean
             ground, so they must not drift out from under it. */}
-        <div className='from-ground via-ground/82 to-ground/10 absolute inset-0 bg-gradient-to-r' />
-        <div className='from-ground/60 to-ground/85 absolute inset-0 bg-gradient-to-b via-transparent' />
+        <div className='from-ground via-ground/82 to-ground/10 absolute inset-0 bg-linear-to-r' />
+        <div className='from-ground/60 to-ground/85 absolute inset-0 bg-linear-to-b via-transparent' />
       </div>
 
       {/* Architectural grid. Two repeating-linear-gradients rather than the 20
           absolutely-positioned divs this used to be — same drawing, no DOM, and
           it scales with the viewport instead of snapping to hardcoded percents.
           Masked to fade toward the right so it never competes with the video. */}
-      <ParallaxLayer className='pointer-events-none absolute inset-0 z-[2]' speed={0.06} direction='up'>
+      <ParallaxLayer className='pointer-events-none absolute inset-0 z-2' speed={0.06} direction='up'>
         <div
           className='h-full w-full'
           style={{
@@ -232,9 +232,9 @@ export function HeroSection({ ready }: { ready?: boolean }) {
 
       {/* Petals fall through the hero and settle into the constellation the
           rest of the page is drawn in — see PetalField for why. */}
-      <PetalField className='z-[3]' />
+      <PetalField className='z-3' />
 
-      <div className='relative z-10 mx-auto flex w-full max-w-[1560px] flex-1 flex-col justify-center px-6 pt-36 pb-10 md:px-12 lg:px-20 2xl:max-w-[1760px]'>
+      <div className='relative z-10 mx-auto flex w-full max-w-390 flex-1 flex-col justify-center px-6 pt-36 pb-10 md:px-12 lg:px-20 2xl:max-w-440'>
         <div className='lg:max-w-[62%]'>
           {/* Eyebrow */}
           <div
@@ -306,7 +306,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
       {/* Stats. Previously `absolute bottom-12`, which on a short viewport put
           them straight through the headline. In flow, the hero simply grows. */}
       <div
-        className={`relative z-30 mx-auto w-full max-w-[1560px] px-6 pb-14 transition-all delay-500 duration-700 md:px-12 lg:px-20 2xl:max-w-[1760px] ${
+        className={`relative z-30 mx-auto w-full max-w-390 px-6 pb-14 transition-all delay-500 duration-700 md:px-12 lg:px-20 2xl:max-w-440 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
