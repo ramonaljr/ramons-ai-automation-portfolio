@@ -65,6 +65,9 @@ function GitHubIcon({ size = 13 }: { size?: number }) {
 
 const P = {
   bolt: 'M13 2L4 14h7l-1 8 9-12h-7l1-8z',
+
+  // Sustained volume rather than per-run latency — see `speedKind`.
+  stack: 'M12 2l9 5-9 5-9-5 9-5zM3 17l9 5 9-5M3 12l9 5 9-5',
   arrow: 'M4 12h14M13 6l6 6-6 6'
 }
 
@@ -258,7 +261,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         )}
                         {cs.speed && (
                           <span className='text-meta text-accent inline-flex items-center gap-1.5 font-mono'>
-                            <Ico d={P.bolt} size={11} />
+                            <Ico d={cs.speedKind === 'throughput' ? P.stack : P.bolt} size={11} />
                             {cs.speed}
                           </span>
                         )}
