@@ -52,14 +52,27 @@ function usePreviewFlag() {
   )
 }
 
-export function TestimonialsSection() {
+/**
+ * Split from the gate below so the reveal actually runs.
+ *
+ * `useInView` attaches its observer in an effect keyed on `[threshold,
+ * reduced]`. When the gate returns null on the server and during hydration —
+ * which it does on the preview path, because the server never sees the query
+ * string — that effect runs once against a null ref and never again, so the
+ * grid mounts afterwards and sits at opacity 0 forever. Mounting this as a
+ * fresh component the moment there is something to show gives the hook a real
+ * element on its first run.
+ */
+function Testimonials({
+  shown,
+  preview,
+  publishedCount
+}: {
+  shown: typeof TESTIMONIALS
+  preview: boolean
+  publishedCount: number
+}) {
   const { ref, inView } = useInView(0.1)
-  const preview = usePreviewFlag()
-
-  const published = TESTIMONIALS.filter(t => !t.draft)
-  const shown = preview ? TESTIMONIALS : published
-
-  if (!shown.length) return null
 
   return (
     <section id='testimonials' className={SECTION}>
@@ -70,7 +83,7 @@ export function TestimonialsSection() {
           blurb='From the people who had to run the thing after handover.'
         />
 
-        {preview && !published.length && (
+        {preview && !publishedCount && (
           <p className='border-rule text-fine text-ink-3 mb-10 rounded-xl border border-dashed px-5 py-4'>
             <span className='text-ink font-mono'>PREVIEW ONLY.</span> These are placeholders, shown because the URL
             carries <code className='font-mono'>?preview</code>. The public page renders no testimonials section at all
@@ -118,4 +131,15 @@ export function TestimonialsSection() {
       </div>
     </section>
   )
+}
+
+export function TestimonialsSection() {
+  const preview = usePreviewFlag()
+
+  const published = TESTIMONIALS.filter(t => !t.draft)
+  const shown = preview ? TESTIMONIALS : published
+
+  if (!shown.length) return null
+
+  return <Testimonials shown={shown} preview={preview} publishedCount={published.length} />
 }
