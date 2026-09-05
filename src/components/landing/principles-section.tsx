@@ -1,13 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
 import {
   ArrowRight,
   CONTAINER,
   DISPLAY_FONT,
   SECTION,
-  sweep,
   useInView,
   usePrefersReducedMotion
 } from '@/components/landing/motion'
@@ -112,6 +111,33 @@ export function PrinciplesSection() {
         `transform 1.05s cubic-bezier(0.16,1,0.3,1) ${delay}ms, ` +
         `opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
     }
+  }
+
+  /**
+   * The sequence, run as one progression rather than four arrivals.
+   *
+   * `STEP_GAP` is the beat between stages. The rail starts partway through its
+   * own stage so it is still drawing when the next numeral lands — that
+   * overlap is what makes it read as travelling from 01 to 04 rather than as
+   * four separate reveals. Reduced motion gets the finished state.
+   */
+  const STEP_GAP = 260
+
+  const step = (i: number): CSSProperties => {
+    if (reduced) return { opacity: inView ? 1 : 0, transition: 'opacity .3s linear' }
+
+    return inView ? { animation: `step-in 0.6s cubic-bezier(0.16,1,0.3,1) ${i * STEP_GAP}ms both` } : { opacity: 0 }
+  }
+
+  const flash = (i: number): CSSProperties =>
+    reduced || !inView ? {} : { animation: `step-flash 0.9s ease-out ${i * STEP_GAP}ms both` }
+
+  const rail = (i: number): CSSProperties => {
+    if (reduced) return {}
+
+    return inView
+      ? { animation: `rail-draw 0.34s cubic-bezier(0.4,0,0.2,1) ${i * STEP_GAP + 230}ms both` }
+      : { transform: 'scaleX(0)' }
   }
 
   return (
@@ -244,13 +270,20 @@ export function PrinciplesSection() {
 
           <ol className='mt-8 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4'>
             {PROCESS.map((p, i) => (
-              <li key={p.step} style={sweep(inView, i)}>
+              <li key={p.step} style={step(i)}>
                 <div className='flex items-center gap-3'>
-                  <span className='text-ink-3 text-[28px] leading-none font-light' style={{ fontFamily: DISPLAY_FONT }}>
+                  <span
+                    className='text-ink-3 text-[28px] leading-none font-light'
+                    style={{ fontFamily: DISPLAY_FONT, ...flash(i) }}
+                  >
                     {p.step}
                   </span>
                   {i < PROCESS.length - 1 && (
-                    <span className='bg-ink/12 hidden h-px flex-1 lg:block' aria-hidden='true' />
+                    <span
+                      className='bg-ink/12 hidden h-px flex-1 origin-left lg:block'
+                      aria-hidden='true'
+                      style={rail(i)}
+                    />
                   )}
                 </div>
 

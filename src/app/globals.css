@@ -68,13 +68,13 @@
 
   /* Type scale — a 1.125 minor-third at the small end, opening up for display.
      Replaces 17 arbitrary px values (13.5px, 15.5px, 14.5px…). */
-  --text-meta: 0.6875rem;      /* 11px — eyebrows, badges, legal */
+  --text-meta: 0.6875rem; /* 11px — eyebrows, badges, legal */
   --text-meta--line-height: 1.45;
-  --text-fine: 0.8125rem;      /* 13px — captions, list items, chips */
+  --text-fine: 0.8125rem; /* 13px — captions, list items, chips */
   --text-fine--line-height: 1.55;
-  --text-body: 0.9375rem;      /* 15px — default paragraph */
+  --text-body: 0.9375rem; /* 15px — default paragraph */
   --text-body--line-height: 1.7;
-  --text-lead: 1.0625rem;      /* 17px — section blurbs */
+  --text-lead: 1.0625rem; /* 17px — section blurbs */
   --text-lead--line-height: 1.65;
 
   /* One easing vocabulary. `exit` is the fast-out companion `entrance` lacked. */
@@ -525,9 +525,54 @@ li {
 /* Hero footage drift. Static footage reads as a photograph; movement slow
    enough to be imperceptible frame-to-frame reads as atmosphere. 44s for a 6%
    scale means roughly a pixel every two seconds — felt, not seen. */
+/* ── Process sequence ────────────────────────────────────────────────────────
+   The four stages under "How I build" are a sequence, and a generic stagger
+   reads as four things arriving rather than one thing progressing. These run
+   together: each stage rises, its numeral takes the accent as it lands and
+   settles back, and the rail between stages draws left to right in the gap
+   before the next numeral starts. The eye follows 01 to 04.
+
+   Delays are set inline from the step index, so the cadence lives with the
+   component that knows how many steps there are. */
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes step-flash {
+  0% {
+    color: var(--ink-4);
+  }
+  40% {
+    color: var(--accent);
+  }
+  100% {
+    color: var(--ink-3);
+  }
+}
+
+@keyframes rail-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @keyframes hero-drift {
-  from { transform: scale(1); }
-  to   { transform: scale(1.06); }
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
 }
 
 .hero-drift {
@@ -535,7 +580,9 @@ li {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-drift { animation: none; }
+  .hero-drift {
+    animation: none;
+  }
 }
 
 /* ── Cursor ──────────────────────────────────────────────────────────────────
