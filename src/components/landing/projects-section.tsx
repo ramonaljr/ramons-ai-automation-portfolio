@@ -141,7 +141,22 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   const [activeSlug, setActiveSlug] = useState<string | null>(null)
   const [selectedStudy, setSelectedStudy] = useState<CaseStudyMetadata | null>(null)
 
-  const shown = useMemo(() => caseStudies.filter(cs => matches(cs, filter)), [caseStudies, filter])
+  /**
+   * Delivered work leads; SAMPLE builds sort to the back.
+   *
+   * `getCaseStudies` orders by `publishedAt`, and the two illustrative builds
+   * happen to carry the latest dates — so this section opened on two projects
+   * badged SAMPLE. That was survivable when the section sat at beat 6. It is
+   * not now that it answers the hero directly. The sort is stable, so within
+   * each group the date order is preserved.
+   */
+  const shown = useMemo(
+    () =>
+      caseStudies
+        .filter(cs => matches(cs, filter))
+        .sort((a, b) => Number(Boolean(a.sample)) - Number(Boolean(b.sample))),
+    [caseStudies, filter]
+  )
 
   /**
    * The panel always has something to show, so the section reads correctly at
