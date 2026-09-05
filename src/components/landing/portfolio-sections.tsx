@@ -247,7 +247,10 @@ function EngagementSection() {
               }`}
               style={sweep(inView, i)}
             >
-              <span className='text-ink-2 font-mono text-[12px] tracking-widest'>{e.duration.toUpperCase()}</span>
+              <span className='flex flex-wrap items-baseline gap-x-3'>
+                <span className='text-ink-2 font-mono text-[12px] tracking-widest'>{e.duration.toUpperCase()}</span>
+                {e.startingAt ? <span className='text-accent font-mono text-[12px]'>{e.startingAt}</span> : null}
+              </span>
               <h3 className='text-ink mt-3 text-2xl font-light tracking-tight' style={{ fontFamily: DISPLAY_FONT }}>
                 {e.name}
               </h3>
