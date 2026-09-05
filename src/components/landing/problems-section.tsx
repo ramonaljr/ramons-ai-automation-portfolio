@@ -17,8 +17,8 @@ import { introStep, SectionIntro } from '@/components/landing/section-intro'
  * The page used to run hero → about, so a visitor met Ramon's biography before
  * anything named the problem that brought them. The only sentence written for
  * them — "What are you still doing by hand?" — sat twelve sections down, in the
- * closing panel. This is the answer to the headline's question, given as four
- * situations a reader either recognises or does not.
+ * closing panel, where it still is. This puts the same recognition up front:
+ * four situations a reader either sees their own week in, or does not.
  *
  * Nothing here is new copy. Each line is the `problem` field of a case study,
  * compressed to scanning length in `problemShort`, so the section cannot drift
@@ -59,14 +59,14 @@ export function ProblemsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   return (
     <section id='problems' className='px-6 pt-24 pb-28 md:px-12 lg:px-20'>
       <div className={CONTAINER}>
-        {/* The title answers the headline directly, so the hero's question and
-            this section read as one exchange rather than two openings. */}
+        {/* Reads on from the eyebrow rather than from the headline — the hero
+            states a claim now, it does not ask a question for this to answer. */}
         <SectionIntro
           tag='THE WORK I GET CALLED FOR'
           margin='mb-14'
           titleClassName='mt-6 text-[clamp(1.75rem,3vw,2.5rem)]'
-          title='Usually it looks like this.'
-          blurb='Four situations that became workflows. Each one now runs without anyone watching it.'
+          title='Usually it starts like this.'
+          blurb={'Four processes that used to be somebody\u2019s manual routine, and the workflow each one became.'}
         />
 
         {/* One reading halo behind the whole list rather than one per row —

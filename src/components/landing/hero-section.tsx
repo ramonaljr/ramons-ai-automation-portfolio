@@ -7,16 +7,21 @@ import { CountUp, Cta, ParallaxLayer } from '@/components/landing/motion'
 import { PetalField } from '@/components/landing/petal-field'
 
 /**
- * The rotating verb names the reader's manual work, not the service on offer.
+ * The rotating word is the failure mode, not the capability.
  *
- * This was ['automate', 'reconcile', 'integrate', 'scale'] — the things Ramon
- * does. Under a headline that now asks the reader a question, the word has to
- * belong to their sentence instead: it is *their* team still doing these by
- * hand. 'doing' leads because it matches the closing section verbatim, so the
- * page's first and last words are the same question, and the specifics that
- * follow read as that question narrowing.
+ * This was ['automate', 'reconcile', 'integrate', 'scale'] — four words any
+ * automation freelancer could claim, which made the headline generic at the
+ * exact moment it needed to differentiate. Each of these instead states
+ * something the rest of the site actually argues: 'quietly' is the thesis of
+ * the principles section ("an automation that silently does the wrong thing is
+ * worse than no automation"), 'at month-end' is the ten years in finance ops,
+ * 'under load' and 'on a retry' are the idempotency and rate-limit guarantees
+ * in the integrations service.
+ *
+ * Still terminal on its line: BlurWord is inline-block, so anything after it —
+ * a full stop included — shifts every 2.5s as the word length changes.
  */
-const words = ['doing', 'reconciling', 'approving', 'retyping']
+const words = ['quietly', 'at month-end', 'under load', 'on a retry']
 
 // Headline face — matches the IBM Plex Sans used by the sections below,
 // so the grafted hero and the page it sits on read as one design.
@@ -234,7 +239,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           >
             <span className='inline-flex items-center gap-3'>
               <span className='bg-ink/25 h-px w-8' />
-              <span className='eyebrow'>n8n · Zapier · Make</span>
+              <span className='eyebrow'>AI automation for business operations</span>
             </span>
           </div>
 
@@ -258,14 +263,14 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             }`}
             style={{ fontFamily: DISPLAY_FONT }}
           >
-            <span className='block'>What is your team</span>
+            <span className='block'>n8n, Zapier and Make.</span>
+            <span className='block'>Workflows that don&rsquo;t</span>
             <span className='block'>
-              still{' '}
+              fail{' '}
               <span className='relative inline-block'>
                 <BlurWord word={words[wordIndex]} trigger={wordIndex} />
               </span>
             </span>
-            <span className='block'>by hand?</span>
           </h1>
 
           {/* Supporting line + actions. The hero previously ran headline →
@@ -276,8 +281,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            Intake, approvals, reporting, reconciliation — the work that quietly eats your team&rsquo;s week. I build it
-            into automation on n8n, Zapier or Make, then hand it over documented so your team runs it without me.
+            Intake, approvals, reporting and reconciliation come off your team&rsquo;s desk — with error branches,
+            failure alerting and documentation, so it keeps running when nobody is watching it.
           </p>
 
           <div
