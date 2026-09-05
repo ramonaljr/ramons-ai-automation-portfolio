@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type CSSProperties } from 'react'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { SectionIntro } from '@/components/landing/section-intro'
@@ -166,6 +166,39 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
    */
   const active = shown.find(cs => cs.slug === activeSlug) ?? shown.find(cs => cs.featured) ?? shown[0]
 
+  /**
+   * The index arrives row by row, the preview panel last.
+   *
+   * This whole block used to share one opacity-and-lift, so six projects and
+   * the canvas faded in as a single sheet — no cascade, on the section the
+   * page now opens with. Every neighbouring section has a per-item entrance;
+   * this one read as though it had none.
+   *
+   * The rows lead because the index is what the reader scans first, and the
+   * panel follows the last of them so the canvas lands as the payoff rather
+   * than competing with the list for attention.
+   */
+  const ROW_STEP = 90
+
+  const row = (i: number): CSSProperties => ({
+    opacity: inView ? 1 : 0,
+    transform: inView ? 'translateY(0)' : 'translateY(22px)',
+    transition:
+      `opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${i * ROW_STEP}ms, ` +
+      `transform 0.75s cubic-bezier(0.16,1,0.3,1) ${i * ROW_STEP}ms`
+  })
+
+  const panel = (): CSSProperties => {
+    const delay = shown.length * ROW_STEP
+
+    return {
+      opacity: inView ? 1 : 0,
+      transform: inView ? 'translateY(0)' : 'translateY(28px)',
+      transition:
+        `opacity 0.9s cubic-bezier(0.16,1,0.3,1) ${delay}ms, ` + `transform 0.9s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
+    }
+  }
+
   return (
     <section id='portfolio' className={SECTION_ANCHOR}>
       <div className={CONTAINER}>
@@ -222,15 +255,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
             Below `lg` there is no room for a side-by-side, so each row carries
             its own canvas and the whole thing degrades to a plain stack. */}
-        <div
-          ref={ref}
-          className='mt-14 grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]'
-          style={{
-            opacity: inView ? 1 : 0,
-            transform: inView ? 'translateY(0)' : 'translateY(28px)',
-            transition: 'opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1)'
-          }}
-        >
+        <div ref={ref} className='mt-14 grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]'>
           <ol className='border-rule border-t'>
             {shown.map((cs, i) => {
               const isActive = cs.slug === active?.slug
@@ -241,7 +266,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
               // prettier strips the blank line that @stylistic/lines-around-
               // comment then demands, and neither formatter can win in place.
               return (
-                <li key={cs.slug} className='border-rule border-b'>
+                <li key={cs.slug} className='border-rule border-b' style={row(i)}>
                   <button
                     type='button'
                     onClick={() => setSelectedStudy(cs)}
@@ -304,7 +329,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
           {/* Preview panel, sticky so the canvas stays with the reader as they
               work down the index. */}
-          <aside className='hidden lg:block'>
+          <aside className='hidden lg:block' style={panel()}>
             {active && (
               <div className='sticky top-28'>
                 <Canvas cs={active} priority />
