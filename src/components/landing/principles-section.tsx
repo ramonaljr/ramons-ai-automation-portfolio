@@ -84,6 +84,17 @@ function useActiveRow(count: number) {
 
 export function PrinciplesSection() {
   const { ref, inView } = useInView(0.08)
+
+  /**
+   * The strip observes itself.
+   *
+   * `inView` above is bound to the rules column, which sits a full section
+   * higher — so driving the sequence from it meant the whole 01 → 04
+   * progression ran while the strip was still below the fold and was over
+   * before anyone scrolled to it. The animation existed and nobody could
+   * ever see it.
+   */
+  const { ref: seqRef, inView: seqInView } = useInView<HTMLOListElement>(0.25)
   const reduced = usePrefersReducedMotion()
   const { active, rowsRef } = useActiveRow(PRINCIPLES.length)
 
@@ -124,18 +135,18 @@ export function PrinciplesSection() {
   const STEP_GAP = 260
 
   const step = (i: number): CSSProperties => {
-    if (reduced) return { opacity: inView ? 1 : 0, transition: 'opacity .3s linear' }
+    if (reduced) return { opacity: seqInView ? 1 : 0, transition: 'opacity .3s linear' }
 
-    return inView ? { animation: `step-in 0.6s cubic-bezier(0.16,1,0.3,1) ${i * STEP_GAP}ms both` } : { opacity: 0 }
+    return seqInView ? { animation: `step-in 0.6s cubic-bezier(0.16,1,0.3,1) ${i * STEP_GAP}ms both` } : { opacity: 0 }
   }
 
   const flash = (i: number): CSSProperties =>
-    reduced || !inView ? {} : { animation: `step-flash 0.9s ease-out ${i * STEP_GAP}ms both` }
+    reduced || !seqInView ? {} : { animation: `step-flash 0.9s ease-out ${i * STEP_GAP}ms both` }
 
   const rail = (i: number): CSSProperties => {
     if (reduced) return {}
 
-    return inView
+    return seqInView
       ? { animation: `rail-draw 0.34s cubic-bezier(0.4,0,0.2,1) ${i * STEP_GAP + 230}ms both` }
       : { transform: 'scaleX(0)' }
   }
@@ -268,7 +279,7 @@ export function PrinciplesSection() {
         <div id='process' className='mt-24 lg:mt-32'>
           <p className='eyebrow'>THE SEQUENCE</p>
 
-          <ol className='mt-8 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4'>
+          <ol ref={seqRef} className='mt-8 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4'>
             {PROCESS.map((p, i) => (
               <li key={p.step} style={step(i)}>
                 <div className='flex items-center gap-3'>
