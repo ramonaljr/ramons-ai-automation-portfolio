@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowIcon, CONTAINER, DISPLAY_FONT, rise, useInView } from '@/components/landing/motion'
+import { ArrowIcon, CONTAINER, DISPLAY_FONT, ParallaxLayer, rise, useInView } from '@/components/landing/motion'
 import { PROFILE } from '@/lib/portfolio'
 
 /**
@@ -15,10 +15,14 @@ export function CtaSection({
       doing by hand?
     </>
   ),
-  blurb = 'Tell me the process that eats your week. I will tell you whether it is worth automating, and on which platform.'
+  blurb = 'Tell me the process that eats your week. I will tell you whether it is worth automating, and on which platform.',
+  contactHref = '/#contact'
 }: {
   title?: React.ReactNode
   blurb?: string
+
+  /** Landing passes the bare hash; article pages take the default. */
+  contactHref?: string
 }) {
   const { ref, inView } = useInView(0.15)
 
@@ -31,13 +35,15 @@ export function CtaSection({
           that the hero headline used to carry. Desaturating and warming it
           keeps the refracted-glass geometry, which is the part worth having,
           and drops the colour story that never belonged. */}
-      <img
-        src='/images/landing/footer.png'
-        alt=''
-        aria-hidden='true'
-        className='pointer-events-none absolute bottom-0 left-0 w-full object-cover object-bottom select-none'
-        style={{ opacity: 0.55, filter: 'saturate(0.2) sepia(0.32) brightness(1.04) contrast(1.04)' }}
-      />
+      <ParallaxLayer className='pointer-events-none absolute inset-0' speed={0.12} direction='up'>
+        <img
+          src='/images/landing/footer.png'
+          alt=''
+          aria-hidden='true'
+          className='absolute bottom-0 left-0 w-full object-cover object-bottom select-none'
+          style={{ opacity: 0.55, filter: 'saturate(0.2) sepia(0.32) brightness(1.04) contrast(1.04)' }}
+        />
+      </ParallaxLayer>
 
       {/* Progressive blur from the bottom */}
       <div
@@ -70,10 +76,10 @@ export function CtaSection({
 
         <div className='mt-10 flex flex-wrap items-center justify-center gap-3'>
           <a
-            href='/contact'
+            href={contactHref}
             className='group bg-ink text-ground hover:bg-ink/90 inline-flex items-center gap-3 rounded-full py-2 pr-2 pl-6 text-[14px] tracking-wide transition-colors'
           >
-            Start a conversation
+            Book a workflow audit
             <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
               <ArrowIcon />
             </span>

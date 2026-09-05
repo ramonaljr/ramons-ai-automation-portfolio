@@ -3,25 +3,40 @@
 import { useEffect, useState, useRef } from 'react'
 
 import { HERO_STATS } from '@/lib/portfolio'
-import { CountUp, Cta } from '@/components/landing/motion'
+import { CountUp, Cta, ParallaxLayer } from '@/components/landing/motion'
 import { PetalField } from '@/components/landing/petal-field'
 
-const words = ['automate', 'reconcile', 'integrate', 'scale']
+/**
+ * The rotating word is the failure mode, not the capability.
+ *
+ * This was ['automate', 'reconcile', 'integrate', 'scale'] — four words any
+ * automation freelancer could claim, which made the headline generic at the
+ * exact moment it needed to differentiate. Each of these instead states
+ * something the rest of the site actually argues: 'quietly' is the thesis of
+ * the principles section ("an automation that silently does the wrong thing is
+ * worse than no automation"), 'at month-end' is the ten years in finance ops,
+ * 'under load' and 'on a retry' are the idempotency and rate-limit guarantees
+ * in the integrations service.
+ *
+ * Still terminal on its line: BlurWord is inline-block, so anything after it —
+ * a full stop included — shifts every 2.5s as the word length changes.
+ */
+const words = ['quietly', 'at month-end', 'under load', 'on a retry']
 
 // Headline face — matches the IBM Plex Sans used by the sections below,
 // so the grafted hero and the page it sits on read as one design.
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
-// Settled colour once a letter's illumination pass has finished.
+// Settled color once a letter's illumination pass has finished.
 const INK = '#2A2724'
 
 // A single-hue heat ramp, not a rainbow.
 //
 // This was magenta → violet → cyan → orange: four unrelated hues, which is the
-// most recognisable "AI-generated site" signature there is, and none of them
+// most recognizable "AI-generated site" signature there is, and none of them
 // belonged to the page's own warm palette. The word now warms from ink to the
-// site's terracotta accent at its centre and cools back — the letters still
-// illuminate as they land, but in one colour the rest of the page also speaks.
+// site's terracotta accent at its center and cools back — the letters still
+// illuminate as they land, but in one color the rest of the page also speaks.
 const gradientColors = ['#4A3F36', '#8C4E2A', '#B4652F', '#8C4E2A', '#4A3F36']
 
 function BlurWord({ word, trigger }: { word: string; trigger: number }) {
@@ -100,7 +115,7 @@ function BlurWord({ word, trigger }: { word: string; trigger: number }) {
         const upper = Math.min(lower + 1, gradientColors.length - 1)
         const t = colorIndex - lower
 
-        // lerp hex colours
+        // Interpolate hex colors
         const hex2rgb = (hex: string) => {
           const r = parseInt(hex.slice(1, 3), 16)
           const g = parseInt(hex.slice(3, 5), 16)
@@ -120,6 +135,11 @@ function BlurWord({ word, trigger }: { word: string; trigger: number }) {
             key={i}
             style={{
               display: 'inline-block',
+
+              // Each letter is its own inline-block, and an inline-block whose
+              // only content is whitespace collapses to zero width — which
+              // rendered "on a retry" with words run together. `pre` holds the space.
+              whiteSpace: 'pre',
               opacity: letterStates[i]?.opacity ?? 0,
               filter: `blur(${letterStates[i]?.blur ?? 20}px)`,
               color: showGradient ? `rgb(${r},${g},${b})` : INK,
@@ -169,47 +189,52 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           the same warm neutral family as the ground, so it reads as atmosphere
           behind the headline instead of a photograph competing with it. */}
       <div className='absolute inset-0 z-0'>
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-hidden='true'
-          className='hero-drift h-full w-full object-cover opacity-[0.62]'
-          style={{
-            // Pushed right of centre: the trunk was landing in the same optical
-            // column as the headline's right edge and competing with it.
-            objectPosition: '72% center',
-            filter: 'saturate(0.42) sepia(0.22) brightness(1.04) contrast(1.06)'
-          }}
-        >
-          <source src='/video/hero-compute.mp4' type='video/mp4' />
-        </video>
-        {/* Cream veil from the left so the headline always has a clean ground */}
-        <div className='from-ground via-ground/82 to-ground/10 absolute inset-0 bg-gradient-to-r' />
-        <div className='from-ground/60 to-ground/85 absolute inset-0 bg-gradient-to-b via-transparent' />
+        <ParallaxLayer className='absolute inset-0' speed={0.15} direction='down'>
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            aria-hidden='true'
+            className='hero-drift h-full w-full object-cover opacity-[0.62]'
+            style={{
+              // Pushed right of centre: the trunk was landing in the same optical
+              // column as the headline's right edge and competing with it.
+              objectPosition: '72% center',
+              filter: 'saturate(0.42) sepia(0.22) brightness(1.04) contrast(1.06)'
+            }}
+          >
+            <source src='/video/hero-compute.mp4' type='video/mp4' />
+          </video>
+        </ParallaxLayer>
+        {/* The veils stay put: they are what guarantees the headline a clean
+            ground, so they must not drift out from under it. */}
+        <div className='from-ground via-ground/82 to-ground/10 absolute inset-0 bg-linear-to-r' />
+        <div className='from-ground/60 to-ground/85 absolute inset-0 bg-linear-to-b via-transparent' />
       </div>
 
       {/* Architectural grid. Two repeating-linear-gradients rather than the 20
           absolutely-positioned divs this used to be — same drawing, no DOM, and
           it scales with the viewport instead of snapping to hardcoded percents.
           Masked to fade toward the right so it never competes with the video. */}
-      <div
-        className='pointer-events-none absolute inset-0 z-[2]'
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(to right, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 8.333%),' +
-            'repeating-linear-gradient(to bottom, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 12.5%)',
-          maskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)',
-          WebkitMaskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)'
-        }}
-      />
+      <ParallaxLayer className='pointer-events-none absolute inset-0 z-2' speed={0.06} direction='up'>
+        <div
+          className='h-full w-full'
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(to right, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 8.333%),' +
+              'repeating-linear-gradient(to bottom, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 12.5%)',
+            maskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)',
+            WebkitMaskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)'
+          }}
+        />
+      </ParallaxLayer>
 
       {/* Petals fall through the hero and settle into the constellation the
           rest of the page is drawn in — see PetalField for why. */}
-      <PetalField className='z-[3]' />
+      <PetalField className='z-3' />
 
-      <div className='relative z-10 mx-auto flex w-full max-w-[1560px] flex-1 flex-col justify-center px-6 pt-36 pb-10 md:px-12 lg:px-20 2xl:max-w-[1760px]'>
+      <div className='relative z-10 mx-auto flex w-full max-w-390 flex-1 flex-col justify-center px-6 pt-36 pb-10 md:px-12 lg:px-20 2xl:max-w-440'>
         <div className='lg:max-w-[62%]'>
           {/* Eyebrow */}
           <div
@@ -219,29 +244,34 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           >
             <span className='inline-flex items-center gap-3'>
               <span className='bg-ink/25 h-px w-8' />
-              <span className='eyebrow'>End-to-end AI automation for business operations</span>
+              <span className='eyebrow'>AI automation for business operations</span>
             </span>
           </div>
 
-          {/* Main headline. The nowrap was forcing the clamp floor down to
-              1.75rem so the longest line could fit a phone — which made the
-              headline tiny on exactly the device where it needs the most
-              presence. Line one is allowed to wrap below `md`, which lets the
-              floor rise to 2.5rem. */}
+          {/* Main headline — the reader's question, not the service on offer.
+              This led with "n8n, Zapier and Make." above "Workflows that
+              automate", which only lands on someone already shopping for a
+              platform. The buyer here is an ops or finance lead who knows
+              their week is being eaten and has not yet decided the answer is a
+              workflow tool, so the platform names moved to the eyebrow and the
+              supporting line, where they still carry the search terms.
+
+              Three lines rather than two, because the rotating word has to be
+              the last thing on its line. `BlurWord` is inline-block, so any
+              text after it shifts horizontally every 2.5s as the word length
+              changes ("doing" against "reconciling" is six characters). No
+              nowrap anywhere: every line is short enough now to survive 375px
+              intact, and wrapping is the safety net if a longer word is added. */}
           <h1
             className={`display-xl text-ink text-left text-[clamp(2.5rem,5.4vw,6rem)] leading-[0.94] font-light transition-all duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
             style={{ fontFamily: DISPLAY_FONT }}
           >
-            <span className='block md:whitespace-nowrap'>n8n, Zapier and Make.</span>
-            {/* Line two also has to wrap on a phone. The rotating word changes
-                length every 2.5s ("scale" vs "reconcile"), so a hard nowrap
-                here clipped the longest ones off the right edge at 375px. The
-                word is `inline-block`, so it moves as a unit rather than
-                breaking mid-word when it does wrap. */}
-            <span className='block md:whitespace-nowrap'>
-              Workflows that{' '}
+            <span className='block'>n8n, Zapier and Make.</span>
+            <span className='block'>Workflows that don&rsquo;t</span>
+            <span className='block'>
+              fail{' '}
               <span className='relative inline-block'>
                 <BlurWord word={words[wordIndex]} trigger={wordIndex} />
               </span>
@@ -256,8 +286,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            I design and ship the automations that take intake, approvals, reporting and reconciliation off your
-            team&rsquo;s desk — then hand over documentation they can run without me.
+            Intake, approvals, reporting and reconciliation come off your team&rsquo;s desk — with error branches,
+            failure alerting and documentation, so it keeps running when nobody is watching it.
           </p>
 
           <div
@@ -265,7 +295,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            <Cta href='/contact'>Book a workflow audit</Cta>
+            <Cta href='#contact'>Book a workflow audit</Cta>
             <Cta href='#portfolio' tone='secondary'>
               See the work
             </Cta>
@@ -276,7 +306,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
       {/* Stats. Previously `absolute bottom-12`, which on a short viewport put
           them straight through the headline. In flow, the hero simply grows. */}
       <div
-        className={`relative z-30 mx-auto w-full max-w-[1560px] px-6 pb-14 transition-all delay-500 duration-700 md:px-12 lg:px-20 2xl:max-w-[1760px] ${
+        className={`relative z-30 mx-auto w-full max-w-390 px-6 pb-14 transition-all delay-500 duration-700 md:px-12 lg:px-20 2xl:max-w-440 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >

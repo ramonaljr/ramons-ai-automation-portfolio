@@ -64,7 +64,7 @@ export const SERVICES: Service[] = [
     duration: '1 to 3 weeks',
     tools: ['n8n (Cloud & Self-Hosted)', 'Webhooks', 'Triggers', 'Error Handling'],
     description:
-      'I design, build, and deploy production-grade n8n automations and autonomous AI agents that run 24/7, connect your apps, and execute complex multi-step workflows with zero human intervention.',
+      'Production-grade n8n automations and autonomous AI agents that run around the clock, connect your apps, and carry multi-step workflows through without anyone driving them.',
     detail:
       'n8n is where most of my production work lives. It handles the cases Zapier cannot: branching logic that depends on the data, custom code inside a step, self-hosting when the data cannot leave your infrastructure, and unlimited steps without per-task billing. I build the workflow, run it against your real edge cases, wire up error branches and alerting, and hand it over documented so your team can extend it.',
     includes: [
@@ -109,7 +109,7 @@ export const SERVICES: Service[] = [
     duration: '2 to 4 weeks',
     tools: ['CRMs', 'Onboarding', 'Invoicing & AP/AR', 'Approval Flows'],
     description:
-      'I eliminate repetitive manual bottlenecks across your entire business — lead management, client onboarding, automated reporting, data validation, and multi-department approval flows.',
+      'The repetitive bottlenecks come out of your business end to end — lead management, client onboarding, automated reporting, data validation, and multi-department approval flows.',
     detail:
       'Most manual work is not one task, it is a chain of them: a form arrives, someone checks it, someone else approves it, a record gets created in three systems, a folder gets made, an email goes out. I map that whole chain first — including the exceptions everyone handles from memory — then automate it end to end. Ten years in finance operations means I understand approval thresholds, segregation of duties and audit trails before I touch a node.',
     includes: [
@@ -148,7 +148,7 @@ export const SERVICES: Service[] = [
     duration: '1 to 3 weeks',
     tools: ['Claude 3.5 Sonnet', 'OpenAI GPT-4o', 'Prompt Engineering', 'RAG'],
     description:
-      'I embed frontier LLM intelligence into your daily operations to classify incoming emails, extract structured data from unstructured documents and PDFs, and power secure internal knowledge bases.',
+      'Frontier LLM intelligence inside your daily operations: incoming email classified, structured data pulled out of messy documents and PDFs, and a secure internal knowledge base your team can question.',
     detail:
       'LLMs are excellent at reading messy input and terrible at arithmetic you depend on. I use them for exactly the first job: pulling structured data out of PDFs, scanned invoices, emails and contracts, and answering questions over your own documents with citations. Numbers, balances and routing decisions stay in deterministic code. Every extraction enforces a JSON schema and carries a confidence score, so low-confidence cases go to a human instead of into your ledger.',
     includes: [
@@ -187,7 +187,7 @@ export const SERVICES: Service[] = [
     duration: '1 to 2 weeks',
     tools: ['Google Workspace', 'Airtable', 'Notion', 'Slack & Telegram', 'REST APIs'],
     description:
-      'I synchronize your disparate software tools into a unified, real-time ecosystem — ensuring clean data flows automatically between spreadsheets, databases, and communication channels.',
+      'Your scattered tools behave as one real-time system — clean data moving automatically between spreadsheets, databases, and the channels your team actually works in.',
     detail:
       'Data drifts the moment it lives in two places. I connect your tools so one system is authoritative and the rest follow it, rather than letting three spreadsheets disagree by Friday. That means idempotent writes so retries do not duplicate records, keyed matching so the same customer is the same customer everywhere, and reconciliation jobs that catch drift the real-time path missed.',
     includes: [
@@ -229,7 +229,7 @@ export const SERVICES: Service[] = [
     duration: '2 to 3 weeks',
     tools: ['VAPI', 'Retell AI', 'ElevenLabs', 'Cal.com', 'WhatsApp & Twilio'],
     description:
-      'I build human-like AI voice receptionists and conversational chatbots that handle customer inquiries, qualify inbound prospects, and book confirmed calendar appointments 24/7.',
+      'Human-sounding AI voice receptionists and chatbots that answer customer questions, qualify inbound prospects, and book confirmed calendar appointments around the clock.',
     detail:
       'A voice agent is judged on latency and on knowing when to stop. I build receptionists that answer in under a second, follow a defined qualification script, check real calendar availability, and book a confirmed slot — then hand off to a human the moment the conversation leaves the script. Every call is transcribed and logged, so you can review what the agent actually said rather than trusting that it behaved.',
     includes: [
@@ -420,6 +420,63 @@ export const PRINCIPLES = [
   }
 ]
 
+// ─── Testimonials ────────────────────────────────────────────────────────────
+
+export type Testimonial = {
+  quote: string
+  name: string
+  role: string
+  company?: string
+
+  /** Matches public/images/testimonials/<file>. Optional. */
+  avatar?: string
+
+  /**
+   * Not a real quote yet. Draft entries are filtered out before render and the
+   * section disappears entirely when nothing survives, so the site never shows
+   * praise nobody gave. Same guarantee `sample` provides on a case study.
+   *
+   * To publish one: replace every bracketed field with the person's own words,
+   * confirm they are happy to be named, then delete this line.
+   */
+  draft?: boolean
+}
+
+/**
+ * Placeholders, deliberately unmistakable.
+ *
+ * They exist so the component, the data shape and the layout are all in place
+ * and can be reviewed at realistic copy lengths. The text is written so that
+ * flipping `draft` by accident produces something obviously unfinished rather
+ * than a plausible-looking fake endorsement.
+ */
+export const TESTIMONIALS: Testimonial[] = [
+  {
+    draft: true,
+    quote:
+      '[Placeholder] Replace with the client\u2019s own words. Two or three sentences reads best in this column \u2014 what the work looked like before, what changed, and what it freed the team up to do.',
+    name: '[Name]',
+    role: '[Role]',
+    company: '[Company]'
+  },
+  {
+    draft: true,
+    quote:
+      '[Placeholder] A shorter quote works here too. One sharp sentence about a specific outcome carries more than a paragraph of general praise.',
+    name: '[Name]',
+    role: '[Role]',
+    company: '[Company]'
+  },
+  {
+    draft: true,
+    quote:
+      '[Placeholder] If a colleague can speak to the handover \u2014 that they could run and extend the workflow without you \u2014 that is the one worth putting third.',
+    name: '[Name]',
+    role: '[Role]',
+    company: '[Company]'
+  }
+]
+
 // ─── Work history ────────────────────────────────────────────────────────────
 
 export type Role = {
@@ -491,7 +548,8 @@ export const ENGAGEMENTS = [
       'Platform recommendation',
       'Prioritised roadmap'
     ],
-    cta: 'Request a quote'
+    cta: 'Book the audit',
+    href: '#contact'
   },
   {
     name: 'Fixed-Scope Build',

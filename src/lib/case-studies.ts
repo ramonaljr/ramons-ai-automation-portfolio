@@ -43,6 +43,14 @@ export type CaseStudyMetadata = {
   /** Headline speed/scale badge, e.g. "< 90 SEC". */
   speed?: string
 
+  /**
+   * How to read `speed`. Latency is per run ("< 30 SEC"); throughput is a
+   * sustained rate ("4,000+/wk"). They shared a badge and a lightning bolt,
+   * so a reader comparing two projects was comparing different quantities
+   * under the same glyph. Defaults to latency.
+   */
+  speedKind?: 'latency' | 'throughput'
+
   /** Workflow canvas diagram shown in the modal. */
   workflowImage?: string
 

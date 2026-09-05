@@ -65,6 +65,9 @@ function GitHubIcon({ size = 13 }: { size?: number }) {
 
 const P = {
   bolt: 'M13 2L4 14h7l-1 8 9-12h-7l1-8z',
+
+  // Sustained volume rather than per-run latency — see `speedKind`.
+  stack: 'M12 2l9 5-9 5-9-5 9-5zM3 17l9 5 9-5M3 12l9 5 9-5',
   arrow: 'M4 12h14M13 6l6 6-6 6'
 }
 
@@ -138,7 +141,22 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   const [activeSlug, setActiveSlug] = useState<string | null>(null)
   const [selectedStudy, setSelectedStudy] = useState<CaseStudyMetadata | null>(null)
 
-  const shown = useMemo(() => caseStudies.filter(cs => matches(cs, filter)), [caseStudies, filter])
+  /**
+   * Delivered work leads; SAMPLE builds sort to the back.
+   *
+   * `getCaseStudies` orders by `publishedAt`, and the two illustrative builds
+   * happen to carry the latest dates — so this section opened on two projects
+   * badged SAMPLE. That was survivable when the section sat at beat 6. It is
+   * not now that it answers the hero directly. The sort is stable, so within
+   * each group the date order is preserved.
+   */
+  const shown = useMemo(
+    () =>
+      caseStudies
+        .filter(cs => matches(cs, filter))
+        .sort((a, b) => Number(Boolean(a.sample)) - Number(Boolean(b.sample))),
+    [caseStudies, filter]
+  )
 
   /**
    * The panel always has something to show, so the section reads correctly at
@@ -160,7 +178,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
             margin=''
             titleClassName='display-xl mt-2 text-[clamp(2.5rem,6vw,5rem)]'
             title='WORK'
-            blurb='A selection of AI automation systems and production workflows built to eliminate repetitive tasks, connect business tools, and improve operational efficiency.'
+            blurb='Automation systems running in production. Each one replaced a job somebody was doing by hand — the workflow canvas shows exactly how.'
           />
 
           <div className='flex flex-col items-start gap-4 lg:items-end'>
@@ -219,15 +237,17 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
             {shown.map((cs, i) => {
               const isActive = cs.slug === active?.slug
 
+              // `onFocus` drives the preview as well as `onMouseEnter`, so a
+              // keyboard reader tabbing the index sees the same canvas change.
+              // Kept above the element rather than between the attributes:
+              // prettier strips the blank line that @stylistic/lines-around-
+              // comment then demands, and neither formatter can win in place.
               return (
                 <li key={cs.slug} className='border-rule border-b'>
                   <button
                     type='button'
                     onClick={() => setSelectedStudy(cs)}
                     onMouseEnter={() => setActiveSlug(cs.slug)}
-
-                    // Focus drives the preview as well as hover, so a keyboard
-                    // reader tabbing the index sees the same canvas change.
                     onFocus={() => setActiveSlug(cs.slug)}
                     aria-current={isActive ? 'true' : undefined}
                     className='group grid w-full grid-cols-[2.5rem_1fr_auto] items-baseline gap-x-4 py-6 text-left lg:py-7'
@@ -256,7 +276,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         )}
                         {cs.speed && (
                           <span className='text-meta text-accent inline-flex items-center gap-1.5 font-mono'>
-                            <Ico d={P.bolt} size={11} />
+                            <Ico d={cs.speedKind === 'throughput' ? P.stack : P.bolt} size={11} />
                             {cs.speed}
                           </span>
                         )}

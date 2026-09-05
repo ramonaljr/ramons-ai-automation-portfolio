@@ -57,6 +57,9 @@ function GitHubIcon({ size = 13 }: { size?: number }) {
 
 const P = {
   bolt: 'M13 2L4 14h7l-1 8 9-12h-7l1-8z',
+
+  // Sustained volume rather than per-run latency — see `speedKind`.
+  stack: 'M12 2l9 5-9 5-9-5 9-5zM3 17l9 5 9-5M3 12l9 5 9-5',
   arrow: 'M4 12h14M13 6l6 6-6 6',
   close: 'M6 18L18 6M6 6l12 12',
   external: 'M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3'
@@ -115,7 +118,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
             ))}
             {study.speed && (
               <span className='badge badge-accent'>
-                <Ico d={P.bolt} size={11} />
+                <Ico d={study.speedKind === 'throughput' ? P.stack : P.bolt} size={11} />
                 {study.speed}
               </span>
             )}
@@ -288,10 +291,10 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
             </a>
 
             <a
-              href='/contact'
+              href='/#contact'
               className='bg-ink text-meta text-ground hover:bg-ink/90 inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono tracking-wide transition-colors'
             >
-              Start a project
+              Book a workflow audit
               <Ico d={P.arrow} size={12} />
             </a>
           </div>

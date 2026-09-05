@@ -15,6 +15,7 @@ import { PixelIcon } from '@/components/landing/pixel-icon'
 import { ToolStackSection } from '@/components/landing/tool-stack-section'
 import { ExperienceSection } from '@/components/landing/experience-section'
 import { ContactSection } from '@/components/landing/contact-section'
+import { TestimonialsSection } from '@/components/landing/testimonials-section'
 import { ArticlesSection } from '@/components/landing/articles-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
@@ -24,19 +25,16 @@ import {
   Cta,
   DISPLAY_FONT,
   PAGE,
-  READABLE,
   SECTION,
   SECTION_ANCHOR,
   SECTION_CONT,
-  rise,
   sweep,
-  SWEEP_STEP,
   useInView
 } from '@/components/landing/motion'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import type { PostMetadata } from '@/lib/posts'
-import { ENGAGEMENTS, PLATFORMS, PROCESS, SERVICES } from '@/lib/portfolio'
+import { ENGAGEMENTS, PLATFORMS, SERVICES } from '@/lib/portfolio'
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 
@@ -76,12 +74,12 @@ function ServicesSection() {
           tag='SERVICES'
           title={
             <>
-              What I automate
+              What comes off
               <br />
-              across your business.
+              your team&rsquo;s desk.
             </>
           }
-          blurb='Five ways I take manual work out of a business — from intake and onboarding through approvals, reporting and reconciliation. Every engagement ends with a documented workflow your team can run without me.'
+          blurb='Five kinds of work that stop being anyone&rsquo;s job — intake and onboarding, approvals, reporting, reconciliation. Every engagement ends with a documented workflow your team runs without me.'
         />
 
         <div ref={ref} className='grid gap-x-5 gap-y-5 pt-4 sm:grid-cols-2 lg:grid-cols-3'>
@@ -124,7 +122,7 @@ function ServicesSection() {
                 href={`/services/${s.slug}`}
                 className='text-fine text-ink mt-6 inline-flex items-center gap-2 self-start border-t border-transparent pt-1 transition-colors'
               >
-                <span className='bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-[position:0_100%] bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:bg-[length:100%_1px]'>
+                <span className='bg-[linear-gradient(currentColor,currentColor)] bg-size-[0%_1px] bg-position-[0_100%] bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:bg-size-[100%_1px]'>
                   View service
                 </span>
                 <span className='transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1'>
@@ -146,8 +144,8 @@ function ServicesSection() {
             <p className='text-fine text-ink-2 mt-3 max-w-[30ch]'>
               Describe the process that eats your week and I will tell you where it fits.
             </p>
-            <Cta href='/contact' className='mt-6 self-start'>
-              Ask me
+            <Cta href='#contact' className='mt-6 self-start'>
+              Book a workflow audit
             </Cta>
           </div>
         </div>
@@ -201,7 +199,7 @@ function PlatformsSection() {
               <ul className='mt-6 space-y-2.5'>
                 {p.bestFor.map(b => (
                   <li key={b} className='text-ink-2 flex items-start gap-2.5 text-[14px] leading-snug'>
-                    <span className='bg-ink/30 mt-[7px] h-1 w-1 shrink-0 rounded-full' />
+                    <span className='bg-ink/30 mt-1.75 h-1 w-1 shrink-0 rounded-full' />
                     {b}
                   </li>
                 ))}
@@ -210,68 +208,6 @@ function PlatformsSection() {
               <p className='border-rule text-ink-2 mt-6 border-t pt-5 text-[13px] leading-relaxed italic'>{p.note}</p>
             </div>
           ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// ── Process ──────────────────────────────────────────────────────────────────
-
-function ProcessSection() {
-  const { ref, inView } = useInView(0.08)
-
-  return (
-    <section id='process' className={SECTION}>
-      <div className={CONTAINER}>
-        <SectionIntro
-          tag='PROCESS'
-          variant='mono'
-          margin='mb-20'
-          titleClassName='mt-4 text-[clamp(2.25rem,5vw,4rem)]'
-          title='How I build automation'
-          blurb={<span className='font-mono'>From business problem to a working automation system.</span>}
-        />
-
-        {/* Steps */}
-        <div ref={ref} className='grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-4'>
-          {PROCESS.map((p, i) => (
-            <div key={p.step} className={READABLE} style={sweep(inView, i)}>
-              {/* Numeral with the rail running to the next step */}
-              <div className='flex items-center gap-3'>
-                <span className='text-ink text-[42px] leading-none font-light' style={{ fontFamily: DISPLAY_FONT }}>
-                  {p.step}
-                </span>
-                {i < PROCESS.length - 1 && (
-                  <span className='hidden flex-1 items-center gap-2 lg:flex' aria-hidden='true'>
-                    <span className='bg-ink/25 h-1.5 w-1.5 shrink-0 rounded-full' />
-                    <span className='bg-ink/12 h-px flex-1' />
-                  </span>
-                )}
-              </div>
-
-              <h3 className='text-ink mt-7 font-mono text-[14px] font-semibold tracking-[0.18em]'>{p.label}</h3>
-
-              <p className='text-ink mt-3.5 text-[14px] leading-snug font-medium'>{p.summary}</p>
-
-              <p className='text-ink-2 mt-3 text-[13.5px] leading-relaxed'>{p.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Closing prompt */}
-        <div
-          className='border-rule bg-surface mt-24 rounded-2xl border px-6 py-14 text-center'
-          style={rise(inView, PROCESS.length * SWEEP_STEP)}
-        >
-          <p className='text-ink-2 font-mono text-[14px] tracking-[0.18em]'>HAVE A PROCESS THAT FEELS TOO MANUAL?</p>
-          <a
-            href='/#contact'
-            className='bg-ink text-ground hover:bg-ink/90 mt-7 inline-flex items-center gap-2.5 rounded-full px-7 py-3.5 font-mono text-[13px] tracking-[0.14em] transition-colors'
-          >
-            Book a workflow audit
-            <ArrowIcon />
-          </a>
         </div>
       </div>
     </section>
@@ -320,14 +256,14 @@ function EngagementSection() {
               <ul className='mt-6 flex-1 space-y-2.5'>
                 {e.includes.map(it => (
                   <li key={it} className='text-ink-2 flex items-start gap-2.5 text-[14px] leading-snug'>
-                    <span className='bg-ink/30 mt-[7px] h-1 w-1 shrink-0 rounded-full' />
+                    <span className='bg-ink/30 mt-1.75 h-1 w-1 shrink-0 rounded-full' />
                     {it}
                   </li>
                 ))}
               </ul>
 
               <a
-                href='/contact'
+                href={e.href ?? '/contact'}
                 className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[13px] tracking-wide transition-colors ${
                   e.featured
                     ? 'bg-ink text-ground hover:bg-ink/90'
@@ -365,18 +301,28 @@ export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStu
         <ParticleField />
 
         <div className='relative z-10'>
+          {/* Proof before biography. The hero makes a specific promise, and
+              this used to answer it with "Hola, I'm Ramon" and three capability
+              sections — the reader had to extend credit until beat 6. */}
+          <ProjectsSection caseStudies={caseStudies} />
           <IntroSection />
           <ServicesSection />
           <PlatformsSection />
-          <ProjectsSection caseStudies={caseStudies} />
-          <ProcessSection />
-          <ToolStackSection />
           <PrinciplesSection />
           <ExperienceSection />
+
+          {/* Twenty-eight logos. Credibility by association, so it reads late
+              rather than standing between the promise and the evidence. */}
+          <ToolStackSection />
           <ArticlesSection posts={posts} />
+
+          {/* Corroboration immediately before the offer — the last thing read
+              before the ask should be somebody other than Ramon. Renders
+              nothing until a real quote replaces the drafts. */}
+          <TestimonialsSection />
           <EngagementSection />
           <ContactSection />
-          <CtaSection />
+          <CtaSection contactHref='#contact' />
           <SiteFooter />
         </div>
       </div>

@@ -126,10 +126,10 @@ export function IntroSection() {
             {/* ── CTA + socials ─────────────────────────────────────────── */}
             <div className='mt-10 flex flex-wrap items-center gap-4' style={reveal(300)}>
               <a
-                href='/contact'
+                href='#contact'
                 className='group bg-ink text-ground hover:bg-ink/90 inline-flex items-center gap-3 rounded-full py-2 pr-2 pl-6 text-[14px] tracking-wide transition-colors'
               >
-                Start a project
+                Book a workflow audit
                 <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
                   <svg width='13' height='13' viewBox='0 0 14 14' fill='none' aria-hidden='true'>
                     <path
@@ -209,7 +209,7 @@ export function IntroSection() {
             {/* Credentials strip */}
             <div className='divide-rule border-rule bg-surface mt-6 grid grid-cols-3 divide-x overflow-hidden rounded-xl border'>
               {[
-                { value: '10', label: 'yrs in business ops' },
+                { value: 'AP · GL', label: 'closed by hand for a decade' },
                 { value: 'MBA', label: 'business strategy' },
                 { value: 'n8n', label: 'cloud + self-hosted' }
               ].map(s => (

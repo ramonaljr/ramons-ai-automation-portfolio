@@ -3,10 +3,9 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { READABLE } from '@/components/landing/motion'
+import { SectionIntro } from '@/components/landing/section-intro'
 import type { Tool } from '@/lib/portfolio'
 import { TOOLS_ROW_1, TOOLS_ROW_2 } from '@/lib/portfolio'
-
-const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
 /**
  * Logos are monochrome simple-icons SVGs. Painting them through a CSS mask
@@ -109,25 +108,20 @@ export function ToolStackSection() {
     <section id='stack' className='border-rule overflow-hidden border-t py-32'>
       <div
         ref={ref}
-        className={`px-6 text-center md:px-12 lg:px-20 ${READABLE}`}
+        className={`px-6 md:px-12 lg:px-20 ${READABLE}`}
         style={{
           opacity: inView ? 1 : 0,
           transform: inView ? 'translateY(0)' : 'translateY(20px)',
           transition: 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)'
         }}
       >
-        <p className='text-ink-2 font-mono text-[13px] tracking-[0.25em]'>{'// TOOL STACK'}</p>
-
-        <h2
-          className='text-ink mt-5 text-[clamp(2rem,5vw,4rem)] leading-[1.05] font-light tracking-tight'
-          style={{ fontFamily: DISPLAY_FONT }}
-        >
-          Tools I <span className='text-[#6d28d9]'>Build With</span>
-        </h2>
-
-        <p className='text-ink-2 mx-auto mt-6 max-w-xl text-[15px] leading-relaxed'>
-          The platforms behind every system I ship — connected, automated, and running in production.
-        </p>
+        <SectionIntro
+          tag='TOOL STACK'
+          margin=''
+          titleClassName='mt-6 text-[clamp(2rem,4vw,3.25rem)]'
+          title='Everything it has to talk to.'
+          blurb='The platforms, models and business systems these workflows run on and connect into.'
+        />
       </div>
 
       {/* Marquee rows. Edges fade out so pills enter and leave rather than
