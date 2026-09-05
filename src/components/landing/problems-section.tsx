@@ -1,8 +1,15 @@
 'use client'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
-import { ArrowRight, CONTAINER, DISPLAY_FONT, READABLE, rise, SWEEP_STEP, useInView } from '@/components/landing/motion'
-import { SectionIntro } from '@/components/landing/section-intro'
+import {
+  ArrowRight,
+  CONTAINER,
+  DISPLAY_FONT,
+  READABLE,
+  useInView,
+  usePrefersReducedMotion
+} from '@/components/landing/motion'
+import { introStep, SectionIntro } from '@/components/landing/section-intro'
 
 /**
  * The first beat after the hero: the reader's week, in their own words.
@@ -42,6 +49,7 @@ function leadWith(caseStudies: CaseStudyMetadata[]) {
 
 export function ProblemsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
   const { ref, inView } = useInView<HTMLOListElement>(0.06)
+  const reduced = usePrefersReducedMotion()
   const shown = leadWith(caseStudies)
 
   // No delivered case study carries a short problem yet — say nothing rather
@@ -65,7 +73,11 @@ export function ProblemsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
             four overlapping `READABLE` pseudo-elements would blur as a band. */}
         <ol ref={ref} className={`border-rule border-t ${READABLE}`}>
           {shown.map((cs, i) => (
-            <li key={cs.slug} className='border-rule border-b' style={rise(inView, i * SWEEP_STEP)}>
+            <li
+              key={cs.slug}
+              className='border-rule border-b'
+              style={introStep(inView, reduced, { delay: 120 + i * 160, y: 30, blur: 10, duration: 0.95 })}
+            >
               <a
                 href={`/case-study/${cs.slug}`}
                 className='group grid grid-cols-[2.5rem_1fr] items-start gap-x-4 py-9 lg:grid-cols-[4rem_minmax(0,1fr)_auto] lg:gap-x-8 lg:py-11'

@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react'
 
+import { motion, useScroll, useTransform } from 'motion/react'
+
 /**
  * Design tokens and the reveal primitive shared by every surface that has to
  * sit alongside the landing page.
@@ -205,6 +207,57 @@ export function Reveal({
   return (
     <div ref={ref} className={className} style={rise(inView, delay)}>
       {children}
+    </div>
+  )
+}
+
+/**
+ * Vertical parallax, driven by the layer's own progress through the viewport.
+ *
+ * The ref sits on a wrapper that never moves and the transform goes on a child.
+ * `useScroll` measures with `getBoundingClientRect`, so putting both on one
+ * element feeds the transform back into its own measurement and the layer
+ * drifts a little further every frame.
+ *
+ * Travel is a percentage of the layer's height rather than a pixel amount, so
+ * the effect reads the same on a phone and on a 27" display.
+ *
+ * `direction='down'` is the background case: the layer lags the page, which is
+ * what reads as distance. `'up'` overtakes the page and reads as foreground.
+ *
+ * Reduced motion is gated here in JS, not by the duration override in
+ * globals.css — that override collapses transitions, and this writes
+ * `transform` inline on every frame instead of transitioning to it.
+ */
+export function ParallaxLayer({
+  children,
+  speed = 0.2,
+  direction = 'down',
+  className = '',
+  innerClassName = 'h-full w-full'
+}: {
+  children: ReactNode
+
+  /** Fraction of the layer's height it travels each way. 0.1 subtle, 0.5 strong. */
+  speed?: number
+  direction?: 'up' | 'down'
+  className?: string
+  innerClassName?: string
+}) {
+  const reduced = usePrefersReducedMotion()
+  const ref = useRef<HTMLDivElement>(null)
+
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+
+  const travel = speed * 100
+  const from = direction === 'up' ? travel : -travel
+  const y = useTransform(scrollYProgress, [0, 1], [`${from}%`, `${-from}%`])
+
+  return (
+    <div ref={ref} className={className}>
+      <motion.div className={innerClassName} style={reduced ? undefined : { y }}>
+        {children}
+      </motion.div>
     </div>
   )
 }

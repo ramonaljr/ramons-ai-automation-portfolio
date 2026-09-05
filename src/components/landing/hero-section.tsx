@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 
 import { HERO_STATS } from '@/lib/portfolio'
-import { CountUp, Cta } from '@/components/landing/motion'
+import { CountUp, Cta, ParallaxLayer } from '@/components/landing/motion'
 import { PetalField } from '@/components/landing/petal-field'
 
 /**
@@ -179,23 +179,26 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           the same warm neutral family as the ground, so it reads as atmosphere
           behind the headline instead of a photograph competing with it. */}
       <div className='absolute inset-0 z-0'>
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-hidden='true'
-          className='hero-drift h-full w-full object-cover opacity-[0.62]'
-          style={{
-            // Pushed right of centre: the trunk was landing in the same optical
-            // column as the headline's right edge and competing with it.
-            objectPosition: '72% center',
-            filter: 'saturate(0.42) sepia(0.22) brightness(1.04) contrast(1.06)'
-          }}
-        >
-          <source src='/video/hero-compute.mp4' type='video/mp4' />
-        </video>
-        {/* Cream veil from the left so the headline always has a clean ground */}
+        <ParallaxLayer className='absolute inset-0' speed={0.15} direction='down'>
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            aria-hidden='true'
+            className='hero-drift h-full w-full object-cover opacity-[0.62]'
+            style={{
+              // Pushed right of centre: the trunk was landing in the same optical
+              // column as the headline's right edge and competing with it.
+              objectPosition: '72% center',
+              filter: 'saturate(0.42) sepia(0.22) brightness(1.04) contrast(1.06)'
+            }}
+          >
+            <source src='/video/hero-compute.mp4' type='video/mp4' />
+          </video>
+        </ParallaxLayer>
+        {/* The veils stay put: they are what guarantees the headline a clean
+            ground, so they must not drift out from under it. */}
         <div className='from-ground via-ground/82 to-ground/10 absolute inset-0 bg-gradient-to-r' />
         <div className='from-ground/60 to-ground/85 absolute inset-0 bg-gradient-to-b via-transparent' />
       </div>
@@ -204,16 +207,18 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           absolutely-positioned divs this used to be — same drawing, no DOM, and
           it scales with the viewport instead of snapping to hardcoded percents.
           Masked to fade toward the right so it never competes with the video. */}
-      <div
-        className='pointer-events-none absolute inset-0 z-[2]'
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(to right, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 8.333%),' +
-            'repeating-linear-gradient(to bottom, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 12.5%)',
-          maskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)',
-          WebkitMaskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)'
-        }}
-      />
+      <ParallaxLayer className='pointer-events-none absolute inset-0 z-[2]' speed={0.06} direction='up'>
+        <div
+          className='h-full w-full'
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(to right, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 8.333%),' +
+              'repeating-linear-gradient(to bottom, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 12.5%)',
+            maskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)',
+            WebkitMaskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)'
+          }}
+        />
+      </ParallaxLayer>
 
       {/* Petals fall through the hero and settle into the constellation the
           rest of the page is drawn in — see PetalField for why. */}

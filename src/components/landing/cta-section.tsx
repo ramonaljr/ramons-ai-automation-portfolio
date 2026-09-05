@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowIcon, CONTAINER, DISPLAY_FONT, rise, useInView } from '@/components/landing/motion'
+import { ArrowIcon, CONTAINER, DISPLAY_FONT, ParallaxLayer, rise, useInView } from '@/components/landing/motion'
 import { PROFILE } from '@/lib/portfolio'
 
 /**
@@ -35,13 +35,15 @@ export function CtaSection({
           that the hero headline used to carry. Desaturating and warming it
           keeps the refracted-glass geometry, which is the part worth having,
           and drops the colour story that never belonged. */}
-      <img
-        src='/images/landing/footer.png'
-        alt=''
-        aria-hidden='true'
-        className='pointer-events-none absolute bottom-0 left-0 w-full object-cover object-bottom select-none'
-        style={{ opacity: 0.55, filter: 'saturate(0.2) sepia(0.32) brightness(1.04) contrast(1.04)' }}
-      />
+      <ParallaxLayer className='pointer-events-none absolute inset-0' speed={0.12} direction='up'>
+        <img
+          src='/images/landing/footer.png'
+          alt=''
+          aria-hidden='true'
+          className='absolute bottom-0 left-0 w-full object-cover object-bottom select-none'
+          style={{ opacity: 0.55, filter: 'saturate(0.2) sepia(0.32) brightness(1.04) contrast(1.04)' }}
+        />
+      </ParallaxLayer>
 
       {/* Progressive blur from the bottom */}
       <div
