@@ -133,7 +133,7 @@ const BlogPage = async () => {
                               width={1200}
                               height={750}
                               loading='lazy'
-                              className='h-[190px] w-full object-cover object-left-top transition-transform duration-500 group-hover:scale-[1.02]'
+                              className='h-[190px] w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]'
                             />
                           </a>
                         )}
