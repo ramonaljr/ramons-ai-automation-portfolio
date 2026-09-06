@@ -3,10 +3,13 @@ import type { ReactNode } from 'react'
 import { Geist_Mono, IBM_Plex_Sans } from 'next/font/google'
 import localFont from 'next/font/local'
 import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import { ThemeProvider } from '@/components/theme-provider'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Toaster } from '@/components/ui/sonner'
+
 import CustomCursor from '@/components/layout/custom-cursor'
 import EdgeBlur from '@/components/layout/edge-blur'
 
@@ -152,6 +155,17 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
           <Toaster />
           <CustomCursor />
         </ThemeProvider>
+
+        {/* Every copy decision on this site so far — the headline, keeping the
+            platform names in the H1, the plain-language pass — was made
+            without knowing where the traffic comes from. These answer that.
+
+            Both are cookieless and record no personal data, so there is
+            nothing to add to a privacy policy and no consent banner. They
+            render nothing and only load in a Vercel deployment, so local
+            development and any other host are unaffected. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
