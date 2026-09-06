@@ -250,14 +250,16 @@ function EngagementSection() {
               }`}
               style={sweep(inView, i)}
             >
-              <span className='flex flex-wrap items-baseline gap-x-3'>
-                <span className='text-ink-2 font-mono text-[12px] tracking-widest'>{e.duration.toUpperCase()}</span>
-                {e.startingAt ? <span className='text-accent font-mono text-[12px]'>{e.startingAt}</span> : null}
-              </span>
+              <span className='text-ink-2 font-mono text-[12px] tracking-widest'>{e.duration.toUpperCase()}</span>
               <h3 className='text-ink mt-3 text-2xl font-light tracking-tight' style={{ fontFamily: DISPLAY_FONT }}>
                 {e.name}
               </h3>
-              <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{e.summary}</p>
+
+              {/* Recognition before description: a reader scanning three tiers
+                  picks the one they see themselves in, so that line leads and
+                  carries full ink. What the tier delivers follows, quieter. */}
+              <p className='text-ink mt-3 text-[14px] leading-relaxed'>{e.forWhen}</p>
+              <p className='text-ink-2 mt-2 text-[14px] leading-relaxed'>{e.summary}</p>
 
               <ul className='mt-6 flex-1 space-y-2.5'>
                 {e.includes.map(it => (
