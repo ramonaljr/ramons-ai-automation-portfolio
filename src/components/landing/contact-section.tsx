@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { manilaDateKey, MAX_BOOKING_DAYS } from '@/lib/booking-policy'
+
 import { PROFILE } from '@/lib/portfolio'
 import { SectionIntro } from '@/components/landing/section-intro'
 
@@ -109,7 +111,8 @@ export function ContactSection() {
   // `today` must resolve on the client — deriving it during render would make
   // the server and client disagree on which dates are selectable.
   useEffect(() => {
-    const now = new Date()
+    const [year, month, day] = manilaDateKey().split('-').map(Number)
+    const now = new Date(year, month - 1, day)
 
     now.setHours(0, 0, 0, 0)
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -176,8 +179,11 @@ export function ContactSection() {
   const selectable = (d: Date) => {
     if (!today) return false
     const dow = d.getDay()
+    const latest = new Date(today)
 
-    return d >= today && dow !== 0 && dow !== 6 // weekdays, today onward
+    latest.setDate(latest.getDate() + MAX_BOOKING_DAYS)
+
+    return d >= today && d <= latest && dow !== 0 && dow !== 6
   }
 
   const shift = (by: number) => {
@@ -188,6 +194,12 @@ export function ContactSection() {
   }
 
   const atEarliestMonth = !!today && !!cursor && cursor.y === today.getFullYear() && cursor.m === today.getMonth()
+  const latest = today ? new Date(today) : null
+
+  latest?.setDate(latest.getDate() + MAX_BOOKING_DAYS)
+
+  const atLatestMonth =
+    !!latest && !!cursor && cursor.y === latest.getFullYear() && cursor.m === latest.getMonth()
 
   const ready = picked && time
 
@@ -341,8 +353,9 @@ export function ContactSection() {
                 <button
                   type='button'
                   onClick={() => shift(1)}
+                  disabled={atLatestMonth}
                   aria-label='Next month'
-                  className='border-rule text-ink-2 hover:text-ink hover:border-rule-strong flex h-8 w-8 items-center justify-center rounded-lg border transition-all'
+                  className='border-rule text-ink-2 hover:text-ink hover:border-rule-strong flex h-8 w-8 items-center justify-center rounded-lg border transition-all disabled:pointer-events-none disabled:opacity-30'
                 >
                   <Icon d={PATHS.chevR} />
                 </button>

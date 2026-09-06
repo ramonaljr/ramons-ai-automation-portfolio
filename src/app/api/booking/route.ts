@@ -1,11 +1,23 @@
 import { NextResponse } from 'next/server'
 
+import { validateBookingSlot } from '@/lib/booking-policy'
 import { callN8n } from '@/lib/n8n'
+import { consumeRateLimit, requestClientKey } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function POST(req: Request) {
+  const clientKey = requestClientKey(req)
+  const rateLimit = consumeRateLimit(`booking:${clientKey}`, 5, 10 * 60_000)
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { ok: false, error: 'rate_limited' },
+      { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfterSeconds) } }
+    )
+  }
+
   let payload: Record<string, unknown>
 
   try {
@@ -24,6 +36,12 @@ export async function POST(req: Request) {
     topic: str(payload.topic, 200),
     notes: str(payload.notes, 2000),
     timezone: 'Asia/Manila'
+  }
+
+  const slot = validateBookingSlot(body.date, body.time)
+
+  if (!slot.valid) {
+    return NextResponse.json({ ok: false, error: 'invalid', errors: slot.errors }, { status: 400 })
   }
 
   try {

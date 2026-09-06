@@ -136,6 +136,18 @@ const ContactForm = ({ className }: ContactFormProps) => {
         return
       }
 
+      if (res.status === 429) {
+        toast.error('Too many booking attempts. Please wait a few minutes and try again.')
+
+        return
+      }
+
+      if (booking && res.status === 400) {
+        toast.error('That booking time is no longer valid. Please return to the calendar and choose another slot.')
+
+        return
+      }
+
       toast.error(
         res.status === 503
           ? 'Cannot reach the booking service right now. Please email me directly.'
