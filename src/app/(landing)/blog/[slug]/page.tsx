@@ -237,7 +237,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
             {metadata.coverImage && (
               <Reveal className='mt-14' threshold={0.05}>
                 <div className='border-rule bg-surface-raised rounded-2xl border p-3'>
-                  {/* Decorative: it is an abstract cover sitting directly under an
+                  {/* Decorative: it is an editorial cover sitting directly under an
                     h1 that already says the title, so repeating the title as
                     alt only makes a screen reader read it twice. */}
                   <img src={metadata.coverImage} alt='' aria-hidden='true' className='w-full rounded-xl' />
