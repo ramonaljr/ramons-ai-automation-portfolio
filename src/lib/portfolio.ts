@@ -551,17 +551,19 @@ export const EXPERIENCE: Role[] = [
 /**
  * Engagement tiers.
  *
- * `startingAt` is deliberately unset. The audit found that three tiers with no
- * price anchor and (at the time) three identical CTAs give a reader no basis
- * to self-select, which is what "Three ways to start" is for. Fill these in —
- * "from $X" or "$X–$Y" — and the figure renders above each tier name. Left
- * blank, the tiers read exactly as they do now.
+ * `forWhen` names the state the reader is in, not what they get — that is
+ * `summary`'s job. Three tiers with no way to tell them apart give a reader no
+ * basis to choose one, which is what "Three ways to start" is for. A price
+ * would have solved that too, and was the first thing considered, but it would
+ * contradict the section's own blurb and the chatbot's instruction never to
+ * quote one — and it anchors the ceiling before the problem has been
+ * described. Recognition does the same job without a number.
  */
 export const ENGAGEMENTS = [
   {
     name: 'Automation Audit',
     duration: '1 week',
-    startingAt: '',
+    forWhen: 'You know something is eating the week, but not what to automate first.',
     summary: 'Map what you do manually and what is worth automating.',
     includes: [
       'Process and SOP mapping',
@@ -575,6 +577,7 @@ export const ENGAGEMENTS = [
   {
     name: 'Fixed-Scope Build',
     duration: '1 to 4 weeks',
+    forWhen: 'You know exactly which process, and want it shipped and handed over.',
     summary: 'One pipeline, built, tested against real data and documented.',
     includes: [
       'Architecture and error design',
@@ -588,6 +591,7 @@ export const ENGAGEMENTS = [
   {
     name: 'Ongoing Retainer',
     duration: 'Monthly',
+    forWhen: 'You already have workflows running and need them to keep running.',
     summary: 'Keep existing workflows healthy and keep extending them.',
     includes: [
       'Monitoring and failure alerts',
