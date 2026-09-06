@@ -44,13 +44,15 @@ export const metadata: Metadata = {
     default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
   },
   description:
-    'End-to-end business automation. I build production n8n, Zapier and Make workflows, AI agents, and RAG knowledge systems that remove manual work across intake, onboarding, approvals, reporting and reconciliation — backed by 10 years running those operations and an MBA.',
+    'Production automation on n8n, Zapier, Make and GoHighLevel — AI agents, LLM integrations and RAG systems that take manual work off your team’s desk.',
   robots: 'index,follow',
   keywords: [
     'AI Automation Specialist',
     'n8n developer',
     'Zapier expert',
     'Make.com automation',
+    'GoHighLevel automation',
+    'GoHighLevel developer',
     'workflow automation consultant',
     'Claude API integration',
     'OpenAI automation',
@@ -106,7 +108,7 @@ export const metadata: Metadata = {
       default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
     },
     description:
-      'End-to-end business automation on n8n, Zapier and Make — AI agents, LLM integrations and RAG knowledge systems that take manual work out of intake, approvals, reporting and reconciliation.',
+      'Production automation on n8n, Zapier, Make and GoHighLevel — AI agents, LLM integrations and RAG systems that take manual work off your team’s desk.',
     type: 'website',
     siteName: 'Ramon A. Vallejera, Jr.',
     url: SITE_URL,
@@ -127,7 +129,7 @@ export const metadata: Metadata = {
       default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
     },
     description:
-      'End-to-end business automation on n8n, Zapier and Make — AI agents, LLM integrations and RAG knowledge systems that take manual work out of intake, approvals, reporting and reconciliation.'
+      'Production automation on n8n, Zapier, Make and GoHighLevel — AI agents, LLM integrations and RAG systems that take manual work off your team’s desk.'
   }
 }
 

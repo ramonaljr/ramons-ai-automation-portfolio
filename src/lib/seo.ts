@@ -124,7 +124,7 @@ export function blogIndexLd(posts: PostMetadata[]) {
     '@id': `${abs('/blog')}#blog`,
     name: 'Notes on automation',
     description:
-      'Working notes on n8n, Zapier and Make — architecture decisions, failure modes, and what holds up in production.',
+      'Working notes on n8n, Zapier, Make and GoHighLevel — architecture decisions, failure modes, and what holds up in production.',
     url: abs('/blog'),
     inLanguage: 'en-US',
     author: authorNode,

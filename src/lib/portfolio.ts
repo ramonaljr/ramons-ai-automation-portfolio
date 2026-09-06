@@ -307,6 +307,17 @@ export const PLATFORMS: Platform[] = [
       'Heavy data transformation'
     ],
     note: 'The middle ground: more power than Zapier, gentler than self-hosting.'
+  },
+  {
+    name: 'GoHighLevel',
+    tagline: 'CRM, funnels and outreach in one place',
+    bestFor: [
+      'Pipelines, funnels and lead capture',
+      'SMS, email and voice campaigns',
+      'Client sub-accounts and agency snapshots',
+      'Extended with n8n over its API'
+    ],
+    note: 'The odd one out, deliberately: a CRM platform with a builder inside, not a general-purpose engine. Right when the CRM is the product rather than a system to sync.'
   }
 ]
 
@@ -567,7 +578,7 @@ export const ENGAGEMENTS = [
     summary: 'One pipeline, built, tested against real data and documented.',
     includes: [
       'Architecture and error design',
-      'Build on n8n, Zapier or Make',
+      'Build on n8n, Zapier, Make or GoHighLevel',
       'Testing against your edge cases',
       'Documentation and handover'
     ],

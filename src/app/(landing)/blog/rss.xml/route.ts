@@ -57,7 +57,7 @@ export async function GET() {
   <channel>
     <title>${escapeXml(`${PROFILE.name} — Notes on automation`)}</title>
     <link>${abs('/blog')}</link>
-    <description>Working notes on n8n, Zapier and Make — architecture decisions, failure modes, and what holds up in production.</description>
+    <description>Working notes on n8n, Zapier, Make and GoHighLevel — architecture decisions, failure modes, and what holds up in production.</description>
     <language>en-us</language>
     <managingEditor>${PROFILE.email} (${escapeXml(PROFILE.name)})</managingEditor>
     <webMaster>${PROFILE.email} (${escapeXml(PROFILE.name)})</webMaster>

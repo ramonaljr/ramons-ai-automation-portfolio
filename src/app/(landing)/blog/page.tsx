@@ -14,14 +14,14 @@ import { blogIndexLd, breadcrumbLd, graph, socialImage } from '@/lib/seo'
 const INDEX_TITLE = 'Notes on automation'
 
 const INDEX_DESCRIPTION =
-  'Working notes on AI automation — n8n, Zapier and Make, LLM and RAG integrations, error handling, and what actually holds up in production.'
+  'Working notes on AI automation — n8n, Zapier, Make and GoHighLevel, LLM and RAG integrations, error handling, and what actually holds up in production.'
 
 export const metadata: Metadata = {
   // "Blog" told a search result nothing. The title template appends the name,
   // so this reads as "Notes on automation - Ramon Vallejera Jr." in a SERP.
   title: INDEX_TITLE,
   description: INDEX_DESCRIPTION,
-  keywords: ['n8n', 'Zapier', 'Make.com', 'workflow automation', 'RAG', 'AI agents', 'error handling'],
+  keywords: ['n8n', 'Zapier', 'Make.com', 'GoHighLevel', 'workflow automation', 'RAG', 'AI agents', 'error handling'],
   alternates: {
     canonical: abs('/blog'),
 
@@ -84,8 +84,8 @@ const BlogPage = async () => {
           </h1>
 
           <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
-            Working notes on n8n, Zapier and Make — architecture decisions, failure modes, and what actually holds up in
-            production.
+            Working notes on n8n, Zapier, Make and GoHighLevel — architecture decisions, failure modes, and what
+            actually holds up in production.
           </p>
 
           {posts.length > 0 && (
