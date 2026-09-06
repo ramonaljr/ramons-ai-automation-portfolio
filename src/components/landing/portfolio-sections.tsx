@@ -171,10 +171,13 @@ function PlatformsSection() {
               for the job.
             </>
           }
-          blurb='I build in all three. Which one you should use depends on your data, your volume, and who has to maintain it afterwards.'
+          blurb='I build in all four. Which one you should use depends on your data, your volume, and who has to maintain it afterwards.'
         />
 
-        <div ref={ref} className='grid gap-5 md:grid-cols-3'>
+        {/* Two-up before four-up: each card carries a tagline, four bullets
+            and a note, which is too much to read at a quarter of 1400px until
+            there is real width for it. */}
+        <div ref={ref} className='grid gap-5 sm:grid-cols-2 xl:grid-cols-4'>
           {PLATFORMS.map((p, i) => (
             <div
               key={p.name}

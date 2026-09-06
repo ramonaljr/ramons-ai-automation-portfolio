@@ -1,11 +1,11 @@
 ---
 slug: 'n8n-zapier-or-make'
 title: 'n8n, Zapier or Make: how I actually choose'
-description: 'There is no best automation platform, only a best fit for your data, your volume, and whoever maintains the thing after I leave. Four criteria in the order they actually decide it, and the one that overrides all the others.'
+description: 'There is no best automation platform, only a best fit for your data, your volume, and whoever maintains the thing after I leave. Four criteria in the order they actually decide it — plus where GoHighLevel sits, since it is not competing in the same category.'
 publishedAt: '2026-08-05'
-updatedAt: '2026-09-05'
+updatedAt: '2026-09-06'
 category: 'Platforms'
-tags: ['n8n', 'Zapier', 'Make', 'Platform Selection']
+tags: ['n8n', 'Zapier', 'Make', 'GoHighLevel', 'Platform Selection']
 coverImage: '/images/blog/n8n-zapier-or-make.svg'
 # DRAFT — expanded 2026-09-05. Structure and technical claims are accurate;
 # the voice is not yet yours. Read it through and make it sound like you
@@ -88,6 +88,30 @@ This site's own booking, contact and chat run on self-hosted n8n. Four webhooks 
 
 I mention it because it is the smallest possible version of criterion one: even here, where the data is just enquiries and calendar slots, self-hosting meant I could put the whole thing behind a shared secret and keep the surface area to nothing. That is the kind of control you are buying.
 
+## Where GoHighLevel fits
+
+GoHighLevel comes up often enough in this conversation that it deserves an answer, and the answer is that it is not competing in the same category.
+
+n8n, Zapier and Make are general-purpose engines. They start empty and connect whatever you point them at. GoHighLevel starts as a CRM — pipelines, funnels, calendars, SMS and email campaigns — that happens to include a workflow builder for orchestrating those things.
+
+That difference decides when to reach for it. **If the CRM is the product, GoHighLevel is the platform.** If the CRM is one of six systems you need to keep in sync, it is not.
+
+Where it is the right call:
+
+- The pipeline, the funnel, the landing page and the outreach all live in one place, and you would otherwise be stitching four tools together to get there
+- The work is multi-channel follow-up — SMS, email, voice, missed-call text-back — where having the contact record and the messaging in the same system removes an entire class of sync problem
+- You are running the same build across several client sub-accounts, where snapshots make provisioning the tenth client a copy rather than a project
+
+Where it is not:
+
+- The logic outgrows its builder, which happens sooner than people expect once conditions get genuinely complicated
+- You need to talk to systems it has no native connector for
+- The data cannot live in a hosted platform, which puts you back at criterion one
+
+The practical pattern is not either/or. GoHighLevel handles the CRM, the campaigns and the client-facing surface; n8n sits behind it over the API and webhooks, doing the branching, the enrichment and the integrations its native builder cannot express cleanly. That combination gets used more than any argument about which one is better.
+
+Judged as a general-purpose automation engine, GoHighLevel loses to all three. Judged as what it actually is, that comparison was never the point.
+
 ## Where I land, most of the time
 
 - **Sensitive data, complex logic, AI agents, high volume** — n8n, usually self-hosted
@@ -106,5 +130,7 @@ Ask, in this order:
 2. **How many steps a month, after fan-out?** Low, Zapier. High, n8n or Make.
 3. **Who edits this in six months?** Build for that person, not for me.
 4. **What does the logic look like?** Linear, Zapier. Reshaping, Make. Branching, code or AI, n8n.
+
+And before any of it: **is the CRM the product?** If the pipeline, the campaigns and the funnel are the job rather than one system among many, GoHighLevel is the platform and the question above is about what sits behind it.
 
 Most arguments about automation platforms are really arguments about one of those four, conducted without naming which.

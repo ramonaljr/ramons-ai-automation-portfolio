@@ -42,6 +42,7 @@ const jsonLd = {
         'n8n',
         'Zapier',
         'Make.com',
+        'GoHighLevel',
         'Workflow automation',
         'Claude API',
         'OpenAI API',
@@ -56,7 +57,7 @@ const jsonLd = {
       '@id': `${SITE_URL}#practice`,
       name: `${PROFILE.name} — AI Automation`,
       description:
-        'Production automation built on n8n, Zapier and Make, with LLM integrations, RAG knowledge systems and AI voice agents.',
+        'Production automation built on n8n, Zapier, Make and GoHighLevel, with LLM integrations, RAG knowledge systems and AI voice agents.',
       url: SITE_URL,
       email: `mailto:${PROFILE.email}`,
       areaServed: 'Worldwide',

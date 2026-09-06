@@ -246,7 +246,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           >
             <span className='inline-flex items-center gap-3'>
               <span className='bg-ink/25 h-px w-8' />
-              <span className='eyebrow'>n8n · Zapier · Make</span>
+              <span className='eyebrow'>n8n · Zapier · Make · GoHighLevel</span>
             </span>
           </div>
 

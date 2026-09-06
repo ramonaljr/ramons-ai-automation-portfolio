@@ -8,7 +8,9 @@ const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
 type Message = { id: number; role: 'user' | 'bot'; text: string }
 
-const SUGGESTIONS = ['What can you automate for me?', 'n8n, Zapier or Make?', 'How much does a build cost?']
+// Deliberately not a list of platform names: it went stale the moment a
+// fourth one was added, and the answer is the same question either way.
+const SUGGESTIONS = ['What can you automate for me?', 'Which platform should I use?', 'How much does a build cost?']
 
 const GREETING =
   "Hi — I'm Ramon's assistant. Ask me about automation, the platforms I build on, or how an engagement works."

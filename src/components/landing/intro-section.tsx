@@ -89,7 +89,7 @@ export function IntroSection() {
               </p>
               <p className='text-ink-2 text-[15.5px] leading-[1.7]'>
                 Today I build production automation on{' '}
-                <span className='text-ink font-medium'>n8n, Zapier and Make</span> — AI agents,{' '}
+                <span className='text-ink font-medium'>n8n, Zapier, Make and GoHighLevel</span> — AI agents,{' '}
                 <span className='text-ink font-medium'>Claude and OpenAI integrations</span>,{' '}
                 <span className='text-ink font-medium'>RAG knowledge systems</span> and multi-system pipelines across
                 Google Workspace, Airtable and Telegram.
