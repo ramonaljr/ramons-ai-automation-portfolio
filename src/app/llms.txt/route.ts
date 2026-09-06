@@ -24,7 +24,13 @@ import { abs } from '@/lib/site'
 export const dynamic = 'force-static'
 
 export async function GET() {
-  const [posts, caseStudies] = await Promise.all([getPosts(), getCaseStudies()])
+  const [posts, allCaseStudies] = await Promise.all([getPosts(), getCaseStudies()])
+
+  // Delivered work first, same as the site's own work section. getCaseStudies
+  // orders by date and the two illustrative builds happen to be the newest, so
+  // the raw order opened this list on two samples — the first thing an
+  // assistant would read, and the least representative.
+  const caseStudies = [...allCaseStudies].sort((a, b) => Number(Boolean(a.sample)) - Number(Boolean(b.sample)))
 
   // Illustrative builds are labelled rather than hidden. An assistant that
   // cites one as delivered client work would be repeating a claim this site
@@ -47,7 +53,7 @@ ${SERVICES.map(s => line(s.title, abs(`/services/${s.slug}`), `${s.description} 
 
 ## Platforms
 
-${PLATFORMS.map(p => `- **${p.name}**${p.primary ? ' (primary)' : ''}: ${p.tagline}. Best for ${p.bestFor.join(', ').toLowerCase()}. ${p.note}`).join('\n')}
+${PLATFORMS.map(p => `- **${p.name}**${p.primary ? ' (primary)' : ''}: ${p.tagline}. Best for ${p.bestFor.join('; ')}. ${p.note}`).join('\n')}
 
 ## Selected work
 
@@ -67,7 +73,7 @@ ${posts.map(p => line(p.title ?? p.slug, abs(`/blog/${p.slug}`), p.description))
 
 ## Working together
 
-${ENGAGEMENTS.map(e => `- **${e.name}** (${e.duration}): ${e.summary} Includes ${e.includes.join(', ').toLowerCase()}.`).join('\n')}
+${ENGAGEMENTS.map(e => `- **${e.name}** (${e.duration}): ${e.summary} Includes ${e.includes.join('; ')}.`).join('\n')}
 
 Pricing is quoted per project and depends on the systems involved and the volume. No rate card is published.
 
