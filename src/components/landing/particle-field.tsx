@@ -210,11 +210,58 @@ export function ParticleField({ className = '' }: { className?: string }) {
       }
     }
 
+    const drawHeroHandoff = (now: number) => {
+      const journey = Math.max(0, -wrap.getBoundingClientRect().top)
+      const visibility = Math.max(0, Math.min(1, 1 - journey / (h * 0.72)))
+
+      if (visibility <= 0) return
+
+      ;[-1, 1].forEach((side, index) => {
+        const entryX = side === -1 ? w * 0.12 : w * 0.88
+        const innerX = side === -1 ? w * 0.22 : w * 0.78
+
+        const points = [
+          { x: entryX, y: -8 },
+          { x: entryX, y: 54 },
+          { x: innerX, y: 54 },
+          { x: innerX, y: 96 }
+        ]
+
+        ctx.strokeStyle = `rgba(235, 240, 248, ${0.22 * visibility})`
+        ctx.lineWidth = 0.9
+        ctx.beginPath()
+        ctx.moveTo(points[0].x, points[0].y)
+
+        for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y)
+
+        ctx.stroke()
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.68 * visibility})`
+        ctx.beginPath()
+        ctx.arc(innerX, 54, 1.5, 0, Math.PI * 2)
+        ctx.fill()
+
+        const progress = ((now * 0.09 + index * 0.46) % 1 + 1) % 1
+        const packet = pointAlongRoute(points, progress)
+        const red = Math.round(244 + 11 * progress)
+        const green = Math.round(114 + 141 * progress)
+        const blue = Math.round(152 + 103 * progress)
+
+        ctx.save()
+        ctx.translate(packet.x, packet.y)
+        ctx.rotate(packet.angle)
+        ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${0.9 * visibility})`
+        ctx.fillRect(-3.5, -1.45, 7, 2.9)
+        ctx.restore()
+      })
+    }
+
     const draw = () => {
       ctx.clearRect(0, 0, w, h)
 
       const now = performance.now() * 0.001
 
+      drawHeroHandoff(now)
       routes.forEach((route, index) => drawRoute(route, index, now))
 
       if (pointer.active && !reduced) {
@@ -304,7 +351,12 @@ export function ParticleField({ className = '' }: { className?: string }) {
   }, [])
 
   return (
-    <div ref={wrapRef} aria-hidden='true' className={`automation-field pointer-events-none absolute inset-0 ${className}`}>
+    <div
+      ref={wrapRef}
+      aria-hidden='true'
+      data-motion-story='petal-to-packet'
+      className={`automation-field pointer-events-none absolute inset-0 ${className}`}
+    >
       <div ref={boxRef} className='sticky top-0 h-screen w-full overflow-hidden'>
         <canvas ref={canvasRef} className='h-full w-full' />
       </div>

@@ -304,9 +304,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
         </div>
       </div>
 
-      {/* Progressive blur + cream gradient rising from the bottom, so the hero
-          melts into the sections below instead of cutting hard. Mirrors the
-          treatment the Agentic template uses on its own hero. */}
+      {/* A tonal fade joins the hero to the routed system below. Keeping this
+          blur-free lets the petal-to-packet morph remain crisp in Chromium. */}
       <div
         className='pointer-events-none absolute inset-x-0 bottom-0 z-20'
         style={{
@@ -314,26 +313,6 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           background:
             'linear-gradient(to top, var(--ground) 0%, color-mix(in oklch, var(--ground) 85%, transparent) 35%,' +
             ' color-mix(in oklch, var(--ground) 40%, transparent) 65%, transparent 100%)'
-        }}
-      />
-      <div
-        className='pointer-events-none absolute inset-x-0 bottom-0 z-20'
-        style={{
-          height: '14%',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          maskImage: 'linear-gradient(to top, black 0%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to top, black 0%, transparent 100%)'
-        }}
-      />
-      <div
-        className='pointer-events-none absolute inset-x-0 bottom-0 z-20'
-        style={{
-          height: '26%',
-          backdropFilter: 'blur(4px)',
-          WebkitBackdropFilter: 'blur(4px)',
-          maskImage: 'linear-gradient(to top, black 0%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to top, black 0%, transparent 100%)'
         }}
       />
     </section>

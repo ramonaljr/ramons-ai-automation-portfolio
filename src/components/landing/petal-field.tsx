@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 
 /** The hero owns one visual language: the blossom video and drifting petals. */
 const PETAL = [244, 114, 152] as const
+const PACKET = [255, 255, 255] as const
 
 type Petal = {
   x: number
@@ -16,7 +17,7 @@ type Petal = {
   spin: number
   angle: number
   r: number
-
+  lane: -1 | 1
 }
 
 export function PetalField({ className = '' }: { className?: string }) {
@@ -57,6 +58,7 @@ export function PetalField({ className = '' }: { className?: string }) {
       p.spin = (Math.random() - 0.5) * 0.02
       p.angle = Math.random() * Math.PI * 2
       p.r = 3.4 + Math.random() * 3.6
+      p.lane = p.x < w / 2 ? -1 : 1
     }
 
     const resize = () => {
@@ -86,14 +88,23 @@ export function PetalField({ className = '' }: { className?: string }) {
       })
     }
 
-    /** One petal: a rounded lozenge that narrows to a point at each end. */
+    const transitionFor = (p: Petal) => {
+      const raw = Math.max(0, Math.min(1, (p.y / h - 0.62) / 0.34))
+
+      return raw * raw * (3 - 2 * raw)
+    }
+
+    /** The blossom lozenge narrows and turns white as it becomes a packet. */
     const drawPetal = (p: Petal) => {
-      const rx = p.r
-      const ry = p.r * 0.58
+      const transition = transitionFor(p)
+      const rx = p.r + (3.5 - p.r) * transition
+      const ry = p.r * 0.58 + (1.45 - p.r * 0.58) * transition
+      const color = PETAL.map((channel, index) => Math.round(channel + (PACKET[index] - channel) * transition))
+      const alpha = (dark ? 0.68 : 0.58) + transition * 0.24
 
       ctx.save()
       ctx.translate(p.x, p.y)
-      ctx.rotate(p.angle)
+      ctx.rotate(p.angle * (1 - transition))
 
       ctx.beginPath()
       ctx.moveTo(-rx, 0)
@@ -101,9 +112,29 @@ export function PetalField({ className = '' }: { className?: string }) {
       ctx.quadraticCurveTo(0, ry * 1.7, -rx, 0)
       ctx.closePath()
 
-      ctx.fillStyle = `rgba(${PETAL.join(', ')}, ${dark ? 0.68 : 0.58})`
+      ctx.fillStyle = `rgba(${color.join(', ')}, ${alpha})`
       ctx.fill()
       ctx.restore()
+    }
+
+    const drawHandoffPorts = () => {
+      const color = dark ? '255, 255, 255' : '42, 39, 36'
+
+      ;[-1, 1].forEach(side => {
+        const x = side === -1 ? w * 0.12 : w * 0.88
+
+        ctx.strokeStyle = `rgba(${color}, ${dark ? 0.2 : 0.13})`
+        ctx.lineWidth = 0.8
+        ctx.beginPath()
+        ctx.moveTo(x, h - 34)
+        ctx.lineTo(x, h)
+        ctx.stroke()
+
+        ctx.fillStyle = `rgba(${color}, ${dark ? 0.72 : 0.46})`
+        ctx.beginPath()
+        ctx.arc(x, h - 34, 1.5, 0, Math.PI * 2)
+        ctx.fill()
+      })
     }
 
     const draw = () => {
@@ -111,12 +142,17 @@ export function PetalField({ className = '' }: { className?: string }) {
 
       for (let i = 0; i < petals.length; i++) {
         const p = petals[i]
+        const transition = transitionFor(p)
 
         if (!reduced) {
-          p.phase += 0.012
-          p.y += p.vy
-          p.x += Math.sin(p.phase) * p.sway
-          p.angle += p.spin
+          p.phase += 0.012 * (1 - transition * 0.65)
+          p.y += p.vy * (1 + transition * 0.35)
+          p.x += Math.sin(p.phase) * p.sway * (1 - transition)
+          p.angle += p.spin * (1 - transition)
+
+          const laneX = p.lane === -1 ? w * 0.12 : w * 0.88
+
+          p.x += (laneX - p.x) * transition * 0.006
 
           if (pointer.active) {
             const dx = p.x - pointer.x
@@ -139,6 +175,8 @@ export function PetalField({ className = '' }: { className?: string }) {
 
         drawPetal(p)
       }
+
+      drawHandoffPorts()
     }
 
     const tick = () => {
