@@ -2,49 +2,23 @@
 
 import { useEffect, useRef } from 'react'
 
-/**
- * Constellation backdrop for the lower half of the page.
- *
- * Written directly against canvas rather than pulling particles.js from a CDN:
- * that library is unmaintained (last release 2015), ships ~25KB over the wire
- * on every visit, and its `onclick: push` mode grows the particle count without
- * bound. This does the same job with no network request and a fixed budget.
- *
- * Three things keep it cheap:
- *  - The canvas is viewport-sized and sticky, so covering a ~10,000px region
- *    costs one screen of pixels rather than a 56MB backing store.
- *  - The loop stops entirely when the section is off-screen or the tab is
- *    hidden, so it burns nothing while you are reading the hero.
- *  - Link lines are found with a single triangular pass, and the alpha is
- *    derived from distance without a sqrt in the inner comparison.
- */
+type FlowPoint = { x: number; y: number }
 
-/**
- * Backdrop weights, kept in the same register as the rest of the page.
- *
- * These started at 0.40 / 0.30, which is where the field became a legibility
- * problem: section rules on this page are `black/0.06` and tag chips are
- * `black/0.04`, so the constellation was painting roughly ten times heavier
- * than any other background element and reading as foreground. Particles also
- * clump as they random-walk, and those clusters landed on body copy as dense
- * webs of lines that broke up word shapes.
- */
-const LIGHT_DOT = '42, 39, 36'
-const LIGHT_LINK = '42, 39, 36'
-const DARK_DOT = '255, 255, 255'
-const DARK_LINK = '255, 255, 255'
-
-type P = {
-  x: number
-  y: number
-  vx: number
-  vy: number
-  r: number
-  depth: number
+type FlowRoute = {
+  points: FlowPoint[]
   phase: number
-  twinkle: number
+  speed: number
+  direction: 1 | -1
 }
 
+/**
+ * A restrained automation-flow backdrop for the lower page.
+ *
+ * Short routed circuits live mainly in the outer thirds of the viewport, so
+ * the animation supports the content instead of drawing a web over it. Data
+ * packets move through the routes, junctions respond gently to the pointer,
+ * and the whole field shifts at a slower rate than the page scroll.
+ */
 export function ParticleField({ className = '' }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -62,57 +36,62 @@ export function ParticleField({ className = '' }: { className?: string }) {
     if (!ctx) return
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const detectDark = () => canvas.closest('.dark') !== null || document.documentElement.classList.contains('dark')
 
     let w = 0
     let h = 0
-    let dpr = 1
-    let particles: P[] = []
+    let routes: FlowRoute[] = []
     let raf = 0
     let running = false
-
-    // Landing pages carry their forced dark theme on the nearest `.dark`
-    // scope. Reading only <html> made the canvas race the outer next-themes
-    // provider, so Chrome could paint light-theme (near-black) particles over
-    // the dark landing page while Safari happened to resolve the root dark.
-    const detectDark = () => canvas.closest('.dark') !== null || document.documentElement.classList.contains('dark')
     let dark = detectDark()
     let pointer = { x: 0, y: 0, active: false }
 
-    const LINK = 145
-    const LINK_SQ = LINK * LINK
+    const seeded = (seed: number) => {
+      const value = Math.sin(seed * 91.733) * 43758.5453
 
-    const makeParticle = (x = Math.random() * w, y = Math.random() * h): P => {
-      const depth = 0.35 + Math.random() * 0.65
+      return value - Math.floor(value)
+    }
+
+    const createRoute = (index: number, count: number, desktop: boolean): FlowRoute => {
+      const fromLeft = index % 2 === 0
+      const baseY = ((index + 0.7) / count) * h
+      const verticalRange = desktop ? 72 : 48
+      const y1 = baseY + (seeded(index + 2) - 0.5) * verticalRange
+      const y2 = y1 + (seeded(index + 12) - 0.5) * verticalRange
+      const y3 = y2 + (seeded(index + 24) - 0.5) * verticalRange
+      const reach = desktop ? 0.3 + seeded(index + 31) * 0.12 : 0.48 + seeded(index + 31) * 0.18
+      const insetA = desktop ? 0.07 + seeded(index + 42) * 0.05 : 0.12
+      const insetB = desktop ? 0.2 + seeded(index + 53) * 0.06 : 0.3
+
+      const normalized = [
+        { x: -0.03, y: y1 },
+        { x: insetA, y: y1 },
+        { x: insetA, y: y2 },
+        { x: insetB, y: y2 },
+        { x: insetB, y: y3 },
+        { x: reach, y: y3 }
+      ]
+
+      const points = normalized.map(point => ({
+        x: (fromLeft ? point.x : 1 - point.x) * w,
+        y: point.y
+      }))
 
       return {
-        x,
-        y,
-        vx: (Math.random() - 0.5) * 0.72 * depth,
-        vy: (Math.random() - 0.5) * 0.72 * depth,
-        r: 0.6 + Math.random() * 1.35 * depth,
-        depth,
-        phase: Math.random() * Math.PI * 2,
-        twinkle: 0.6 + Math.random() * 1.4
+        points,
+        phase: seeded(index + 70),
+        speed: 0.035 + seeded(index + 81) * 0.024,
+        direction: fromLeft ? 1 : -1
       }
     }
 
     const resize = () => {
-      // Measure the sticky box, not the canvas and not the wrapper.
-      //   - `wrap` spans the whole section range (~11,000px) and would
-      //     allocate a backing store that large.
-      //   - `canvas` is wrong in a subtler way: resize() writes an inline
-      //     width onto it, so measuring it feeds its own output back in and
-      //     the canvas ratchets wider on every observation.
       const rect = box.getBoundingClientRect()
 
       w = Math.max(1, Math.round(rect.width))
       h = Math.max(1, Math.round(rect.height))
 
-      // Render the fine constellation at 2x even on standard-density desktop
-      // displays. At 1x the sub-pixel dots and 0.75px links are rasterised
-      // directly into a single device pixel and look soft; phones already took
-      // this path because their devicePixelRatio is normally 2 or higher.
-      dpr = 2
+      const dpr = Math.min(2, Math.max(1.5, window.devicePixelRatio || 1))
 
       canvas.width = Math.round(w * dpr)
       canvas.height = Math.round(h * dpr)
@@ -120,96 +99,134 @@ export function ParticleField({ className = '' }: { className?: string }) {
       canvas.style.height = `${h}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      // Preserve roughly the same visual density on a wide desktop viewport.
-      // The old 125 cap spread too few stars across a 1440–1920px canvas,
-      // making the remaining faint links read like blurred smudges.
-      const count = Math.round(Math.min(190, Math.max(70, (w * h) / 8500)))
+      const desktop = w >= 1024
+      const count = desktop ? 7 : 5
 
-      particles = Array.from({ length: count }, () => makeParticle())
+      routes = Array.from({ length: count }, (_, index) => createRoute(index, count, desktop))
+    }
+
+    const pointForFrame = (point: FlowPoint, routeIndex: number): FlowPoint => {
+      const scrollShift = reduced ? 0 : (window.scrollY * (routeIndex % 2 === 0 ? 0.012 : -0.009)) % 54
+      let x = point.x
+      let y = point.y + scrollShift
+
+      if (pointer.active && !reduced) {
+        const dx = pointer.x - x
+        const dy = pointer.y - y
+        const distance = Math.hypot(dx, dy)
+        const reach = 230
+
+        if (distance < reach) {
+          const pull = (1 - distance / reach) * 0.045
+
+          x += dx * pull
+          y += dy * pull
+        }
+      }
+
+      return { x, y }
+    }
+
+    const pointAlongRoute = (points: FlowPoint[], progress: number) => {
+      const lengths: number[] = []
+      let total = 0
+
+      for (let i = 1; i < points.length; i++) {
+        const length = Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y)
+
+        lengths.push(length)
+        total += length
+      }
+
+      let target = progress * total
+
+      for (let i = 0; i < lengths.length; i++) {
+        if (target <= lengths[i]) {
+          const start = points[i]
+          const end = points[i + 1]
+          const amount = lengths[i] === 0 ? 0 : target / lengths[i]
+
+          return {
+            x: start.x + (end.x - start.x) * amount,
+            y: start.y + (end.y - start.y) * amount,
+            angle: Math.atan2(end.y - start.y, end.x - start.x)
+          }
+        }
+
+        target -= lengths[i]
+      }
+
+      const last = points.at(-1) ?? { x: 0, y: 0 }
+
+      return { ...last, angle: 0 }
+    }
+
+    const drawRoute = (route: FlowRoute, routeIndex: number, now: number) => {
+      const points = route.points.map(point => pointForFrame(point, routeIndex))
+      const lineColor = dark ? '232, 238, 247' : '42, 39, 36'
+      const nodeColor = dark ? '255, 255, 255' : '42, 39, 36'
+      const lineAlpha = dark ? 0.17 : 0.12
+
+      ctx.strokeStyle = `rgba(${lineColor}, ${lineAlpha})`
+      ctx.lineWidth = 1
+      ctx.lineJoin = 'round'
+      ctx.beginPath()
+      ctx.moveTo(points[0].x, points[0].y)
+
+      for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y)
+
+      ctx.stroke()
+
+      for (let i = 1; i < points.length - 1; i++) {
+        const point = points[i]
+
+        ctx.fillStyle = `rgba(${nodeColor}, ${dark ? 0.62 : 0.42})`
+        ctx.beginPath()
+        ctx.arc(point.x, point.y, 1.35, 0, Math.PI * 2)
+        ctx.fill()
+
+        if ((i + routeIndex) % 2 === 0) {
+          ctx.strokeStyle = `rgba(${lineColor}, ${dark ? 0.18 : 0.12})`
+          ctx.lineWidth = 0.8
+          ctx.beginPath()
+          ctx.arc(point.x, point.y, 4.6, 0, Math.PI * 2)
+          ctx.stroke()
+        }
+      }
+
+      const packetCount = routeIndex % 3 === 0 ? 2 : 1
+
+      for (let packet = 0; packet < packetCount; packet++) {
+        const base = reduced ? route.phase : route.phase + now * route.speed + packet / packetCount
+        const progress = ((base % 1) + 1) % 1
+        const position = pointAlongRoute(points, route.direction === 1 ? progress : 1 - progress)
+
+        ctx.save()
+        ctx.translate(position.x, position.y)
+        ctx.rotate(position.angle)
+        ctx.fillStyle = `rgba(${nodeColor}, ${dark ? 0.92 : 0.68})`
+        ctx.fillRect(-3.5, -1.5, 7, 3)
+        ctx.restore()
+      }
     }
 
     const draw = () => {
       ctx.clearRect(0, 0, w, h)
+
       const now = performance.now() * 0.001
-      const dotColor = dark ? DARK_DOT : LIGHT_DOT
-      const linkColor = dark ? DARK_LINK : LIGHT_LINK
-      const desktop = w >= 1024
-      const dotAlpha = dark ? (desktop ? 1 : 0.8) : 0.38
-      const linkAlpha = dark ? (desktop ? 0.72 : 0.26) : 0.16
 
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i]
-
-        if (!reduced) {
-          p.x += p.vx
-          p.y += p.vy
-
-          if (p.x < 0 || p.x > w) p.vx *= -1
-          if (p.y < 0 || p.y > h) p.vy *= -1
-        }
-
-        // Triangular pass: each pair is considered once, not twice.
-        for (let j = i + 1; j < particles.length; j++) {
-          const q = particles[j]
-          const dx = p.x - q.x
-          const dy = p.y - q.y
-          const d2 = dx * dx + dy * dy
-
-          if (d2 < LINK_SQ) {
-            const rawDepth = Math.min(p.depth, q.depth)
-            const sharedDepth = desktop ? 0.68 + rawDepth * 0.32 : rawDepth
-            const proximity = 1 - d2 / LINK_SQ
-            const visibility = desktop ? 0.35 + proximity * 0.65 : proximity
-
-            ctx.strokeStyle = `rgba(${linkColor}, ${linkAlpha * sharedDepth * visibility})`
-            ctx.lineWidth = dark ? (desktop ? 1.2 : 0.75) : 0.65
-            ctx.beginPath()
-            ctx.moveTo(p.x, p.y)
-            ctx.lineTo(q.x, q.y)
-            ctx.stroke()
-          }
-        }
-
-        const shimmer = reduced ? 0.8 : desktop ? 0.82 + Math.sin(now * p.twinkle + p.phase) * 0.16 : 0.58 + Math.sin(now * p.twinkle + p.phase) * 0.24
-        const visibleDepth = desktop ? 0.72 + p.depth * 0.28 : p.depth
-
-        ctx.fillStyle = `rgba(${dotColor}, ${dotAlpha * visibleDepth * shimmer})`
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.r * (desktop ? 1.3 : 1), 0, Math.PI * 2)
-        ctx.fill()
-
-      }
-
-      // Nearby stars acknowledge the pointer with temporary connections. It
-      // makes the background feel responsive without turning it into a cursor
-      // trail or competing with the content above it.
-      if (pointer.active && !reduced) {
-        particles.forEach(p => {
-          const dx = p.x - pointer.x
-          const dy = p.y - pointer.y
-          const d2 = dx * dx + dy * dy
-          const reach = 220
-
-          if (d2 >= reach * reach) return
-
-          ctx.strokeStyle = `rgba(${linkColor}, ${(dark ? 0.82 : 0.48) * (1 - d2 / (reach * reach))})`
-          ctx.lineWidth = 1.2
-          ctx.beginPath()
-          ctx.moveTo(pointer.x, pointer.y)
-          ctx.lineTo(p.x, p.y)
-          ctx.stroke()
-        })
-      }
+      routes.forEach((route, index) => drawRoute(route, index, now))
 
       if (pointer.active && !reduced) {
-        ctx.fillStyle = `rgba(${dark ? DARK_DOT : LIGHT_DOT}, ${dark ? 0.72 : 0.38})`
+        const color = dark ? '255, 255, 255' : '42, 39, 36'
+
+        ctx.strokeStyle = `rgba(${color}, ${dark ? 0.2 : 0.13})`
+        ctx.lineWidth = 0.8
         ctx.beginPath()
-        ctx.arc(pointer.x, pointer.y, 1.7, 0, Math.PI * 2)
-        ctx.fill()
+        ctx.arc(pointer.x, pointer.y, 13, 0, Math.PI * 2)
+        ctx.stroke()
       }
 
-      // The CSS texture is a no-JavaScript / failed-canvas fallback. Remove it
-      // after the first successful frame so two star fields never stack.
       wrap.classList.add('is-canvas-ready')
     }
 
@@ -222,11 +239,8 @@ export function ParticleField({ className = '' }: { className?: string }) {
       if (running) return
       running = true
 
-      if (reduced) {
-        draw() // one static frame, no loop
-      } else {
-        raf = requestAnimationFrame(tick)
-      }
+      if (reduced) draw()
+      else raf = requestAnimationFrame(tick)
     }
 
     const stop = () => {
@@ -236,24 +250,21 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
     resize()
 
-    // Only run while the section is actually on screen.
-    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { threshold: 0 })
-
-    io.observe(wrap)
+    const io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()), { threshold: 0 })
 
     const ro = new ResizeObserver(() => {
       resize()
       if (reduced) draw()
     })
 
+    io.observe(wrap)
     ro.observe(box)
 
     const onVisibility = () => (document.hidden ? stop() : start())
 
-    document.addEventListener('visibilitychange', onVisibility)
-
     const onPointerMove = (event: PointerEvent) => {
       if (event.pointerType === 'touch' || reduced) return
+
       const rect = box.getBoundingClientRect()
 
       pointer = {
@@ -267,32 +278,16 @@ export function ParticleField({ className = '' }: { className?: string }) {
       pointer.active = false
     }
 
-    const onPointerDown = (event: PointerEvent) => {
-      if (reduced) return
-      const rect = box.getBoundingClientRect()
-
-      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) {
-        return
-      }
-
-      const x = event.clientX - rect.left
-      const y = event.clientY - rect.top
-
-      for (let i = 0; i < 4; i++) {
-        particles.push(makeParticle(x + (Math.random() - 0.5) * 18, y + (Math.random() - 0.5) * 18))
-      }
-
-      if (particles.length > 190) particles.splice(0, particles.length - 190)
-    }
-
-    window.addEventListener('pointermove', onPointerMove, { passive: true })
-    window.addEventListener('pointerdown', onPointerDown, { passive: true })
-    document.documentElement.addEventListener('pointerleave', onPointerLeave)
-
-    const themeObserver = new MutationObserver(() => {
+    const onThemeChange = () => {
       dark = detectDark()
       if (reduced) draw()
-    })
+    }
+
+    document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
+    document.documentElement.addEventListener('pointerleave', onPointerLeave)
+
+    const themeObserver = new MutationObserver(onThemeChange)
 
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 
@@ -301,26 +296,15 @@ export function ParticleField({ className = '' }: { className?: string }) {
       io.disconnect()
       ro.disconnect()
       themeObserver.disconnect()
-      window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('pointerdown', onPointerDown)
-      document.documentElement.removeEventListener('pointerleave', onPointerLeave)
       document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('pointermove', onPointerMove)
+      document.documentElement.removeEventListener('pointerleave', onPointerLeave)
       wrap.classList.remove('is-canvas-ready')
     }
   }, [])
 
   return (
-    <div
-      ref={wrapRef}
-      aria-hidden='true'
-
-      // No overflow-hidden here: `overflow: hidden` turns this into a scroll
-      // container, and a sticky child then sticks to *it* rather than the
-      // viewport — so the canvas scrolled away and the field vanished below
-      // the first screen.
-      className={`galaxy-field pointer-events-none absolute inset-0 ${className}`}
-    >
-      {/* Sticky so one viewport of canvas covers the whole scroll range. */}
+    <div ref={wrapRef} aria-hidden='true' className={`automation-field pointer-events-none absolute inset-0 ${className}`}>
       <div ref={boxRef} className='sticky top-0 h-screen w-full overflow-hidden'>
         <canvas ref={canvasRef} className='h-full w-full' />
       </div>

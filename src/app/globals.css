@@ -672,10 +672,9 @@ li {
     0 0 42px color-mix(in oklch, var(--accent) 7%, transparent);
 }
 
-/* The lower-page constellation remains neutral rather than borrowing the
-   blossom pink. Two faint nebula glows give the moving canvas a sense of depth
-   on dark screens; the stars and links themselves are rendered in canvas. */
-.galaxy-field::before {
+/* The lower page uses sparse routed circuits rather than a random star web.
+   A very light structural grid remains as a no-canvas fallback. */
+.automation-field::before {
   content: '';
   position: sticky;
   top: 0;
@@ -687,50 +686,36 @@ li {
     radial-gradient(circle at 82% 68%, color-mix(in oklch, var(--ink) 2%, transparent), transparent 31%);
 }
 
-.dark .galaxy-field::before {
-  /* Keep the dark field optically clean. The former low-frequency nebula
-     gradients sat above large desktop areas as soft grey clouds and made the
-     otherwise sharp white constellation appear out of focus. */
+.dark .automation-field::before {
   background: none;
 }
 
-.galaxy-field > div {
+.automation-field > div {
   margin-top: -100vh;
   background-image:
-    radial-gradient(circle, color-mix(in oklch, var(--ink) 18%, transparent) 0 1px, transparent 1.5px),
-    radial-gradient(circle, color-mix(in oklch, var(--ink) 12%, transparent) 0 0.8px, transparent 1.35px),
-    radial-gradient(circle, color-mix(in oklch, var(--ink) 9%, transparent) 0 0.7px, transparent 1.25px);
-  background-position: 7px 13px, 31px 47px, 73px 19px;
-  background-size: 83px 79px, 127px 139px, 181px 173px;
-  animation: galaxy-texture-drift 38s linear infinite;
+    linear-gradient(90deg, color-mix(in oklch, var(--ink) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in oklch, var(--ink) 5%, transparent) 1px, transparent 1px);
+  background-size: 96px 96px;
 }
 
-.dark .galaxy-field > div {
+.dark .automation-field > div {
   background-image:
-    radial-gradient(circle, oklch(0.98 0.01 250 / 0.44) 0 1px, transparent 1.7px),
-    radial-gradient(circle, oklch(0.91 0.018 255 / 0.31) 0 0.9px, transparent 1.5px),
-    radial-gradient(circle, oklch(0.86 0.018 235 / 0.23) 0 0.75px, transparent 1.35px);
+    linear-gradient(90deg, oklch(1 0 0 / 0.035) 1px, transparent 1px),
+    linear-gradient(oklch(1 0 0 / 0.025) 1px, transparent 1px);
 }
 
-.galaxy-field.is-canvas-ready > div {
+.automation-field.is-canvas-ready > div {
   background-image: none;
-  animation: none;
 }
 
-.dark .galaxy-field canvas {
+.dark .automation-field canvas {
   opacity: 1;
   mix-blend-mode: normal;
   filter: none;
 }
 
-@keyframes galaxy-texture-drift {
-  to {
-    background-position: 90px 92px, -96px 186px, 254px -154px;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .galaxy-field > div {
+  .automation-field > div {
     animation: none;
   }
 }
