@@ -94,12 +94,12 @@ function ServicesSection() {
                   straddling the card edge. The medallion forced the whole card
                   to centre-align under it — which is what put ragged-left body
                   copy in every one of these. */}
-              <span className='service-icon-square border-rule bg-ground group-hover:border-rule-strong flex h-12 w-12 items-center justify-center rounded-xl border transition-[border-color,box-shadow] duration-300'>
+              <span className='service-icon-square border-rule bg-ground group-hover:border-rule-strong flex h-14 w-14 items-center justify-center rounded-2xl border transition-[border-color,box-shadow] duration-300'>
                 <span
                   className='service-icon-glyph'
                   style={{ '--icon-delay': `${i * -0.72}s` } as React.CSSProperties}
                 >
-                  <PixelIcon type={SERVICE_ICONS[i] ?? 'platform'} size={28} />
+                  <PixelIcon type={SERVICE_ICONS[i] ?? 'platform'} size={34} />
                 </span>
               </span>
 

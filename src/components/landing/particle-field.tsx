@@ -97,7 +97,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       // Density by area, clamped so a 4K display does not melt.
-      const count = Math.round(Math.min(175, Math.max(58, (w * h) / 9500)))
+      const count = Math.round(Math.min(195, Math.max(68, (w * h) / 8500)))
 
       particles = Array.from({ length: count }, () => {
         const depth = 0.35 + Math.random() * 0.65
@@ -120,8 +120,8 @@ export function ParticleField({ className = '' }: { className?: string }) {
       const now = performance.now() * 0.001
       const dotColor = dark ? DARK_DOT : LIGHT_DOT
       const linkColor = dark ? DARK_LINK : LIGHT_LINK
-      const dotAlpha = dark ? 0.34 : 0.1
-      const linkAlpha = dark ? 0.105 : 0.055
+      const dotAlpha = dark ? 0.58 : 0.1
+      const linkAlpha = dark ? 0.17 : 0.055
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i]
@@ -178,7 +178,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
         // Only the nearest stars receive a halo, keeping the field dimensional
         // without putting a blur operation on every point.
         if (dark && p.depth > 0.86) {
-          ctx.fillStyle = `rgba(151, 166, 214, ${0.055 * shimmer})`
+          ctx.fillStyle = `rgba(151, 166, 214, ${0.1 * shimmer})`
           ctx.beginPath()
           ctx.arc(p.x, p.y, p.r * 4.2, 0, Math.PI * 2)
           ctx.fill()

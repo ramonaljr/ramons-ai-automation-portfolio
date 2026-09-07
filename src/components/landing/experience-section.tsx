@@ -53,7 +53,15 @@ export function ExperienceSection() {
         {/* Timeline */}
         <div ref={ref} className='relative'>
           {/* Spine — hidden on mobile where the rail would have nothing to align to */}
-          <span aria-hidden='true' className='bg-ink/9 absolute top-2 bottom-2 left-[7px] hidden w-px md:block' />
+          <span
+            aria-hidden='true'
+            className='bg-rule absolute top-2 bottom-2 left-[7px] hidden w-px origin-top md:block'
+            style={{
+              transform: inView ? 'scaleY(1)' : 'scaleY(0)',
+              opacity: inView ? 1 : 0,
+              transition: 'transform 1.4s cubic-bezier(0.16,1,0.3,1) 120ms, opacity .4s ease 120ms'
+            }}
+          />
 
           <ol className='space-y-4'>
             {EXPERIENCE.map((r, i) => (
@@ -62,17 +70,26 @@ export function ExperienceSection() {
                 className='relative md:pl-12'
                 style={{
                   opacity: inView ? 1 : 0,
-                  transform: inView ? 'translateY(0px)' : 'translateY(22px)',
-                  transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${i * 110}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${i * 110}ms`
+                  filter: inView ? 'blur(0px)' : 'blur(14px)',
+                  transform: inView ? 'translate3d(0,0,0) scale(1)' : 'translate3d(-38px,28px,0) scale(.975)',
+                  transition:
+                    `opacity 1s cubic-bezier(0.16,1,0.3,1) ${120 + i * 170}ms, ` +
+                    `filter 1s cubic-bezier(0.16,1,0.3,1) ${120 + i * 170}ms, ` +
+                    `transform 1s cubic-bezier(0.16,1,0.3,1) ${120 + i * 170}ms`
                 }}
               >
                 {/* Node */}
                 <span
                   aria-hidden='true'
-                  className='border-ground bg-ink/25 absolute top-8 left-0 hidden h-[15px] w-[15px] rounded-full border-2 md:block'
+                  className='experience-node border-ground absolute top-8 left-0 hidden h-[15px] w-[15px] rounded-full border-2 md:block'
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? 'scale(1)' : 'scale(0)',
+                    transition: `opacity .45s ease ${280 + i * 170}ms, transform .55s cubic-bezier(0.16,1,0.3,1) ${280 + i * 170}ms`
+                  }}
                 />
 
-                <article className='border-rule bg-surface hover:bg-surface-raised hover:border-rule rounded-2xl border p-7 transition-all duration-300 lg:p-8'>
+                <article className='experience-card border-rule bg-surface hover:bg-surface-raised hover:border-rule rounded-2xl border p-7 transition-all duration-300 lg:p-8'>
                   <div className='mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2'>
                     <span className='text-ink-2 font-mono text-[12px]'>{r.index}</span>
                     <span className='text-ink-2 font-mono text-[12px] tracking-wide'>{r.period}</span>
