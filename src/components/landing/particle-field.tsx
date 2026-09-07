@@ -31,8 +31,8 @@ import { useEffect, useRef } from 'react'
  */
 const LIGHT_DOT = '42, 39, 36'
 const LIGHT_LINK = '42, 39, 36'
-const DARK_DOT = '244, 247, 255'
-const DARK_LINK = '218, 225, 240'
+const DARK_DOT = '255, 255, 255'
+const DARK_LINK = '255, 255, 255'
 
 type P = {
   x: number
@@ -127,9 +127,9 @@ export function ParticleField({ className = '' }: { className?: string }) {
       const now = performance.now() * 0.001
       const dotColor = dark ? DARK_DOT : LIGHT_DOT
       const linkColor = dark ? DARK_LINK : LIGHT_LINK
-      const desktop = w >= 768
+      const desktop = w >= 1024
       const dotAlpha = dark ? (desktop ? 1 : 0.8) : 0.38
-      const linkAlpha = dark ? (desktop ? 0.48 : 0.26) : 0.16
+      const linkAlpha = dark ? (desktop ? 0.72 : 0.26) : 0.16
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i]
@@ -150,10 +150,13 @@ export function ParticleField({ className = '' }: { className?: string }) {
           const d2 = dx * dx + dy * dy
 
           if (d2 < LINK_SQ) {
-            const sharedDepth = Math.min(p.depth, q.depth)
+            const rawDepth = Math.min(p.depth, q.depth)
+            const sharedDepth = desktop ? 0.68 + rawDepth * 0.32 : rawDepth
+            const proximity = 1 - d2 / LINK_SQ
+            const visibility = desktop ? 0.35 + proximity * 0.65 : proximity
 
-            ctx.strokeStyle = `rgba(${linkColor}, ${linkAlpha * sharedDepth * (1 - d2 / LINK_SQ)})`
-            ctx.lineWidth = dark ? (desktop ? 1.05 : 0.75) : 0.65
+            ctx.strokeStyle = `rgba(${linkColor}, ${linkAlpha * sharedDepth * visibility})`
+            ctx.lineWidth = dark ? (desktop ? 1.2 : 0.75) : 0.65
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(q.x, q.y)
@@ -161,11 +164,12 @@ export function ParticleField({ className = '' }: { className?: string }) {
           }
         }
 
-        const shimmer = reduced ? 0.8 : 0.58 + Math.sin(now * p.twinkle + p.phase) * 0.24
+        const shimmer = reduced ? 0.8 : desktop ? 0.82 + Math.sin(now * p.twinkle + p.phase) * 0.16 : 0.58 + Math.sin(now * p.twinkle + p.phase) * 0.24
+        const visibleDepth = desktop ? 0.72 + p.depth * 0.28 : p.depth
 
-        ctx.fillStyle = `rgba(${dotColor}, ${dotAlpha * p.depth * shimmer})`
+        ctx.fillStyle = `rgba(${dotColor}, ${dotAlpha * visibleDepth * shimmer})`
         ctx.beginPath()
-        ctx.arc(p.x, p.y, p.r * (desktop ? 1.22 : 1), 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, p.r * (desktop ? 1.3 : 1), 0, Math.PI * 2)
         ctx.fill()
 
       }
