@@ -69,7 +69,13 @@ export function ParticleField({ className = '' }: { className?: string }) {
     let particles: P[] = []
     let raf = 0
     let running = false
-    let dark = document.documentElement.classList.contains('dark')
+
+    // Landing pages carry their forced dark theme on the nearest `.dark`
+    // scope. Reading only <html> made the canvas race the outer next-themes
+    // provider, so Chrome could paint light-theme (near-black) particles over
+    // the dark landing page while Safari happened to resolve the root dark.
+    const detectDark = () => canvas.closest('.dark') !== null || document.documentElement.classList.contains('dark')
+    let dark = detectDark()
     let pointer = { x: 0, y: 0, active: false }
 
     const LINK = 145
@@ -284,7 +290,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
     document.documentElement.addEventListener('pointerleave', onPointerLeave)
 
     const themeObserver = new MutationObserver(() => {
-      dark = document.documentElement.classList.contains('dark')
+      dark = detectDark()
       if (reduced) draw()
     })
 

@@ -261,10 +261,11 @@ export function PixelIcon({ type, size = 40 }: PixelIconProps) {
 
     if (!canvas) return
     const ctx = canvas.getContext('2d')!
+    const darkScope = canvas.closest('.dark')
 
     const draw = (t: number) => {
       const dpr = window.devicePixelRatio || 1
-      const rgb = document.documentElement.classList.contains('dark') ? '245,247,255' : '0,0,0'
+      const rgb = darkScope !== null || document.documentElement.classList.contains('dark') ? '245,247,255' : '0,0,0'
 
       canvas.width = size * dpr
       canvas.height = size * dpr

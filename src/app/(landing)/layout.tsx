@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react'
 
-import { ThemeProvider } from '@/components/theme-provider'
-
 /**
  * Bare passthrough layout for the landing page.
  *
@@ -12,12 +10,11 @@ import { ThemeProvider } from '@/components/theme-provider'
  */
 const LandingLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
-    <ThemeProvider attribute='class' forcedTheme='dark' enableSystem={false} disableTransitionOnChange>
-      {/* `dark` is present in server HTML for a dark first paint; forcedTheme
-          keeps the root in sync after hydration even when this browser has an
-          older `light` preference saved by next-themes. */}
-      <main className='dark flex w-full min-w-0 flex-col'>{children}</main>
-    </ThemeProvider>
+
+    // The portfolio is deliberately dark. Keeping the theme on this server-
+    // rendered scope avoids two nested next-themes providers competing for the
+    // root class when a browser has an older saved light preference.
+    <main className='dark flex w-full min-w-0 flex-col'>{children}</main>
   )
 }
 

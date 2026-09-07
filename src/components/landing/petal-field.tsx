@@ -40,7 +40,8 @@ export function PetalField({ className = '' }: { className?: string }) {
     let raf = 0
     let running = false
     let petals: Petal[] = []
-    let dark = document.documentElement.classList.contains('dark')
+    const detectDark = () => canvas.closest('.dark') !== null || document.documentElement.classList.contains('dark')
+    let dark = detectDark()
     let pointer = { x: 0, y: 0, active: false }
 
     /**
@@ -200,7 +201,7 @@ export function PetalField({ className = '' }: { className?: string }) {
     document.documentElement.addEventListener('pointerleave', onPointerLeave)
 
     const themeObserver = new MutationObserver(() => {
-      dark = document.documentElement.classList.contains('dark')
+      dark = detectDark()
       if (reduced) draw()
     })
 
