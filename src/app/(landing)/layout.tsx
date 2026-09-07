@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import { ThemeProvider } from '@/components/theme-provider'
+
 /**
  * Bare passthrough layout for the landing page.
  *
@@ -9,7 +11,14 @@ import type { ReactNode } from 'react'
  * all of which would fight a full-width design.
  */
 const LandingLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
-  return <main className='flex w-full min-w-0 flex-col'>{children}</main>
+  return (
+    <ThemeProvider attribute='class' forcedTheme='dark' enableSystem={false} disableTransitionOnChange>
+      {/* `dark` is present in server HTML for a dark first paint; forcedTheme
+          keeps the root in sync after hydration even when this browser has an
+          older `light` preference saved by next-themes. */}
+      <main className='dark flex w-full min-w-0 flex-col'>{children}</main>
+    </ThemeProvider>
+  )
 }
 
 export default LandingLayout
