@@ -720,8 +720,8 @@ li {
 
 .dark .galaxy-field canvas {
   opacity: 1;
-  mix-blend-mode: screen;
-  filter: drop-shadow(0 0 4px oklch(0.92 0.02 250 / 0.28));
+  mix-blend-mode: normal;
+  filter: none;
 }
 
 @keyframes galaxy-texture-drift {

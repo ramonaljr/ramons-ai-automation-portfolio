@@ -33,7 +33,6 @@ const LIGHT_DOT = '42, 39, 36'
 const LIGHT_LINK = '42, 39, 36'
 const DARK_DOT = '244, 247, 255'
 const DARK_LINK = '218, 225, 240'
-const DARK_ACCENT = '190, 200, 220'
 
 type P = {
   x: number
@@ -84,7 +83,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
         y,
         vx: (Math.random() - 0.5) * 0.72 * depth,
         vy: (Math.random() - 0.5) * 0.72 * depth,
-        r: 0.8 + Math.random() * 2.2 * depth,
+        r: 0.6 + Math.random() * 1.35 * depth,
         depth,
         phase: Math.random() * Math.PI * 2,
         twinkle: 0.6 + Math.random() * 1.4
@@ -123,8 +122,8 @@ export function ParticleField({ className = '' }: { className?: string }) {
       const now = performance.now() * 0.001
       const dotColor = dark ? DARK_DOT : LIGHT_DOT
       const linkColor = dark ? DARK_LINK : LIGHT_LINK
-      const dotAlpha = dark ? 0.64 : 0.3
-      const linkAlpha = dark ? 0.22 : 0.14
+      const dotAlpha = dark ? 0.8 : 0.38
+      const linkAlpha = dark ? 0.26 : 0.16
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i]
@@ -148,7 +147,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
             const sharedDepth = Math.min(p.depth, q.depth)
 
             ctx.strokeStyle = `rgba(${linkColor}, ${linkAlpha * sharedDepth * (1 - d2 / LINK_SQ)})`
-            ctx.lineWidth = 1
+            ctx.lineWidth = dark ? 0.75 : 0.65
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(q.x, q.y)
@@ -163,14 +162,6 @@ export function ParticleField({ className = '' }: { className?: string }) {
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
         ctx.fill()
 
-        // Only the nearest stars receive a halo, keeping the field dimensional
-        // without putting a blur operation on every point.
-        if (dark && p.depth > 0.86) {
-          ctx.fillStyle = `rgba(${DARK_ACCENT}, ${0.16 * shimmer})`
-          ctx.beginPath()
-          ctx.arc(p.x, p.y, p.r * 4.2, 0, Math.PI * 2)
-          ctx.fill()
-        }
       }
 
       // Nearby stars acknowledge the pointer with temporary connections. It
@@ -197,7 +188,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
       if (pointer.active && !reduced) {
         ctx.fillStyle = `rgba(${dark ? DARK_DOT : LIGHT_DOT}, ${dark ? 0.72 : 0.38})`
         ctx.beginPath()
-        ctx.arc(pointer.x, pointer.y, 2.2, 0, Math.PI * 2)
+        ctx.arc(pointer.x, pointer.y, 1.7, 0, Math.PI * 2)
         ctx.fill()
       }
 
