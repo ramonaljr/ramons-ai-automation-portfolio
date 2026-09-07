@@ -696,12 +696,48 @@ li {
 
 .galaxy-field > div {
   margin-top: -100vh;
+  background-image:
+    radial-gradient(circle, color-mix(in oklch, var(--ink) 18%, transparent) 0 1px, transparent 1.5px),
+    radial-gradient(circle, color-mix(in oklch, var(--ink) 12%, transparent) 0 0.8px, transparent 1.35px),
+    radial-gradient(circle, color-mix(in oklch, var(--ink) 9%, transparent) 0 0.7px, transparent 1.25px);
+  background-position: 7px 13px, 31px 47px, 73px 19px;
+  background-size: 83px 79px, 127px 139px, 181px 173px;
+  animation: galaxy-texture-drift 38s linear infinite;
+}
+
+.dark .galaxy-field > div {
+  background-image:
+    radial-gradient(circle, oklch(0.95 0.025 250 / 0.34) 0 1px, transparent 1.6px),
+    radial-gradient(circle, oklch(0.86 0.045 260 / 0.24) 0 0.9px, transparent 1.45px),
+    radial-gradient(circle, oklch(0.9 0.03 225 / 0.18) 0 0.75px, transparent 1.3px);
 }
 
 .dark .galaxy-field canvas {
   opacity: 0.96;
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 3px oklch(0.86 0.04 250 / 0.2));
+}
+
+.hero-galaxy {
+  opacity: 0.7;
+  mask-image: linear-gradient(90deg, black 0%, black 54%, transparent 92%);
+  -webkit-mask-image: linear-gradient(90deg, black 0%, black 54%, transparent 92%);
+}
+
+.hero-galaxy::before {
+  background: radial-gradient(circle at 26% 44%, oklch(0.67 0.055 260 / 0.11), transparent 36%);
+}
+
+@keyframes galaxy-texture-drift {
+  to {
+    background-position: 90px 92px, -96px 186px, 254px -154px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .galaxy-field > div {
+    animation: none;
+  }
 }
 
 /* Large scroll-linked forms move much more slowly than the constellation.

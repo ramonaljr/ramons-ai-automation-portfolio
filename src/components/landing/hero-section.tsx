@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react'
 import { HERO_STATS } from '@/lib/portfolio'
 import { CountUp, Cta, ParallaxLayer } from '@/components/landing/motion'
 import { PetalField } from '@/components/landing/petal-field'
+import { ParticleField } from '@/components/landing/particle-field'
 
 /**
  * The rotating word names something the reader recognises.
@@ -187,6 +188,12 @@ export function HeroSection({ ready }: { ready?: boolean }) {
         <div className='from-ground via-ground/82 to-ground/10 absolute inset-0 bg-linear-to-r' />
         <div className='from-ground/60 to-ground/85 absolute inset-0 bg-linear-to-b via-transparent' />
       </div>
+
+      {/* Keep the constellation present in the first viewport as well as the
+          sections below. The CSS star texture underneath the canvas makes the
+          field survive browsers that throttle or flatten transparent canvas
+          compositing; the canvas remains the interactive layer. */}
+      <ParticleField className='hero-galaxy z-1' />
 
       {/* Architectural grid. Two repeating-linear-gradients rather than the 20
           absolutely-positioned divs this used to be — same drawing, no DOM, and
