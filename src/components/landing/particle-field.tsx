@@ -127,8 +127,9 @@ export function ParticleField({ className = '' }: { className?: string }) {
       const now = performance.now() * 0.001
       const dotColor = dark ? DARK_DOT : LIGHT_DOT
       const linkColor = dark ? DARK_LINK : LIGHT_LINK
-      const dotAlpha = dark ? 0.8 : 0.38
-      const linkAlpha = dark ? 0.26 : 0.16
+      const desktop = w >= 768
+      const dotAlpha = dark ? (desktop ? 1 : 0.8) : 0.38
+      const linkAlpha = dark ? (desktop ? 0.48 : 0.26) : 0.16
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i]
@@ -152,7 +153,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
             const sharedDepth = Math.min(p.depth, q.depth)
 
             ctx.strokeStyle = `rgba(${linkColor}, ${linkAlpha * sharedDepth * (1 - d2 / LINK_SQ)})`
-            ctx.lineWidth = dark ? 0.75 : 0.65
+            ctx.lineWidth = dark ? (desktop ? 1.05 : 0.75) : 0.65
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(q.x, q.y)
@@ -164,7 +165,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
         ctx.fillStyle = `rgba(${dotColor}, ${dotAlpha * p.depth * shimmer})`
         ctx.beginPath()
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, p.r * (desktop ? 1.22 : 1), 0, Math.PI * 2)
         ctx.fill()
 
       }
