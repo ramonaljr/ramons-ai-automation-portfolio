@@ -102,8 +102,11 @@ export function ParticleField({ className = '' }: { className?: string }) {
       w = Math.max(1, Math.round(rect.width))
       h = Math.max(1, Math.round(rect.height))
 
-      // Cap DPR at 2 — beyond that the cost quadruples for no visible gain.
-      dpr = Math.min(window.devicePixelRatio || 1, 2)
+      // Render the fine constellation at 2x even on standard-density desktop
+      // displays. At 1x the sub-pixel dots and 0.75px links are rasterised
+      // directly into a single device pixel and look soft; phones already took
+      // this path because their devicePixelRatio is normally 2 or higher.
+      dpr = 2
 
       canvas.width = Math.round(w * dpr)
       canvas.height = Math.round(h * dpr)
@@ -111,8 +114,10 @@ export function ParticleField({ className = '' }: { className?: string }) {
       canvas.style.height = `${h}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      // Density by area, clamped so a 4K display does not melt.
-      const count = Math.round(Math.min(125, Math.max(70, (w * h) / 8500)))
+      // Preserve roughly the same visual density on a wide desktop viewport.
+      // The old 125 cap spread too few stars across a 1440–1920px canvas,
+      // making the remaining faint links read like blurred smudges.
+      const count = Math.round(Math.min(190, Math.max(70, (w * h) / 8500)))
 
       particles = Array.from({ length: count }, () => makeParticle())
     }
