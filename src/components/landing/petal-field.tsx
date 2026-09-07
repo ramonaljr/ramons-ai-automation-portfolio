@@ -2,48 +2,8 @@
 
 import { useEffect, useRef } from 'react'
 
-/**
- * The hero's petal fall, and its resolution into the constellation below.
- *
- * The page had two unrelated ambient effects stacked on top of each other: a
- * cherry-blossom video in the hero, and a link-line constellation running under
- * everything from About down. Neither referred to the other, so the blossom read
- * as wallpaper.
- *
- * This is the join. Petals drift down through the hero and, once they cross the
- * settle line in the lower third, they lerp — shape from petal to dot, colour
- * from warm rose to the constellation's ink — and begin drawing link lines to
- * their settled neighbours. By the time the hero fades into the page, the thing
- * falling has become the thing the rest of the page is drawn in.
- *
- * That transition is also the argument the section makes: organic input,
- * structured output, which is what the practice actually sells.
- *
- * Everything happens inside one canvas in the hero. Nothing is shared with
- * `ParticleField` below except the ink and the link distance, which are matched
- * deliberately so the two read as one system rather than two effects.
- */
-
-/**
- * The two ends of the morph, as channel triples so the lerp can read them.
- * `INK` matches ParticleField's own ink exactly — that identity is the whole
- * point, since a settled petal has to be indistinguishable from a particle in
- * the field below. `PETAL` is sampled from the *graded* footage rather than the
- * raw pink, so the falling petals belong to the video as it actually renders.
- */
+/** The hero owns one visual language: the blossom video and drifting petals. */
 const PETAL = [244, 114, 152] as const
-const INK_RGB = [42, 39, 36] as const
-const STAR_RGB = [238, 242, 255] as const
-
-/** Matched to ParticleField's LINK, so link density looks continuous. */
-const LINK = 170
-const LINK_SQ = LINK * LINK
-
-/** Where petals begin to settle, as a fraction of canvas height. */
-const SETTLE_AT = 0.58
-
-/** How fast a petal completes its morph once past the settle line. */
-const MORPH_RATE = 0.011
 
 type Petal = {
   x: number
@@ -57,8 +17,6 @@ type Petal = {
   angle: number
   r: number
 
-  /** 0 = petal, 1 = fully settled dot. */
-  t: number
 }
 
 export function PetalField({ className = '' }: { className?: string }) {
@@ -98,7 +56,6 @@ export function PetalField({ className = '' }: { className?: string }) {
       p.spin = (Math.random() - 0.5) * 0.02
       p.angle = Math.random() * Math.PI * 2
       p.r = 3.4 + Math.random() * 3.6
-      p.t = 0
     }
 
     const resize = () => {
@@ -128,19 +85,14 @@ export function PetalField({ className = '' }: { className?: string }) {
       })
     }
 
-    /**
-     * One petal: a rounded lozenge that narrows to a point at each end, drawn
-     * with two quadratic curves. It flattens toward a circle as `t` rises, so
-     * the same path serves both states and there is no swap to notice.
-     */
+    /** One petal: a rounded lozenge that narrows to a point at each end. */
     const drawPetal = (p: Petal) => {
-      const settled = p.t
-      const rx = p.r * (1 - settled) + 1.5 * settled
-      const ry = p.r * 0.58 * (1 - settled) + 1.5 * settled
+      const rx = p.r
+      const ry = p.r * 0.58
 
       ctx.save()
       ctx.translate(p.x, p.y)
-      ctx.rotate(p.angle * (1 - settled))
+      ctx.rotate(p.angle)
 
       ctx.beginPath()
       ctx.moveTo(-rx, 0)
@@ -148,12 +100,7 @@ export function PetalField({ className = '' }: { className?: string }) {
       ctx.quadraticCurveTo(0, ry * 1.7, -rx, 0)
       ctx.closePath()
 
-      // Colour crosses from rose to ink over the same ramp as the shape.
-      const destination = dark ? STAR_RGB : INK_RGB
-      const [r, g, b] = PETAL.map((c, i) => Math.round(c + (destination[i] - c) * settled))
-      const alpha = 0.62 * (1 - settled) + 0.12 * settled
-
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`
+      ctx.fillStyle = `rgba(${PETAL.join(', ')}, ${dark ? 0.68 : 0.58})`
       ctx.fill()
       ctx.restore()
     }
@@ -161,21 +108,16 @@ export function PetalField({ className = '' }: { className?: string }) {
     const draw = () => {
       ctx.clearRect(0, 0, w, h)
 
-      const settleY = h * SETTLE_AT
-      const linkColor = dark ? STAR_RGB.join(', ') : INK_RGB.join(', ')
-
       for (let i = 0; i < petals.length; i++) {
         const p = petals[i]
 
         if (!reduced) {
-          // A settled dot drifts laterally like a constellation particle; a
-          // falling petal sways. The handover is what sells the change of state.
           p.phase += 0.012
-          p.y += p.vy * (1 - p.t * 0.82)
-          p.x += Math.sin(p.phase) * p.sway * (1 - p.t) + p.t * 0.12
+          p.y += p.vy
+          p.x += Math.sin(p.phase) * p.sway
           p.angle += p.spin
 
-          if (pointer.active && p.t < 0.82) {
+          if (pointer.active) {
             const dx = p.x - pointer.x
             const dy = p.y - pointer.y
             const d2 = dx * dx + dy * dy
@@ -183,7 +125,7 @@ export function PetalField({ className = '' }: { className?: string }) {
 
             if (d2 > 1 && d2 < breeze * breeze) {
               const distance = Math.sqrt(d2)
-              const force = (1 - distance / breeze) * 1.15 * (1 - p.t)
+              const force = (1 - distance / breeze) * 1.15
 
               p.x += (dx / distance) * force
               p.y += (dy / distance) * force * 0.35
@@ -191,34 +133,7 @@ export function PetalField({ className = '' }: { className?: string }) {
             }
           }
 
-          if (p.y > settleY && p.t < 1) p.t = Math.min(1, p.t + MORPH_RATE)
           if (p.y > h + 30 || p.x > w + 40) spawn(p, true)
-        }
-
-        // Link lines are drawn only between settled dots — the network exists
-        // only where the petals have already become part of it.
-        if (p.t > 0.55) {
-          for (let j = i + 1; j < petals.length; j++) {
-            const q = petals[j]
-
-            if (q.t <= 0.55) continue
-
-            const dx = p.x - q.x
-            const dy = p.y - q.y
-            const d2 = dx * dx + dy * dy
-
-            if (d2 < LINK_SQ) {
-              // Fade with distance, and with how far both ends have settled.
-              const strength = (1 - d2 / LINK_SQ) * Math.min(p.t, q.t)
-
-              ctx.strokeStyle = `rgba(${linkColor}, ${(dark ? 0.12 : 0.055) * strength})`
-              ctx.lineWidth = 1
-              ctx.beginPath()
-              ctx.moveTo(p.x, p.y)
-              ctx.lineTo(q.x, q.y)
-              ctx.stroke()
-            }
-          }
         }
 
         drawPetal(p)
@@ -235,11 +150,7 @@ export function PetalField({ className = '' }: { className?: string }) {
       running = true
 
       if (reduced) {
-        // Reduced motion gets the resolved end state — dots and links, no fall.
-        petals.forEach(p => {
-          p.t = 1
-          p.y = h * (SETTLE_AT + Math.random() * (1 - SETTLE_AT))
-        })
+        // Reduced motion gets a single still frame of blossom petals.
         draw()
       } else {
         raf = requestAnimationFrame(tick)

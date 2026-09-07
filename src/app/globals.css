@@ -690,9 +690,9 @@ li {
 
 .dark .galaxy-field::before {
   background:
-    radial-gradient(circle at 13% 27%, oklch(0.55 0.15 235 / 0.17), transparent 31%),
-    radial-gradient(circle at 84% 70%, oklch(0.63 0.13 215 / 0.13), transparent 36%),
-    linear-gradient(35deg, oklch(0.12 0.025 255 / 0.38), oklch(0.18 0.065 240 / 0.17), transparent 68%);
+    radial-gradient(circle at 13% 27%, oklch(0.68 0.035 255 / 0.14), transparent 31%),
+    radial-gradient(circle at 84% 70%, oklch(0.74 0.025 230 / 0.1), transparent 36%),
+    linear-gradient(35deg, oklch(0.12 0.012 255 / 0.34), oklch(0.2 0.025 245 / 0.13), transparent 68%);
 }
 
 .galaxy-field > div {
@@ -708,9 +708,9 @@ li {
 
 .dark .galaxy-field > div {
   background-image:
-    radial-gradient(circle, oklch(0.9 0.16 195 / 0.46) 0 1px, transparent 1.7px),
-    radial-gradient(circle, oklch(0.82 0.15 210 / 0.34) 0 0.9px, transparent 1.5px),
-    radial-gradient(circle, oklch(0.76 0.14 225 / 0.26) 0 0.75px, transparent 1.35px);
+    radial-gradient(circle, oklch(0.98 0.01 250 / 0.44) 0 1px, transparent 1.7px),
+    radial-gradient(circle, oklch(0.91 0.018 255 / 0.31) 0 0.9px, transparent 1.5px),
+    radial-gradient(circle, oklch(0.86 0.018 235 / 0.23) 0 0.75px, transparent 1.35px);
 }
 
 .galaxy-field.is-canvas-ready > div {
@@ -721,7 +721,7 @@ li {
 .dark .galaxy-field canvas {
   opacity: 1;
   mix-blend-mode: screen;
-  filter: drop-shadow(0 0 4px oklch(0.83 0.16 205 / 0.38));
+  filter: drop-shadow(0 0 4px oklch(0.92 0.02 250 / 0.28));
 }
 
 @keyframes galaxy-texture-drift {

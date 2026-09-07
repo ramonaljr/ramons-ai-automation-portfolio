@@ -31,9 +31,9 @@ import { useEffect, useRef } from 'react'
  */
 const LIGHT_DOT = '42, 39, 36'
 const LIGHT_LINK = '42, 39, 36'
-const DARK_DOT = '0, 245, 255'
-const DARK_LINK = '0, 217, 255'
-const DARK_ACCENT = '0, 150, 199'
+const DARK_DOT = '244, 247, 255'
+const DARK_LINK = '218, 225, 240'
+const DARK_ACCENT = '190, 200, 220'
 
 type P = {
   x: number
