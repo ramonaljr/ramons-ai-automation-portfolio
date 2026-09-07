@@ -11,7 +11,6 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { Toaster } from '@/components/ui/sonner'
 
 import CustomCursor from '@/components/layout/custom-cursor'
-import EdgeBlur from '@/components/layout/edge-blur'
 
 import { cn } from '@/lib/utils'
 import { SITE_URL } from '@/lib/site'
@@ -151,7 +150,6 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
       <body className='flex min-h-full w-full flex-auto flex-col'>
         <ThemeProvider attribute='class' defaultTheme='dark' enableSystem={false} disableTransitionOnChange>
           <TooltipProvider>{children}</TooltipProvider>
-          <EdgeBlur />
           <Toaster />
           <CustomCursor />
         </ThemeProvider>

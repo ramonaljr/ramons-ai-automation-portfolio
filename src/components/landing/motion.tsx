@@ -51,26 +51,15 @@ export const SECTION_CONT = `pt-6 pb-28 ${GUTTER}`
 export const PAGE = 'bg-ground text-ink min-h-dvh font-sans antialiased'
 
 /**
- * Reading surface for copy that sits over the constellation field.
+ * Creates a local stacking context for copy over the constellation field.
  *
- * A blurred pseudo-element, not `backdrop-blur`: a backdrop filter re-samples
- * the animating canvas every frame, while this is one static layer the
- * compositor paints once. The blur is also what keeps it invisible — there is
- * no card edge to notice, so it reads as light gathering behind the text
- * rather than a panel sitting on top of it.
- *
- * Lowering the field's own alpha got the page readable, but that fix is
- * probabilistic: the particles drift, so a dense cluster can still wander
- * across a paragraph. This makes the reading zones unconditional.
- *
- * The horizontal inset has to stay inside the page gutter or the halo pushes
- * the document wider than the viewport — `px-6` gutters at 24px against a
- * 32px inset put 8px of horizontal scroll on a phone. It widens at `md`,
- * where the gutter grows to `px-12`.
+ * This used to paint a large blurred ground-coloured pseudo-element behind
+ * every section heading. Those overlapping halos softened the stars into
+ * broad foggy bands—especially at wide Vercel preview sizes. The cards and
+ * page ground already provide enough contrast, so the wrapper now handles
+ * layering only and leaves both type and canvas optically sharp.
  */
-export const READABLE =
-  'relative isolate before:pointer-events-none before:absolute before:-inset-x-4 before:-inset-y-6 ' +
-  'md:before:-inset-x-8 before:-z-10 before:rounded-[2.5rem] before:bg-ground/78 before:blur-2xl'
+export const READABLE = 'relative isolate'
 
 const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
 
