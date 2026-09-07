@@ -31,9 +31,9 @@ import { useEffect, useRef } from 'react'
  * the field below. `PETAL` is sampled from the *graded* footage rather than the
  * raw pink, so the falling petals belong to the video as it actually renders.
  */
-const PETAL = [196, 138, 118] as const
+const PETAL = [244, 114, 152] as const
 const INK_RGB = [42, 39, 36] as const
-const INK = INK_RGB.join(', ')
+const STAR_RGB = [238, 242, 255] as const
 
 /** Matched to ParticleField's LINK, so link density looks continuous. */
 const LINK = 170
@@ -82,6 +82,8 @@ export function PetalField({ className = '' }: { className?: string }) {
     let raf = 0
     let running = false
     let petals: Petal[] = []
+    let dark = document.documentElement.classList.contains('dark')
+    let pointer = { x: 0, y: 0, active: false }
 
     /**
      * A petal that has finished falling respawns at the top rather than being
@@ -147,8 +149,9 @@ export function PetalField({ className = '' }: { className?: string }) {
       ctx.closePath()
 
       // Colour crosses from rose to ink over the same ramp as the shape.
-      const [r, g, b] = PETAL.map((c, i) => Math.round(c + (INK_RGB[i] - c) * settled))
-      const alpha = 0.42 * (1 - settled) + 0.1 * settled
+      const destination = dark ? STAR_RGB : INK_RGB
+      const [r, g, b] = PETAL.map((c, i) => Math.round(c + (destination[i] - c) * settled))
+      const alpha = 0.62 * (1 - settled) + 0.12 * settled
 
       ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`
       ctx.fill()
@@ -159,6 +162,7 @@ export function PetalField({ className = '' }: { className?: string }) {
       ctx.clearRect(0, 0, w, h)
 
       const settleY = h * SETTLE_AT
+      const linkColor = dark ? STAR_RGB.join(', ') : INK_RGB.join(', ')
 
       for (let i = 0; i < petals.length; i++) {
         const p = petals[i]
@@ -170,6 +174,22 @@ export function PetalField({ className = '' }: { className?: string }) {
           p.y += p.vy * (1 - p.t * 0.82)
           p.x += Math.sin(p.phase) * p.sway * (1 - p.t) + p.t * 0.12
           p.angle += p.spin
+
+          if (pointer.active && p.t < 0.82) {
+            const dx = p.x - pointer.x
+            const dy = p.y - pointer.y
+            const d2 = dx * dx + dy * dy
+            const breeze = 150
+
+            if (d2 > 1 && d2 < breeze * breeze) {
+              const distance = Math.sqrt(d2)
+              const force = (1 - distance / breeze) * 1.15 * (1 - p.t)
+
+              p.x += (dx / distance) * force
+              p.y += (dy / distance) * force * 0.35
+              p.angle += force * 0.012
+            }
+          }
 
           if (p.y > settleY && p.t < 1) p.t = Math.min(1, p.t + MORPH_RATE)
           if (p.y > h + 30 || p.x > w + 40) spawn(p, true)
@@ -191,7 +211,7 @@ export function PetalField({ className = '' }: { className?: string }) {
               // Fade with distance, and with how far both ends have settled.
               const strength = (1 - d2 / LINK_SQ) * Math.min(p.t, q.t)
 
-              ctx.strokeStyle = `rgba(${INK}, ${0.055 * strength})`
+              ctx.strokeStyle = `rgba(${linkColor}, ${(dark ? 0.12 : 0.055) * strength})`
               ctx.lineWidth = 1
               ctx.beginPath()
               ctx.moveTo(p.x, p.y)
@@ -250,10 +270,38 @@ export function PetalField({ className = '' }: { className?: string }) {
 
     document.addEventListener('visibilitychange', onVisibility)
 
+    const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType === 'touch' || reduced) return
+      const rect = box.getBoundingClientRect()
+
+      pointer = {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+        active: event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom
+      }
+    }
+
+    const onPointerLeave = () => {
+      pointer.active = false
+    }
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
+    document.documentElement.addEventListener('pointerleave', onPointerLeave)
+
+    const themeObserver = new MutationObserver(() => {
+      dark = document.documentElement.classList.contains('dark')
+      if (reduced) draw()
+    })
+
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+
     return () => {
       stop()
       io.disconnect()
       ro.disconnect()
+      themeObserver.disconnect()
+      window.removeEventListener('pointermove', onPointerMove)
+      document.documentElement.removeEventListener('pointerleave', onPointerLeave)
       document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])

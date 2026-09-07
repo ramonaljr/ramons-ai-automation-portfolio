@@ -19,6 +19,7 @@ import { TestimonialsSection } from '@/components/landing/testimonials-section'
 import { ArticlesSection } from '@/components/landing/articles-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
+import { ScrollAtmosphere } from '@/components/landing/scroll-atmosphere'
 import {
   ArrowIcon,
   CONTAINER,
@@ -86,15 +87,20 @@ function ServicesSection() {
           {SERVICES.map((s, i) => (
             <div
               key={s.slug}
-              className='group lift-hover border-rule bg-surface hover:border-rule-strong hover:bg-surface-raised relative flex flex-col rounded-2xl border p-7'
+              className='group kinetic-card lift-hover border-rule bg-surface hover:border-rule-strong hover:bg-surface-raised relative flex flex-col overflow-hidden rounded-2xl border p-7'
               style={cardAnim(i)}
             >
               {/* Icon sits inline at the top-left rather than as a medallion
                   straddling the card edge. The medallion forced the whole card
                   to centre-align under it — which is what put ragged-left body
                   copy in every one of these. */}
-              <span className='border-rule bg-ground group-hover:border-rule-strong flex h-12 w-12 items-center justify-center rounded-xl border transition-colors duration-300'>
-                <PixelIcon type={SERVICE_ICONS[i] ?? 'platform'} size={28} />
+              <span className='service-icon-square border-rule bg-ground group-hover:border-rule-strong flex h-12 w-12 items-center justify-center rounded-xl border transition-[border-color,box-shadow] duration-300'>
+                <span
+                  className='service-icon-glyph'
+                  style={{ '--icon-delay': `${i * -0.72}s` } as React.CSSProperties}
+                >
+                  <PixelIcon type={SERVICE_ICONS[i] ?? 'platform'} size={28} />
+                </span>
               </span>
 
               <h3
@@ -181,7 +187,7 @@ function PlatformsSection() {
           {PLATFORMS.map((p, i) => (
             <div
               key={p.name}
-              className={`relative rounded-2xl border p-8 transition-all duration-300 ${
+              className={`kinetic-card relative overflow-hidden rounded-2xl border p-8 transition-all duration-300 ${
                 p.primary
                   ? 'border-rule-strong bg-surface-raised shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]'
                   : 'border-rule bg-surface hover:bg-surface-raised hover:border-rule'
@@ -243,7 +249,7 @@ function EngagementSection() {
           {ENGAGEMENTS.map((e, i) => (
             <div
               key={e.name}
-              className={`flex flex-col rounded-2xl border p-8 transition-all duration-300 ${
+              className={`kinetic-card flex flex-col overflow-hidden rounded-2xl border p-8 transition-all duration-300 ${
                 e.featured
                   ? 'border-rule-strong bg-surface-raised shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]'
                   : 'border-rule bg-surface hover:bg-surface-raised hover:border-rule'
@@ -307,6 +313,7 @@ export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStu
           one viewport of pixels covers the whole scroll range. */}
       <div className='relative'>
         <ParticleField />
+        <ScrollAtmosphere />
 
         <div className='relative z-10'>
           {/* Proof before biography. The hero makes a specific promise, and

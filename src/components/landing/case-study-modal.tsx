@@ -200,8 +200,8 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           {(study.problem || study.solution) && (
             <div className='grid gap-4 sm:grid-cols-2'>
               {study.problem && (
-                <div className='rounded-2xl border border-rose-500/15 bg-rose-500/4 p-5 sm:p-6'>
-                  <p className='font-mono text-[11px] font-medium tracking-[0.2em] text-rose-800/80 uppercase'>
+                <div className='border-rule bg-ink/3 rounded-2xl border p-5 sm:p-6'>
+                  <p className='text-ink-2 font-mono text-[11px] font-medium tracking-[0.2em] uppercase'>
                     THE PROBLEM
                   </p>
                   <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{study.problem}</p>

@@ -1,8 +1,11 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { useRef } from 'react'
 
-import { CONTAINER, READABLE } from '@/components/landing/motion'
+import { usePathname } from 'next/navigation'
+import { motion, useScroll, useTransform } from 'motion/react'
+
+import { CONTAINER, READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
 import { PROFILE } from '@/lib/portfolio'
 
 /**
@@ -21,12 +24,32 @@ const FOOTER_LINKS = [
 ]
 
 export function SiteFooter() {
+  const footerRef = useRef<HTMLElement>(null)
   const pathname = usePathname()
   const onLanding = pathname === '/'
+  const reduced = usePrefersReducedMotion()
+  const { scrollYProgress } = useScroll({ target: footerRef, offset: ['start end', 'end end'] })
+  const wordY = useTransform(scrollYProgress, [0, 1], [90, -12])
+  const wordScale = useTransform(scrollYProgress, [0, 1], [0.9, 1])
 
   return (
-    <footer className='border-rule border-t px-6 py-12 md:px-12 lg:px-20'>
-      <div className={`${CONTAINER} ${READABLE}`}>
+    <footer ref={footerRef} className='footer-scene border-rule relative overflow-hidden border-t px-6 pt-28 pb-10 md:px-12 lg:px-20'>
+      <motion.div
+        className='footer-word pointer-events-none absolute inset-x-0 top-0 text-center text-[clamp(7rem,22vw,24rem)] leading-none font-black tracking-[-0.09em] select-none'
+        style={reduced ? undefined : { y: wordY, scale: wordScale }}
+        aria-hidden='true'
+      >
+        RAMON
+      </motion.div>
+
+      <div className={`${CONTAINER} ${READABLE} relative z-10 flex min-h-[44vh] flex-col justify-end`}>
+        <div className='mb-20 max-w-2xl'>
+          <span className='eyebrow'>END OF THE MANUAL LOOP</span>
+          <p className='text-ink mt-5 text-[clamp(2rem,4vw,4.25rem)] leading-[1.02] font-light tracking-tight'>
+            Better systems.<br />More human work.
+          </p>
+        </div>
+
         <div className='flex flex-col justify-between gap-8 md:flex-row md:items-center'>
           <div>
             <p className='font-pixel text-ink-2 text-xs tracking-[0.25em]'>{PROFILE.shortName.toUpperCase()}</p>
@@ -64,9 +87,13 @@ export function SiteFooter() {
 
         {/* TODO: privacy + terms links belong here — the routes do not exist
             yet, and linking them before they do would only ship two 404s. */}
-        <p className='border-rule text-meta text-ink-3 mt-10 border-t pt-6'>
-          © {new Date().getFullYear()} {PROFILE.name}. Built and maintained in-house.
-        </p>
+        <div className='border-rule text-meta text-ink-3 mt-10 flex flex-wrap items-center justify-between gap-4 border-t pt-6'>
+          <p>© {new Date().getFullYear()} {PROFILE.name}. Built and maintained in-house.</p>
+          <a href={onLanding ? '#top' : '/#top'} className='text-ink-2 hover:text-ink group inline-flex items-center gap-2 transition-colors'>
+            Back to top
+            <span className='transition-transform duration-300 group-hover:-translate-y-1' aria-hidden='true'>↑</span>
+          </a>
+        </div>
       </div>
     </footer>
   )

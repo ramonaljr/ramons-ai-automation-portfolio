@@ -29,18 +29,6 @@ const words = ['invoicing', 'approvals', 'reporting', 'data entry']
 // so the grafted hero and the page it sits on read as one design.
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
-// Settled color once a letter's illumination pass has finished.
-const INK = '#2A2724'
-
-// A single-hue heat ramp, not a rainbow.
-//
-// This was magenta → violet → cyan → orange: four unrelated hues, which is the
-// most recognizable "AI-generated site" signature there is, and none of them
-// belonged to the page's own warm palette. The word now warms from ink to the
-// site's terracotta accent at its center and cools back — the letters still
-// illuminate as they land, but in one color the rest of the page also speaks.
-const gradientColors = ['#4A3F36', '#8C4E2A', '#B4652F', '#8C4E2A', '#4A3F36']
-
 function BlurWord({ word, trigger }: { word: string; trigger: number }) {
   const letters = word.split('')
   const STAGGER = 45 // ms between each letter
@@ -112,25 +100,8 @@ function BlurWord({ word, trigger }: { word: string; trigger: number }) {
   return (
     <>
       {letters.map((char, i) => {
-        const colorIndex = (i / Math.max(letters.length - 1, 1)) * (gradientColors.length - 1)
-        const lower = Math.floor(colorIndex)
-        const upper = Math.min(lower + 1, gradientColors.length - 1)
-        const t = colorIndex - lower
-
-        // Interpolate hex colors
-        const hex2rgb = (hex: string) => {
-          const r = parseInt(hex.slice(1, 3), 16)
-          const g = parseInt(hex.slice(3, 5), 16)
-          const b = parseInt(hex.slice(5, 7), 16)
-
-          return [r, g, b]
-        }
-
-        const [r1, g1, b1] = hex2rgb(gradientColors[lower])
-        const [r2, g2, b2] = hex2rgb(gradientColors[upper])
-        const r = Math.round(r1 + (r2 - r1) * t)
-        const g = Math.round(g1 + (g2 - g1) * t)
-        const b = Math.round(b1 + (b2 - b1) * t)
+        const centre = (letters.length - 1) / 2
+        const edgeMix = centre === 0 ? 0 : Math.round((Math.abs(i - centre) / centre) * 100)
 
         return (
           <span
@@ -144,8 +115,11 @@ function BlurWord({ word, trigger }: { word: string; trigger: number }) {
               whiteSpace: 'pre',
               opacity: letterStates[i]?.opacity ?? 0,
               filter: `blur(${letterStates[i]?.blur ?? 20}px)`,
-              color: showGradient ? `rgb(${r},${g},${b})` : INK,
-              transition: 'color 0.4s ease'
+              color: showGradient
+                ? `color-mix(in oklch, var(--hero-word-edge) ${edgeMix}%, var(--hero-word-core))`
+                : 'var(--hero-word-settled)',
+              transition: 'color 0.45s ease, text-shadow 0.45s ease',
+              textShadow: showGradient ? '0 0 28px var(--hero-word-glow)' : '0 0 18px var(--hero-word-glow)'
             }}
           >
             {char}
@@ -198,12 +172,11 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             loop
             playsInline
             aria-hidden='true'
-            className='hero-drift h-full w-full object-cover opacity-[0.62]'
+            className='hero-blossom-video hero-drift h-full w-full object-cover'
             style={{
               // Pushed right of centre: the trunk was landing in the same optical
               // column as the headline's right edge and competing with it.
-              objectPosition: '72% center',
-              filter: 'saturate(0.42) sepia(0.22) brightness(1.04) contrast(1.06)'
+              objectPosition: '72% center'
             }}
           >
             <source src='/video/hero-compute.mp4' type='video/mp4' />
@@ -236,7 +209,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           rest of the page is drawn in — see PetalField for why. */}
       <PetalField className='z-3' />
 
-      <div className='relative z-10 mx-auto flex w-full max-w-390 flex-1 flex-col justify-center px-6 pt-36 pb-10 md:px-12 lg:px-20 2xl:max-w-440'>
+      <div className='relative z-10 mx-auto flex w-full max-w-390 flex-1 flex-col justify-center px-6 pt-32 pb-10 md:px-12 lg:px-20 2xl:max-w-440'>
         <div className='lg:max-w-[62%]'>
           {/* Eyebrow */}
           <div
@@ -265,7 +238,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               nowrap anywhere: every line is short enough now to survive 375px
               intact, and wrapping is the safety net if a longer word is added. */}
           <h1
-            className={`display-xl text-ink text-left text-[clamp(2.5rem,5.4vw,6rem)] leading-[0.94] font-light transition-all duration-1000 ${
+            className={`display-xl text-ink text-left text-[clamp(2.5rem,5vw,5.6rem)] leading-[0.94] font-light transition-all duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
             style={{ fontFamily: DISPLAY_FONT }}
@@ -273,7 +246,11 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             <span className='block'>Save hours every week</span>
             <span className='block'>by automating</span>
             <span className='block'>
-              <span className='relative inline-block'>
+              <span
+                className='hero-word-shell relative inline-block min-h-[1em] min-w-[7.4ch]'
+                aria-live='polite'
+                aria-atomic='true'
+              >
                 <BlurWord word={words[wordIndex]} trigger={wordIndex} />
               </span>
             </span>

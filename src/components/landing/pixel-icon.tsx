@@ -3,7 +3,8 @@
 import { useEffect, useRef } from 'react'
 
 // Each icon is a 12×12 pixel grid animated at 60fps with RAF
-// Colors are black at varying opacity to match the light theme
+// The RGB channel is selected at draw time so the canvas remains legible when
+// the site theme changes; CSS color cannot reach pixels already painted here.
 
 type IconType = 'platform' | 'agents' | 'workflow' | 'integrations' | 'pricing'
 
@@ -13,7 +14,7 @@ interface PixelIconProps {
 }
 
 // ── Platform icon: rotating gear / node graph ────────────────────────────────
-function drawPlatform(ctx: CanvasRenderingContext2D, W: number, t: number) {
+function drawPlatform(ctx: CanvasRenderingContext2D, W: number, t: number, rgb: string) {
   const cx = W / 2,
     cy = W / 2
 
@@ -23,7 +24,7 @@ function drawPlatform(ctx: CanvasRenderingContext2D, W: number, t: number) {
   // Central node — pulsing
   const pulse = 0.6 + 0.4 * Math.sin(t * 0.003)
 
-  ctx.fillStyle = `rgba(0,0,0,${pulse})`
+  ctx.fillStyle = `rgba(${rgb},${pulse})`
   const cs = ps * 1.4
 
   ctx.fillRect(cx - cs / 2, cy - cs / 2, cs, cs)
@@ -37,7 +38,7 @@ function drawPlatform(ctx: CanvasRenderingContext2D, W: number, t: number) {
     const ny = cy + Math.sin(angle) * r
     const opacity = 0.3 + 0.5 * ((Math.sin(angle * 2 + t * 0.002) + 1) / 2)
 
-    ctx.fillStyle = `rgba(0,0,0,${opacity})`
+    ctx.fillStyle = `rgba(${rgb},${opacity})`
     ctx.fillRect(Math.round(nx / ps) * ps - ps / 2, Math.round(ny / ps) * ps - ps / 2, ps, ps)
 
     // Connector line (pixelated)
@@ -48,7 +49,7 @@ function drawPlatform(ctx: CanvasRenderingContext2D, W: number, t: number) {
       const ly = cy + (ny - cy) * (s / steps)
       const lo = (0.06 + 0.1 * (s / steps)) * pulse
 
-      ctx.fillStyle = `rgba(0,0,0,${lo})`
+      ctx.fillStyle = `rgba(${rgb},${lo})`
       ctx.fillRect(Math.round(lx / ps) * ps, Math.round(ly / ps) * ps, ps * 0.7, ps * 0.7)
     }
   }
@@ -106,7 +107,7 @@ const AGENT_FRAMES: number[][][] = [
   ]
 ]
 
-function drawAgents(ctx: CanvasRenderingContext2D, W: number, t: number) {
+function drawAgents(ctx: CanvasRenderingContext2D, W: number, t: number, rgb: string) {
   const fps = 6 // animation speed in "frames per second equivalent"
   const frameIdx = Math.floor(t / (1000 / fps)) % AGENT_FRAMES.length
   const frame = AGENT_FRAMES[frameIdx]
@@ -124,14 +125,14 @@ function drawAgents(ctx: CanvasRenderingContext2D, W: number, t: number) {
       if (!cell) return
       const opacity = 0.5 + 0.5 * Math.sin(t * 0.001 + r * 0.3)
 
-      ctx.fillStyle = `rgba(0,0,0,${opacity})`
+      ctx.fillStyle = `rgba(${rgb},${opacity})`
       ctx.fillRect(offX + c * ps, offY + r * ps + bobY, ps - 1, ps - 1)
     })
   })
 }
 
 // ── Workflow icon: hourglass shape — top half fills, drains to bottom ─────────
-function drawWorkflow(ctx: CanvasRenderingContext2D, W: number, t: number) {
+function drawWorkflow(ctx: CanvasRenderingContext2D, W: number, t: number, rgb: string) {
   const ps = Math.floor(W / 12)
   const cx = W / 2
   const cy = W / 2
@@ -185,14 +186,14 @@ function drawWorkflow(ctx: CanvasRenderingContext2D, W: number, t: number) {
       const baseAlpha = 0.12
       const alpha = Math.max(baseAlpha, sandAlpha * 0.85)
 
-      ctx.fillStyle = `rgba(0,0,0,${alpha})`
+      ctx.fillStyle = `rgba(${rgb},${alpha})`
       ctx.fillRect(offX + c * ps, offY + r * ps, ps - 1, ps - 1)
     })
   })
 }
 
 // ── Integrations icon: pixel grid of tiles that light up in sequence ──────────
-function drawIntegrations(ctx: CanvasRenderingContext2D, W: number, t: number) {
+function drawIntegrations(ctx: CanvasRenderingContext2D, W: number, t: number, rgb: string) {
   const cols = 5,
     rows = 4
 
@@ -212,14 +213,14 @@ function drawIntegrations(ctx: CanvasRenderingContext2D, W: number, t: number) {
       const x = offX + c * (ps + gap)
       const y = offY + r * (ps + gap)
 
-      ctx.fillStyle = `rgba(0,0,0,${alpha})`
+      ctx.fillStyle = `rgba(${rgb},${alpha})`
       ctx.fillRect(x, y, ps, ps)
     }
   }
 }
 
 // ── Pricing icon: stacked bar chart growing ───────────────────────────────────
-function drawPricing(ctx: CanvasRenderingContext2D, W: number, t: number) {
+function drawPricing(ctx: CanvasRenderingContext2D, W: number, t: number, rgb: string) {
   const ps = Math.floor(W / 12)
   const bars = 3
   const bw = ps * 2
@@ -244,7 +245,7 @@ function drawPricing(ctx: CanvasRenderingContext2D, W: number, t: number) {
       const progress = 1 - row / rowCount
       const alpha = 0.15 + progress * 0.7
 
-      ctx.fillStyle = `rgba(0,0,0,${alpha})`
+      ctx.fillStyle = `rgba(${rgb},${alpha})`
       ctx.fillRect(x, y + row * ps, bw, ps - 1)
     }
   })
@@ -263,6 +264,7 @@ export function PixelIcon({ type, size = 40 }: PixelIconProps) {
 
     const draw = (t: number) => {
       const dpr = window.devicePixelRatio || 1
+      const rgb = document.documentElement.classList.contains('dark') ? '245,247,255' : '0,0,0'
 
       canvas.width = size * dpr
       canvas.height = size * dpr
@@ -274,19 +276,19 @@ export function PixelIcon({ type, size = 40 }: PixelIconProps) {
 
       switch (type) {
         case 'platform':
-          drawPlatform(ctx, size, t)
+          drawPlatform(ctx, size, t, rgb)
           break
         case 'agents':
-          drawAgents(ctx, size, t)
+          drawAgents(ctx, size, t, rgb)
           break
         case 'workflow':
-          drawWorkflow(ctx, size, t)
+          drawWorkflow(ctx, size, t, rgb)
           break
         case 'integrations':
-          drawIntegrations(ctx, size, t)
+          drawIntegrations(ctx, size, t, rgb)
           break
         case 'pricing':
-          drawPricing(ctx, size, t)
+          drawPricing(ctx, size, t, rgb)
           break
       }
 

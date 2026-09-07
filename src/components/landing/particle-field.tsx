@@ -19,8 +19,6 @@ import { useEffect, useRef } from 'react'
  *    derived from distance without a sqrt in the inner comparison.
  */
 
-const INK = '42, 39, 36'
-
 /**
  * Backdrop weights, kept in the same register as the rest of the page.
  *
@@ -31,10 +29,21 @@ const INK = '42, 39, 36'
  * clump as they random-walk, and those clusters landed on body copy as dense
  * webs of lines that broke up word shapes.
  */
-const DOT_ALPHA = 0.1
-const LINK_ALPHA = 0.055
+const LIGHT_DOT = '42, 39, 36'
+const LIGHT_LINK = '42, 39, 36'
+const DARK_DOT = '238, 242, 255'
+const DARK_LINK = '151, 166, 214'
 
-type P = { x: number; y: number; vx: number; vy: number; r: number }
+type P = {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  r: number
+  depth: number
+  phase: number
+  twinkle: number
+}
 
 export function ParticleField({ className = '' }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -60,6 +69,8 @@ export function ParticleField({ className = '' }: { className?: string }) {
     let particles: P[] = []
     let raf = 0
     let running = false
+    let dark = document.documentElement.classList.contains('dark')
+    let pointer = { x: 0, y: 0, active: false }
 
     const LINK = 170
     const LINK_SQ = LINK * LINK
@@ -86,19 +97,31 @@ export function ParticleField({ className = '' }: { className?: string }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       // Density by area, clamped so a 4K display does not melt.
-      const count = Math.round(Math.min(160, Math.max(50, (w * h) / 10500)))
+      const count = Math.round(Math.min(175, Math.max(58, (w * h) / 9500)))
 
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.28,
-        vy: (Math.random() - 0.5) * 0.28,
-        r: 1.1 + Math.random() * 1.9
-      }))
+      particles = Array.from({ length: count }, () => {
+        const depth = 0.35 + Math.random() * 0.65
+
+        return {
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.25 * depth,
+          vy: (Math.random() - 0.5) * 0.25 * depth,
+          r: 0.65 + Math.random() * 1.65 * depth,
+          depth,
+          phase: Math.random() * Math.PI * 2,
+          twinkle: 0.35 + Math.random() * 0.85
+        }
+      })
     }
 
     const draw = () => {
       ctx.clearRect(0, 0, w, h)
+      const now = performance.now() * 0.001
+      const dotColor = dark ? DARK_DOT : LIGHT_DOT
+      const linkColor = dark ? DARK_LINK : LIGHT_LINK
+      const dotAlpha = dark ? 0.34 : 0.1
+      const linkAlpha = dark ? 0.105 : 0.055
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i]
@@ -106,6 +129,22 @@ export function ParticleField({ className = '' }: { className?: string }) {
         if (!reduced) {
           p.x += p.vx
           p.y += p.vy
+
+          if (pointer.active) {
+            const dx = p.x - pointer.x
+            const dy = p.y - pointer.y
+            const d2 = dx * dx + dy * dy
+            const influence = 165
+
+            if (d2 > 1 && d2 < influence * influence) {
+              const distance = Math.sqrt(d2)
+              const force = (1 - distance / influence) * 0.7 * p.depth
+
+              p.x += (dx / distance) * force
+              p.y += (dy / distance) * force
+            }
+          }
+
           if (p.x < 0 || p.x > w) p.vx *= -1
           if (p.y < 0 || p.y > h) p.vy *= -1
         }
@@ -118,7 +157,9 @@ export function ParticleField({ className = '' }: { className?: string }) {
           const d2 = dx * dx + dy * dy
 
           if (d2 < LINK_SQ) {
-            ctx.strokeStyle = `rgba(${INK}, ${LINK_ALPHA * (1 - d2 / LINK_SQ)})`
+            const sharedDepth = Math.min(p.depth, q.depth)
+
+            ctx.strokeStyle = `rgba(${linkColor}, ${linkAlpha * sharedDepth * (1 - d2 / LINK_SQ)})`
             ctx.lineWidth = 1
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
@@ -127,10 +168,42 @@ export function ParticleField({ className = '' }: { className?: string }) {
           }
         }
 
-        ctx.fillStyle = `rgba(${INK}, ${DOT_ALPHA})`
+        const shimmer = reduced ? 0.8 : 0.58 + Math.sin(now * p.twinkle + p.phase) * 0.24
+
+        ctx.fillStyle = `rgba(${dotColor}, ${dotAlpha * p.depth * shimmer})`
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
         ctx.fill()
+
+        // Only the nearest stars receive a halo, keeping the field dimensional
+        // without putting a blur operation on every point.
+        if (dark && p.depth > 0.86) {
+          ctx.fillStyle = `rgba(151, 166, 214, ${0.055 * shimmer})`
+          ctx.beginPath()
+          ctx.arc(p.x, p.y, p.r * 4.2, 0, Math.PI * 2)
+          ctx.fill()
+        }
+      }
+
+      // Nearby stars acknowledge the pointer with temporary connections. It
+      // makes the background feel responsive without turning it into a cursor
+      // trail or competing with the content above it.
+      if (pointer.active && !reduced) {
+        particles.forEach(p => {
+          const dx = p.x - pointer.x
+          const dy = p.y - pointer.y
+          const d2 = dx * dx + dy * dy
+          const reach = 135
+
+          if (d2 >= reach * reach) return
+
+          ctx.strokeStyle = `rgba(${linkColor}, ${(dark ? 0.2 : 0.1) * (1 - d2 / (reach * reach))})`
+          ctx.lineWidth = 0.8
+          ctx.beginPath()
+          ctx.moveTo(pointer.x, pointer.y)
+          ctx.lineTo(p.x, p.y)
+          ctx.stroke()
+        })
       }
     }
 
@@ -173,10 +246,38 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
     document.addEventListener('visibilitychange', onVisibility)
 
+    const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType === 'touch' || reduced) return
+      const rect = box.getBoundingClientRect()
+
+      pointer = {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+        active: event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom
+      }
+    }
+
+    const onPointerLeave = () => {
+      pointer.active = false
+    }
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
+    document.documentElement.addEventListener('pointerleave', onPointerLeave)
+
+    const themeObserver = new MutationObserver(() => {
+      dark = document.documentElement.classList.contains('dark')
+      if (reduced) draw()
+    })
+
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+
     return () => {
       stop()
       io.disconnect()
       ro.disconnect()
+      themeObserver.disconnect()
+      window.removeEventListener('pointermove', onPointerMove)
+      document.documentElement.removeEventListener('pointerleave', onPointerLeave)
       document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])
@@ -190,7 +291,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
       // container, and a sticky child then sticks to *it* rather than the
       // viewport — so the canvas scrolled away and the field vanished below
       // the first screen.
-      className={`pointer-events-none absolute inset-0 ${className}`}
+      className={`galaxy-field pointer-events-none absolute inset-0 ${className}`}
     >
       {/* Sticky so one viewport of canvas covers the whole scroll range. */}
       <div ref={boxRef} className='sticky top-0 h-screen w-full overflow-hidden'>

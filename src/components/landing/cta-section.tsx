@@ -40,8 +40,7 @@ export function CtaSection({
           src='/images/landing/footer.png'
           alt=''
           aria-hidden='true'
-          className='absolute bottom-0 left-0 w-full object-cover object-bottom select-none'
-          style={{ opacity: 0.55, filter: 'saturate(0.2) sepia(0.32) brightness(1.04) contrast(1.04)' }}
+          className='closing-art absolute bottom-0 left-0 w-full object-cover object-bottom select-none'
         />
       </ParallaxLayer>
 
@@ -58,11 +57,7 @@ export function CtaSection({
 
       {/* Colour fade back to the page ground */}
       <div
-        className='pointer-events-none absolute inset-0'
-        style={{
-          background:
-            'linear-gradient(to top, rgb(245,244,240) 0%, rgba(245,244,240,0.92) 18%, rgba(245,244,240,0.55) 35%, transparent 55%)'
-        }}
+        className='closing-fade pointer-events-none absolute inset-0'
       />
 
       <div ref={ref} className={`relative z-10 ${CONTAINER} text-center`} style={rise(inView)}>

@@ -132,6 +132,10 @@
   --surface: oklch(1 0 0 / 0.55);
   --surface-raised: oklch(1 0 0 / 0.92);
   --ring-contrast: oklch(0.205 0.006 70);
+  --hero-word-edge: oklch(0.46 0.12 18);
+  --hero-word-core: oklch(0.59 0.17 8);
+  --hero-word-settled: oklch(0.43 0.14 12);
+  --hero-word-glow: oklch(0.62 0.16 8 / 0.18);
 }
 
 .dark {
@@ -149,6 +153,10 @@
   --surface: oklch(1 0 0 / 0.04);
   --surface-raised: oklch(1 0 0 / 0.07);
   --ring-contrast: oklch(0.97 0.004 70);
+  --hero-word-edge: oklch(0.93 0.035 350);
+  --hero-word-core: oklch(0.76 0.18 357);
+  --hero-word-settled: oklch(0.82 0.135 357);
+  --hero-word-glow: oklch(0.74 0.2 357 / 0.34);
   --card: oklch(0.1913 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
@@ -159,7 +167,7 @@
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.6837 0.212 40.59);
+  --accent: oklch(0.94 0 0);
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(0.2393 0 0);
@@ -333,6 +341,36 @@
   }
 }
 
+@keyframes intro-signal-pass {
+  0% { transform: translateX(-100%); opacity: 0; }
+  18% { opacity: 0.55; }
+  82% { opacity: 0.25; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes intro-progress-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.intro-grid {
+  opacity: 0.42;
+  background-image:
+    linear-gradient(to right, var(--rule) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--rule) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at center, black, transparent 68%);
+}
+
+.intro-signal {
+  background: linear-gradient(90deg, transparent, color-mix(in oklch, var(--accent) 68%, transparent), transparent);
+  animation: intro-signal-pass 1.55s var(--ease-entrance) both;
+}
+
+.intro-progress {
+  animation: intro-progress-fill 0.72s var(--ease-entrance) 0.32s both;
+}
+
 /* Reverse marquee, for the second tool-stack row */
 @keyframes marquee-reverse {
   from {
@@ -372,7 +410,7 @@ a:focus-visible,
 button:focus-visible,
 [role='tab']:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid #111 !important;
+  outline: 2px solid var(--ring-contrast) !important;
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -579,6 +617,156 @@ li {
   animation: hero-drift 44s ease-in-out infinite alternate;
 }
 
+.hero-blossom-video {
+  opacity: 0.68;
+  filter: saturate(1.28) sepia(0.05) brightness(1.02) contrast(1.05);
+}
+
+.hero-word-shell {
+  isolation: isolate;
+}
+
+.hero-word-shell::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  bottom: -0.08em;
+  left: 0;
+  height: 0.08em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--hero-word-core) 18%, var(--hero-word-edge) 82%, transparent);
+  opacity: 0.72;
+  transform: scaleX(0.94);
+  transform-origin: center;
+  box-shadow: 0 0 22px var(--hero-word-glow);
+  animation: hero-word-underline 2.5s var(--ease-entrance) infinite;
+}
+
+@keyframes hero-word-underline {
+  0% { opacity: 0; transform: scaleX(0.15); }
+  24% { opacity: 0.78; transform: scaleX(0.94); }
+  78% { opacity: 0.58; transform: scaleX(0.98); }
+  100% { opacity: 0; transform: scaleX(0.35); }
+}
+
+.dark .hero-blossom-video {
+  opacity: 0.88;
+  filter: saturate(1.75) brightness(0.72) contrast(1.16) hue-rotate(-4deg);
+}
+
+.site-nav-glass {
+  background: color-mix(in oklch, var(--ground) 70%, transparent);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.32),
+    inset 0 -1px 0 color-mix(in oklch, var(--ink) 8%, transparent),
+    0 8px 32px oklch(0.08 0.01 340 / 0.16),
+    0 2px 8px oklch(0.08 0.01 340 / 0.1);
+}
+
+.dark .site-nav-glass {
+  background: oklch(0.17 0.012 345 / 0.72);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.11),
+    inset 0 -1px 0 oklch(0 0 0 / 0.28),
+    0 16px 40px oklch(0 0 0 / 0.28),
+    0 0 42px color-mix(in oklch, var(--accent) 7%, transparent);
+}
+
+/* The lower-page constellation remains neutral rather than borrowing the
+   blossom pink. Two faint nebula glows give the moving canvas a sense of depth
+   on dark screens; the stars and links themselves are rendered in canvas. */
+.galaxy-field::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 100vh;
+  width: 100%;
+  background:
+    radial-gradient(circle at 14% 30%, color-mix(in oklch, var(--ink) 3%, transparent), transparent 27%),
+    radial-gradient(circle at 82% 68%, color-mix(in oklch, var(--ink) 2%, transparent), transparent 31%);
+}
+
+.dark .galaxy-field::before {
+  background:
+    radial-gradient(circle at 13% 27%, oklch(0.56 0.08 268 / 0.1), transparent 29%),
+    radial-gradient(circle at 84% 70%, oklch(0.66 0.055 232 / 0.075), transparent 34%);
+}
+
+.galaxy-field > div {
+  margin-top: -100vh;
+}
+
+/* Large scroll-linked forms move much more slowly than the constellation.
+   Their scale makes the motion read as camera depth rather than decoration. */
+.scroll-orbit {
+  border: 1px solid color-mix(in oklch, var(--ink) 5%, transparent);
+  background:
+    radial-gradient(circle at 50% 50%, transparent 58%, color-mix(in oklch, var(--ink) 2.2%, transparent) 59%, transparent 70%),
+    conic-gradient(from 30deg, transparent, color-mix(in oklch, var(--ink) 3.5%, transparent), transparent 38%);
+  will-change: transform;
+}
+
+.scroll-orbit-b {
+  border-style: dashed;
+  opacity: 0.7;
+}
+
+.scroll-light-beam {
+  opacity: 0.28;
+  background: linear-gradient(90deg, transparent, color-mix(in oklch, var(--ink) 2.8%, transparent), transparent);
+  filter: blur(24px);
+  will-change: transform;
+}
+
+.dark .scroll-orbit {
+  border-color: oklch(0.84 0.035 250 / 0.085);
+  background:
+    radial-gradient(circle at 50% 50%, transparent 58%, oklch(0.75 0.045 245 / 0.035) 59%, transparent 70%),
+    conic-gradient(from 30deg, transparent, oklch(0.72 0.06 260 / 0.055), transparent 38%);
+}
+
+.dark .scroll-light-beam {
+  background: linear-gradient(90deg, transparent, oklch(0.76 0.045 245 / 0.045), transparent);
+}
+
+.closing-art {
+  opacity: 0.55;
+  filter: saturate(0.2) sepia(0.32) brightness(1.04) contrast(1.04);
+}
+
+.dark .closing-art {
+  opacity: 0.22;
+  filter: saturate(0) brightness(0.72) contrast(1.2);
+}
+
+.closing-fade {
+  background: linear-gradient(
+    to top,
+    var(--ground) 0%,
+    color-mix(in oklch, var(--ground) 92%, transparent) 18%,
+    color-mix(in oklch, var(--ground) 55%, transparent) 35%,
+    transparent 55%
+  );
+}
+
+.footer-scene {
+  background:
+    radial-gradient(circle at 50% 12%, color-mix(in oklch, var(--ink) 4%, transparent), transparent 36%),
+    var(--ground);
+}
+
+.footer-word {
+  color: color-mix(in oklch, var(--ink) 3.8%, transparent);
+  -webkit-text-stroke: 1px color-mix(in oklch, var(--ink) 6%, transparent);
+}
+
+.dark .footer-word {
+  color: oklch(1 0 0 / 0.025);
+  -webkit-text-stroke-color: oklch(1 0 0 / 0.075);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-drift {
     animation: none;
@@ -668,5 +856,93 @@ li {
   .cursor-ring,
   .cursor-dot {
     transition: none;
+  }
+}
+
+/* A soft traveling reflection gives content cards depth without turning the
+   whole page into a field of independently moving objects. */
+.kinetic-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  background: linear-gradient(112deg, transparent 20%, oklch(1 0 0 / 0.42) 48%, transparent 72%);
+  transform: translateX(-115%);
+  transition: transform 0.85s var(--ease-entrance);
+}
+
+.kinetic-card:hover::after {
+  transform: translateX(115%);
+}
+
+/* Service glyphs stay gently alive at rest, then gain a little more travel
+   when their card is explored. Staggered negative delays prevent the grid from
+   moving as one mechanical block. */
+.service-icon-glyph {
+  display: inline-flex;
+  transform-origin: 50% 60%;
+  animation: service-icon-drift 4.2s var(--ease-standard) infinite;
+  animation-delay: var(--icon-delay, 0s);
+  will-change: transform;
+}
+
+.dark .service-icon-square {
+  border-color: oklch(1 0 0 / 0.16);
+  background: linear-gradient(145deg, oklch(0.28 0.008 260 / 0.94), oklch(0.215 0.006 260 / 0.98));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.12),
+    inset 0 -1px 0 oklch(0 0 0 / 0.3),
+    0 8px 24px -15px oklch(0.82 0.035 250 / 0.42);
+}
+
+.dark .service-icon-glyph canvas {
+  filter: drop-shadow(0 0 5px oklch(0.92 0.03 250 / 0.38));
+}
+
+.group:hover .service-icon-glyph {
+  animation-duration: 2.2s;
+}
+
+.group:hover .service-icon-square {
+  border-color: color-mix(in oklch, var(--accent) 42%, transparent);
+  box-shadow:
+    inset 0 0 18px color-mix(in oklch, var(--accent) 5%, transparent),
+    0 8px 22px -14px color-mix(in oklch, var(--accent) 28%, transparent);
+}
+
+.dark .group:hover .service-icon-square {
+  border-color: oklch(1 0 0 / 0.34);
+  background: linear-gradient(145deg, oklch(0.32 0.01 250 / 0.96), oklch(0.24 0.008 250 / 0.98));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.18),
+    inset 0 0 20px oklch(1 0 0 / 0.045),
+    0 10px 28px -14px oklch(0.88 0.025 250 / 0.5);
+}
+
+@keyframes service-icon-drift {
+  0%, 100% { transform: translate3d(0, 1px, 0) rotate(-2deg); }
+  35% { transform: translate3d(2px, -3px, 0) rotate(3deg); }
+  68% { transform: translate3d(-2px, -1px, 0) rotate(-1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kinetic-card::after {
+    display: none;
+  }
+
+  .service-icon-glyph {
+    animation: none;
+  }
+
+  .scroll-orbit,
+  .scroll-light-beam,
+  .footer-word {
+    transform: none !important;
+  }
+
+  .hero-word-shell::after {
+    animation: none;
+    opacity: 0.58;
+    transform: scaleX(0.94);
   }
 }

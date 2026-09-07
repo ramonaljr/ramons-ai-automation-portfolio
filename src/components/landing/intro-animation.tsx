@@ -7,16 +7,16 @@ import { usePrefersReducedMotion } from '@/components/landing/motion'
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
 // Timing configuration (ms)
-const ENTER_DURATION = 1150
-const HOLD_DURATION = 650
-const EXIT_START = ENTER_DURATION + HOLD_DURATION // 1800ms
-const EXIT_DURATION = 450
-const CURTAIN_START = EXIT_START + 150 // 1950ms
-const CURTAIN_DURATION = 1200 // 1200ms
+const ENTER_DURATION = 650
+const HOLD_DURATION = 350
+const EXIT_START = ENTER_DURATION + HOLD_DURATION // 1000ms
+const EXIT_DURATION = 300
+const CURTAIN_START = EXIT_START + 100 // 1100ms
+const CURTAIN_DURATION = 800
 
-export const HERO_REVEAL_MS = CURTAIN_START + CURTAIN_DURATION - 200 // 2950ms
-export const INTRO_DURATION_MS = CURTAIN_START + CURTAIN_DURATION // 3150ms
-const TOTAL_DURATION = INTRO_DURATION_MS + 250 // 3400ms
+export const HERO_REVEAL_MS = CURTAIN_START + CURTAIN_DURATION - 180 // 1720ms
+export const INTRO_DURATION_MS = CURTAIN_START + CURTAIN_DURATION // 1900ms
+const TOTAL_DURATION = INTRO_DURATION_MS + 120 // 2020ms
 
 type Phase = 'idle' | 'in' | 'out' | 'done'
 
@@ -90,7 +90,10 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
           transition: curtainUp ? `bottom ${CURTAIN_DURATION}ms cubic-bezier(0.76, 0, 0.24, 1)` : 'none',
           background: 'var(--ground)'
         }}
-      />
+      >
+        <div className='intro-grid absolute inset-0' />
+        <div className='intro-signal absolute top-1/2 left-0 h-px w-full' />
+      </div>
 
       {/* Intro presentation card */}
       <div className='absolute inset-0 flex items-center justify-center px-6'>
@@ -100,7 +103,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
             className='border-rule bg-ink/3 mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1'
             style={getItemStyle(100, 12, 10)}
           >
-            <span className='h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500' />
+            <span className='bg-accent h-1.5 w-1.5 animate-pulse rounded-full' />
             <span className='text-ink-3 font-mono text-[11px] tracking-[0.2em] uppercase sm:text-[12px]'>
               AI Automation &amp; Systems
             </span>
@@ -117,10 +120,14 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
             RAMON
           </h1>
 
+          <div className='border-rule mb-5 h-px w-40 overflow-hidden border-t' style={getItemStyle(300, 8, 6)}>
+            <span className='intro-progress bg-accent block h-px w-full origin-left' />
+          </div>
+
           {/* Business pain-point slogan */}
           <p
             className='text-ink-2 max-w-[42ch] text-[15px] leading-relaxed font-light tracking-tight sm:text-lg md:text-xl'
-            style={getItemStyle(380, 20, 14)}
+            style={getItemStyle(340, 20, 14)}
           >
             Automating the manual work that quietly eats your business week.
           </p>

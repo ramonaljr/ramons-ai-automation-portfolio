@@ -3,6 +3,7 @@
 import { useState } from 'react'
 
 import { usePathname } from 'next/navigation'
+import { motion, useScroll, useSpring } from 'motion/react'
 
 /**
  * The floating glass nav bar. Shared by the landing page and every page that
@@ -31,16 +32,14 @@ const NAV_LINKS = [
  */
 const NAV_STYLE = {
   backdropFilter: 'blur(20px) saturate(1.7)',
-  WebkitBackdropFilter: 'blur(20px) saturate(1.7)',
-  background: 'oklch(0.9623 0.0045 84.5 / 0.62)',
-  boxShadow:
-    'inset 0 1px 0 oklch(1 0 0 / 0.6), inset 0 -1px 0 oklch(0.28 0.014 70 / 0.05),' +
-    '0 8px 32px oklch(0.28 0.014 70 / 0.08), 0 2px 8px oklch(0.28 0.014 70 / 0.05)'
+  WebkitBackdropFilter: 'blur(20px) saturate(1.7)'
 } as const
 
 export function SiteNav() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const { scrollYProgress } = useScroll()
+  const progress = useSpring(scrollYProgress, { stiffness: 130, damping: 28, mass: 0.4 })
 
   const onLanding = pathname === '/'
 
@@ -55,7 +54,7 @@ export function SiteNav() {
     <div className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4'>
       <div className='pointer-events-auto w-full max-w-5xl'>
         {/* Main bar */}
-        <nav className='border-rule flex items-center justify-between rounded-2xl border px-5 py-3' style={NAV_STYLE}>
+        <nav className='site-nav-glass border-rule relative flex items-center justify-between overflow-hidden rounded-2xl border px-5 py-3' style={NAV_STYLE}>
           <a
             href={onLanding ? '#top' : '/'}
             className='font-pixel text-ink text-xs tracking-[0.25em] transition-opacity hover:opacity-70'
@@ -105,6 +104,12 @@ export function SiteNav() {
               />
             </button>
           </div>
+
+          <motion.span
+            className='bg-accent absolute inset-x-0 bottom-0 h-[2px] origin-left'
+            style={{ scaleX: progress }}
+            aria-hidden='true'
+          />
         </nav>
 
         {/* Mobile dropdown */}
@@ -112,7 +117,7 @@ export function SiteNav() {
           className='mt-2 overflow-hidden transition-all duration-300 ease-in-out md:hidden'
           style={{ maxHeight: open ? '320px' : '0px', opacity: open ? 1 : 0 }}
         >
-          <div className='border-rule flex flex-col rounded-2xl border px-2 py-2' style={NAV_STYLE}>
+          <div className='site-nav-glass border-rule flex flex-col rounded-2xl border px-2 py-2' style={NAV_STYLE}>
             {NAV_LINKS.map(l => (
               <a
                 key={l.label}
