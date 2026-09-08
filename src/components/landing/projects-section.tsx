@@ -255,8 +255,8 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
             Below `lg` there is no room for a side-by-side, so each row carries
             its own canvas and the whole thing degrades to a plain stack. */}
-        <div ref={ref} className='mt-14 grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]'>
-          <ol className='border-rule border-t'>
+        <div ref={ref} className='saas-project-browser mt-14 grid gap-x-8 gap-y-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]'>
+          <ol className='saas-project-index border-rule border-t'>
             {shown.map((cs, i) => {
               const isActive = cs.slug === active?.slug
 
@@ -331,7 +331,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
               work down the index. */}
           <aside className='hidden lg:block' style={panel()}>
             {active && (
-              <div className='sticky top-28'>
+              <div className='saas-project-preview sticky top-28'>
                 <Canvas cs={active} priority />
 
                 <div className='mt-6'>

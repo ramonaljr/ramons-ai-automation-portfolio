@@ -2,9 +2,9 @@
 
 import { useEffect, useRef } from 'react'
 
-/** The hero owns one visual language: the blossom video and drifting petals. */
-const PETAL = [244, 114, 152] as const
-const PACKET = [255, 255, 255] as const
+/** Signal petals drift freely, then resolve into bright packets at the current. */
+const PETAL = [176, 78, 58] as const
+const PACKET = [244, 205, 145] as const
 
 type Petal = {
   x: number
@@ -100,7 +100,7 @@ export function PetalField({ className = '' }: { className?: string }) {
       const rx = p.r + (3.5 - p.r) * transition
       const ry = p.r * 0.58 + (1.45 - p.r * 0.58) * transition
       const color = PETAL.map((channel, index) => Math.round(channel + (PACKET[index] - channel) * transition))
-      const alpha = (dark ? 0.68 : 0.58) + transition * 0.24
+      const alpha = (dark ? 0.68 : 0.34) + transition * 0.32
 
       ctx.save()
       ctx.translate(p.x, p.y)

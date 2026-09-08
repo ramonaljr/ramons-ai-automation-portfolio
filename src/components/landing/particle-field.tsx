@@ -11,6 +11,17 @@ type FlowRoute = {
   direction: 1 | -1
 }
 
+type AmbientShard = {
+  x: number
+  y: number
+  phase: number
+  speed: number
+  sway: number
+  size: number
+  spin: number
+  tone: number
+}
+
 /**
  * A restrained automation-flow backdrop for the lower page.
  *
@@ -41,6 +52,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
     let w = 0
     let h = 0
     let routes: FlowRoute[] = []
+    let shards: AmbientShard[] = []
     let raf = 0
     let running = false
     let dark = detectDark()
@@ -59,7 +71,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
       const y1 = baseY + (seeded(index + 2) - 0.5) * verticalRange
       const y2 = y1 + (seeded(index + 12) - 0.5) * verticalRange
       const y3 = y2 + (seeded(index + 24) - 0.5) * verticalRange
-      const reach = desktop ? 0.3 + seeded(index + 31) * 0.12 : 0.48 + seeded(index + 31) * 0.18
+      const reach = desktop ? 0.48 + seeded(index + 31) * 0.08 : 0.68 + seeded(index + 31) * 0.16
       const insetA = desktop ? 0.07 + seeded(index + 42) * 0.05 : 0.12
       const insetB = desktop ? 0.2 + seeded(index + 53) * 0.06 : 0.3
 
@@ -100,9 +112,50 @@ export function ParticleField({ className = '' }: { className?: string }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       const desktop = w >= 1024
-      const count = desktop ? 7 : 5
+      const count = desktop ? 10 : 7
+      const shardCount = desktop ? 76 : 48
 
       routes = Array.from({ length: count }, (_, index) => createRoute(index, count, desktop))
+      shards = Array.from({ length: shardCount }, (_, index) => ({
+        x: seeded(index + 211) * w,
+        y: seeded(index + 337) * (h + 120) - 60,
+        phase: seeded(index + 419) * Math.PI * 2,
+        speed: 5 + seeded(index + 503) * 11,
+        sway: 10 + seeded(index + 607) * (desktop ? 34 : 22),
+        size: 4 + seeded(index + 701) * 6,
+        spin: (seeded(index + 809) - 0.5) * 0.72,
+        tone: seeded(index + 907)
+      }))
+    }
+
+    const drawAmbientShard = (shard: AmbientShard, index: number, now: number) => {
+      const travel = reduced ? 0 : now * shard.speed
+      const y = ((shard.y + travel + window.scrollY * (0.018 + (index % 3) * 0.006) + 60) % (h + 120)) - 60
+      const x = shard.x + Math.sin(now * 0.42 + shard.phase) * shard.sway
+      const rotation = shard.phase + (reduced ? 0 : now * shard.spin)
+      const alpha = 0.23 + shard.tone * 0.18
+      const red = Math.round(162 + shard.tone * 30)
+      const green = Math.round(70 + shard.tone * 48)
+      const blue = Math.round(51 + shard.tone * 43)
+
+      ctx.save()
+      ctx.translate(x, y)
+      ctx.rotate(rotation)
+      ctx.beginPath()
+      ctx.moveTo(-shard.size * 1.7, 0)
+      ctx.quadraticCurveTo(0, -shard.size * 1.15, shard.size * 1.7, 0)
+      ctx.quadraticCurveTo(0, shard.size * 1.15, -shard.size * 1.7, 0)
+      ctx.closePath()
+      ctx.fillStyle = dark
+        ? `rgba(244, 184, 171, ${alpha * 0.72})`
+        : `rgba(${red}, ${green}, ${blue}, ${alpha})`
+      ctx.fill()
+      ctx.strokeStyle = dark
+        ? `rgba(255, 225, 215, ${alpha * 0.62})`
+        : `rgba(126, 67, 51, ${alpha * 0.72})`
+      ctx.lineWidth = 0.55
+      ctx.stroke()
+      ctx.restore()
     }
 
     const pointForFrame = (point: FlowPoint, routeIndex: number): FlowPoint => {
@@ -163,9 +216,9 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
     const drawRoute = (route: FlowRoute, routeIndex: number, now: number) => {
       const points = route.points.map(point => pointForFrame(point, routeIndex))
-      const lineColor = dark ? '232, 238, 247' : '42, 39, 36'
-      const nodeColor = dark ? '255, 255, 255' : '42, 39, 36'
-      const lineAlpha = dark ? 0.17 : 0.12
+      const lineColor = dark ? '232, 238, 247' : '132, 82, 62'
+      const nodeColor = dark ? '255, 255, 255' : '126, 67, 51'
+      const lineAlpha = dark ? 0.17 : 0.14
 
       ctx.strokeStyle = `rgba(${lineColor}, ${lineAlpha})`
       ctx.lineWidth = 1
@@ -204,7 +257,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
         ctx.save()
         ctx.translate(position.x, position.y)
         ctx.rotate(position.angle)
-        ctx.fillStyle = `rgba(${nodeColor}, ${dark ? 0.92 : 0.68})`
+        ctx.fillStyle = `rgba(${nodeColor}, ${dark ? 0.92 : 0.78})`
         ctx.fillRect(-3.5, -1.5, 7, 3)
         ctx.restore()
       }
@@ -227,7 +280,9 @@ export function ParticleField({ className = '' }: { className?: string }) {
           { x: innerX, y: 96 }
         ]
 
-        ctx.strokeStyle = `rgba(235, 240, 248, ${0.22 * visibility})`
+        ctx.strokeStyle = dark
+          ? `rgba(235, 240, 248, ${0.22 * visibility})`
+          : `rgba(132, 82, 62, ${0.16 * visibility})`
         ctx.lineWidth = 0.9
         ctx.beginPath()
         ctx.moveTo(points[0].x, points[0].y)
@@ -236,16 +291,18 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
         ctx.stroke()
 
-        ctx.fillStyle = `rgba(255, 255, 255, ${0.68 * visibility})`
+        ctx.fillStyle = dark
+          ? `rgba(255, 255, 255, ${0.68 * visibility})`
+          : `rgba(126, 67, 51, ${0.52 * visibility})`
         ctx.beginPath()
         ctx.arc(innerX, 54, 1.5, 0, Math.PI * 2)
         ctx.fill()
 
         const progress = ((now * 0.09 + index * 0.46) % 1 + 1) % 1
         const packet = pointAlongRoute(points, progress)
-        const red = Math.round(244 + 11 * progress)
-        const green = Math.round(114 + 141 * progress)
-        const blue = Math.round(152 + 103 * progress)
+        const red = dark ? Math.round(244 + 11 * progress) : Math.round(150 + 42 * progress)
+        const green = dark ? Math.round(114 + 141 * progress) : Math.round(73 + 54 * progress)
+        const blue = dark ? Math.round(152 + 103 * progress) : Math.round(58 + 42 * progress)
 
         ctx.save()
         ctx.translate(packet.x, packet.y)
@@ -261,11 +318,12 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
       const now = performance.now() * 0.001
 
+      shards.forEach((shard, index) => drawAmbientShard(shard, index, now))
       drawHeroHandoff(now)
       routes.forEach((route, index) => drawRoute(route, index, now))
 
       if (pointer.active && !reduced) {
-        const color = dark ? '255, 255, 255' : '42, 39, 36'
+        const color = dark ? '255, 255, 255' : '126, 67, 51'
 
         ctx.strokeStyle = `rgba(${color}, ${dark ? 0.2 : 0.13})`
         ctx.lineWidth = 0.8

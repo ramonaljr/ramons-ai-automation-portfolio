@@ -105,7 +105,7 @@ export function ToolStackSection() {
   const { ref, inView } = useInView(0.2)
 
   return (
-    <section id='stack' className='border-rule overflow-hidden border-t py-32'>
+    <section id='stack' className='saas-section border-rule overflow-hidden border-t py-32'>
       <div
         ref={ref}
         className={`px-6 md:px-12 lg:px-20 ${READABLE}`}

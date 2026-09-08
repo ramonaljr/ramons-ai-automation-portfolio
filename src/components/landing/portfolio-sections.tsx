@@ -19,6 +19,7 @@ import { TestimonialsSection } from '@/components/landing/testimonials-section'
 import { ArticlesSection } from '@/components/landing/articles-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
+import { ScrollAtmosphere } from '@/components/landing/scroll-atmosphere'
 import {
   ArrowIcon,
   CONTAINER,
@@ -312,6 +313,7 @@ export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStu
           one viewport of pixels covers the whole scroll range. */}
       <div className='relative'>
         <ParticleField />
+        <ScrollAtmosphere />
 
         <div className='relative z-10'>
           {/* Proof before biography. The hero makes a specific promise, and

@@ -1,134 +1,15 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useEffect, useState } from 'react'
 
 import { HERO_STATS } from '@/lib/portfolio'
-import { CountUp, Cta, ParallaxLayer } from '@/components/landing/motion'
+import { CountUp, Cta, usePrefersReducedMotion } from '@/components/landing/motion'
+import { SaasFlowField } from '@/components/landing/saas-flow-field'
 import { PetalField } from '@/components/landing/petal-field'
 
-/**
- * The rotating word names something the reader recognises.
- *
- * This has been through three sets. It started as ['automate', 'reconcile',
- * 'integrate', 'scale'] — the services on offer, which any automation
- * freelancer could claim. It became the failure modes prevented ('quietly',
- * 'under load', 'on a retry'), which differentiated but put the two most
- * technical words on the page in its largest type: a buyer who is not an
- * engineer does not know what failing "on a retry" means.
- *
- * These are the jobs themselves, in the words the person paying for the work
- * already uses. The headline reads "Save hours every week by automating
- * invoicing" and stays true for every option.
- *
- * Terminal on its line, as always: BlurWord is inline-block, so anything after
- * it shifts every 2.5s as the word length changes.
- */
-const words = ['invoicing', 'approvals', 'reporting', 'data entry']
-
-// Headline face — matches the IBM Plex Sans used by the sections below,
-// so the grafted hero and the page it sits on read as one design.
-const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
-
-function BlurWord({ word, trigger }: { word: string; trigger: number }) {
-  const letters = word.split('')
-  const STAGGER = 45 // ms between each letter
-  const DURATION = 500 // blur+opacity fade duration per letter
-  const GRADIENT_HOLD = STAGGER * letters.length + DURATION + 200
-
-  const [letterStates, setLetterStates] = useState<{ opacity: number; blur: number }[]>(
-    letters.map(() => ({ opacity: 0, blur: 20 }))
-  )
-
-  const [showGradient, setShowGradient] = useState(true)
-  const framesRef = useRef<number[]>([])
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
-
-  useEffect(() => {
-    // reset
-    framesRef.current.forEach(cancelAnimationFrame)
-    timersRef.current.forEach(clearTimeout)
-    framesRef.current = []
-    timersRef.current = []
-
-    setLetterStates(letters.map(() => ({ opacity: 0, blur: 20 })))
-    setShowGradient(true)
-
-    // stagger each letter
-    letters.forEach((_, i) => {
-      const t = setTimeout(() => {
-        const start = performance.now()
-
-        const tick = (now: number) => {
-          const progress = Math.min((now - start) / DURATION, 1)
-          const eased = 1 - Math.pow(1 - progress, 3)
-
-          setLetterStates(prev => {
-            const next = [...prev]
-
-            next[i] = { opacity: eased, blur: 20 * (1 - eased) }
-
-            return next
-          })
-
-          if (progress < 1) {
-            const id = requestAnimationFrame(tick)
-
-            framesRef.current.push(id)
-          }
-        }
-
-        const id = requestAnimationFrame(tick)
-
-        framesRef.current.push(id)
-      }, i * STAGGER)
-
-      timersRef.current.push(t)
-    })
-
-    // remove gradient once all letters are settled
-    const gt = setTimeout(() => setShowGradient(false), GRADIENT_HOLD)
-
-    timersRef.current.push(gt)
-
-    return () => {
-      framesRef.current.forEach(cancelAnimationFrame)
-      timersRef.current.forEach(clearTimeout)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trigger])
-
-  return (
-    <>
-      {letters.map((char, i) => {
-        const centre = (letters.length - 1) / 2
-        const edgeMix = centre === 0 ? 0 : Math.round((Math.abs(i - centre) / centre) * 100)
-
-        return (
-          <span
-            key={i}
-            style={{
-              display: 'inline-block',
-
-              // Each letter is its own inline-block, and an inline-block whose
-              // only content is whitespace collapses to zero width — which
-              // rendered "on a retry" with words run together. `pre` holds the space.
-              whiteSpace: 'pre',
-              opacity: letterStates[i]?.opacity ?? 0,
-              filter: `blur(${letterStates[i]?.blur ?? 20}px)`,
-              color: showGradient
-                ? `color-mix(in oklch, var(--hero-word-edge) ${edgeMix}%, var(--hero-word-core))`
-                : 'var(--hero-word-settled)',
-              transition: 'color 0.45s ease, text-shadow 0.45s ease',
-              textShadow: showGradient ? '0 0 28px var(--hero-word-glow)' : '0 0 18px var(--hero-word-glow)'
-            }}
-          >
-            {char}
-          </span>
-        )
-      })}
-    </>
-  )
-}
+const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
+const ROTATING_WORK = ['data entry.', 'capturing new leads.', 'routine follow-ups.', 'recurring reports.']
 
 /**
  * `ready` lets the page gate the reveal on the intro animation finishing,
@@ -137,6 +18,7 @@ function BlurWord({ word, trigger }: { word: string; trigger: number }) {
 export function HeroSection({ ready }: { ready?: boolean }) {
   const [mounted, setMounted] = useState(false)
   const [wordIndex, setWordIndex] = useState(0)
+  const reduced = usePrefersReducedMotion()
 
   useEffect(() => {
     // Flip in a frame callback rather than synchronously, so the browser paints
@@ -147,70 +29,24 @@ export function HeroSection({ ready }: { ready?: boolean }) {
   }, [])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setWordIndex(prev => (prev + 1) % words.length)
-    }, 2500)
+    if (reduced) return
 
-    return () => clearInterval(interval)
-  }, [])
+    const interval = window.setInterval(() => {
+      setWordIndex(current => (current + 1) % ROTATING_WORK.length)
+    }, 2800)
+
+    return () => window.clearInterval(interval)
+  }, [reduced])
 
   const isVisible = ready ?? mounted
 
   return (
     <section className='bg-ground relative flex min-h-dvh flex-col justify-center overflow-hidden'>
-      {/* Background video, graded into the palette.
-          It was running `saturate(1.35)` — boosting the footage's pink toward
-          the loudest thing on the page, in a hue the rest of the site never
-          uses. Pulling saturation down and adding a trace of sepia lands it in
-          the same warm neutral family as the ground, so it reads as atmosphere
-          behind the headline instead of a photograph competing with it. */}
-      <div className='absolute inset-0 z-0'>
-        <ParallaxLayer className='absolute inset-0' speed={0.15} direction='down'>
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            aria-hidden='true'
-            className='hero-blossom-video hero-drift h-full w-full object-cover'
-            style={{
-              // Pushed right of centre: the trunk was landing in the same optical
-              // column as the headline's right edge and competing with it.
-              objectPosition: '72% center'
-            }}
-          >
-            <source src='/video/hero-compute.mp4' type='video/mp4' />
-          </video>
-        </ParallaxLayer>
-        {/* The veils stay put: they are what guarantees the headline a clean
-            ground, so they must not drift out from under it. */}
-        <div className='from-ground via-ground/82 to-ground/10 absolute inset-0 bg-linear-to-r' />
-        <div className='from-ground/60 to-ground/85 absolute inset-0 bg-linear-to-b via-transparent' />
-      </div>
-
-      {/* Architectural grid. Two repeating-linear-gradients rather than the 20
-          absolutely-positioned divs this used to be — same drawing, no DOM, and
-          it scales with the viewport instead of snapping to hardcoded percents.
-          Masked to fade toward the right so it never competes with the video. */}
-      <ParallaxLayer className='pointer-events-none absolute inset-0 z-2' speed={0.06} direction='up'>
-        <div
-          className='h-full w-full'
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(to right, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 8.333%),' +
-              'repeating-linear-gradient(to bottom, oklch(0.28 0.014 70 / 0.055) 0 1px, transparent 1px 12.5%)',
-            maskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)',
-            WebkitMaskImage: 'linear-gradient(105deg, black 0%, black 42%, transparent 78%)'
-          }}
-        />
-      </ParallaxLayer>
-
-      {/* Petals fall through the hero and settle into the constellation the
-          rest of the page is drawn in — see PetalField for why. */}
-      <PetalField className='z-3' />
+      <SaasFlowField />
+      <PetalField className='z-4' />
 
       <div className='relative z-10 mx-auto flex w-full max-w-390 flex-1 flex-col justify-center px-6 pt-32 pb-10 md:px-12 lg:px-20 2xl:max-w-440'>
-        <div className='lg:max-w-[62%]'>
+        <div className='koisei-hero-copy w-full max-w-[62rem] text-left lg:max-w-[58%]'>
           {/* Eyebrow */}
           <div
             className={`mb-8 transition-all duration-700 ${
@@ -219,40 +55,31 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           >
             <span className='inline-flex items-center gap-3'>
               <span className='bg-ink/25 h-px w-8' />
-              <span className='eyebrow'>n8n · Zapier · Make · GoHighLevel</span>
+              <span className='eyebrow'>Less admin · faster follow-up · more time</span>
             </span>
           </div>
 
-          {/* Main headline — the reader's question, not the service on offer.
-              This led with "n8n, Zapier and Make." above "Workflows that
-              automate", which only lands on someone already shopping for a
-              platform. The buyer here is an ops or finance lead who knows
-              their week is being eaten and has not yet decided the answer is a
-              workflow tool, so the platform names moved to the eyebrow and the
-              supporting line, where they still carry the search terms.
-
-              Three lines rather than two, because the rotating word has to be
-              the last thing on its line. `BlurWord` is inline-block, so any
-              text after it shifts horizontally every 2.5s as the word length
-              changes ("doing" against "reconciling" is six characters). No
-              nowrap anywhere: every line is short enough now to survive 375px
-              intact, and wrapping is the safety net if a longer word is added. */}
           <h1
-            className={`display-xl text-ink text-left text-[clamp(2.5rem,5vw,5.6rem)] leading-[0.94] font-light transition-all duration-1000 ${
+            aria-label='Let automation handle data entry, capturing new leads, routine follow-ups, and recurring reports.'
+            className={`display-xl text-ink text-left text-[clamp(3.25rem,6.4vw,7rem)] leading-[0.88] font-light transition-all duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
             style={{ fontFamily: DISPLAY_FONT }}
           >
-            <span className='block'>Save hours every week</span>
-            <span className='block'>by automating</span>
-            <span className='block'>
-              <span
-                className='hero-word-shell relative inline-block min-h-[1em] min-w-[7.4ch]'
-                aria-live='polite'
-                aria-atomic='true'
-              >
-                <BlurWord word={words[wordIndex]} trigger={wordIndex} />
-              </span>
+            <span className='block'>Let automation handle</span>
+            <span className='hero-word-shell hero-rotating-line relative block min-h-[1.04em] overflow-hidden italic' aria-hidden='true'>
+              <AnimatePresence initial={false} mode='wait'>
+                <motion.span
+                  key={ROTATING_WORK[wordIndex]}
+                  initial={reduced ? false : { opacity: 0, y: '42%', filter: 'blur(14px)' }}
+                  animate={{ opacity: 1, y: '0%', filter: 'blur(0px)' }}
+                  exit={reduced ? undefined : { opacity: 0, y: '-35%', filter: 'blur(12px)' }}
+                  transition={{ duration: reduced ? 0 : 0.62, ease: [0.16, 1, 0.3, 1] }}
+                  className='hero-outcome absolute inset-x-0 top-0 block'
+                >
+                  {ROTATING_WORK[wordIndex]}
+                </motion.span>
+              </AnimatePresence>
             </span>
           </h1>
 
@@ -260,12 +87,12 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               stats with no call to action anywhere above the fold, so the
               first thing a visitor could act on was ten sections down. */}
           <p
-            className={`text-lead text-ink-2 mt-8 max-w-[52ch] transition-all delay-200 duration-1000 ${
+            className={`text-lead text-ink-2 mt-9 max-w-[53ch] transition-all delay-200 duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            Forms, approvals, reports, invoices, and copying data between apps &mdash; handled automatically, with
-            alerts if anything breaks, and written down so your team can run it without me.
+            I connect the tools you already use so information goes where it needs to, new customers get a faster
+            response, and your team gets hours back every week.
           </p>
 
           <div
@@ -273,9 +100,9 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            <Cta href='#contact'>Book a workflow audit</Cta>
+            <Cta href='#contact'>Find what to automate</Cta>
             <Cta href='#portfolio' tone='secondary'>
-              See the work
+              See examples
             </Cta>
           </div>
         </div>
@@ -288,7 +115,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <div className='border-rule flex flex-wrap items-start gap-x-12 gap-y-8 border-t pt-8 lg:gap-x-20'>
+        <div className='border-rule flex flex-wrap items-start justify-center gap-x-12 gap-y-8 border-t pt-8 lg:gap-x-20'>
           {HERO_STATS.map(stat => (
             <div key={stat.label} className='flex flex-col gap-1.5'>
               <span

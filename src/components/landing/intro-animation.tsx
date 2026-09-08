@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react'
 
 import { usePrefersReducedMotion } from '@/components/landing/motion'
+import { BrandMark } from '@/components/landing/brand-mark'
 
-const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
+const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 
 // Timing configuration (ms)
 const ENTER_DURATION = 650
@@ -98,6 +99,13 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
       {/* Intro presentation card */}
       <div className='absolute inset-0 flex items-center justify-center px-6'>
         <div className='flex max-w-2xl flex-col items-center text-center select-none'>
+          {/* An original workflow monogram: the routed line draws first, its
+              nodes resolve, then the wordmark arrives. This borrows the
+              ceremonial pacing of the reference without copying its crest. */}
+          <div className='intro-mark mb-7' style={getItemStyle(40, 10, 8)}>
+            <BrandMark />
+          </div>
+
           {/* Eyebrow badge */}
           <div
             className='border-rule bg-ink/3 mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1'

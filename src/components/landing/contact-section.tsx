@@ -220,7 +220,7 @@ export function ContactSection() {
     : '/contact'
 
   return (
-    <section id='contact' className='border-rule border-t px-6 py-32 md:px-12 lg:px-20'>
+    <section id='contact' className='saas-section border-rule border-t px-6 py-32 md:px-12 lg:px-20'>
       <div className={CONTAINER}>
         <SectionIntro
           tag='CONTACT'
@@ -231,7 +231,7 @@ export function ContactSection() {
         <div ref={ref} className='grid items-start gap-5 lg:grid-cols-2'>
           {/* ── Profile card ────────────────────────────────────────────── */}
           <div
-            className='border-rule bg-surface rounded-2xl border p-8 lg:p-10'
+            className='saas-contact-card border-rule bg-surface rounded-2xl border p-8 lg:p-10'
             style={{
               opacity: inView ? 1 : 0,
               transform: inView ? 'translateY(0)' : 'translateY(20px)',
@@ -313,7 +313,7 @@ export function ContactSection() {
 
           {/* ── Booking panel ───────────────────────────────────────────── */}
           <div
-            className='border-rule bg-surface-raised rounded-2xl border p-8 lg:p-10'
+            className='saas-contact-card saas-contact-calendar border-rule bg-surface-raised rounded-2xl border p-8 lg:p-10'
             style={{
               opacity: inView ? 1 : 0,
               transform: inView ? 'translateY(0)' : 'translateY(20px)',

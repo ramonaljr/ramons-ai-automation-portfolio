@@ -33,7 +33,7 @@ export function SiteFooter() {
   const wordScale = useTransform(scrollYProgress, [0, 1], [0.9, 1])
 
   return (
-    <footer ref={footerRef} className='footer-scene border-rule relative overflow-hidden border-t px-6 pt-28 pb-10 md:px-12 lg:px-20'>
+    <footer ref={footerRef} className='footer-scene saas-footer border-rule relative overflow-hidden border-t px-6 pt-28 pb-10 md:px-12 lg:px-20'>
       <motion.div
         className='footer-word pointer-events-none absolute inset-x-0 top-0 text-center text-[clamp(7rem,22vw,24rem)] leading-none font-black tracking-[-0.09em] select-none'
         style={reduced ? undefined : { y: wordY, scale: wordScale }}

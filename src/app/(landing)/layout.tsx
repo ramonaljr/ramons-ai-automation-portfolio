@@ -11,10 +11,7 @@ import type { ReactNode } from 'react'
 const LandingLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
 
-    // The portfolio is deliberately dark. Keeping the theme on this server-
-    // rendered scope avoids two nested next-themes providers competing for the
-    // root class when a browser has an older saved light preference.
-    <main className='dark flex w-full min-w-0 flex-col'>{children}</main>
+    <main className='flex w-full min-w-0 flex-col'>{children}</main>
   )
 }
 

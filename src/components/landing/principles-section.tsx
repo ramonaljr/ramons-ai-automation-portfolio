@@ -1,324 +1,196 @@
 'use client'
 
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useCallback, useEffect, useState, type CSSProperties } from 'react'
 
-import {
-  ArrowRight,
-  CONTAINER,
-  DISPLAY_FONT,
-  SECTION,
-  useInView,
-  usePrefersReducedMotion
-} from '@/components/landing/motion'
-import { SectionIntro } from '@/components/landing/section-intro'
-import { PRINCIPLES, PROCESS } from '@/lib/portfolio'
+import { CONTAINER, DISPLAY_FONT, SECTION, usePrefersReducedMotion } from '@/components/landing/motion'
+import { PRINCIPLES } from '@/lib/portfolio'
 
-/**
- * How I build — the rules, then the sequence they run in.
- *
- * The page used to answer "how do you work" twice: a PROCESS section titled
- * "How I build automation" (four boxes reading DISCOVER / DESIGN / BUILD /
- * OPTIMIZE, copy that would describe any automation agency) and this one,
- * whose eyebrow was literally "HOW I BUILD". A tool-logo marquee sat between
- * them, so the two never connected and the weaker one came first. They are one
- * section now: the three rules carry the argument, and the four stages follow
- * as a compact strip — label and one-line summary only. The longer `desc`
- * fields were the generic half and are not rendered here.
- *
- * The three rules are read in sequence, so the motion tracks reading position
- * rather than firing once on entry. A focal band sits about two fifths down the
- * viewport; whichever rule crosses it becomes the active one, and the section
- * re-weights around it — the accent rail travels down the list, the numeral
- * lifts and takes the accent, the active claim goes to full ink while the
- * others recede. It reads as a camera settling on each rule in turn, and it
- * doubles as a reading guide: at any scroll position exactly one rule is lit.
- *
- * The sticky heading carries the counter, so the left column stops being a
- * static block and starts reporting where you are in the sequence.
- */
+const AUTO_PLAY_DURATION = 6500
 
-/**
- * Where the focal line sits, as a slice of the viewport.
- *
- * Centred rather than high: at 40% the last rule lit while the section was
- * still arriving, and then held for the rest of the scroll. A band across the
- * middle spreads the three activations over the section's actual travel.
- */
-const FOCAL_BAND = '-46% 0px -49% 0px'
+const slideVariants = {
+  enter: (direction: number) => ({ y: direction > 0 ? '-10%' : '10%', opacity: 0, scale: 0.985 }),
+  center: { y: 0, opacity: 1, scale: 1 },
+  exit: (direction: number) => ({ y: direction > 0 ? '10%' : '-10%', opacity: 0, scale: 0.985 })
+}
 
-/**
- * Index of the row currently crossing the focal band.
- *
- * Between rows nothing intersects, so the last active index is held rather than
- * cleared — otherwise the section would flicker back to a neutral state in the
- * gaps, which is exactly where the eye is travelling.
- */
-function useActiveRow(count: number) {
-  const [active, setActive] = useState(0)
-  const rowsRef = useRef<(HTMLDivElement | null)[]>([])
+function ProcessMap() {
+  return (
+    <div className='build-map' aria-hidden='true'>
+      <div className='build-map-path' />
+      {['INPUT', 'RULES', 'EDGE CASES', 'MAP'].map((label, index) => (
+        <div key={label} className='build-map-node' style={{ '--map-index': index } as CSSProperties}>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <strong>{label}</strong>
+        </div>
+      ))}
+      <i className='build-map-packet' />
+    </div>
+  )
+}
 
-  useEffect(() => {
-    const rows = rowsRef.current.filter(Boolean) as HTMLDivElement[]
+function IntelligenceMap() {
+  return (
+    <div className='build-intelligence' aria-hidden='true'>
+      <div className='build-intelligence-source build-intelligence-source-a'><span>LEDGER</span><strong>DETERMINISTIC</strong></div>
+      <div className='build-intelligence-source build-intelligence-source-b'><span>DOCUMENT</span><strong>LLM PARSE</strong></div>
+      <div className='build-intelligence-lines'><i /><i /></div>
+      <div className='build-intelligence-result'><i /><span>VERIFIED</span><strong>100.00</strong></div>
+    </div>
+  )
+}
 
-    if (!rows.length) return
+function GuardMap() {
+  return (
+    <div className='build-guard' aria-hidden='true'>
+      <div className='build-guard-core'><span>HUMAN</span><strong>REVIEW</strong></div>
+      {[
+        ['01', 'TRY / CATCH', 'READY'],
+        ['02', 'APPROVAL GATE', 'ACTIVE'],
+        ['03', 'FAILURE ALERT', 'ARMED']
+      ].map(([number, label, state], index) => (
+        <div key={number} className={`build-guard-event build-guard-event-${index + 1}`}>
+          <span>{number}</span><strong>{label}</strong><i>{state}</i>
+        </div>
+      ))}
+    </div>
+  )
+}
 
-    const obs = new IntersectionObserver(
-      entries => {
-        entries.forEach(e => {
-          if (!e.isIntersecting) return
-          const i = rows.indexOf(e.target as HTMLDivElement)
-
-          if (i >= 0) setActive(i)
-        })
-      },
-      { rootMargin: FOCAL_BAND, threshold: 0 }
-    )
-
-    rows.forEach(r => obs.observe(r))
-
-    return () => obs.disconnect()
-  }, [count])
-
-  return { active, rowsRef }
+function ActiveVisual({ index }: { index: number }) {
+  if (index === 0) return <ProcessMap />
+  if (index === 1) return <IntelligenceMap />
+  return <GuardMap />
 }
 
 export function PrinciplesSection() {
-  const { ref, inView } = useInView(0.08)
-
-  /**
-   * The strip observes itself.
-   *
-   * `inView` above is bound to the rules column, which sits a full section
-   * higher — so driving the sequence from it meant the whole 01 → 04
-   * progression ran while the strip was still below the fold and was over
-   * before anyone scrolled to it. The animation existed and nobody could
-   * ever see it.
-   */
-  const { ref: seqRef, inView: seqInView } = useInView<HTMLOListElement>(0.25)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
+  const [paused, setPaused] = useState(false)
   const reduced = usePrefersReducedMotion()
-  const { active, rowsRef } = useActiveRow(PRINCIPLES.length)
 
-  /**
-   * Entrance: a downward wipe rather than a fade.
-   *
-   * `inset(0 0 100% 0)` hides the row by clipping it to nothing at the top edge
-   * and opens downward, so each rule is uncovered like a line of type being set
-   * rather than appearing all at once. Paired with a short lift so the movement
-   * has a direction.
-   */
-  const enter = (i: number) => {
-    if (reduced) {
-      return { opacity: inView ? 1 : 0, transition: `opacity 0.3s linear ${i * 90}ms` }
-    }
+  const select = useCallback((nextIndex: number) => {
+    setActiveIndex(current => {
+      if (current === nextIndex) return current
+      setDirection(nextIndex > current ? 1 : -1)
+      return nextIndex
+    })
+  }, [])
 
-    const delay = 140 + i * 190
+  const next = useCallback(() => {
+    setDirection(1)
+    setActiveIndex(current => (current + 1) % PRINCIPLES.length)
+  }, [])
 
-    return {
-      opacity: inView ? 1 : 0,
-      clipPath: inView ? 'inset(0 0 0% 0)' : 'inset(0 0 100% 0)',
-      transform: inView ? 'translateY(0)' : 'translateY(28px)',
-      transition:
-        `clip-path 1.05s cubic-bezier(0.16,1,0.3,1) ${delay}ms, ` +
-        `transform 1.05s cubic-bezier(0.16,1,0.3,1) ${delay}ms, ` +
-        `opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
-    }
-  }
+  const previous = useCallback(() => {
+    setDirection(-1)
+    setActiveIndex(current => (current - 1 + PRINCIPLES.length) % PRINCIPLES.length)
+  }, [])
 
-  /**
-   * The sequence, run as one progression rather than four arrivals.
-   *
-   * `STEP_GAP` is the beat between stages. The rail starts partway through its
-   * own stage so it is still drawing when the next numeral lands — that
-   * overlap is what makes it read as travelling from 01 to 04 rather than as
-   * four separate reveals. Reduced motion gets the finished state.
-   */
-  const STEP_GAP = 260
+  useEffect(() => {
+    if (paused || reduced) return
+    const timer = window.setInterval(next, AUTO_PLAY_DURATION)
+    return () => window.clearInterval(timer)
+  }, [next, paused, reduced])
 
-  const step = (i: number): CSSProperties => {
-    if (reduced) return { opacity: seqInView ? 1 : 0, transition: 'opacity .3s linear' }
-
-    return seqInView ? { animation: `step-in 0.6s cubic-bezier(0.16,1,0.3,1) ${i * STEP_GAP}ms both` } : { opacity: 0 }
-  }
-
-  const flash = (i: number): CSSProperties =>
-    reduced || !seqInView ? {} : { animation: `step-flash 0.9s ease-out ${i * STEP_GAP}ms both` }
-
-  const rail = (i: number): CSSProperties => {
-    if (reduced) return {}
-
-    return seqInView
-      ? { animation: `rail-draw 0.34s cubic-bezier(0.4,0,0.2,1) ${i * STEP_GAP + 230}ms both` }
-      : { transform: 'scaleX(0)' }
-  }
+  const active = PRINCIPLES[activeIndex]
 
   return (
-    <section id='principles' className={SECTION}>
+    <section id='principles' className={`${SECTION} build-tabs-section`}>
       <div className={CONTAINER}>
-        {/* Rail and rules share a grid; the strip below must not. The rail is
-            sticky, and its containing block is this grid — a col-span row
-            inside it scrolls underneath the pinned rail and collides. */}
-        <div className='grid gap-x-20 gap-y-14 lg:grid-cols-[minmax(0,22rem)_1fr] 2xl:gap-x-28'>
-          {/* Sticky rail: the claim, and where you are inside it. */}
-          <div className='lg:sticky lg:top-32 lg:self-start'>
-            <SectionIntro
-              tag='HOW I BUILD'
-              margin='mb-10'
-              title={
-                <>
-                  Reliability is
-                  <br />
-                  the feature.
-                </>
-              }
-              blurb='An automation that silently does the wrong thing is worse than no automation. Three rules I do not bend.'
-            />
+        <div className='grid items-start gap-12 lg:grid-cols-12 lg:gap-16'>
+          <div className='order-2 flex flex-col justify-center lg:order-1 lg:col-span-5 lg:pt-5'>
+            <div className='mb-10'>
+              <p className='eyebrow'>HOW I BUILD</p>
+              <h2 className='mt-5 max-w-[11ch] text-[clamp(2.8rem,5.5vw,5.8rem)] leading-[0.92] font-light tracking-[-0.05em]' style={{ fontFamily: DISPLAY_FONT }}>
+                Systems that keep working.
+              </h2>
+              <p className='text-body mt-6 max-w-[31rem]'>Three controls I design into every financial and operational workflow before it goes live.</p>
+            </div>
 
-            {/* Counter and progress. The rail was a static block; this makes it
-              report the sequence the reader is moving through. */}
-            <div className='hidden lg:block' style={{ opacity: inView ? 1 : 0, transition: 'opacity .6s ease .5s' }}>
-              <div className='text-meta text-ink-3 flex items-baseline gap-2 font-mono'>
-                <span
-                  className='text-accent text-[1.75rem] leading-none font-light tabular-nums transition-[color,opacity] duration-500'
-                  style={{ fontFamily: DISPLAY_FONT }}
-                >
-                  {PRINCIPLES[active]?.n}
-                </span>
-                <span aria-hidden='true'>/ {String(PRINCIPLES.length).padStart(2, '0')}</span>
-              </div>
-
-              <div className='bg-rule mt-4 h-px w-full overflow-hidden'>
-                <div
-                  className='bg-accent h-full origin-left'
-                  style={{
-                    transform: `scaleX(${(active + 1) / PRINCIPLES.length})`,
-                    transition: 'transform 0.7s cubic-bezier(0.16,1,0.3,1)'
-                  }}
-                />
-              </div>
+            <div className='build-tabs-list' role='tablist' aria-label='How I build reliable automation'>
+              {PRINCIPLES.map((principle, index) => {
+                const isActive = index === activeIndex
+                return (
+                  <button
+                    key={principle.n}
+                    id={`build-tab-${index}`}
+                    type='button'
+                    role='tab'
+                    aria-selected={isActive}
+                    aria-controls='build-tab-panel'
+                    onClick={() => select(index)}
+                    className='build-tab'
+                    data-active={isActive ? 'true' : 'false'}
+                  >
+                    <span className='build-tab-progress' aria-hidden='true'>
+                      {isActive && !paused && !reduced && (
+                        <motion.i
+                          key={`${activeIndex}-${paused}`}
+                          initial={{ scaleY: 0 }}
+                          animate={{ scaleY: 1 }}
+                          transition={{ duration: AUTO_PLAY_DURATION / 1000, ease: 'linear' }}
+                        />
+                      )}
+                    </span>
+                    <span className='build-tab-number'>/{principle.n}</span>
+                    <span className='min-w-0 flex-1'>
+                      <strong>{principle.title}</strong>
+                      <AnimatePresence initial={false}>
+                        {isActive && (
+                          <motion.span
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: reduced ? 0 : 0.35 }}
+                            className='build-tab-description'
+                          >
+                            {principle.sub}
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           </div>
 
-          <div ref={ref} className='border-rule border-t'>
-            {PRINCIPLES.map((p, i) => {
-              const on = i === active
-
-              return (
-                <div
-                  key={p.n}
-                  ref={el => {
-                    rowsRef.current[i] = el
-                  }}
-                  data-active={on ? 'true' : 'false'}
-                  aria-current={on ? 'true' : undefined}
-                  className='border-rule grid gap-x-10 gap-y-4 border-b border-l-2 py-12 pl-6 transition-[border-color,background-color] duration-700 md:grid-cols-[3.5rem_minmax(0,17rem)_1fr] md:py-20 md:pl-8'
-                  style={{
-                    ...enter(i),
-
-                    // The accent rail travels down the list as you read.
-                    borderLeftColor: on ? 'var(--accent)' : 'transparent',
-                    backgroundColor: on ? 'color-mix(in oklch, var(--ink) 1.5%, transparent)' : 'transparent'
-                  }}
+          <div className='order-1 lg:order-2 lg:col-span-7'>
+            <div className='build-gallery' onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+              <AnimatePresence initial={false} custom={direction} mode='wait'>
+                <motion.div
+                  id='build-tab-panel'
+                  key={activeIndex}
+                  role='tabpanel'
+                  aria-labelledby={`build-tab-${activeIndex}`}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial='enter'
+                  animate='center'
+                  exit='exit'
+                  transition={reduced ? { duration: 0 } : { duration: 0.42, ease: [0.23, 1, 0.32, 1] }}
+                  className='build-gallery-panel'
+                  onClick={next}
                 >
-                  {/* The numeral is the focal object: it lifts and takes the
-                    accent as its rule becomes current, and settles back when
-                    the next one does. */}
-                  <span
-                    className='text-[2.5rem] leading-none font-light tabular-nums md:text-[3rem]'
-                    style={{
-                      fontFamily: DISPLAY_FONT,
-                      color: on ? 'var(--accent)' : 'var(--ink-4)',
-                      transform: reduced ? undefined : `translateY(${on ? '-2px' : '0'}) scale(${on ? 1.06 : 1})`,
-                      transformOrigin: 'left top',
-                      transition: 'color .55s cubic-bezier(0.4,0,0.2,1), transform .55s cubic-bezier(0.16,1,0.3,1)'
-                    }}
-                  >
-                    {p.n}
-                  </span>
-
-                  <div>
-                    <h3
-                      className='display-md text-xl leading-snug font-light md:text-[1.55rem]'
-                      style={{
-                        fontFamily: DISPLAY_FONT,
-                        color: on ? 'var(--ink)' : 'var(--ink-3)',
-                        transition: 'color .55s cubic-bezier(0.4,0,0.2,1)'
-                      }}
-                    >
-                      {p.title}
-                    </h3>
-                    <p
-                      className='text-meta mt-2.5 border-t pt-2.5 tracking-[0.02em]'
-                      style={{
-                        color: 'var(--ink-3)',
-                        borderColor: on ? 'color-mix(in oklch, var(--accent) 35%, transparent)' : 'var(--rule)',
-                        transition: 'border-color .55s cubic-bezier(0.4,0,0.2,1)'
-                      }}
-                    >
-                      {p.sub}
-                    </p>
+                  <div className='build-gallery-topline'><span>CONTROL / {active.n}</span><span>PRODUCTION STANDARD</span></div>
+                  <ActiveVisual index={activeIndex} />
+                  <div className='build-gallery-caption'>
+                    <span>{active.n}</span>
+                    <div>
+                      <h3 style={{ fontFamily: DISPLAY_FONT }}>{active.title}</h3>
+                      <p>{active.body}</p>
+                    </div>
                   </div>
+                </motion.div>
+              </AnimatePresence>
 
-                  <p
-                    className='text-body max-w-[60ch] md:pt-1'
-                    style={{
-                      color: on ? 'var(--ink-2)' : 'var(--ink-3)',
-                      transition: 'color .55s cubic-bezier(0.4,0,0.2,1)'
-                    }}
-                  >
-                    {p.body}
-                  </p>
-                </div>
-              )
-            })}
+              <div className='build-gallery-controls'>
+                <button type='button' onClick={event => { event.stopPropagation(); previous() }} aria-label='Previous principle'>←</button>
+                <button type='button' onClick={event => { event.stopPropagation(); next() }} aria-label='Next principle'>→</button>
+              </div>
+            </div>
           </div>
-        </div>
-
-        {/* The sequence those rules run inside — full width, so it reads as the
-            closing movement of the section rather than a fourth rule. Keeps
-            `id='process'` so any link that predates the merge resolves. */}
-        <div id='process' className='mt-24 lg:mt-32'>
-          <p className='eyebrow'>THE SEQUENCE</p>
-
-          <ol ref={seqRef} className='mt-8 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4'>
-            {PROCESS.map((p, i) => (
-              <li key={p.step} style={step(i)}>
-                <div className='flex items-center gap-3'>
-                  <span
-                    className='text-ink-3 text-[28px] leading-none font-light'
-                    style={{ fontFamily: DISPLAY_FONT, ...flash(i) }}
-                  >
-                    {p.step}
-                  </span>
-                  {i < PROCESS.length - 1 && (
-                    <span
-                      className='bg-ink/12 hidden h-px flex-1 origin-left lg:block'
-                      aria-hidden='true'
-                      style={rail(i)}
-                    />
-                  )}
-                </div>
-
-                <h3 className='text-ink mt-4 font-mono text-[13px] font-semibold tracking-[0.18em]'>{p.label}</h3>
-                <p className='text-fine text-ink-2 mt-2.5'>{p.summary}</p>
-              </li>
-            ))}
-          </ol>
-
-          {/* The standalone panel this replaces was a 14rem centred block with
-              its own heading and pill — an interruption between two credibility
-              sections. One quiet line does the same job. */}
-          <p className='text-fine text-ink-3 border-rule mt-12 border-t pt-6'>
-            Have a process that feels too manual?{' '}
-            <a
-              href='#contact'
-              className='text-ink decoration-ink/25 underline-offset-[6px] transition-colors hover:underline'
-            >
-              Book a workflow audit
-            </a>
-            <span className='text-ink ml-1.5 inline-block align-[-1px]'>
-              <ArrowRight size={12} />
-            </span>
-          </p>
         </div>
       </div>
     </section>

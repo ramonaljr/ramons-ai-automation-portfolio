@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowIcon, CONTAINER, DISPLAY_FONT, ParallaxLayer, rise, useInView } from '@/components/landing/motion'
+import { ArrowIcon, CONTAINER, DISPLAY_FONT, rise, useInView } from '@/components/landing/motion'
 import { PROFILE } from '@/lib/portfolio'
 
 /**
@@ -27,38 +27,9 @@ export function CtaSection({
   const { ref, inView } = useInView(0.15)
 
   return (
-    <section className='border-rule relative overflow-hidden border-t px-6 py-32 md:px-12 lg:px-20'>
-      {/* Glass panels anchored bottom-centre, graded into the palette.
-          The source art is a cool pastel spectrum — lavender, mint, peach —
-          which made the page's most important conversion surface the only
-          place a rainbow appears, and put the same multi-hue signature here
-          that the hero headline used to carry. Desaturating and warming it
-          keeps the refracted-glass geometry, which is the part worth having,
-          and drops the colour story that never belonged. */}
-      <ParallaxLayer className='pointer-events-none absolute inset-0' speed={0.12} direction='up'>
-        <img
-          src='/images/landing/footer.png'
-          alt=''
-          aria-hidden='true'
-          className='closing-art absolute bottom-0 left-0 w-full object-cover object-bottom select-none'
-        />
-      </ParallaxLayer>
-
-      {/* Progressive blur from the bottom */}
-      <div
-        className='pointer-events-none absolute inset-0'
-        style={{
-          maskImage: 'linear-gradient(to top, transparent 0%, black 55%)',
-          WebkitMaskImage: 'linear-gradient(to top, transparent 0%, black 55%)',
-          backdropFilter: 'blur(18px)',
-          WebkitBackdropFilter: 'blur(18px)'
-        }}
-      />
-
-      {/* Colour fade back to the page ground */}
-      <div
-        className='closing-fade pointer-events-none absolute inset-0'
-      />
+    <section className='saas-section saas-closing-cta border-rule relative overflow-hidden border-t px-6 py-32 md:px-12 lg:px-20'>
+      <div className='closing-saas-grid pointer-events-none absolute inset-0' aria-hidden='true' />
+      <div className='closing-saas-glow pointer-events-none absolute inset-0' aria-hidden='true' />
 
       <div ref={ref} className={`relative z-10 ${CONTAINER} text-center`} style={rise(inView)}>
         <h2

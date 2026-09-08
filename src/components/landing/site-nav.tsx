@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { usePathname } from 'next/navigation'
 import { motion, useScroll, useSpring } from 'motion/react'
+import { BrandMark } from '@/components/landing/brand-mark'
 
 /**
  * The floating glass nav bar. Shared by the landing page and every page that
@@ -52,14 +53,22 @@ export function SiteNav() {
 
   return (
     <div className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4'>
-      <div className='pointer-events-auto w-full max-w-5xl'>
+      <div className='pointer-events-auto w-full max-w-7xl'>
         {/* Main bar */}
-        <nav className='site-nav-glass border-rule relative flex items-center justify-between overflow-hidden rounded-2xl border px-5 py-3' style={NAV_STYLE}>
+        <nav className='site-nav-glass koisei-nav border-rule relative flex items-center justify-between overflow-hidden rounded-2xl border px-5 py-3' style={NAV_STYLE}>
           <a
             href={onLanding ? '#top' : '/'}
-            className='font-pixel text-ink text-xs tracking-[0.25em] transition-opacity hover:opacity-70'
+            className='nav-brand font-pixel text-ink inline-flex items-center gap-2.5 text-xs tracking-[0.25em] transition-opacity hover:opacity-70'
+            aria-label='Ramon — back to top'
           >
-            RAMON
+            <span
+              className='nav-brand-mark relative block shrink-0'
+              style={{ width: '2rem', height: '2rem', color: 'var(--accent)' }}
+              aria-hidden='true'
+            >
+              <BrandMark className='block h-full w-full overflow-visible' />
+            </span>
+            <span>RAMON</span>
           </a>
 
           {/* Desktop links */}

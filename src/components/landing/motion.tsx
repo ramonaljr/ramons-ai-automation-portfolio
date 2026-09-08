@@ -15,7 +15,7 @@ import { motion, useScroll, useTransform } from 'motion/react'
  */
 
 /** Display face for headlines and figures. Always paired with `font-light`. */
-export const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
+export const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 
 /** Page gutter width. Sections set their own horizontal padding. */
 export const CONTAINER = 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto'
@@ -41,14 +41,14 @@ const GUTTER = 'px-6 md:px-12 lg:px-20'
  * because a heading sits optically higher in its own space than a block of
  * cards does, so equal padding reads as bottom-light.
  */
-export const SECTION = `pt-28 pb-32 ${GUTTER} border-t border-rule`
+export const SECTION = `saas-section pt-28 pb-32 ${GUTTER} border-t border-rule`
 
-export const SECTION_ANCHOR = `pt-36 pb-44 ${GUTTER}`
+export const SECTION_ANCHOR = `saas-section pt-36 pb-44 ${GUTTER}`
 
-export const SECTION_CONT = `pt-6 pb-28 ${GUTTER}`
+export const SECTION_CONT = `saas-section pt-6 pb-28 ${GUTTER}`
 
 /** Cream page ground. Applied to the outermost wrapper of every page. */
-export const PAGE = 'bg-ground text-ink min-h-dvh font-sans antialiased'
+export const PAGE = 'koisei-page bg-ground text-ink min-h-dvh font-sans antialiased'
 
 /**
  * Creates a local stacking context for copy over the constellation field.

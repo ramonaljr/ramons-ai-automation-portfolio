@@ -72,7 +72,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
   if (!posts.length) return null
 
   return (
-    <section id='articles' className='border-rule border-t px-6 py-32 md:px-12 lg:px-20'>
+    <section id='articles' className='saas-section border-rule border-t px-6 py-32 md:px-12 lg:px-20'>
       <div className={CONTAINER}>
         <div className='mb-14 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between'>
           <SectionIntro

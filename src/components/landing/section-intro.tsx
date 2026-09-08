@@ -80,7 +80,7 @@ export function SectionIntro({
   const centred = align === 'center'
 
   return (
-    <div ref={ref} className={`${margin} ${READABLE} ${centred ? 'text-center' : ''} ${className}`}>
+    <div ref={ref} className={`${margin} ${READABLE} saas-section-intro ${centred ? 'text-center' : ''} ${className}`}>
       {/* One eyebrow treatment for the whole page.
           This used to branch between a grey pill and tracked mono, so the same
           element changed costume from section to section while the hero used a
@@ -88,7 +88,9 @@ export function SectionIntro({
           consistent left anchor as the page scrolls. */}
       <div style={introStep(inView, reduced, { delay: 0, y: 16, duration: 0.8 })}>
         <p className={`flex items-center gap-3 ${centred ? 'justify-center' : ''}`}>
-          <span className='bg-ink/25 h-px w-8' aria-hidden='true' />
+          <span className='saas-eyebrow-mark' aria-hidden='true'>
+            <span />
+          </span>
           <span className='eyebrow'>{tag}</span>
         </p>
       </div>

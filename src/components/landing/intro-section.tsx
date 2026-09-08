@@ -7,7 +7,7 @@ import { READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
 import { PROFILE } from '@/lib/portfolio'
 import { SectionIntro, introStep } from '@/components/landing/section-intro'
 
-const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
+const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 
 const CONTACT = [
   { label: 'Email', value: 'ramonvallejerajr@gmail.com', href: 'mailto:ramonvallejerajr@gmail.com' },
@@ -53,7 +53,7 @@ export function IntroSection() {
   })
 
   return (
-    <section id='about' className='border-rule border-t px-6 py-32 md:px-12 lg:px-20'>
+    <section id='about' className='saas-section border-rule border-t px-6 py-32 md:px-12 lg:px-20'>
       {/* The bio is a two-column block that tops out around 1120px — a wider
           prose column would overrun a comfortable line length. Centring it
           keeps the leftover width as balanced margins instead of a single
@@ -62,7 +62,7 @@ export function IntroSection() {
         {/* ── Section header ─────────────────────────────────────────────── */}
         <SectionIntro tag='ABOUT' margin='mb-16' />
 
-        <div className='grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_408px] lg:gap-16'>
+        <div className='saas-about-panel grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_408px] lg:gap-16'>
           {/* ── Left: the introduction ──────────────────────────────────── */}
           <div className={READABLE}>
             <div style={introStep(inView, reducedMotion, { delay: 120, y: 40, blur: 14, duration: 1.15 })}>
@@ -186,7 +186,7 @@ export function IntroSection() {
               {/* Office background lifted out with the Vision framework and
                   composited on white, so the portrait sits on a white card
                   rather than clashing with the cream ground. */}
-              <div className='bg-surface-raised border-rule overflow-hidden rounded-2xl border shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-12px_rgba(0,0,0,0.12)]'>
+              <div className='saas-portrait-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-12px_rgba(0,0,0,0.12)]'>
                 <img
                   src='/images/landing/ramon-portrait.webp'
                   alt='Ramon A. Vallejera, Jr.'
