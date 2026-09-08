@@ -113,16 +113,18 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
       const desktop = w >= 1024
       const count = desktop ? 10 : 7
-      const shardCount = desktop ? 76 : 48
+      // Keep enough leaves in-frame for the drift to read as intentional
+      // atmosphere, even through the translucent section veils.
+      const shardCount = desktop ? 108 : 64
 
       routes = Array.from({ length: count }, (_, index) => createRoute(index, count, desktop))
       shards = Array.from({ length: shardCount }, (_, index) => ({
         x: seeded(index + 211) * w,
         y: seeded(index + 337) * (h + 120) - 60,
         phase: seeded(index + 419) * Math.PI * 2,
-        speed: 5 + seeded(index + 503) * 11,
+        speed: 8 + seeded(index + 503) * 11,
         sway: 10 + seeded(index + 607) * (desktop ? 34 : 22),
-        size: 4 + seeded(index + 701) * 6,
+        size: 5 + seeded(index + 701) * 5.5,
         spin: (seeded(index + 809) - 0.5) * 0.72,
         tone: seeded(index + 907)
       }))
@@ -133,10 +135,10 @@ export function ParticleField({ className = '' }: { className?: string }) {
       const y = ((shard.y + travel + window.scrollY * (0.018 + (index % 3) * 0.006) + 60) % (h + 120)) - 60
       const x = shard.x + Math.sin(now * 0.42 + shard.phase) * shard.sway
       const rotation = shard.phase + (reduced ? 0 : now * shard.spin)
-      const alpha = 0.23 + shard.tone * 0.18
-      const red = Math.round(162 + shard.tone * 30)
-      const green = Math.round(70 + shard.tone * 48)
-      const blue = Math.round(51 + shard.tone * 43)
+      const alpha = 0.52 + shard.tone * 0.2
+      const red = Math.round(151 + shard.tone * 38)
+      const green = Math.round(72 + shard.tone * 43)
+      const blue = Math.round(39 + shard.tone * 27)
 
       ctx.save()
       ctx.translate(x, y)
@@ -147,13 +149,13 @@ export function ParticleField({ className = '' }: { className?: string }) {
       ctx.quadraticCurveTo(0, shard.size * 1.15, -shard.size * 1.7, 0)
       ctx.closePath()
       ctx.fillStyle = dark
-        ? `rgba(244, 184, 171, ${alpha * 0.72})`
+        ? `rgba(224, 143, 92, ${alpha * 0.78})`
         : `rgba(${red}, ${green}, ${blue}, ${alpha})`
       ctx.fill()
       ctx.strokeStyle = dark
-        ? `rgba(255, 225, 215, ${alpha * 0.62})`
-        : `rgba(126, 67, 51, ${alpha * 0.72})`
-      ctx.lineWidth = 0.55
+        ? `rgba(255, 211, 169, ${alpha * 0.66})`
+        : `rgba(103, 54, 31, ${alpha * 0.78})`
+      ctx.lineWidth = 0.65
       ctx.stroke()
       ctx.restore()
     }

@@ -3482,6 +3482,117 @@ a.work-cinema-action:hover {
   }
   .about-film-scan { display: none; }
 }
+
+/* ── Continuous autumn environment: Selected Work → Footer ────────────── */
+.blossom-story-root {
+  background:
+    radial-gradient(circle at 72% 34%, oklch(0.73 0.095 55 / 0.64), transparent 38rem),
+    radial-gradient(circle at 18% 68%, oklch(0.91 0.026 78 / 0.82), transparent 46rem),
+    oklch(0.81 0.052 68);
+}
+
+.blossom-story-background {
+  z-index: 0;
+  overflow: clip;
+}
+
+.blossom-story-video {
+  object-position: 68% 52%;
+  mix-blend-mode: screen;
+  filter: sepia(1) hue-rotate(-14deg) saturate(1.08) contrast(1.16) brightness(0.84);
+  will-change: transform;
+}
+
+.blossom-story-tone {
+  background:
+    linear-gradient(118deg, oklch(0.34 0.04 42 / 0.22), transparent 38% 66%, oklch(0.6 0.14 45 / 0.34)),
+    oklch(0.7 0.13 57 / 0.46);
+  mix-blend-mode: color;
+}
+
+.blossom-story-glow {
+  background:
+    radial-gradient(circle at 74% 42%, oklch(0.74 0.14 55 / 0.2), transparent 29%),
+    radial-gradient(circle at 62% 78%, oklch(0.58 0.105 35 / 0.13), transparent 34%),
+    linear-gradient(112deg, transparent 22%, oklch(0.9 0.055 76 / 0.12) 48%, transparent 69%);
+  mix-blend-mode: multiply;
+  will-change: transform;
+}
+
+.blossom-story-veil {
+  background:
+    linear-gradient(90deg, color-mix(in oklch, var(--ground) 78%, transparent) 0%, color-mix(in oklch, var(--ground) 34%, transparent) 38%, transparent 72%),
+    linear-gradient(180deg, color-mix(in oklch, var(--ground) 42%, transparent), transparent 25% 72%, color-mix(in oklch, var(--ground) 54%, transparent));
+}
+
+.blossom-story-horizon {
+  height: 34%;
+  background: linear-gradient(to top, color-mix(in oklch, var(--ground) 48%, transparent), transparent);
+}
+
+.blossom-story-root .automation-field {
+  z-index: 2;
+}
+
+.blossom-story-root .automation-field canvas {
+  opacity: 0.9;
+}
+
+.blossom-story-root > .relative.z-10 {
+  z-index: 10;
+}
+
+.blossom-story-root #portfolio,
+.blossom-story-root #about {
+  background: oklch(0.94 0.024 76 / 0.4) !important;
+}
+
+.blossom-story-root #services,
+.blossom-story-root #platforms,
+.blossom-story-root #principles,
+.blossom-story-root #experience,
+.blossom-story-root #articles,
+.blossom-story-root #stack {
+  background:
+    radial-gradient(circle at 88% 16%, oklch(0.62 0.09 45 / 0.055), transparent 22rem),
+    oklch(0.945 0.022 76 / 0.68) !important;
+}
+
+.blossom-story-root #engagement,
+.blossom-story-root #contact {
+  background:
+    radial-gradient(circle at 82% 12%, oklch(0.68 0.11 52 / 0.09), transparent 25rem),
+    oklch(0.93 0.028 70 / 0.5) !important;
+}
+
+.blossom-story-root .saas-closing-cta {
+  background: linear-gradient(180deg, color-mix(in oklch, var(--ground) 56%, transparent), color-mix(in oklch, oklch(0.78 0.035 60) 72%, transparent));
+}
+
+.blossom-story-root .footer-scene.saas-footer {
+  background:
+    radial-gradient(circle at 65% 0%, oklch(0.68 0.12 48 / 0.13), transparent 34rem),
+    linear-gradient(180deg, color-mix(in oklch, var(--ground) 64%, transparent), color-mix(in oklch, oklch(0.5 0.035 48) 88%, transparent));
+}
+
+@media (max-width: 767px) {
+  .blossom-story-video {
+    object-position: 72% 50%;
+    opacity: 0.36 !important;
+  }
+
+  .blossom-story-veil {
+    background:
+      linear-gradient(90deg, color-mix(in oklch, var(--ground) 64%, transparent), color-mix(in oklch, var(--ground) 22%, transparent)),
+      linear-gradient(180deg, color-mix(in oklch, var(--ground) 34%, transparent), transparent 24% 70%, color-mix(in oklch, var(--ground) 58%, transparent));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blossom-story-video {
+    transform: none !important;
+  }
+}
 /* ── Lower-page scroll story: input → route → outcome ─────────────────── */
 .story-atmosphere {
   opacity: 0.72;

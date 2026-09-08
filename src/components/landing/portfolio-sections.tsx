@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react'
 
 import { IntroAnimation } from '@/components/landing/intro-animation'
+import { BlossomStoryBackground } from '@/components/landing/blossom-story-background'
 import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { CtaSection } from '@/components/landing/cta-section'
@@ -95,10 +96,7 @@ function ServicesSection() {
                   to centre-align under it — which is what put ragged-left body
                   copy in every one of these. */}
               <span className='service-icon-square border-rule bg-ground group-hover:border-rule-strong flex h-14 w-14 items-center justify-center rounded-2xl border transition-[border-color,box-shadow] duration-300'>
-                <span
-                  className='service-icon-glyph'
-                  style={{ '--icon-delay': `${i * -0.72}s` } as React.CSSProperties}
-                >
+                <span className='service-icon-glyph' style={{ '--icon-delay': `${i * -0.72}s` } as React.CSSProperties}>
                   <PixelIcon type={SERVICE_ICONS[i] ?? 'platform'} size={34} />
                 </span>
               </span>
@@ -311,7 +309,8 @@ export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStu
       {/* Everything from About down sits over the constellation field. The
           wrapper is the positioning context; the canvas is sticky inside it so
           one viewport of pixels covers the whole scroll range. */}
-      <div className='relative'>
+      <div className='blossom-story-root relative isolate'>
+        <BlossomStoryBackground />
         <ParticleField />
         <ScrollAtmosphere />
 
