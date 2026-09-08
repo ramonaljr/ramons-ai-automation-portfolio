@@ -9,21 +9,23 @@ const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 
 // Timing configuration (ms)
 const ENTER_DURATION = 650
-const HOLD_DURATION = 350
-const EXIT_START = ENTER_DURATION + HOLD_DURATION // 1000ms
+const HOLD_DURATION = 700
+const EXIT_START = ENTER_DURATION + HOLD_DURATION
 const EXIT_DURATION = 300
-const CURTAIN_START = EXIT_START + 100 // 1100ms
+const CURTAIN_START = EXIT_START + 100
 const CURTAIN_DURATION = 800
+const LOAD_DURATION = EXIT_START - 100
 
-export const HERO_REVEAL_MS = CURTAIN_START + CURTAIN_DURATION - 180 // 1720ms
-export const INTRO_DURATION_MS = CURTAIN_START + CURTAIN_DURATION // 1900ms
-const TOTAL_DURATION = INTRO_DURATION_MS + 120 // 2020ms
+export const HERO_REVEAL_MS = CURTAIN_START + CURTAIN_DURATION - 180
+export const INTRO_DURATION_MS = CURTAIN_START + CURTAIN_DURATION
+const TOTAL_DURATION = INTRO_DURATION_MS + 120
 
 type Phase = 'idle' | 'in' | 'out' | 'done'
 
 export function IntroAnimation({ onDone }: { onDone: () => void }) {
   const [phase, setPhase] = useState<Phase>('idle')
   const [curtainUp, setCurtainUp] = useState(false)
+  const [progress, setProgress] = useState(0)
   const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
@@ -43,6 +45,17 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
     const t2 = setTimeout(() => setCurtainUp(true), CURTAIN_START)
     const t3 = setTimeout(() => onDone(), HERO_REVEAL_MS)
     const t4 = setTimeout(() => setPhase('done'), TOTAL_DURATION)
+    const startedAt = performance.now()
+    let frame = 0
+
+    const updateProgress = (now: number) => {
+      const next = Math.min(100, Math.round(((now - startedAt) / LOAD_DURATION) * 100))
+
+      setProgress(next)
+      if (next < 100) frame = requestAnimationFrame(updateProgress)
+    }
+
+    frame = requestAnimationFrame(updateProgress)
 
     return () => {
       clearTimeout(t0)
@@ -50,6 +63,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
       clearTimeout(t2)
       clearTimeout(t3)
       clearTimeout(t4)
+      cancelAnimationFrame(frame)
     }
   }, [onDone, reducedMotion])
 
@@ -128,8 +142,14 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
             RAMON
           </h1>
 
-          <div className='border-rule mb-5 h-px w-40 overflow-hidden border-t' style={getItemStyle(300, 8, 6)}>
-            <span className='intro-progress bg-accent block h-px w-full origin-left' />
+          <div className='intro-loading mb-6' style={getItemStyle(300, 8, 6)}>
+            <div className='intro-loading-head'>
+              <span>INITIALIZING WORKFLOW</span>
+              <span>{String(progress).padStart(3, '0')}%</span>
+            </div>
+            <div className='intro-progress-track'>
+              <span className='intro-progress' style={{ animationDuration: `${LOAD_DURATION}ms` }} />
+            </div>
           </div>
 
           {/* Business pain-point slogan */}

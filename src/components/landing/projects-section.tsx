@@ -2,14 +2,44 @@
 
 import { useMemo, useState, type CSSProperties } from 'react'
 
+import { AnimatePresence, motion } from 'motion/react'
+
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { CONTAINER, DISPLAY_FONT, SECTION_ANCHOR, useInView } from '@/components/landing/motion'
 import { CaseStudyModal } from '@/components/landing/case-study-modal'
 
-const FILTERS = ['ALL', 'AI AGENTS', 'N8N', 'ZAPIER', 'MAKE'] as const
+const WORK_LABELS: Record<string, string> = {
+  'ai-voice-receptionist': '24/7 call answering',
+  'invoice-processing-gl-reconciliation': 'Invoice processing',
+  'lead-routing-and-crm-enrichment': 'Lead capture & follow-up',
+  'multi-channel-order-sync': 'Orders & inventory',
+  'rag-knowledge-base': 'Company knowledge search',
+  'zero-touch-client-onboarding': 'Client onboarding'
+}
 
-type Filter = (typeof FILTERS)[number]
+const WORK_TONES: Record<string, string> = {
+  'ai-voice-receptionist': 'oklch(0.63 0.13 326)',
+  'invoice-processing-gl-reconciliation': 'oklch(0.62 0.14 24)',
+  'lead-routing-and-crm-enrichment': 'oklch(0.66 0.14 68)',
+  'multi-channel-order-sync': 'oklch(0.61 0.11 158)',
+  'rag-knowledge-base': 'oklch(0.6 0.13 274)',
+  'zero-touch-client-onboarding': 'oklch(0.62 0.12 218)'
+}
+
+const WORK_USE_CASES: Record<string, string> = {
+  'ai-voice-receptionist': 'Answer incoming calls, qualify callers and book confirmed appointments at any hour.',
+  'invoice-processing-gl-reconciliation':
+    'Read incoming invoices, check them against purchase orders and prepare entries for approval.',
+  'lead-routing-and-crm-enrichment':
+    'Capture every new lead, add the missing details, assign the right owner and alert sales immediately.',
+  'multi-channel-order-sync': 'Keep orders and stock aligned across Shopify, Amazon and wholesale channels.',
+  'rag-knowledge-base': 'Turn company files into a searchable assistant that answers with links to the source.',
+  'zero-touch-client-onboarding':
+    'Create agreements, folders, CRM records and team alerts as soon as a client submits a form.'
+}
+
+const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
 
 function Ico({ d, size = 13 }: { d: string; size?: number }) {
   return (
@@ -68,55 +98,45 @@ const P = {
   arrow: 'M4 12h14M13 6l6 6-6 6'
 }
 
-/** A project matches a filter on its platform or on one of its categories. */
-function matches(cs: CaseStudyMetadata, f: Filter) {
-  if (f === 'ALL') return true
-  const platform = (cs.platform ?? '').toUpperCase()
-  const cats = (cs.categories ?? []).map(c => c.toUpperCase())
-
-  return platform === f || cats.includes(f)
-}
-
 const has = (u?: string) => typeof u === 'string' && u.trim().length > 0
 
-/**
- * Walkthrough and source links — shown only where they exist.
- *
- * These used to fall back to the GitHub profile when a project had no
- * recording or repo, so a reader clicking "Source" at the moment of peak
- * interest landed on a profile page. A link that promises evidence and
- * delivers a bio costs more trust than an absent link does. Nothing renders
- * until `videoUrl` / `repoUrl` are filled in, the same way ArticlesSection
- * renders nothing rather than an empty shelf.
- */
 function AuxLinks({ cs }: { cs: CaseStudyMetadata }) {
-  const base =
-    'inline-flex items-center gap-2 rounded-full border border-rule px-3.5 py-2 font-mono text-meta tracking-wide text-ink-3 transition-colors duration-300 hover:border-rule-strong hover:bg-ink/3 hover:text-ink'
+  const base = 'work-cinema-action'
 
   return (
     <>
-      {has(cs.videoUrl) && (
+      {has(cs.videoUrl) ? (
         <a href={cs.videoUrl} target='_blank' rel='noopener noreferrer' className={base}>
           <VideoIcon size={12} />
-          Walkthrough
+          Live walkthrough
         </a>
+      ) : (
+        <span className={`${base} is-disabled`} title='Walkthrough coming soon' aria-disabled='true'>
+          <VideoIcon size={12} />
+          Live walkthrough
+        </span>
       )}
-      {has(cs.repoUrl) && (
+      {has(cs.repoUrl) ? (
         <a href={cs.repoUrl} target='_blank' rel='noopener noreferrer' className={base}>
           <GitHubIcon size={12} />
-          Source
+          View GitHub
         </a>
+      ) : (
+        <span className={`${base} is-disabled`} title='GitHub project coming soon' aria-disabled='true'>
+          <GitHubIcon size={12} />
+          View GitHub
+        </span>
       )}
     </>
   )
 }
 
-/** The workflow canvas, framed. Shared by the preview panel and the mobile rows. */
+/** The workflow canvas, framed as evidence rather than a decorative thumbnail. */
 function Canvas({ cs, priority = false }: { cs: CaseStudyMetadata; priority?: boolean }) {
   if (!cs.workflowImage) return null
 
   return (
-    <div className='border-rule bg-surface-raised relative overflow-hidden rounded-xl border p-3'>
+    <div className='work-story-canvas relative overflow-hidden'>
       {/* Keyed on the slug so React swaps the element rather than mutating src
           — without it the browser paints the previous canvas until the new one
           decodes, and the panel appears to lag a row behind the cursor. */}
@@ -127,7 +147,7 @@ function Canvas({ cs, priority = false }: { cs: CaseStudyMetadata; priority?: bo
         height={900}
         loading={priority ? 'eager' : 'lazy'}
         alt={`Workflow canvas for ${cs.title}`}
-        className='w-full rounded-lg'
+        className='relative z-1 h-full w-full object-contain'
       />
     </div>
   )
@@ -135,7 +155,6 @@ function Canvas({ cs, priority = false }: { cs: CaseStudyMetadata; priority?: bo
 
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
   const { ref, inView } = useInView(0.06)
-  const [filter, setFilter] = useState<Filter>('ALL')
   const [activeSlug, setActiveSlug] = useState<string | null>(null)
   const [selectedStudy, setSelectedStudy] = useState<CaseStudyMetadata | null>(null)
 
@@ -149,226 +168,137 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
    * each group the date order is preserved.
    */
   const shown = useMemo(
-    () =>
-      caseStudies
-        .filter(cs => matches(cs, filter))
-        .sort((a, b) => Number(Boolean(a.sample)) - Number(Boolean(b.sample))),
-    [caseStudies, filter]
+    () => [...caseStudies].sort((a, b) => Number(Boolean(a.sample)) - Number(Boolean(b.sample))),
+    [caseStudies]
   )
 
   /**
    * The panel always has something to show, so the section reads correctly at
    * rest rather than waiting for a hover.
    *
-   * `activeSlug` is validated against the current filter rather than reset in an
-   * effect: when a filter hides the active project the lookup simply misses and
-   * falls through to the featured one, costing no extra render.
+   * The featured project opens first; after that the left selector owns the
+   * scene without needing an effect or an extra render.
    */
   const active = shown.find(cs => cs.slug === activeSlug) ?? shown.find(cs => cs.featured) ?? shown[0]
 
-  /**
-   * The index arrives row by row, the preview panel last.
-   *
-   * This whole block used to share one opacity-and-lift, so six projects and
-   * the canvas faded in as a single sheet — no cascade, on the section the
-   * page now opens with. Every neighbouring section has a per-item entrance;
-   * this one read as though it had none.
-   *
-   * The rows lead because the index is what the reader scans first, and the
-   * panel follows the last of them so the canvas lands as the payoff rather
-   * than competing with the list for attention.
-   */
-  const ROW_STEP = 90
+  const activeIndex = Math.max(
+    0,
+    shown.findIndex(cs => cs.slug === active?.slug)
+  )
 
-  const row = (i: number): CSSProperties => ({
-    opacity: inView ? 1 : 0,
-    transform: inView ? 'translateY(0)' : 'translateY(22px)',
-    transition:
-      `opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${i * ROW_STEP}ms, ` +
-      `transform 0.75s cubic-bezier(0.16,1,0.3,1) ${i * ROW_STEP}ms`
-  })
-
-  const panel = (): CSSProperties => {
-    const delay = shown.length * ROW_STEP
-
-    return {
-      opacity: inView ? 1 : 0,
-      transform: inView ? 'translateY(0)' : 'translateY(28px)',
-      transition:
-        `opacity 0.9s cubic-bezier(0.16,1,0.3,1) ${delay}ms, ` + `transform 0.9s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
-    }
-  }
+  const sceneStyle = {
+    '--work-tone': WORK_TONES[active?.slug ?? ''] ?? 'var(--accent)'
+  } as CSSProperties
 
   return (
-    <section id='portfolio' className={SECTION_ANCHOR}>
+    <section id='portfolio' className={`${SECTION_ANCHOR} work-story-section`}>
       <div className={CONTAINER}>
-        {/* ── Header ─────────────────────────────────────────────────────── */}
-        <div className='flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between'>
-          <SectionIntro
-            tag='SELECTED'
-            margin=''
-            titleClassName='display-xl mt-2 text-[clamp(2.5rem,6vw,5rem)]'
-            title='WORK'
-            blurb='Automation systems running in production. Each one replaced a job somebody was doing by hand — the workflow canvas shows exactly how.'
-          />
+        <SectionIntro
+          tag='SELECTED WORK'
+          margin=''
+          titleClassName='display-xl mt-2 max-w-[15ch] text-[clamp(2.55rem,5vw,4.8rem)]'
+          title='Work that gives time back.'
+          blurb='Select a project to see what changed—and what the team no longer has to do by hand.'
+        />
 
-          <div className='flex flex-col items-start gap-4 lg:items-end'>
-            <span className='text-meta text-ink-3 font-mono tracking-[0.18em] uppercase'>
-              {caseStudies.length} automation projects
-            </span>
-
-            <div className='flex flex-wrap gap-2 lg:justify-end' role='tablist' aria-label='Filter projects'>
-              {FILTERS.map(f => {
-                const on = filter === f
-                const n = caseStudies.filter(cs => matches(cs, f)).length
+        <div
+          ref={ref}
+          className='work-cinema mt-10 grid lg:grid-cols-[19rem_minmax(0,1fr)]'
+          style={{ ...sceneStyle, opacity: inView ? 1 : 0, transform: inView ? 'translateY(0)' : 'translateY(30px)' }}
+        >
+          <aside className='work-cinema-selector'>
+            <div className='work-cinema-selector-head'>
+              <span>PROJECTS</span>
+              <span>{String(shown.length).padStart(2, '0')}</span>
+            </div>
+            <ol role='tablist' aria-label='Choose a case study'>
+              {shown.map((cs, i) => {
+                const isActive = cs.slug === active?.slug
 
                 return (
-                  <button
-                    key={f}
-                    type='button'
-                    role='tab'
-                    aria-selected={on}
-                    disabled={n === 0}
-                    onClick={() => setFilter(f)}
-                    className={`text-meta inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-mono tracking-wide transition-all duration-300 ${
-                      on
-                        ? 'border-ink bg-ink text-ground'
-                        : n === 0
-                          ? 'border-rule text-ink-4 cursor-default'
-                          : 'border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/3 hover:text-ink'
-                    }`}
-                  >
-                    {f}
-                    <span className={on ? 'text-ground/65' : 'text-ink-3'}>{n}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* ── Index + preview ────────────────────────────────────────────────
-            A card grid gave six workflow canvases a 150px thumbnail each, which
-            is the one economy this section cannot make: the canvas is the
-            evidence. An index trades those thumbnails for a single large
-            preview, and reads as a catalogue of work rather than a shop shelf.
-
-            Below `lg` there is no room for a side-by-side, so each row carries
-            its own canvas and the whole thing degrades to a plain stack. */}
-        <div ref={ref} className='saas-project-browser mt-14 grid gap-x-8 gap-y-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]'>
-          <ol className='saas-project-index border-rule border-t'>
-            {shown.map((cs, i) => {
-              const isActive = cs.slug === active?.slug
-
-              // `onFocus` drives the preview as well as `onMouseEnter`, so a
-              // keyboard reader tabbing the index sees the same canvas change.
-              // Kept above the element rather than between the attributes:
-              // prettier strips the blank line that @stylistic/lines-around-
-              // comment then demands, and neither formatter can win in place.
-              return (
-                <li key={cs.slug} className='border-rule border-b' style={row(i)}>
-                  <button
-                    type='button'
-                    onClick={() => setSelectedStudy(cs)}
-                    onMouseEnter={() => setActiveSlug(cs.slug)}
-                    onFocus={() => setActiveSlug(cs.slug)}
-                    aria-current={isActive ? 'true' : undefined}
-                    className='group grid w-full grid-cols-[2.5rem_1fr_auto] items-baseline gap-x-4 py-6 text-left lg:py-7'
-                  >
-                    <span
-                      className={`text-fine font-mono transition-colors duration-300 ${isActive ? 'text-accent' : 'text-ink-3'}`}
-                    >
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-
-                    <span className='min-w-0'>
-                      <span
-                        className={`display-md block text-[1.2rem] leading-snug font-light transition-colors duration-300 lg:text-[1.45rem] ${
-                          isActive ? 'text-ink' : 'text-ink-2 group-hover:text-ink'
-                        }`}
-                        style={{ fontFamily: DISPLAY_FONT }}
-                      >
-                        {cs.title}
-                      </span>
-
-                      <span className='mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5'>
-                        {cs.platform && (
-                          <span className='text-meta text-ink-3 font-mono tracking-[0.14em] uppercase'>
-                            {cs.platform}
-                          </span>
-                        )}
-                        {cs.speed && (
-                          <span className='text-meta text-accent inline-flex items-center gap-1.5 font-mono'>
-                            <Ico d={cs.speedKind === 'throughput' ? P.stack : P.bolt} size={11} />
-                            {cs.speed}
-                          </span>
-                        )}
-                        {cs.sample && <span className='badge badge-accent'>SAMPLE</span>}
-                      </span>
-
-                      {/* Below lg the preview panel is gone, so the row carries
-                          its own canvas and copy. */}
-                      <span className='mt-5 block lg:hidden'>
-                        <Canvas cs={cs} />
-                        <span className='text-fine text-ink-2 mt-4 block'>{cs.description}</span>
-                      </span>
-                    </span>
-
-                    <span
-                      className={`transition-[color,transform] duration-300 group-hover:translate-x-1 ${
-                        isActive ? 'text-accent' : 'text-ink-3'
-                      }`}
-                    >
-                      <Ico d={P.arrow} size={16} />
-                    </span>
-                  </button>
-                </li>
-              )
-            })}
-          </ol>
-
-          {/* Preview panel, sticky so the canvas stays with the reader as they
-              work down the index. */}
-          <aside className='hidden lg:block' style={panel()}>
-            {active && (
-              <div className='saas-project-preview sticky top-28'>
-                <Canvas cs={active} priority />
-
-                <div className='mt-6'>
-                  <h3
-                    className='display-md text-ink text-[1.6rem] leading-snug font-light'
-                    style={{ fontFamily: DISPLAY_FONT }}
-                  >
-                    {active.title}
-                  </h3>
-                  <p className='text-body text-ink-2 mt-3 max-w-[56ch]'>{active.description}</p>
-
-                  <div className='mt-5 flex flex-wrap gap-1.5'>
-                    {active.tools?.map(t => (
-                      <span
-                        key={t}
-                        className='border-rule bg-ink/2 text-meta text-ink-3 rounded-md border px-2.5 py-1 font-mono'
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className='border-rule mt-7 flex flex-wrap items-center gap-2.5 border-t pt-6'>
+                  <li key={cs.slug}>
                     <button
                       type='button'
-                      onClick={() => setSelectedStudy(active)}
-                      className='bg-ink text-meta text-ground hover:bg-ink/90 inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono tracking-wide transition-[background-color,transform] duration-300 active:scale-[0.98] motion-reduce:active:scale-100'
+                      role='tab'
+                      aria-selected={isActive}
+                      onClick={() => setActiveSlug(cs.slug)}
+                      onFocus={() => setActiveSlug(cs.slug)}
+                      className='work-cinema-project group'
                     >
-                      Read case study
-                      <Ico d={P.arrow} size={13} />
+                      <span className='work-cinema-project-number'>{String(i + 1).padStart(2, '0')}</span>
+                      <span className='work-cinema-project-copy'>
+                        <strong>{workLabel(cs)}</strong>
+                        <small>
+                          {cs.keyOutcome?.value ?? cs.speed} {cs.keyOutcome?.label ?? 'RESULT'}
+                        </small>
+                      </span>
+                      <span className='work-cinema-project-arrow'>
+                        <Ico d={P.arrow} size={13} />
+                      </span>
                     </button>
-                    <AuxLinks cs={active} />
-                  </div>
-                </div>
-              </div>
-            )}
+                  </li>
+                )
+              })}
+            </ol>
+            <p className='work-cinema-selector-foot'>Select a project to change the scene.</p>
           </aside>
+
+          <div className='work-cinema-screen'>
+            {active && (
+              <AnimatePresence mode='wait' initial={false}>
+                <motion.article
+                  key={active.slug}
+                  initial={{ opacity: 0, scale: 1.025 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.985 }}
+                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                  className='work-cinema-scene'
+                >
+                  <div className='work-cinema-art'>
+                    <span className='work-cinema-count'>{String(activeIndex + 1).padStart(2, '0')}</span>
+                    <div className='work-story-status'>
+                      <span className='work-story-status-dot' />
+                      System running
+                    </div>
+                    <Canvas cs={active} priority />
+                    <div className='work-story-flowline' aria-hidden='true'>
+                      <span>WORK ARRIVES</span>
+                      <i />
+                      <span>RUNS AUTOMATICALLY</span>
+                      <i />
+                      <span>TEAM NOTIFIED</span>
+                    </div>
+                  </div>
+
+                  <div className='work-cinema-story'>
+                    <div className='work-cinema-story-main'>
+                      <p>{active.organisation ?? workLabel(active)}</p>
+                      <h3 style={{ fontFamily: DISPLAY_FONT }}>{active.impactHighlight ?? active.title}</h3>
+                      <div className='work-cinema-use-case'>
+                        <small>USE CASE</small>
+                        <span>{WORK_USE_CASES[active.slug] ?? active.description}</span>
+                      </div>
+                    </div>
+
+                    <div className='work-cinema-result'>
+                      {active.keyOutcome && (
+                        <div className='work-story-outcome'>
+                          <strong>{active.keyOutcome.value}</strong>
+                          <span>{active.keyOutcome.label}</span>
+                        </div>
+                      )}
+                      <div className='flex flex-wrap items-center gap-2.5'>
+                        <button type='button' onClick={() => setSelectedStudy(active)} className='work-story-cta'>
+                          Read case study <Ico d={P.arrow} size={14} />
+                        </button>
+                        <AuxLinks cs={active} />
+                      </div>
+                    </div>
+                  </div>
+                </motion.article>
+              </AnimatePresence>
+            )}
+          </div>
         </div>
 
         {shown.length === 0 && (
