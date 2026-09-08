@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+import { motion, useScroll, useTransform } from 'motion/react'
+
 import { GreetingWord } from '@/components/landing/greeting-word'
 import { READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
 import { PROFILE } from '@/lib/portfolio'
@@ -44,6 +46,10 @@ function useInView(threshold = 0.15) {
 export function IntroSection() {
   const { ref, inView } = useInView(0.1)
   const reducedMotion = usePrefersReducedMotion()
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const portraitY = useTransform(scrollYProgress, [0, 1], [54, -42])
+  const portraitRotate = useTransform(scrollYProgress, [0, 0.5, 1], [-1.8, 0, 1.2])
+  const timelineY = useTransform(scrollYProgress, [0.12, 0.88], ['0%', 'calc(100% - 12px)'])
 
   const reveal = (delay: number) => ({
     opacity: inView ? 1 : 0,
@@ -53,16 +59,24 @@ export function IntroSection() {
   })
 
   return (
-    <section id='about' className='saas-section border-rule border-t px-6 py-32 md:px-12 lg:px-20'>
+    <section
+      id='about'
+      className='about-cinema saas-section border-rule relative overflow-hidden border-t px-6 py-32 md:px-12 lg:px-20'
+    >
       {/* The bio is a two-column block that tops out around 1120px — a wider
           prose column would overrun a comfortable line length. Centring it
           keeps the leftover width as balanced margins instead of a single
           dead strip down the right of wide screens. */}
-      <div ref={ref} className='mx-auto max-w-[1120px]'>
+      <div className='about-cinema-word' aria-hidden='true'>
+        OPERATOR
+      </div>
+      <div className='about-cinema-line' aria-hidden='true' />
+
+      <div ref={ref} className='relative z-2 mx-auto max-w-[1240px]'>
         {/* ── Section header ─────────────────────────────────────────────── */}
         <SectionIntro tag='ABOUT' margin='mb-16' />
 
-        <div className='saas-about-panel grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_408px] lg:gap-16'>
+        <div className='saas-about-panel grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-20'>
           {/* ── Left: the introduction ──────────────────────────────────── */}
           <div className={READABLE}>
             <div style={introStep(inView, reducedMotion, { delay: 120, y: 40, blur: 14, duration: 1.15 })}>
@@ -81,24 +95,17 @@ export function IntroSection() {
               </p>
             </div>
 
-            <div className='mt-8 max-w-[58ch] space-y-4' style={reveal(140)}>
-              <p className='text-ink-2 text-[15.5px] leading-[1.7]'>
-                I automate the work that quietly eats a company&apos;s week — client intake and onboarding, approvals
-                and handoffs, reporting, invoicing, and the copying between systems that someone is currently doing by
-                hand.
+            <div className='mt-8 max-w-[58ch] space-y-5' style={reveal(140)}>
+              <p className='about-cinema-lead' style={{ fontFamily: DISPLAY_FONT }}>
+                I spent a decade inside the work I now automate.
               </p>
-              <p className='text-ink-2 text-[15.5px] leading-[1.7]'>
-                Today I build production automation on{' '}
-                <span className='text-ink font-medium'>n8n, Zapier, Make and GoHighLevel</span> — AI agents,{' '}
-                <span className='text-ink font-medium'>Claude and OpenAI integrations</span>,{' '}
-                <span className='text-ink font-medium'>RAG knowledge systems</span> and multi-system pipelines across
-                Google Workspace, Airtable and Telegram.
+              <p className='text-ink-2 text-base leading-[1.7]'>
+                I handled invoices, reconciliations, approvals, reporting and month-end close by hand. That experience
+                taught me where work really slows down—and which checks cannot be skipped.
               </p>
-              <p className='text-ink-2 text-[15.5px] leading-[1.7]'>
-                Before that I spent ten years running those processes rather than automating them — as an accountant,
-                then a financial analyst. That is the part most automation work is missing: someone who knows what an
-                approval rule is actually for before they wire it up. Everything ships with error branches, failure
-                alerting and documentation, so your team can run it without me.
+              <p className='text-ink-2 text-base leading-[1.7]'>
+                Today I connect the tools companies already use so intake, follow-ups, paperwork and reporting move on
+                their own. Every system includes human review where it matters, failure alerts and a clear handover.
               </p>
             </div>
 
@@ -181,12 +188,30 @@ export function IntroSection() {
           </div>
 
           {/* ── Right: portrait ──────────────────────────────────────────── */}
-          <div className='w-full' style={reveal(180)}>
+          <motion.div
+            className='about-cinema-visual w-full'
+            style={reducedMotion ? reveal(180) : { ...reveal(180), y: portraitY, rotate: portraitRotate }}
+          >
+            <div className='about-cinema-timeline' aria-hidden='true'>
+              <span className='about-era about-era-manual'>2015 · MANUAL OPERATIONS</span>
+              <span className='about-era about-era-system'>2026 · AUTOMATED SYSTEMS</span>
+              <span className='about-timeline-track'>
+                <motion.i style={reducedMotion ? undefined : { y: timelineY }} />
+              </span>
+            </div>
+
             <div className='relative'>
               {/* Office background lifted out with the Vision framework and
                   composited on white, so the portrait sits on a white card
                   rather than clashing with the cream ground. */}
-              <div className='saas-portrait-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-12px_rgba(0,0,0,0.12)]'>
+              <div
+                className='saas-portrait-frame about-film-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border'
+                data-visible={inView}
+              >
+                <div className='about-film-meta' aria-hidden='true'>
+                  <span>RA · 01</span>
+                  <span>BUSINESS × AUTOMATION</span>
+                </div>
                 <img
                   src='/images/landing/ramon-portrait.webp'
                   alt='Ramon A. Vallejera, Jr.'
@@ -194,6 +219,7 @@ export function IntroSection() {
                   height={1500}
                   className='h-auto w-full object-cover'
                 />
+                <div className='about-film-scan' aria-hidden='true' />
               </div>
 
               {/* Availability chip */}
@@ -207,7 +233,10 @@ export function IntroSection() {
             </div>
 
             {/* Credentials strip */}
-            <div className='divide-rule border-rule bg-surface mt-6 grid grid-cols-3 divide-x overflow-hidden rounded-xl border'>
+            <div
+              className='about-credential-strip divide-rule border-rule bg-surface mt-6 grid grid-cols-3 divide-x overflow-hidden rounded-xl border'
+              data-visible={inView}
+            >
               {[
                 { value: 'AP · GL', label: 'closed by hand for a decade' },
                 { value: 'MBA', label: 'business strategy' },
@@ -221,7 +250,7 @@ export function IntroSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
