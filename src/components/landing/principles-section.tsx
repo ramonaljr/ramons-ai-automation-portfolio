@@ -1,7 +1,8 @@
 'use client'
 
-import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useState, type CSSProperties } from 'react'
+
+import { AnimatePresence, motion } from 'motion/react'
 
 import { CONTAINER, DISPLAY_FONT, SECTION, usePrefersReducedMotion } from '@/components/landing/motion'
 import { PRINCIPLES } from '@/lib/portfolio'
@@ -32,10 +33,10 @@ function ProcessMap() {
 function IntelligenceMap() {
   return (
     <div className='build-intelligence' aria-hidden='true'>
-      <div className='build-intelligence-source build-intelligence-source-a'><span>LEDGER</span><strong>DETERMINISTIC</strong></div>
-      <div className='build-intelligence-source build-intelligence-source-b'><span>DOCUMENT</span><strong>LLM PARSE</strong></div>
+      <div className='build-intelligence-source build-intelligence-source-a'><span>NUMBERS</span><strong>FIXED RULES</strong></div>
+      <div className='build-intelligence-source build-intelligence-source-b'><span>DOCUMENT</span><strong>AI READ</strong></div>
       <div className='build-intelligence-lines'><i /><i /></div>
-      <div className='build-intelligence-result'><i /><span>VERIFIED</span><strong>100.00</strong></div>
+      <div className='build-intelligence-result'><i /><span>CHECKED</span><strong>100.00</strong></div>
     </div>
   )
 }
@@ -45,9 +46,9 @@ function GuardMap() {
     <div className='build-guard' aria-hidden='true'>
       <div className='build-guard-core'><span>HUMAN</span><strong>REVIEW</strong></div>
       {[
-        ['01', 'TRY / CATCH', 'READY'],
-        ['02', 'APPROVAL GATE', 'ACTIVE'],
-        ['03', 'FAILURE ALERT', 'ARMED']
+        ['01', 'ERROR CHECK', 'READY'],
+        ['02', 'HUMAN REVIEW', 'ACTIVE'],
+        ['03', 'TEAM ALERT', 'ARMED']
       ].map(([number, label, state], index) => (
         <div key={number} className={`build-guard-event build-guard-event-${index + 1}`}>
           <span>{number}</span><strong>{label}</strong><i>{state}</i>
@@ -60,6 +61,7 @@ function GuardMap() {
 function ActiveVisual({ index }: { index: number }) {
   if (index === 0) return <ProcessMap />
   if (index === 1) return <IntelligenceMap />
+
   return <GuardMap />
 }
 
@@ -73,6 +75,7 @@ export function PrinciplesSection() {
     setActiveIndex(current => {
       if (current === nextIndex) return current
       setDirection(nextIndex > current ? 1 : -1)
+
       return nextIndex
     })
   }, [])
@@ -90,6 +93,7 @@ export function PrinciplesSection() {
   useEffect(() => {
     if (paused || reduced) return
     const timer = window.setInterval(next, AUTO_PLAY_DURATION)
+
     return () => window.clearInterval(timer)
   }, [next, paused, reduced])
 
@@ -111,6 +115,7 @@ export function PrinciplesSection() {
             <div className='build-tabs-list' role='tablist' aria-label='How I build reliable automation'>
               {PRINCIPLES.map((principle, index) => {
                 const isActive = index === activeIndex
+
                 return (
                   <button
                     key={principle.n}

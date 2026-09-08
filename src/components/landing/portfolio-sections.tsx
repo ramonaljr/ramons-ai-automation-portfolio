@@ -6,7 +6,6 @@ import { IntroAnimation } from '@/components/landing/intro-animation'
 import { BlossomStoryBackground } from '@/components/landing/blossom-story-background'
 import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
-import { CtaSection } from '@/components/landing/cta-section'
 import { HeroSection } from '@/components/landing/hero-section'
 import { IntroSection } from '@/components/landing/intro-section'
 import { SectionIntro } from '@/components/landing/section-intro'
@@ -17,7 +16,7 @@ import { ToolStackSection } from '@/components/landing/tool-stack-section'
 import { ExperienceSection } from '@/components/landing/experience-section'
 import { ContactSection } from '@/components/landing/contact-section'
 import { TestimonialsSection } from '@/components/landing/testimonials-section'
-import { ArticlesSection } from '@/components/landing/articles-section'
+import { FaqSection } from '@/components/landing/faq-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
 import { ScrollAtmosphere } from '@/components/landing/scroll-atmosphere'
@@ -35,7 +34,6 @@ import {
 } from '@/components/landing/motion'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
-import type { PostMetadata } from '@/lib/posts'
 import { ENGAGEMENTS, PLATFORMS, SERVICES } from '@/lib/portfolio'
 
 // ── Shared primitives ────────────────────────────────────────────────────────
@@ -59,6 +57,39 @@ const SERVICE_ICONS: ('platform' | 'agents' | 'workflow' | 'integrations' | 'pri
   'pricing'
 ]
 
+const SERVICE_PRESENTATION: Record<string, { title: string; description: string; outcomes: string[] }> = {
+  'n8n-ai-agents': {
+    title: 'Routine work handled automatically',
+    description:
+      'Move information, prepare recurring reports and carry multi-step office work forward without someone checking every screen.',
+    outcomes: ['Data entry', 'Follow-ups', 'Recurring reports']
+  },
+  'business-process-automation': {
+    title: 'Smoother onboarding and approvals',
+    description:
+      'Turn forms, checks, approvals, folders and handoffs into one reliable process that keeps everyone informed.',
+    outcomes: ['Onboarding', 'Approvals', 'Invoices']
+  },
+  'llm-rag-integrations': {
+    title: 'Answers from your company documents',
+    description:
+      'Find information across policies, contracts and internal files, with links back to the source so every answer can be checked.',
+    outcomes: ['Document reading', 'Knowledge search', 'Source links']
+  },
+  'saas-api-integrations': {
+    title: 'Your everyday tools kept in sync',
+    description:
+      'Keep customer details, orders and updates consistent across spreadsheets, databases, inboxes and team channels.',
+    outcomes: ['Spreadsheets', 'Customer records', 'Team alerts']
+  },
+  'ai-voice-agents': {
+    title: 'Calls and customer questions answered 24/7',
+    description:
+      'Respond to common questions, collect the right details and book confirmed appointments even when your team is unavailable.',
+    outcomes: ['Phone calls', 'Lead capture', 'Bookings']
+  }
+}
+
 function ServicesSection() {
   const { ref, inView } = useInView(0.12)
 
@@ -81,60 +112,56 @@ function ServicesSection() {
               your team&rsquo;s desk.
             </>
           }
-          blurb='Five kinds of work that stop being anyone&rsquo;s job — intake and onboarding, approvals, reporting, reconciliation. Every engagement ends with a documented workflow your team runs without me.'
+          blurb='Five practical ways to remove repetitive work — from intake and follow-up to approvals, reporting and customer response. Every build is documented so your team can run it without me.'
         />
 
         <div ref={ref} className='grid gap-x-5 gap-y-5 pt-4 sm:grid-cols-2 lg:grid-cols-3'>
-          {SERVICES.map((s, i) => (
-            <div
-              key={s.slug}
-              className='group kinetic-card lift-hover border-rule bg-surface hover:border-rule-strong hover:bg-surface-raised relative flex flex-col overflow-hidden rounded-2xl border p-7'
-              style={cardAnim(i)}
-            >
-              {/* Icon sits inline at the top-left rather than as a medallion
-                  straddling the card edge. The medallion forced the whole card
-                  to centre-align under it — which is what put ragged-left body
-                  copy in every one of these. */}
-              <span className='service-icon-square border-rule bg-ground group-hover:border-rule-strong flex h-14 w-14 items-center justify-center rounded-2xl border transition-[border-color,box-shadow] duration-300'>
-                <span className='service-icon-glyph' style={{ '--icon-delay': `${i * -0.72}s` } as React.CSSProperties}>
-                  <PixelIcon type={SERVICE_ICONS[i] ?? 'platform'} size={34} />
-                </span>
-              </span>
+          {SERVICES.map((s, i) => {
+            const copy = SERVICE_PRESENTATION[s.slug]
 
-              <h3
-                className='display-md text-ink mt-6 text-xl leading-snug font-light'
-                style={{ fontFamily: DISPLAY_FONT }}
+            return (
+              <div
+                key={s.slug}
+                className='group kinetic-card lift-hover border-rule bg-surface hover:border-rule-strong hover:bg-surface-raised relative flex flex-col overflow-hidden rounded-2xl border p-7'
+                style={cardAnim(i)}
               >
-                {s.title}
-              </h3>
-
-              <p className='text-fine text-ink-2 mt-3 flex-1'>{s.description}</p>
-
-              <div className='mt-5 flex flex-wrap gap-1.5'>
-                {s.tools.slice(0, 3).map(t => (
-                  <span key={t} className='border-rule bg-ink/2 text-meta text-ink-3 rounded-md border px-2.5 py-1'>
-                    {t}
+                <span className='service-icon-square border-rule bg-ground group-hover:border-rule-strong flex h-14 w-14 items-center justify-center rounded-2xl border transition-[border-color,box-shadow] duration-300'>
+                  <span className='service-icon-glyph' style={{ '--icon-delay': `${i * -0.72}s` } as React.CSSProperties}>
+                    <PixelIcon type={SERVICE_ICONS[i] ?? 'platform'} size={34} />
                   </span>
-                ))}
-              </div>
+                </span>
 
-              {/* A quiet link, not a filled pill. Five ink pills in one grid
-                  gave the section five equal shouts and no hierarchy — the
-                  card itself is the affordance, so the link only has to name
-                  the destination. */}
-              <a
-                href={`/services/${s.slug}`}
-                className='text-fine text-ink mt-6 inline-flex items-center gap-2 self-start border-t border-transparent pt-1 transition-colors'
-              >
-                <span className='bg-[linear-gradient(currentColor,currentColor)] bg-size-[0%_1px] bg-position-[0_100%] bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:bg-size-[100%_1px]'>
-                  View service
-                </span>
-                <span className='transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1'>
-                  <ArrowIcon />
-                </span>
-              </a>
-            </div>
-          ))}
+                <h3
+                  className='display-md text-ink mt-6 text-xl leading-snug font-light'
+                  style={{ fontFamily: DISPLAY_FONT }}
+                >
+                  {copy?.title ?? s.title}
+                </h3>
+
+                <p className='text-fine text-ink-2 mt-3 flex-1'>{copy?.description ?? s.description}</p>
+
+                <div className='mt-5 flex flex-wrap gap-1.5'>
+                  {(copy?.outcomes ?? s.tools.slice(0, 3)).map(t => (
+                    <span key={t} className='border-rule bg-ink/2 text-meta text-ink-3 rounded-md border px-2.5 py-1'>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                <a
+                  href={`/services/${s.slug}`}
+                  className='text-fine text-ink mt-6 inline-flex items-center gap-2 self-start border-t border-transparent pt-1 transition-colors'
+                >
+                  <span className='bg-[linear-gradient(currentColor,currentColor)] bg-size-[0%_1px] bg-position-[0_100%] bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:bg-size-[100%_1px]'>
+                    See how it works
+                  </span>
+                  <span className='transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1'>
+                    <ArrowIcon />
+                  </span>
+                </a>
+              </div>
+            )
+          })}
 
           {/* Sixth cell balances the grid and routes to contact. It carries the
               section's one filled CTA, which is now the only one in the grid. */}
@@ -167,15 +194,15 @@ function PlatformsSection() {
     <section id='platforms' className={SECTION_CONT}>
       <div className={CONTAINER}>
         <SectionHead
-          tag='PLATFORMS'
+          tag='PLATFORMS & TOOLS'
           title={
             <>
-              The right tool
+              Built where your team
               <br />
-              for the job.
+              can keep running it.
             </>
           }
-          blurb='I build in all four. Which one you should use depends on your data, your volume, and who has to maintain it afterwards.'
+          blurb='I choose the platform around your existing tools, the amount of work moving through them and who will maintain the system afterwards.'
         />
 
         {/* Two-up before four-up: each card carries a tagline, four bullets
@@ -216,6 +243,8 @@ function PlatformsSection() {
             </div>
           ))}
         </div>
+
+        <ToolStackSection embedded />
       </div>
     </section>
   )
@@ -295,7 +324,7 @@ function EngagementSection() {
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
-export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStudyMetadata[]; posts: PostMetadata[] }) {
+export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
   const [heroReady, setHeroReady] = useState(false)
   const handleIntroDone = useCallback(() => setHeroReady(true), [])
 
@@ -321,22 +350,16 @@ export function PortfolioSections({ caseStudies, posts }: { caseStudies: CaseStu
           <ProjectsSection caseStudies={caseStudies} />
           <IntroSection />
           <ServicesSection />
-          <PlatformsSection />
           <PrinciplesSection />
           <ExperienceSection />
+          <PlatformsSection />
 
-          {/* Twenty-eight logos. Credibility by association, so it reads late
-              rather than standing between the promise and the evidence. */}
-          <ToolStackSection />
-          <ArticlesSection posts={posts} />
-
-          {/* Corroboration immediately before the offer — the last thing read
-              before the ask should be somebody other than Ramon. Renders
-              nothing until a real quote replaces the drafts. */}
+          {/* Corroboration immediately before the offer. Clearly labelled
+              layout placeholders remain until approved client words arrive. */}
           <TestimonialsSection />
           <EngagementSection />
+          <FaqSection />
           <ContactSection />
-          <CtaSection contactHref='#contact' />
           <SiteFooter />
         </div>
       </div>

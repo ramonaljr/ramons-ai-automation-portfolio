@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import { PortfolioSections } from '@/components/landing/portfolio-sections'
 
 import { getCaseStudies } from '@/lib/case-studies'
-import { getPosts } from '@/lib/posts'
 import { PROFILE, SERVICES } from '@/lib/portfolio'
 import { abs, SITE_URL } from '@/lib/site'
 
@@ -81,11 +80,10 @@ const jsonLd = {
 
 const Home = async () => {
   const caseStudies = await getCaseStudies()
-  const posts = await getPosts(3)
 
   return (
     <>
-      <PortfolioSections caseStudies={caseStudies} posts={posts} />
+      <PortfolioSections caseStudies={caseStudies} />
 
       <script
         type='application/ld+json'

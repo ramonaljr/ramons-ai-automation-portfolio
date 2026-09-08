@@ -277,47 +277,47 @@ export const PLATFORMS: Platform[] = [
   {
     name: 'n8n',
     primary: true,
-    tagline: 'Complex logic, AI agents, full ownership',
+    tagline: 'Flexible workflows with full ownership',
     bestFor: [
-      'Self-hosted & data-sensitive work',
-      'AI agents and RAG pipelines',
-      'Custom code inside a workflow',
-      'Unlimited steps, no per-task billing'
+      'Sensitive work that stays in your environment',
+      'Processes with several decisions and exceptions',
+      'Custom steps when standard connectors are not enough',
+      'Higher volumes without paying for every task'
     ],
-    note: 'My default, and where most of my production work lives — cloud or self-hosted.'
+    note: 'My usual choice when the workflow needs flexibility, control and room to grow.'
   },
   {
     name: 'Zapier',
-    tagline: 'Fastest path between mainstream SaaS apps',
+    tagline: 'The quickest way to connect familiar business tools',
     bestFor: [
-      '8,000+ app connectors',
-      'Simple trigger-to-action flows',
-      'Teams already standardised on it',
-      'Shipping something this afternoon'
+      'Simple, dependable handoffs between apps',
+      'Teams already using Zapier',
+      'Common tools with ready-made connections',
+      'Getting a straightforward workflow live quickly'
     ],
-    note: 'When speed to value matters more than flexibility, Zapier wins.'
+    note: 'A strong fit when speed and ease of maintenance matter more than deep customization.'
   },
   {
     name: 'Make',
-    tagline: 'Visual branching and high-volume data ops',
+    tagline: 'Visual workflows for larger amounts of information',
     bestFor: [
-      'Complex routers and iterators',
-      'High operation volumes, lower cost',
-      'Visual debugging of each bundle',
-      'Heavy data transformation'
+      'Processes with several routes and conditions',
+      'Moving and reshaping larger sets of data',
+      'Seeing exactly what happened at each step',
+      'Balancing flexibility with a visual builder'
     ],
-    note: 'The middle ground: more power than Zapier, gentler than self-hosting.'
+    note: 'A useful middle ground when the process is visual but needs more flexibility than a simple app connection.'
   },
   {
     name: 'GoHighLevel',
-    tagline: 'CRM, funnels and outreach in one place',
+    tagline: 'Customer follow-up, pipelines and campaigns in one place',
     bestFor: [
-      'Pipelines, funnels and lead capture',
-      'SMS, email and voice campaigns',
-      'Client sub-accounts and agency snapshots',
-      'Extended with n8n over its API'
+      'Capturing and following up with leads',
+      'Email, text and voice campaigns',
+      'Agencies managing several client accounts',
+      'Keeping the customer journey in one system'
     ],
-    note: 'The odd one out, deliberately: a CRM platform with a builder inside, not a general-purpose engine. Right when the CRM is the product rather than a system to sync.'
+    note: 'Best when the customer relationship system is the centre of the work, rather than one tool among many.'
   }
 ]
 
@@ -413,21 +413,21 @@ export const TOOLS_ROW_2: Tool[] = [
 export const PRINCIPLES = [
   {
     n: '01',
-    title: 'Domain-Driven Process Mapping',
-    sub: 'Accounting logic and business rules mapped before building',
-    body: "Process-first mapping before code. Invoicing, AP/AR, and GL reconciliations fail when developers don't understand the accounting rules. I map out the SOPs, edge cases, and chart of accounts first."
+    title: 'Map the work before automating it',
+    sub: 'Business rules and exceptions are captured before anything is built',
+    body: 'We first map what happens, who approves it and which unusual cases need special treatment. That keeps the finished workflow aligned with how your business actually operates.'
   },
   {
     n: '02',
-    title: 'Deterministic Reliability + LLM Intelligence',
-    sub: 'Zero hallucinations on financial numbers and ledgers',
-    body: 'Deterministic math, probabilistic AI. Critical calculations, ledger balances, and data routes remain deterministic in code. LLMs are reserved for unstructured document parsing, classification, and extraction.'
+    title: 'Keep important numbers exact',
+    sub: 'AI reads messy information; fixed rules handle calculations and approvals',
+    body: 'AI can read documents, emails and other unstructured information. Important totals, balances and approval decisions still follow fixed rules that can be checked and tested.'
   },
   {
     n: '03',
-    title: 'Fail-Safe & Human-in-the-Loop Design',
-    sub: 'Workflows documented so teams can operate them',
-    body: 'Fail-safe architecture with human oversight. Every production workflow includes try/catch error branches, automated alert notifications, and human-in-the-loop review gates for high-value transactions.'
+    title: 'Make problems visible and recoverable',
+    sub: 'Alerts, review steps and clear instructions are included from the start',
+    body: 'When something unusual happens, the right person is alerted and sensitive work pauses for review. Your team also receives clear instructions for recovering and continuing safely.'
   }
 ]
 

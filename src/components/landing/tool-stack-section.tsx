@@ -101,8 +101,35 @@ function useInView(threshold = 0.15) {
   return { ref, inView }
 }
 
-export function ToolStackSection() {
+export function ToolStackSection({ embedded = false }: { embedded?: boolean }) {
   const { ref, inView } = useInView(0.2)
+
+  const marquee = (
+    <div
+      className='mt-10 flex flex-col gap-3'
+      style={{
+        maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)'
+      }}
+    >
+      <Row tools={TOOLS_ROW_1} duration={46} />
+      <Row tools={TOOLS_ROW_2} duration={58} reverse />
+    </div>
+  )
+
+  if (embedded) {
+    return (
+      <div className='platform-tools-rail border-rule mt-10 overflow-hidden rounded-2xl border py-8'>
+        <div className='px-7 md:px-9'>
+          <p className='eyebrow'>CONNECTS WITH</p>
+          <p className='text-ink-2 mt-2 max-w-[56ch] text-[14px] leading-relaxed'>
+            Your CRM, inbox, spreadsheets, accounting tools and team channels can keep working together after handover.
+          </p>
+        </div>
+        {marquee}
+      </div>
+    )
+  }
 
   return (
     <section id='stack' className='saas-section border-rule overflow-hidden border-t py-32'>
@@ -126,16 +153,7 @@ export function ToolStackSection() {
 
       {/* Marquee rows. Edges fade out so pills enter and leave rather than
           appearing to be clipped by the viewport. */}
-      <div
-        className='mt-14 flex flex-col gap-3'
-        style={{
-          maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)'
-        }}
-      >
-        <Row tools={TOOLS_ROW_1} duration={46} />
-        <Row tools={TOOLS_ROW_2} duration={58} reverse />
-      </div>
+      {marquee}
     </section>
   )
 }

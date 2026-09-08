@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { usePathname } from 'next/navigation'
 import { motion, useScroll, useSpring } from 'motion/react'
+
 import { BrandMark } from '@/components/landing/brand-mark'
 
 /**
@@ -46,7 +47,8 @@ export function SiteNav() {
 
   // Off the landing page a hash alone points at nothing, so send the reader
   // home first. `away` lets a link prefer a real page over a section anchor.
-  const resolve = (link: (typeof NAV_LINKS)[number]) => (onLanding ? link.hash : (link.away ?? `/${link.hash}`))
+  const resolve = (link: (typeof NAV_LINKS)[number]) =>
+    onLanding ? (link.away ?? link.hash) : (link.away ?? `/${link.hash}`)
 
   const contactHref = onLanding ? '#contact' : '/#contact'
   const close = () => setOpen(false)
@@ -87,7 +89,7 @@ export function SiteNav() {
           <div className='flex items-center gap-2'>
             <a
               href={contactHref}
-              className='bg-ink text-fine text-ground hover:bg-ink/90 hidden rounded-full px-5 py-2 transition-[background-color,transform] duration-300 active:scale-[0.97] motion-reduce:active:scale-100 md:block'
+              className='bg-ink text-fine text-ground hover:bg-ink/90 relative z-10 hidden min-w-[9.75rem] rounded-full px-5 py-2 text-center whitespace-nowrap transition-[background-color,transform] duration-300 active:scale-[0.97] motion-reduce:active:scale-100 md:block'
             >
               Book an audit
             </a>
