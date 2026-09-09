@@ -116,11 +116,11 @@ export const metadata: Metadata = {
     url: SITE_URL,
     images: [
       {
-        url: '/images/og-image.png',
-        type: 'image/png',
+        url: '/images/og-image-v2.jpg',
+        type: 'image/jpeg',
         width: 1200,
         height: 630,
-        alt: "Ramon's AI Automation Portfolio"
+        alt: 'Ramon A. Vallejera, Jr. — Automation that gives your team time back'
       }
     ]
   },
@@ -131,7 +131,8 @@ export const metadata: Metadata = {
       default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
     },
     description:
-      'Production automation on n8n, Zapier, Make and GoHighLevel — AI agents, LLM integrations and RAG systems that take manual work off your team’s desk.'
+      'Production automation on n8n, Zapier, Make and GoHighLevel — AI agents, LLM integrations and RAG systems that take manual work off your team’s desk.',
+    images: ['/images/og-image-v2.jpg']
   }
 }
 

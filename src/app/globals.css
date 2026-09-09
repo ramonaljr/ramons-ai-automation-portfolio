@@ -2982,6 +2982,17 @@ body::after {
   transition: background 0.65s ease;
 }
 
+.work-cinema-scene-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.72) contrast(1.04) brightness(0.82);
+  transform: scale(1.015);
+}
+
 .work-cinema-art::before,
 .work-cinema-art::after {
   content: '';
@@ -2993,7 +3004,20 @@ body::after {
   transition: border-color 0.6s ease;
 }
 
+.work-cinema-art::before {
+  inset: 0;
+  z-index: 1;
+  width: auto;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, oklch(0.16 0.02 45 / 0.62), transparent 36% 72%, oklch(0.16 0.02 45 / 0.18)),
+    linear-gradient(180deg, oklch(0.16 0.02 45 / 0.08), oklch(0.16 0.02 45 / 0.5));
+}
+
 .work-cinema-art::after {
+  z-index: 1;
   width: min(39vw, 29rem);
   border-style: dashed;
   animation: work-orbit 34s linear infinite;
@@ -3003,7 +3027,8 @@ body::after {
   position: absolute;
   top: -0.12em;
   left: 0.02em;
-  color: color-mix(in oklch, var(--work-tone) 8%, transparent);
+  z-index: 2;
+  color: color-mix(in oklch, var(--ground) 10%, transparent);
   font-family: var(--font-editorial), Georgia, serif;
   font-size: clamp(9rem, 21vw, 19rem);
   font-weight: 300;
@@ -3011,15 +3036,27 @@ body::after {
   letter-spacing: -0.1em;
 }
 
+.work-cinema-context-label {
+  position: absolute;
+  bottom: 1.15rem;
+  left: clamp(1.2rem, 3vw, 3rem);
+  z-index: 4;
+  color: color-mix(in oklch, var(--ground) 68%, transparent);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
 .work-story-canvas {
   position: relative;
   z-index: 2;
-  width: min(92%, 53rem);
-  max-height: 19rem;
+  width: min(74%, 44rem);
+  max-height: 16rem;
   padding: clamp(0.65rem, 1.4vw, 1.1rem);
   border: 1px solid color-mix(in oklch, var(--ink) 16%, transparent);
   border-radius: 0.9rem;
-  background: color-mix(in oklch, white 88%, transparent);
+  background: color-mix(in oklch, white 92%, transparent);
   box-shadow:
     0 32px 70px -46px color-mix(in oklch, var(--ink) 70%, transparent),
     0 0 0 0.5rem color-mix(in oklch, white 22%, transparent);
@@ -3060,12 +3097,12 @@ body::after {
   z-index: 3;
   right: clamp(1.2rem, 3vw, 3rem);
   bottom: 1.15rem;
-  left: clamp(1.2rem, 3vw, 3rem);
+  left: max(14rem, 32%);
   display: grid;
   grid-template-columns: auto 1fr auto 1fr auto;
   align-items: center;
   gap: 0.7rem;
-  color: var(--ink-3);
+  color: color-mix(in oklch, var(--ground) 72%, transparent);
   font-family: var(--font-mono), monospace;
   font-size: 0.68rem;
   letter-spacing: 0.08em;
@@ -3073,7 +3110,7 @@ body::after {
 
 .work-story-flowline i {
   height: 1px;
-  background: linear-gradient(90deg, var(--rule), var(--work-tone), var(--rule));
+  background: linear-gradient(90deg, transparent, color-mix(in oklch, var(--ground) 56%, var(--work-tone)), transparent);
 }
 
 .work-cinema-story {
@@ -3258,8 +3295,10 @@ a.work-cinema-action:hover {
   .work-cinema-project { min-height: 4.9rem; padding-block: 0.75rem; }
   .work-cinema-screen { min-height: 52rem; }
   .work-cinema-art { padding: 4rem 0.65rem 3.2rem; }
-  .work-cinema-art::before { width: 92vw; }
   .work-cinema-art::after { width: 68vw; }
+  .work-story-canvas { width: 91%; }
+  .work-cinema-context-label { display: none; }
+  .work-story-flowline { left: clamp(1.2rem, 3vw, 3rem); }
   .work-cinema-story {
     grid-template-columns: 1fr;
     align-items: start;
@@ -3533,6 +3572,15 @@ a.work-cinema-action:hover {
 .blossom-story-horizon {
   height: 34%;
   background: linear-gradient(to top, color-mix(in oklch, var(--ground) 48%, transparent), transparent);
+}
+
+.blossom-story-foreground {
+  z-index: 4;
+  object-position: center;
+  opacity: 0.62;
+  filter: saturate(0.82) contrast(1.04) drop-shadow(0 18px 28px oklch(0.22 0.035 42 / 0.22));
+  transform-origin: center;
+  will-change: transform;
 }
 
 .blossom-story-root .automation-field {
@@ -3851,6 +3899,13 @@ a.work-cinema-action:hover {
 
   .faq-reference-answer p {
     padding-inline: 1.25rem;
+  }
+
+  .blossom-story-foreground {
+    width: 132%;
+    max-width: none;
+    opacity: 0.46;
+    object-position: 64% center;
   }
 }
 

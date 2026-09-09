@@ -201,9 +201,8 @@ export function IntroSection() {
             </div>
 
             <div className='relative'>
-              {/* Office background lifted out with the Vision framework and
-                  composited on white, so the portrait sits on a white card
-                  rather than clashing with the cream ground. */}
+              {/* The portrait keeps Ramon's identity and pose while the warm
+                  editorial workspace carries the page's autumn atmosphere. */}
               <div
                 className='saas-portrait-frame about-film-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border'
                 data-visible={inView}
@@ -213,10 +212,10 @@ export function IntroSection() {
                   <span>BUSINESS × AUTOMATION</span>
                 </div>
                 <img
-                  src='/images/landing/ramon-portrait.webp'
+                  src='/images/landing/ramon-portrait-autumn.webp'
                   alt='Ramon A. Vallejera, Jr.'
-                  width={1200}
-                  height={1500}
+                  width={1120}
+                  height={1400}
                   className='h-auto w-full object-cover'
                 />
                 <div className='about-film-scan' aria-hidden='true' />

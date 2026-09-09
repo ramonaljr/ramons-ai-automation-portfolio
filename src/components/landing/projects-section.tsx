@@ -39,6 +39,15 @@ const WORK_USE_CASES: Record<string, string> = {
     'Create agreements, folders, CRM records and team alerts as soon as a client submits a form.'
 }
 
+const WORK_SCENES: Record<string, string> = {
+  'ai-voice-receptionist': '/images/landing/work-scenes/ai-voice-receptionist.webp',
+  'invoice-processing-gl-reconciliation': '/images/landing/work-scenes/invoice-processing-gl-reconciliation.webp',
+  'lead-routing-and-crm-enrichment': '/images/landing/work-scenes/lead-routing-and-crm-enrichment.webp',
+  'multi-channel-order-sync': '/images/landing/work-scenes/multi-channel-order-sync.webp',
+  'rag-knowledge-base': '/images/landing/work-scenes/rag-knowledge-base.webp',
+  'zero-touch-client-onboarding': '/images/landing/work-scenes/zero-touch-client-onboarding.webp'
+}
+
 const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
 
 function Ico({ d, size = 13 }: { d: string; size?: number }) {
@@ -255,7 +264,16 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                   className='work-cinema-scene'
                 >
                   <div className='work-cinema-art'>
+                    <img
+                      src={WORK_SCENES[active.slug]}
+                      alt=''
+                      aria-hidden='true'
+                      width={1400}
+                      height={875}
+                      className='work-cinema-scene-image'
+                    />
                     <span className='work-cinema-count'>{String(activeIndex + 1).padStart(2, '0')}</span>
+                    <span className='work-cinema-context-label'>Illustrative business context</span>
                     <div className='work-story-status'>
                       <span className='work-story-status-dot' />
                       System running
