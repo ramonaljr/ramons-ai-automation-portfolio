@@ -57,6 +57,8 @@ function Testimonials({ shown, placeholderOnly }: { shown: typeof TESTIMONIALS; 
                 aria-pressed={active}
                 className='testimonial-accordion-card'
                 data-active={active ? 'true' : 'false'}
+                onMouseEnter={() => setActiveIndex(index)}
+                onFocus={() => setActiveIndex(index)}
                 onClick={() => setActiveIndex(index)}
                 onKeyDown={event => {
                   if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {

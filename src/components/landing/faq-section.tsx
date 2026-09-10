@@ -58,12 +58,18 @@ export function FaqSection() {
               const open = openIndex === index
 
               return (
-                <div key={item.question} className='faq-reference-item' data-open={open ? 'true' : 'false'}>
+                <div
+                  key={item.question}
+                  className='faq-reference-item'
+                  data-open={open ? 'true' : 'false'}
+                  onMouseEnter={() => setOpenIndex(index)}
+                >
                   <button
                     type='button'
                     className='faq-reference-question'
                     aria-expanded={open}
                     aria-controls={`faq-answer-${index}`}
+                    onFocus={() => setOpenIndex(index)}
                     onClick={() => setOpenIndex(current => (current === index ? -1 : index))}
                   >
                     <span>{item.question}</span>
