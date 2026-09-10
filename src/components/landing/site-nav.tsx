@@ -17,8 +17,8 @@ import { BrandMark } from '@/components/landing/brand-mark'
 const NAV_LINKS = [
   { label: 'Home', hash: '#top' },
   { label: 'About', hash: '#about' },
-  { label: 'Services', hash: '#services' },
   { label: 'Portfolio', hash: '#portfolio' },
+  { label: 'Services', hash: '#services' },
   { label: 'Blog', hash: '#articles', away: '/blog' },
   { label: 'Contact', hash: '#contact' }
 ]

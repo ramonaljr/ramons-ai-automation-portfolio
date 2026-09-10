@@ -109,6 +109,31 @@ export function IntroSection() {
               </p>
             </div>
 
+            {/* A compact buyer's summary: enough practical detail to explain
+                the work without repeating the later Services and Experience
+                sections. */}
+            <div className='mt-10 grid gap-3 sm:grid-cols-3' style={reveal(190)}>
+              {[
+                {
+                  label: 'I SPECIALIZE IN',
+                  copy: 'n8n workflows, AI agents, business process automation and API integrations.'
+                },
+                {
+                  label: 'BEST FIT FOR',
+                  copy: 'Teams losing time to repetitive admin, disconnected tools and manual handoffs.'
+                },
+                {
+                  label: 'YOU RECEIVE',
+                  copy: 'A tested system, failure alerts, documentation and a practical handover.'
+                }
+              ].map(item => (
+                <div key={item.label} className='border-rule bg-surface rounded-xl border p-4'>
+                  <p className='text-ink font-mono text-[11px] tracking-[0.12em]'>{item.label}</p>
+                  <p className='text-ink-2 mt-2 text-[13px] leading-relaxed'>{item.copy}</p>
+                </div>
+              ))}
+            </div>
+
             {/* ── Contact rows ──────────────────────────────────────────── */}
             <div className='mt-10 space-y-3' style={reveal(220)}>
               {CONTACT.map(c => (

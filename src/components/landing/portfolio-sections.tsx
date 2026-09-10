@@ -344,11 +344,11 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
         <ScrollAtmosphere />
 
         <div className='relative z-10'>
-          {/* Proof before biography. The hero makes a specific promise, and
-              this used to answer it with "Hola, I'm Ramon" and three capability
-              sections — the reader had to extend credit until beat 6. */}
-          <ProjectsSection caseStudies={caseStudies} />
+          {/* Introduce the person behind the work before the full eight-project
+              portfolio. This keeps the biography near the hero without asking
+              the visitor to scroll through a long project showcase first. */}
           <IntroSection />
+          <ProjectsSection caseStudies={caseStudies} />
           <ServicesSection />
           <PrinciplesSection />
           <ExperienceSection />
