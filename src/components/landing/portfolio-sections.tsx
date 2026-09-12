@@ -10,7 +10,7 @@ import { HeroSection } from '@/components/landing/hero-section'
 import { IntroSection } from '@/components/landing/intro-section'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ProjectsSection } from '@/components/landing/projects-section'
-import { PrinciplesSection } from '@/components/landing/principles-section'
+import { HowItWorksSection } from '@/components/landing/how-it-works-section'
 import { PixelIcon } from '@/components/landing/pixel-icon'
 import { ToolStackSection } from '@/components/landing/tool-stack-section'
 import { ExperienceSection } from '@/components/landing/experience-section'
@@ -350,7 +350,7 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
           <IntroSection />
           <ProjectsSection caseStudies={caseStudies} />
           <ServicesSection />
-          <PrinciplesSection />
+          <HowItWorksSection />
           <ExperienceSection />
           <PlatformsSection />
 

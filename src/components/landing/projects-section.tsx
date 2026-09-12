@@ -50,6 +50,20 @@ const WORK_SCENES: Record<string, string> = {
 
 const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
 
+const workTags = (cs: CaseStudyMetadata) => {
+  const platform = cs.platform?.trim()
+  const tools = cs.integrations?.length ? cs.integrations : cs.tools ?? []
+
+  return {
+    platform,
+    tools: tools.filter((tool, index) => {
+      const normalized = tool.toLowerCase()
+
+      return normalized !== platform?.toLowerCase() && tools.findIndex(item => item.toLowerCase() === normalized) === index
+    })
+  }
+}
+
 function Ico({ d, size = 13 }: { d: string; size?: number }) {
   return (
     <svg
@@ -198,6 +212,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   const sceneStyle = {
     '--work-tone': WORK_TONES[active?.slug ?? ''] ?? 'var(--accent)'
   } as CSSProperties
+  const activeTags = active ? workTags(active) : null
 
   return (
     <section id='portfolio' className={`${SECTION_ANCHOR} work-story-section`}>
@@ -292,9 +307,28 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     <div className='work-cinema-story-main'>
                       <p>{active.organisation ?? workLabel(active)}</p>
                       <h3 style={{ fontFamily: DISPLAY_FONT }}>{active.impactHighlight ?? active.title}</h3>
-                      <div className='work-cinema-use-case'>
-                        <small>USE CASE</small>
-                        <span>{WORK_USE_CASES[active.slug] ?? active.description}</span>
+
+                      <div className='work-cinema-summary'>
+                        <small>PROJECT SUMMARY</small>
+                        <div>
+                          <p>
+                            <b>How it works.</b>{' '}
+                            {active.solution ?? WORK_USE_CASES[active.slug] ?? active.description}
+                          </p>
+                          {active.impactHighlightDesc && <p><b>Outcome.</b> {active.impactHighlightDesc}</p>}
+                        </div>
+                      </div>
+
+                      <div className='work-cinema-tech' aria-label='Platform, tools and AI models used'>
+                        <small>BUILT WITH</small>
+                        <div>
+                          {activeTags?.platform && (
+                            <span className='work-cinema-tech-platform'>
+                              PLATFORM · {activeTags.platform}
+                            </span>
+                          )}
+                          {activeTags?.tools.map(tool => <span key={tool}>{tool}</span>)}
+                        </div>
                       </div>
                     </div>
 

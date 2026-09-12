@@ -335,27 +335,39 @@ export type Step = {
 export const PROCESS: Step[] = [
   {
     step: '01',
-    label: 'DISCOVER',
-    summary: 'Find what should be automated.',
-    desc: 'Understand your current process, identify repetitive tasks, bottlenecks, and opportunities for automation.'
+    label: 'Discovery',
+    summary: 'Start with the work, not the software.',
+    desc: 'We talk through the outcome you need, who touches the process today and where repetitive work, delays or errors are costing you time.'
   },
   {
     step: '02',
-    label: 'DESIGN',
-    summary: 'Plan the right automation.',
-    desc: 'Map the workflow, choose the right tools, define the logic, and design how everything should work together.'
+    label: 'Process audit',
+    summary: 'Find the best automation opportunities.',
+    desc: 'I document the current workflow, measure the bottlenecks and separate useful automation from steps that still need human judgment.'
   },
   {
     step: '03',
-    label: 'BUILD',
-    summary: 'Turn the plan into a working system.',
-    desc: 'Build the workflow, connect APIs and business tools, integrate AI agents, and handle the required logic.'
+    label: 'Solution design',
+    summary: 'Map the system before writing a workflow.',
+    desc: 'I define the data flow, business rules, AI responsibilities, approvals and failure paths. You see exactly what gets built and why.'
   },
   {
     step: '04',
-    label: 'OPTIMIZE',
-    summary: 'Test, launch, and improve.',
-    desc: 'Test the automation, fix edge cases, monitor performance, and refine the system for reliable operation.'
+    label: 'Build & integration',
+    summary: 'Connect the tools and bring the plan to life.',
+    desc: 'I build the automation, integrate your apps and APIs, configure AI agents and add logging, alerts and recovery paths from the start.'
+  },
+  {
+    step: '05',
+    label: 'Testing & handover',
+    summary: 'Prove it works beyond the happy path.',
+    desc: 'We test real scenarios, exceptions, permissions and failed connections. Your team gets clear documentation and a practical walkthrough.'
+  },
+  {
+    step: '06',
+    label: 'Launch & optimize',
+    summary: 'Go live, watch closely and keep improving.',
+    desc: 'I monitor early runs, fix unexpected edge cases and measure the result. The system evolves as your volume, tools and process change.'
   }
 ]
 
