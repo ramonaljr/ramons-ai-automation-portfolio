@@ -50,6 +50,9 @@ const WORK_SCENES: Record<string, string> = {
 
 const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
 
+const workStatus = (cs: CaseStudyMetadata) =>
+  cs.sample ? { label: 'Architecture lab', short: 'Lab' } : { label: 'Detailed case study', short: 'Case study' }
+
 const workTags = (cs: CaseStudyMetadata) => {
   const platform = cs.platform?.trim()
   const tools = cs.integrations?.length ? cs.integrations : cs.tools ?? []
@@ -126,29 +129,21 @@ const has = (u?: string) => typeof u === 'string' && u.trim().length > 0
 function AuxLinks({ cs }: { cs: CaseStudyMetadata }) {
   const base = 'work-cinema-action'
 
+  if (!has(cs.videoUrl) && !has(cs.repoUrl)) return null
+
   return (
     <>
-      {has(cs.videoUrl) ? (
+      {has(cs.videoUrl) && (
         <a href={cs.videoUrl} target='_blank' rel='noopener noreferrer' className={base}>
           <VideoIcon size={12} />
           Live walkthrough
         </a>
-      ) : (
-        <span className={`${base} is-disabled`} title='Walkthrough coming soon' aria-disabled='true'>
-          <VideoIcon size={12} />
-          Live walkthrough
-        </span>
       )}
-      {has(cs.repoUrl) ? (
+      {has(cs.repoUrl) && (
         <a href={cs.repoUrl} target='_blank' rel='noopener noreferrer' className={base}>
           <GitHubIcon size={12} />
           View GitHub
         </a>
-      ) : (
-        <span className={`${base} is-disabled`} title='GitHub project coming soon' aria-disabled='true'>
-          <GitHubIcon size={12} />
-          View GitHub
-        </span>
       )}
     </>
   )
@@ -160,18 +155,24 @@ function Canvas({ cs, priority = false }: { cs: CaseStudyMetadata; priority?: bo
 
   return (
     <div className='work-story-canvas relative overflow-hidden'>
+      <div className='work-story-canvas-head'>
+        <span>System map</span>
+        <span>{cs.stepCount ?? 4} stages</span>
+      </div>
       {/* Keyed on the slug so React swaps the element rather than mutating src
           — without it the browser paints the previous canvas until the new one
           decodes, and the panel appears to lag a row behind the cursor. */}
-      <img
-        key={cs.slug}
-        src={cs.workflowImage}
-        width={1400}
-        height={900}
-        loading={priority ? 'eager' : 'lazy'}
-        alt={`Workflow canvas for ${cs.title}`}
-        className='relative z-1 h-full w-full object-contain'
-      />
+      <div className='work-story-canvas-body'>
+        <img
+          key={cs.slug}
+          src={cs.workflowImage}
+          width={1400}
+          height={900}
+          loading={priority ? 'eager' : 'lazy'}
+          alt={`Workflow canvas for ${cs.title}`}
+          className='relative z-1 h-full w-full object-contain'
+        />
+      </div>
     </div>
   )
 }
@@ -212,6 +213,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   const sceneStyle = {
     '--work-tone': WORK_TONES[active?.slug ?? ''] ?? 'var(--accent)'
   } as CSSProperties
+
   const activeTags = active ? workTags(active) : null
 
   return (
@@ -221,9 +223,15 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           tag='SELECTED WORK'
           margin=''
           titleClassName='display-xl mt-2 max-w-[15ch] text-[clamp(2.55rem,5vw,4.8rem)]'
-          title='Work that gives time back.'
-          blurb='Select a project to see what changed—and what the team no longer has to do by hand.'
+          title='Business problems, designed as systems.'
+          blurb='Explore the challenge, architecture and operational outcome behind each automation.'
         />
+
+        <div className='work-proof-strip' aria-label='Portfolio design principles'>
+          <span><b>01</b> Business case first</span>
+          <span><b>02</b> Failure paths mapped</span>
+          <span><b>03</b> Human control retained</span>
+        </div>
 
         <div
           ref={ref}
@@ -251,7 +259,10 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     >
                       <span className='work-cinema-project-number'>{String(i + 1).padStart(2, '0')}</span>
                       <span className='work-cinema-project-copy'>
-                        <strong>{workLabel(cs)}</strong>
+                        <span className='work-cinema-project-titleline'>
+                          <strong>{workLabel(cs)}</strong>
+                          <em>{workStatus(cs).short}</em>
+                        </span>
                         <small>
                           {cs.keyOutcome?.value ?? cs.speed} {cs.keyOutcome?.label ?? 'RESULT'}
                         </small>
@@ -288,10 +299,10 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                       className='work-cinema-scene-image'
                     />
                     <span className='work-cinema-count'>{String(activeIndex + 1).padStart(2, '0')}</span>
-                    <span className='work-cinema-context-label'>Illustrative business context</span>
+                    <span className='work-cinema-context-label'>{active.organisation ?? 'Automation system'}</span>
                     <div className='work-story-status'>
                       <span className='work-story-status-dot' />
-                      System running
+                      {workStatus(active).label}
                     </div>
                     <Canvas cs={active} priority />
                     <div className='work-story-flowline' aria-hidden='true'>
@@ -308,14 +319,14 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                       <p>{active.organisation ?? workLabel(active)}</p>
                       <h3 style={{ fontFamily: DISPLAY_FONT }}>{active.impactHighlight ?? active.title}</h3>
 
-                      <div className='work-cinema-summary'>
-                        <small>PROJECT SUMMARY</small>
+                      <div className='work-cinema-brief-grid'>
                         <div>
-                          <p>
-                            <b>How it works.</b>{' '}
-                            {active.solution ?? WORK_USE_CASES[active.slug] ?? active.description}
-                          </p>
-                          {active.impactHighlightDesc && <p><b>Outcome.</b> {active.impactHighlightDesc}</p>}
+                          <small>THE CHALLENGE</small>
+                          <p>{active.problem ?? WORK_USE_CASES[active.slug] ?? active.description}</p>
+                        </div>
+                        <div>
+                          <small>THE SYSTEM</small>
+                          <p>{active.solution ?? WORK_USE_CASES[active.slug] ?? active.description}</p>
                         </div>
                       </div>
 
@@ -335,13 +346,26 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     <div className='work-cinema-result'>
                       {active.keyOutcome && (
                         <div className='work-story-outcome'>
-                          <strong>{active.keyOutcome.value}</strong>
-                          <span>{active.keyOutcome.label}</span>
+                          <small>{active.sample ? 'TARGET OUTCOME' : 'KEY OUTCOME'}</small>
+                          <div>
+                            <strong>{active.keyOutcome.value}</strong>
+                            <span>{active.keyOutcome.label}</span>
+                          </div>
+                        </div>
+                      )}
+                      {active.roi && active.roi.length > 1 && (
+                        <div className='work-story-secondary-metrics'>
+                          {active.roi.slice(1, 3).map(metric => (
+                            <span key={metric.label}>
+                              <b>{metric.value}</b>
+                              <small>{metric.label}</small>
+                            </span>
+                          ))}
                         </div>
                       )}
                       <div className='flex flex-wrap items-center gap-2.5'>
                         <button type='button' onClick={() => setSelectedStudy(active)} className='work-story-cta'>
-                          Read case study <Ico d={P.arrow} size={14} />
+                          Explore case study <Ico d={P.arrow} size={14} />
                         </button>
                         <AuxLinks cs={active} />
                       </div>
