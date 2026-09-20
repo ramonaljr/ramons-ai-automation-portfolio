@@ -107,12 +107,6 @@ function ProcessStep({ index }: { index: number }) {
   const { ref, inView } = useInView<HTMLElement>(0.2)
   const step = PROCESS[index]
   const textFirst = index % 2 === 0
-  const transition = `${index * 70}ms`
-  const revealStyle = {
-    '--process-delay': transition,
-    opacity: inView ? 1 : 0,
-    transform: inView ? 'translateY(0)' : 'translateY(28px)'
-  } as CSSProperties
 
   const copy = (
     <div className='process-step-copy'>
@@ -123,17 +117,21 @@ function ProcessStep({ index }: { index: number }) {
   )
 
   return (
-    <article ref={ref} className='process-step' data-visible={inView ? 'true' : 'false'} style={revealStyle}>
-      <div className={`process-step-side process-step-left ${textFirst ? '' : 'process-step-visual'}`}>
-        {textFirst ? copy : VISUALS[index]}
+    <article ref={ref} className='process-step' data-visible={inView ? 'true' : 'false'}>
+      <div className={`process-step-side process-step-left ${textFirst ? 'process-step-copy-side' : 'process-step-visual-side'}`}>
+        <div className={`process-step-panel ${textFirst ? '' : 'process-step-visual'}`}>
+          {textFirst ? copy : VISUALS[index]}
+        </div>
       </div>
 
       <div className='process-step-marker' aria-hidden='true'>
         <span>{step.step}</span>
       </div>
 
-      <div className={`process-step-side process-step-right ${textFirst ? 'process-step-visual' : ''}`}>
-        {textFirst ? VISUALS[index] : copy}
+      <div className={`process-step-side process-step-right ${textFirst ? 'process-step-visual-side' : 'process-step-copy-side'}`}>
+        <div className={`process-step-panel ${textFirst ? 'process-step-visual' : ''}`}>
+          {textFirst ? VISUALS[index] : copy}
+        </div>
       </div>
     </article>
   )
@@ -141,10 +139,12 @@ function ProcessStep({ index }: { index: number }) {
 
 export function HowItWorksSection() {
   const timelineRef = useRef<HTMLDivElement>(null)
+
   const { scrollYProgress } = useScroll({
     target: timelineRef,
     offset: ['start 62%', 'end 48%']
   })
+
   const railProgress = useSpring(scrollYProgress, { stiffness: 110, damping: 28, mass: 0.35 })
 
   return (

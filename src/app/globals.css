@@ -2809,7 +2809,7 @@ body::after {
   .build-guard-event { animation: none; }
 }
 
-/* ── How it works: alternating delivery timeline ───────────────────────── */
+/* ── How it works: split-screen delivery story ──────────────────────────── */
 .process-section {
   overflow: clip;
 }
@@ -2852,9 +2852,6 @@ body::after {
   grid-template-columns: minmax(0, 1fr) 5.5rem minmax(0, 1fr);
   align-items: center;
   min-height: 22rem;
-  transition:
-    opacity 0.85s var(--ease-entrance) var(--process-delay),
-    transform 0.85s var(--ease-entrance) var(--process-delay);
 }
 
 .process-step + .process-step {
@@ -2863,6 +2860,27 @@ body::after {
 
 .process-step-side {
   min-width: 0;
+  overflow: clip;
+}
+
+.process-step-panel {
+  opacity: 0;
+  transition:
+    opacity 0.75s var(--ease-entrance),
+    transform 1s var(--ease-entrance);
+}
+
+.process-step-left .process-step-panel {
+  transform: translateY(85%);
+}
+
+.process-step-right .process-step-panel {
+  transform: translateY(-85%);
+}
+
+.process-step[data-visible='true'] .process-step-panel {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .process-step-left {
@@ -3298,10 +3316,8 @@ body::after {
     padding: 0 0 0 1.25rem;
   }
 
-  .process-step-copy { grid-row: 1; }
-  .process-step-visual { grid-row: 2; margin-top: 1.6rem; }
-  .process-step-left.process-step-visual { grid-row: 2; }
-  .process-step-right:not(.process-step-visual) { grid-row: 1; }
+  .process-step-copy-side { grid-row: 1; }
+  .process-step-visual-side { grid-row: 2; margin-top: 1.6rem; }
 
   .process-step-copy h3 { font-size: clamp(1.8rem, 9vw, 2.55rem); }
   .process-step-copy > p:last-child { font-size: 0.95rem; line-height: 1.7; }
@@ -3312,6 +3328,11 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .process-step-panel {
+    opacity: 1;
+    transform: none !important;
+    transition: none;
+  }
   .process-timeline-progress { transform: scaleY(1) !important; }
   .process-typing i,
   .process-audit-row,

@@ -1,7 +1,8 @@
 'use client'
 
-import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react'
 
 import { HERO_STATS } from '@/lib/portfolio'
 import { CountUp, Cta, usePrefersReducedMotion } from '@/components/landing/motion'
@@ -16,9 +17,15 @@ const ROTATING_WORK = ['data entry.', 'capturing new leads.', 'routine follow-up
  * preserving the original choreography. Defaults to self-revealing on mount.
  */
 export function HeroSection({ ready }: { ready?: boolean }) {
+  const heroRef = useRef<HTMLElement>(null)
   const [mounted, setMounted] = useState(false)
   const [wordIndex, setWordIndex] = useState(0)
   const reduced = usePrefersReducedMotion()
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
+  const backdropY = useTransform(scrollYProgress, [0, 1], [0, 96])
+  const petalsY = useTransform(scrollYProgress, [0, 1], [0, 56])
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, 24])
+  const statsY = useTransform(scrollYProgress, [0, 1], [0, 12])
 
   useEffect(() => {
     // Flip in a frame callback rather than synchronously, so the browser paints
@@ -41,11 +48,15 @@ export function HeroSection({ ready }: { ready?: boolean }) {
   const isVisible = ready ?? mounted
 
   return (
-    <section className='bg-ground relative flex min-h-dvh flex-col justify-center overflow-hidden'>
-      <SaasFlowField />
-      <PetalField className='z-4' />
+    <section ref={heroRef} className='bg-ground relative flex min-h-dvh flex-col justify-center overflow-hidden'>
+      <motion.div className='pointer-events-none absolute -inset-24 z-0' style={{ y: reduced ? 0 : backdropY }} aria-hidden='true'>
+        <SaasFlowField />
+      </motion.div>
+      <motion.div className='pointer-events-none absolute inset-0 z-4' style={{ y: reduced ? 0 : petalsY }} aria-hidden='true'>
+        <PetalField />
+      </motion.div>
 
-      <div className='relative z-10 mx-auto flex w-full max-w-390 flex-1 flex-col justify-center px-6 pt-32 pb-10 md:px-12 lg:px-20 2xl:max-w-440'>
+      <motion.div className='relative z-10 mx-auto flex w-full max-w-390 flex-1 flex-col justify-center px-6 pt-32 pb-10 md:px-12 lg:px-20 2xl:max-w-440' style={{ y: reduced ? 0 : copyY }}>
         <div className='koisei-hero-copy w-full max-w-[62rem] text-left lg:max-w-[58%]'>
           {/* Eyebrow */}
           <div
@@ -106,14 +117,15 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             </Cta>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Stats. Previously `absolute bottom-12`, which on a short viewport put
           them straight through the headline. In flow, the hero simply grows. */}
-      <div
-        className={`relative z-30 mx-auto w-full max-w-390 px-6 pb-14 transition-all delay-500 duration-700 md:px-12 lg:px-20 2xl:max-w-440 ${
+      <motion.div
+        className={`relative z-30 mx-auto w-full max-w-390 px-6 pb-14 transition-opacity delay-500 duration-700 md:px-12 lg:px-20 2xl:max-w-440 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
+        style={{ y: reduced ? 0 : statsY }}
       >
         <div className='border-rule flex flex-wrap items-start justify-center gap-x-12 gap-y-8 border-t pt-8 lg:gap-x-20'>
           {HERO_STATS.map(stat => (
@@ -129,7 +141,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* A tonal fade joins the hero to the routed system below. Keeping this
           blur-free lets the petal-to-packet morph remain crisp in Chromium. */}
