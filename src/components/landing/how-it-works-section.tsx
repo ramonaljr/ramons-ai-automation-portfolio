@@ -1,10 +1,10 @@
 'use client'
 
-import { useRef, type CSSProperties, type ReactNode } from 'react'
+import { useRef, useState, type CSSProperties, type ReactNode } from 'react'
 
-import { motion, useScroll, useSpring } from 'motion/react'
+import { useMotionValueEvent, useScroll } from 'motion/react'
 
-import { CONTAINER, DISPLAY_FONT, SECTION, useInView } from '@/components/landing/motion'
+import { CONTAINER, DISPLAY_FONT, SECTION } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { PROCESS } from '@/lib/portfolio'
 
@@ -103,53 +103,56 @@ const VISUALS: ReactNode[] = [
   <LaunchVisual key='launch' />
 ]
 
-function ProcessStep({ index }: { index: number }) {
-  const { ref, inView } = useInView<HTMLElement>(0.2)
+function ProcessStep({ index, activeIndex }: { index: number; activeIndex: number }) {
   const step = PROCESS[index]
   const textFirst = index % 2 === 0
+  const position = index < activeIndex ? 'before' : index > activeIndex ? 'after' : 'active'
 
   const copy = (
-    <div className='process-step-copy'>
+    <div className='process-story-copy'>
+      <span className='process-story-kicker'>STEP {step.step} / {String(PROCESS.length).padStart(2, '0')}</span>
       <h3 style={{ fontFamily: DISPLAY_FONT }}>{step.label}</h3>
       <p className='process-step-summary'>{step.summary}</p>
       <p>{step.desc}</p>
     </div>
   )
 
+  const visual = (
+    <div className='process-story-visual'>
+      <span className='process-story-visual-number' aria-hidden='true'>{step.step}</span>
+      <div className='process-story-visual-card'>{VISUALS[index]}</div>
+      <span className='process-story-visual-caption'>FROM IDEA TO WORKING SYSTEM</span>
+    </div>
+  )
+
   return (
-    <article ref={ref} className='process-step' data-visible={inView ? 'true' : 'false'}>
-      <div className={`process-step-side process-step-left ${textFirst ? 'process-step-copy-side' : 'process-step-visual-side'}`}>
-        <div className={`process-step-panel ${textFirst ? '' : 'process-step-visual'}`}>
-          {textFirst ? copy : VISUALS[index]}
-        </div>
+    <article className='process-story-page' data-position={position} aria-hidden='true'>
+      <div className={`process-story-half process-story-half-left ${textFirst ? 'process-story-half-copy' : 'process-story-half-visual'}`}>
+        {textFirst ? copy : visual}
       </div>
-
-      <div className='process-step-marker' aria-hidden='true'>
-        <span>{step.step}</span>
-      </div>
-
-      <div className={`process-step-side process-step-right ${textFirst ? 'process-step-visual-side' : 'process-step-copy-side'}`}>
-        <div className={`process-step-panel ${textFirst ? 'process-step-visual' : ''}`}>
-          {textFirst ? VISUALS[index] : copy}
-        </div>
+      <div className={`process-story-half process-story-half-right ${textFirst ? 'process-story-half-visual' : 'process-story-half-copy'}`}>
+        {textFirst ? visual : copy}
       </div>
     </article>
   )
 }
 
 export function HowItWorksSection() {
-  const timelineRef = useRef<HTMLDivElement>(null)
+  const storyRef = useRef<HTMLDivElement>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const { scrollYProgress } = useScroll({
-    target: timelineRef,
-    offset: ['start 62%', 'end 48%']
+    target: storyRef,
+    offset: ['start start', 'end end']
   })
 
-  const railProgress = useSpring(scrollYProgress, { stiffness: 110, damping: 28, mass: 0.35 })
+  useMotionValueEvent(scrollYProgress, 'change', progress => {
+    setActiveIndex(Math.min(PROCESS.length - 1, Math.floor(progress * PROCESS.length)))
+  })
 
   return (
     <section id='process' className={`${SECTION} process-section`}>
-      <div className={CONTAINER}>
+      <div className={`${CONTAINER} process-section-head`}>
         <SectionIntro
           tag='HOW IT WORKS'
           title='A clear path from problem to reliable system.'
@@ -159,9 +162,22 @@ export function HowItWorksSection() {
           titleClassName='mx-auto mt-6 max-w-[18ch] text-[clamp(2.5rem,5vw,5.2rem)]'
         />
 
-        <div ref={timelineRef} className='process-timeline'>
-          <motion.div className='process-timeline-progress' style={{ scaleY: railProgress }} aria-hidden='true' />
-          {PROCESS.map((step, index) => <ProcessStep key={step.step} index={index} />)}
+        <ol className='sr-only'>
+          {PROCESS.map(step => <li key={step.step}>{step.label}: {step.summary} {step.desc}</li>)}
+        </ol>
+      </div>
+
+      <div ref={storyRef} className='process-story' style={{ '--process-pages': PROCESS.length } as CSSProperties}>
+        <div className='process-story-sticky'>
+          <div className='process-story-topline' aria-hidden='true'>
+            <span>THE DELIVERY PATH</span>
+            <span>{String(activeIndex + 1).padStart(2, '0')} / {String(PROCESS.length).padStart(2, '0')}</span>
+          </div>
+          {PROCESS.map((step, index) => <ProcessStep key={step.step} index={index} activeIndex={activeIndex} />)}
+          <div className='process-story-progress' aria-hidden='true'>
+            {PROCESS.map((step, index) => <span key={step.step} data-active={index === activeIndex ? 'true' : 'false'} />)}
+          </div>
+          <span className='process-story-scroll-hint' aria-hidden='true'>SCROLL TO EXPLORE ↓</span>
         </div>
       </div>
     </section>

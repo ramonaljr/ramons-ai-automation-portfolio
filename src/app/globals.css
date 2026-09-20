@@ -1344,6 +1344,24 @@ body::after {
   }
 }
 
+/* Hold the hero in view long enough for the artwork, petals, and copy to
+   separate as the visitor scrolls. On small screens the hero stays in flow. */
+.hero-scroll-section {
+  position: relative;
+  height: 165svh;
+}
+
+.hero-scroll-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+
+@media (max-width: 767px), (prefers-reduced-motion: reduce) {
+  .hero-scroll-section { height: auto; }
+  .hero-scroll-stage { position: relative; height: auto; }
+}
+
 /* ── Cinematic data current ─────────────────────────────────────────────────
    Generated environment + live SVG traffic. The central veil is deliberately
    local rather than a flat page-wide wash, preserving detail at the edges. */
@@ -2809,150 +2827,191 @@ body::after {
   .build-guard-event { animation: none; }
 }
 
-/* ── How it works: split-screen delivery story ──────────────────────────── */
+/* ── How it works: full-screen split-scroll sequence ────────────────────── */
 .process-section {
   overflow: clip;
+  padding-right: 0;
+  padding-left: 0;
 }
 
-.process-timeline {
+.process-section-head {
+  padding-inline: clamp(1.5rem, 5vw, 5rem);
+}
+
+.process-story {
   position: relative;
+  height: calc((var(--process-pages) + 1) * 100svh);
+  margin-top: 5rem;
+}
+
+.process-story-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
   isolation: isolate;
-  max-width: 78rem;
-  margin-inline: auto;
+  background: color-mix(in oklch, var(--ground) 24%, transparent);
 }
 
-.process-timeline::before {
-  content: '';
+.process-story-page {
   position: absolute;
-  top: 11rem;
-  bottom: 11rem;
-  left: 50%;
-  border-left: 1px dashed color-mix(in oklch, var(--ink) 28%, transparent);
-  transform: translateX(-50%);
-  z-index: 0;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
-.process-timeline-progress {
+.process-story-page[data-position='active'] {
+  z-index: 2;
+}
+
+.process-story-half {
   position: absolute;
-  top: 11rem;
-  bottom: 11rem;
-  left: calc(50% - 1px);
-  z-index: 0;
-  width: 2px;
-  border-radius: 999px;
-  background: linear-gradient(to bottom, var(--accent), color-mix(in oklch, var(--accent) 45%, var(--ink)));
-  box-shadow: 0 0 0.7rem color-mix(in oklch, var(--accent) 20%, transparent);
-  transform-origin: top;
+  top: 0;
+  bottom: 0;
+  display: grid;
+  width: 50%;
+  place-items: center;
+  overflow: hidden;
+  transition: transform 0.95s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-.process-step {
+.process-story-half-left { left: 0; }
+.process-story-half-right { right: 0; }
+.process-story-page[data-position='before'] .process-story-half-left { transform: translateY(-100%); }
+.process-story-page[data-position='before'] .process-story-half-right { transform: translateY(100%); }
+.process-story-page[data-position='after'] .process-story-half-left { transform: translateY(100%); }
+.process-story-page[data-position='after'] .process-story-half-right { transform: translateY(-100%); }
+
+.process-story-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: clamp(4rem, 7vw, 8rem);
+  background: color-mix(in oklch, var(--ground) 84%, transparent);
+}
+
+.process-story-kicker,
+.process-story-visual-caption {
+  color: var(--accent);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+}
+
+.process-story-copy h3 {
+  max-width: 12ch;
+  margin-top: 2rem;
+  color: var(--ink);
+  font-size: clamp(3.5rem, 6vw, 7rem);
+  font-weight: 400;
+  letter-spacing: -0.06em;
+  line-height: 0.94;
+}
+
+.process-story-copy .process-step-summary {
+  max-width: 32rem;
+  margin-top: 2rem;
+  color: var(--ink);
+  font-size: clamp(1.15rem, 1.5vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.process-story-copy > p:last-child {
+  max-width: 35rem;
+  margin-top: 0.8rem;
+  color: var(--ink-2);
+  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+  line-height: 1.7;
+}
+
+.process-story-visual {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 72% 24%, color-mix(in oklch, var(--accent) 18%, transparent), transparent 36%),
+    linear-gradient(145deg, color-mix(in oklch, var(--surface-raised) 58%, transparent), color-mix(in oklch, var(--ground) 34%, transparent));
+}
+
+.process-story-visual-number {
+  position: absolute;
+  right: -0.02em;
+  bottom: -0.24em;
+  color: color-mix(in oklch, var(--accent) 9%, transparent);
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(20rem, 48vw, 45rem);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.process-story-visual-card {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 5.5rem minmax(0, 1fr);
-  align-items: center;
-  min-height: 22rem;
-}
-
-.process-step + .process-step {
-  margin-top: 3rem;
-}
-
-.process-step-side {
-  min-width: 0;
-  overflow: clip;
-}
-
-.process-step-panel {
-  opacity: 0;
-  transition:
-    opacity 0.75s var(--ease-entrance),
-    transform 1s var(--ease-entrance);
-}
-
-.process-step-left .process-step-panel {
-  transform: translateY(85%);
-}
-
-.process-step-right .process-step-panel {
-  transform: translateY(-85%);
-}
-
-.process-step[data-visible='true'] .process-step-panel {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.process-step-left {
-  padding-right: clamp(2rem, 5vw, 5rem);
-}
-
-.process-step-right {
-  padding-left: clamp(2rem, 5vw, 5rem);
-}
-
-.process-step-marker {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-}
-
-.process-step-marker span {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  width: 4.4rem;
-  aspect-ratio: 1;
-  place-items: center;
-  border: 1px solid color-mix(in oklch, var(--accent) 62%, var(--ink));
-  border-radius: 50%;
-  background: color-mix(in oklch, var(--ground) 96%, white);
-  color: var(--ink);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.8rem;
-  transition:
-    color 0.55s ease 0.3s,
-    border-color 0.55s ease 0.3s,
-    box-shadow 0.55s ease 0.3s;
-}
-
-.process-step[data-visible='true'] .process-step-marker span {
-  border-color: var(--accent);
-  color: var(--accent);
-  box-shadow: 0 0 0 0.45rem color-mix(in oklch, var(--accent) 7%, transparent);
-}
-
-.process-step-copy h3 {
-  color: var(--ink);
-  font-size: clamp(2rem, 3.2vw, 3.25rem);
-  font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
-}
-
-.process-step-copy .process-step-summary {
-  margin-top: 1rem;
-  color: var(--ink);
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.55;
-}
-
-.process-step-copy > p:last-child {
-  max-width: 35rem;
-  margin-top: 0.7rem;
-  color: var(--ink-2);
-  font-size: 1rem;
-  line-height: 1.75;
-}
-
-.process-step-visual {
+  width: min(76%, 35rem);
   border: 1px solid var(--rule);
-  border-radius: 1.35rem;
-  background: color-mix(in oklch, var(--surface-raised) 84%, transparent);
-  box-shadow: 0 28px 60px -50px color-mix(in oklch, var(--ink) 56%, transparent);
-  backdrop-filter: blur(14px);
+  border-radius: 1.4rem;
+  background: var(--surface-raised);
+  box-shadow: 0 3rem 7rem -4rem color-mix(in oklch, var(--ink) 46%, transparent);
+  transform: rotate(-2deg);
+}
+
+.process-story-page:nth-of-type(even) .process-story-visual-card { transform: rotate(2deg); }
+
+.process-story-visual-caption {
+  position: absolute;
+  z-index: 1;
+  bottom: 8%;
+  left: 12%;
+}
+
+.process-story-topline,
+.process-story-progress,
+.process-story-scroll-hint {
+  position: absolute;
+  z-index: 5;
+  color: var(--ink-2);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  pointer-events: none;
+}
+
+.process-story-topline {
+  top: 6rem;
+  right: 4rem;
+  left: 4rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.process-story-progress {
+  bottom: 2.5rem;
+  left: 4rem;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.process-story-progress span {
+  width: 1.5rem;
+  height: 2px;
+  background: var(--rule);
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+.process-story-progress span[data-active='true'] {
+  width: 3rem;
+  background: var(--accent);
+}
+
+.process-story-scroll-hint {
+  right: 4rem;
+  bottom: 2.2rem;
 }
 
 .process-message {
@@ -3286,41 +3345,23 @@ body::after {
 }
 
 @media (max-width: 767px) {
-  .process-timeline::before {
-    left: 1.75rem;
-    top: 1.75rem;
-    bottom: 11rem;
-  }
-
-  .process-timeline-progress { top: 1.75rem; bottom: 11rem; left: calc(1.75rem - 1px); }
-
-  .process-step {
-    grid-template-columns: 3.5rem minmax(0, 1fr);
-    align-items: start;
-    min-height: 0;
-  }
-
-  .process-step + .process-step { margin-top: 5rem; }
-
-  .process-step-marker {
-    grid-column: 1;
-    grid-row: 1;
-    align-self: start;
-  }
-
-  .process-step-marker span { width: 3.5rem; }
-
-  .process-step-left,
-  .process-step-right {
-    grid-column: 2;
-    padding: 0 0 0 1.25rem;
-  }
-
-  .process-step-copy-side { grid-row: 1; }
-  .process-step-visual-side { grid-row: 2; margin-top: 1.6rem; }
-
-  .process-step-copy h3 { font-size: clamp(1.8rem, 9vw, 2.55rem); }
-  .process-step-copy > p:last-child { font-size: 0.95rem; line-height: 1.7; }
+  .process-story { margin-top: 3rem; }
+  .process-story-half { right: 0; left: 0; width: 100%; }
+  .process-story-half-visual { top: 0; bottom: auto; height: 43%; }
+  .process-story-half-copy { top: 43%; bottom: 0; height: 57%; }
+  .process-story-page[data-position='before'] .process-story-half-left { transform: translateY(-100svh); }
+  .process-story-page[data-position='before'] .process-story-half-right { transform: translateY(100svh); }
+  .process-story-page[data-position='after'] .process-story-half-left { transform: translateY(100svh); }
+  .process-story-page[data-position='after'] .process-story-half-right { transform: translateY(-100svh); }
+  .process-story-copy { padding: 1.25rem 1.5rem 2.75rem; }
+  .process-story-copy h3 { margin-top: 0.6rem; font-size: clamp(2.2rem, 10vw, 3.4rem); }
+  .process-story-copy .process-step-summary { margin-top: 0.85rem; font-size: 1rem; }
+  .process-story-copy > p:last-child { margin-top: 0.45rem; font-size: 0.86rem; line-height: 1.5; }
+  .process-story-visual-card { width: min(72%, 20rem); }
+  .process-story-visual-caption { bottom: 5%; left: 7%; font-size: 0.55rem; }
+  .process-story-topline { top: 5.5rem; right: 1.5rem; left: 1.5rem; }
+  .process-story-progress { bottom: 1rem; left: 1.5rem; }
+  .process-story-scroll-hint { right: 1.5rem; bottom: 0.8rem; font-size: 0.52rem; }
   .process-conversation,
   .process-map,
   .process-terminal,
@@ -3328,12 +3369,18 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .process-step-panel {
-    opacity: 1;
-    transform: none !important;
-    transition: none;
+  .process-story { height: auto; }
+  .process-story-sticky { position: relative; height: auto; overflow: visible; }
+  .process-story-page { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: 24rem; }
+  .process-story-half { position: relative; top: auto; right: auto; bottom: auto; left: auto; width: 100%; transform: none !important; transition: none; }
+  .process-story-topline,
+  .process-story-progress,
+  .process-story-scroll-hint { display: none; }
+  @media (max-width: 767px) {
+    .process-story-page { display: flex; flex-direction: column; }
+    .process-story-half-visual { min-height: 16rem; }
+    .process-story-half-copy { min-height: 20rem; }
   }
-  .process-timeline-progress { transform: scaleY(1) !important; }
   .process-typing i,
   .process-audit-row,
   .process-terminal-progress i,
@@ -4352,9 +4399,8 @@ a.work-cinema-action:hover {
 
 .blossom-story-root #process {
   background:
-    radial-gradient(circle at 86% 14%, oklch(0.67 0.1 48 / 0.07), transparent 24rem),
-    linear-gradient(180deg, oklch(0.96 0.016 78 / 0.86), oklch(0.95 0.02 76 / 0.8)) !important;
-  backdrop-filter: blur(4px) saturate(0.82);
+    radial-gradient(circle at 86% 14%, oklch(0.67 0.1 48 / 0.05), transparent 24rem),
+    linear-gradient(180deg, oklch(0.96 0.016 78 / 0.48), oklch(0.95 0.02 76 / 0.36)) !important;
 }
 
 .blossom-story-root #engagement,
