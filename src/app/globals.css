@@ -1344,24 +1344,6 @@ body::after {
   }
 }
 
-/* Hold the hero in view long enough for the artwork, petals, and copy to
-   separate as the visitor scrolls. On small screens the hero stays in flow. */
-.hero-scroll-section {
-  position: relative;
-  height: 165svh;
-}
-
-.hero-scroll-stage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-}
-
-@media (max-width: 767px), (prefers-reduced-motion: reduce) {
-  .hero-scroll-section { height: auto; }
-  .hero-scroll-stage { position: relative; height: auto; }
-}
-
 /* ── Cinematic data current ─────────────────────────────────────────────────
    Generated environment + live SVG traffic. The central veil is deliberately
    local rather than a flat page-wide wash, preserving detail at the edges. */
@@ -2137,6 +2119,60 @@ body::after {
   0%, 100% { transform: translate3d(0, 1px, 0) rotate(-2deg); }
   35% { transform: translate3d(2px, -3px, 0) rotate(3deg); }
   68% { transform: translate3d(-2px, -1px, 0) rotate(-1deg); }
+}
+
+.experience-layout {
+  display: grid;
+  align-items: start;
+  gap: clamp(2.5rem, 5vw, 6rem);
+}
+
+.experience-intro {
+  min-width: 0;
+  padding: clamp(1.5rem, 3vw, 3rem);
+  border: 1px solid color-mix(in oklch, var(--accent) 20%, var(--rule));
+  background: color-mix(in oklch, var(--ground) 67%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.experience-intro .saas-section-intro > p {
+  max-width: 45ch;
+}
+
+.experience-history {
+  min-width: 0;
+}
+
+.experience-history-label {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 1.5rem 3rem;
+  color: var(--ink-3);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+}
+
+.experience-layout .experience-card {
+  background: color-mix(in oklch, var(--ground) 70%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+@media (min-width: 1024px) {
+  .experience-layout {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .experience-intro {
+    position: sticky;
+    top: 7.5rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .experience-intro {
+    max-width: 48rem;
+  }
 }
 
 .experience-node {
