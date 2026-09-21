@@ -385,9 +385,13 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         type='button'
                         className='work-card-view'
                         aria-pressed={itemIndex === viewIndex}
+                        aria-label={`Show ${item.label}`}
                         onClick={() => setViews(current => ({ ...current, [cs.slug]: itemIndex }))}
                       >
-                        {item.label}
+                        {/* The thumbnail is the label. A diagram, a UI mockup
+                            and a photograph are told apart at a glance, so the
+                            name only needs to exist for screen readers. */}
+                        <img src={item.src} alt='' aria-hidden='true' width={280} height={175} loading='lazy' />
                       </button>
                     ))}
                   </div>

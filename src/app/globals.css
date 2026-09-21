@@ -3732,6 +3732,10 @@ body::after {
 .work-gallery {
   display: grid;
   grid-template-columns: 1fr;
+  /* Every row takes the same track height, so all six cards match rather than
+     only the three sharing a row. `.work-card-stack` pins itself to the bottom
+     with `margin-top: auto`, so the slack lands above the rule, not below it. */
+  grid-auto-rows: 1fr;
   gap: clamp(1rem, 1.5vw, 1.5rem);
   margin-top: clamp(1.2rem, 2vw, 2rem);
   padding: 0;
@@ -3815,46 +3819,67 @@ body::after {
    moving. */
 .work-card-views {
   display: flex;
+  gap: 2px;
+  padding: 2px;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
+  background: color-mix(in oklch, var(--ink) 6%, transparent);
 }
 
 /* Above the card's stretched hit area, so a view can be changed without
    selecting the project. */
+/* Above the card's stretched hit area, so a view can be changed without
+   selecting the project. The selected thumbnail widens rather than merely
+   tinting — at three-up the width itself reads as the state. */
 .work-card-view {
   position: relative;
   z-index: 2;
   flex: 1 1 0;
   min-width: 0;
   /* 44px, matching the menu button rather than settling for the 24px the
-     spec allows — these are thumb targets in a row of three. */
+     spec allows — these are thumb targets. */
   min-height: 2.75rem;
-  padding: 0.5rem 0.3rem;
+  height: 3.5rem;
+  overflow: hidden;
+  padding: 0;
   border: 0;
-  background: transparent;
-  color: color-mix(in oklch, var(--ink) 52%, transparent);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  border-radius: 0.3rem;
+  background: color-mix(in oklch, var(--ground) 60%, transparent);
   cursor: pointer;
+  opacity: 0.5;
   transition:
-    color 0.25s ease,
-    background-color 0.25s ease;
+    flex-grow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-.work-card-view + .work-card-view {
-  border-left: 1px solid var(--rule);
+.work-card-view img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .work-card-view:hover {
-  background: color-mix(in oklch, var(--ink) 4%, transparent);
-  color: var(--ink);
+  opacity: 0.85;
 }
 
 .work-card-view[aria-pressed='true'] {
-  background: color-mix(in oklch, var(--work-tone) 12%, transparent);
-  color: color-mix(in oklch, var(--work-tone) 80%, var(--ink));
+  flex-grow: 2.2;
+  opacity: 1;
+  box-shadow: inset 0 0 0 2px var(--work-tone);
+}
+
+.work-card-view:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--work-tone);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-card-view {
+    transition: opacity 0.3s ease;
+  }
 }
 
 .work-card-body {
