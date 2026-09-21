@@ -1207,10 +1207,11 @@ body::after {
 }
 
 .saas-eyebrow-mark {
-  width: 0.42rem;
-  height: 0.42rem;
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
   border: 0;
-  border-radius: 0;
+  border-radius: 0.0625rem;
   background: var(--accent);
   box-shadow: none;
 }
@@ -1721,33 +1722,6 @@ body::after {
   font-weight: 600;
 }
 
-.saas-eyebrow-mark {
-  position: relative;
-  display: grid;
-  width: 1.45rem;
-  height: 1.45rem;
-  place-items: center;
-  border: 1px solid color-mix(in oklch, var(--accent) 30%, transparent);
-  border-radius: 0.42rem;
-  background: color-mix(in oklch, var(--accent) 6%, white);
-  box-shadow: 0 5px 16px -9px color-mix(in oklch, var(--accent) 50%, transparent);
-}
-
-.saas-eyebrow-mark::before,
-.saas-eyebrow-mark::after,
-.saas-eyebrow-mark span {
-  content: '';
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  border-radius: 999px;
-  background: var(--accent);
-}
-
-.saas-eyebrow-mark::before { transform: translate(-5px, 4px); }
-.saas-eyebrow-mark::after { transform: translate(5px, -4px); }
-.saas-eyebrow-mark span { transform: translate(0, 0); }
-
 .saas-about-panel {
   position: relative;
   border: 1px solid var(--rule);
@@ -2120,19 +2094,27 @@ body::after {
 .experience-layout {
   display: grid;
   align-items: start;
-  gap: clamp(2.5rem, 5vw, 6rem);
+  gap: clamp(2rem, 4vw, 4.5rem);
 }
 
 .experience-intro {
   min-width: 0;
-  padding: clamp(1.5rem, 3vw, 3rem);
+  /* Square corners made this the only hard-edged panel on a page where every
+     other surface is rounded, so it read as unstyled rather than restrained.
+     Padding is tighter horizontally than vertically: the column is narrow,
+     and symmetric padding was spending it on margins instead of measure. */
+  padding: clamp(1.75rem, 3vw, 2.75rem) clamp(1.25rem, 2vw, 1.75rem);
   border: 1px solid color-mix(in oklch, var(--accent) 20%, var(--rule));
-  background: color-mix(in oklch, var(--ground) 67%, transparent);
+  border-radius: 1.25rem;
+  background: color-mix(in oklch, var(--ground) 72%, transparent);
   backdrop-filter: blur(10px);
 }
 
+/* The 45ch cap never applied — the column is narrower than that, so the real
+   measure was set by the column and came out at ~32 characters, which is
+   where the ragged, cramped look came from. */
 .experience-intro .saas-section-intro > p {
-  max-width: 45ch;
+  max-width: none;
 }
 
 .experience-history {
@@ -2353,7 +2335,7 @@ body::after {
 
 @media (min-width: 1024px) {
   .experience-layout {
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.28fr);
   }
 
   .experience-intro {

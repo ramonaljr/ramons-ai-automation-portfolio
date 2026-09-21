@@ -33,7 +33,7 @@ export function ExperienceSection() {
               title='Ten years inside the work I now automate.'
               blurb='I did AP, reconciliation and month-end close by hand before I automated any of it. That is why the workflows I build match how a business actually runs, rather than how a process diagram says it should.'
               margin=''
-              titleClassName='mt-6 text-[clamp(2rem,4vw,5rem)]'
+              titleClassName='mt-5 text-[clamp(1.9rem,3.2vw,3.4rem)]'
             />
           </div>
 
