@@ -507,10 +507,33 @@ export type Role = {
   company: string
   role: string
   period: string
-  status?: string
+
+  /**
+   * Work arrangement only — never a department or function, which the role
+   * title already carries. One badge that means two unrelated things gives a
+   * scanning reader no way to know what it is telling them.
+   */
+  arrangement?: string
   stack: string[]
+
+  /** The scannable claim. Rendered at full ink; must not restate `description`. */
   achievement: string
+
+  /** The supporting detail behind the claim. Rendered quieter. */
   description: string
+}
+
+/**
+ * A run of consecutive roles at one employer. Three of these four roles are the
+ * same company; listing it three times read as three unrelated jobs rather than
+ * one six-year tenure with two promotions.
+ */
+export type Tenure = {
+  company: string
+
+  /** Span across the grouped roles, for the band header. */
+  span: string
+  roles: Role[]
 }
 
 export const EXPERIENCE: Role[] = [
@@ -519,11 +542,11 @@ export const EXPERIENCE: Role[] = [
     company: 'My Mountain Mover',
     role: 'Financial Analyst',
     period: '2022 — Present',
-    status: 'US Remote',
+    arrangement: 'US Remote',
     stack: ['Claude', 'DCF Modeling', 'Financial Analysis', 'Forecasting', 'Excel'],
-    achievement: 'Maintained DCF models across public portfolios and accelerated research with AI tools',
+    achievement: 'Maintain DCF valuation models and forecasts across US public portfolios',
     description:
-      'Maintain DCF valuation models and financial statement forecasts across US portfolios. Leverage Claude and AI tools daily to accelerate research, market data analysis, and structured reporting workflows.'
+      'Claude and AI tooling carry the research, market-data analysis and structured reporting around that work — the habit of handing repeatable analysis to a machine started here.'
   },
   {
     index: '02',
@@ -550,13 +573,40 @@ export const EXPERIENCE: Role[] = [
     company: 'Johndorf Ventures Corporation',
     role: 'AP Supervisor & Tax Compliance Analyst',
     period: '2015 — 2018',
-    status: 'Accounting Operations',
     stack: ['Tax Compliance', 'Invoicing', 'Vendor Reconciliation', 'Voucher Controls'],
     achievement: 'Supervised the full AP lifecycle and strict statutory filing calendars',
     description:
       'Supervised end-to-end invoice processing, vendor aging, and voucher controls. Managed statutory tax compliance calendars — high-volume, rules-based operations prime for automation.'
   }
 ]
+
+/**
+ * Groups consecutive same-employer roles. Consecutive rather than global, so a
+ * later return to a previous employer would still read as a separate tenure.
+ *
+ * The span is derived from the group's outermost dates rather than stored, so
+ * it cannot drift out of sync with the roles it summarises.
+ */
+const periodStart = (period: string) => period.split('—')[0]?.trim() ?? period
+const periodEnd = (period: string) => period.split('—').at(-1)?.trim() ?? period
+
+export const TENURES: Tenure[] = EXPERIENCE.reduce<Tenure[]>((groups, role) => {
+  const current = groups.at(-1)
+
+  if (current?.company === role.company) {
+    current.roles.push(role)
+  } else {
+    groups.push({ company: role.company, span: role.period, roles: [role] })
+  }
+
+  // Roles run newest-first, so the group's span is the last role's start
+  // through the first role's end.
+  const group = groups.at(-1)!
+
+  group.span = `${periodStart(group.roles.at(-1)!.period)} — ${periodEnd(group.roles[0].period)}`
+
+  return groups
+}, [])
 
 // ─── Engagement models ───────────────────────────────────────────────────────
 

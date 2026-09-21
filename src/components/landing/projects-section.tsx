@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -18,13 +18,21 @@ const WORK_LABELS: Record<string, string> = {
   'zero-touch-client-onboarding': 'Client onboarding'
 }
 
+/**
+ * Each project's accent, used for the eyebrow labels inside the panel. Hues are
+ * unchanged from the original set; lightness is solved so every tone clears
+ * 4.5:1 on the white panel at 12px. The previous values ran 3.2–4.1:1, so the
+ * THE CHALLENGE / THE SYSTEM labels failed AA on all six projects, not just
+ * some. Chroma is trimmed only where the darker lightness pushed a hue out of
+ * sRGB gamut.
+ */
 const WORK_TONES: Record<string, string> = {
-  'ai-voice-receptionist': 'oklch(0.63 0.13 326)',
-  'invoice-processing-gl-reconciliation': 'oklch(0.62 0.14 24)',
-  'lead-routing-and-crm-enrichment': 'oklch(0.66 0.14 68)',
-  'multi-channel-order-sync': 'oklch(0.61 0.11 158)',
-  'rag-knowledge-base': 'oklch(0.6 0.13 274)',
-  'zero-touch-client-onboarding': 'oklch(0.62 0.12 218)'
+  'ai-voice-receptionist': 'oklch(0.571 0.13 326)',
+  'invoice-processing-gl-reconciliation': 'oklch(0.572 0.14 24)',
+  'lead-routing-and-crm-enrichment': 'oklch(0.562 0.12 68)',
+  'multi-channel-order-sync': 'oklch(0.542 0.11 158)',
+  'rag-knowledge-base': 'oklch(0.562 0.13 274)',
+  'zero-touch-client-onboarding': 'oklch(0.538 0.095 218)'
 }
 
 const WORK_USE_CASES: Record<string, string> = {
@@ -55,14 +63,16 @@ const workStatus = (cs: CaseStudyMetadata) =>
 
 const workTags = (cs: CaseStudyMetadata) => {
   const platform = cs.platform?.trim()
-  const tools = cs.integrations?.length ? cs.integrations : cs.tools ?? []
+  const tools = cs.integrations?.length ? cs.integrations : (cs.tools ?? [])
 
   return {
     platform,
     tools: tools.filter((tool, index) => {
       const normalized = tool.toLowerCase()
 
-      return normalized !== platform?.toLowerCase() && tools.findIndex(item => item.toLowerCase() === normalized) === index
+      return (
+        normalized !== platform?.toLowerCase() && tools.findIndex(item => item.toLowerCase() === normalized) === index
+      )
     })
   }
 }
@@ -177,10 +187,14 @@ function Canvas({ cs, priority = false }: { cs: CaseStudyMetadata; priority?: bo
   )
 }
 
+const tabId = (slug: string) => `work-tab-${slug}`
+const PANEL_ID = 'work-panel'
+
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
   const { ref, inView } = useInView(0.06)
   const [activeSlug, setActiveSlug] = useState<string | null>(null)
   const [selectedStudy, setSelectedStudy] = useState<CaseStudyMetadata | null>(null)
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({})
 
   /**
    * Delivered work leads; SAMPLE builds sort to the back.
@@ -216,6 +230,43 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
   const activeTags = active ? workTags(active) : null
 
+  /**
+   * The list carried `role="tablist"` and six `role="tab"`s but none of the
+   * keyboard contract that promises: arrow keys did nothing, every tab sat in
+   * the tab order, and there was no panel to move to. A screen reader announced
+   * "tab, 1 of 6" and then stranded the reader. This supplies the missing half
+   * — roving tabindex plus arrow/Home/End — so the ARIA is honest.
+   *
+   * Left unmemoized on purpose: the React Compiler handles that, and a manual
+   * `useCallback` here makes it bail out of optimizing the whole component.
+   */
+  const onTabKeyDown = (event: KeyboardEvent<HTMLOListElement>) => {
+    const keys = ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End']
+
+    if (!keys.includes(event.key)) return
+
+    event.preventDefault()
+
+    const current = shown.findIndex(cs => cs.slug === active?.slug)
+    const last = shown.length - 1
+
+    const next =
+      event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? last
+          : event.key === 'ArrowDown' || event.key === 'ArrowRight'
+            ? (current + 1) % shown.length
+            : (current - 1 + shown.length) % shown.length
+
+    const slug = shown[next]?.slug
+
+    if (!slug) return
+
+    setActiveSlug(slug)
+    tabRefs.current[slug]?.focus()
+  }
+
   return (
     <section id='portfolio' className={`${SECTION_ANCHOR} work-story-section`}>
       <div className={CONTAINER}>
@@ -228,9 +279,15 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
         />
 
         <div className='work-proof-strip' aria-label='Portfolio design principles'>
-          <span><b>01</b> Business case first</span>
-          <span><b>02</b> Failure paths mapped</span>
-          <span><b>03</b> Human control retained</span>
+          <span>
+            <b>01</b> Business case first
+          </span>
+          <span>
+            <b>02</b> Failure paths mapped
+          </span>
+          <span>
+            <b>03</b> Human control retained
+          </span>
         </div>
 
         <div
@@ -243,18 +300,25 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
               <span>PROJECTS</span>
               <span>{String(shown.length).padStart(2, '0')}</span>
             </div>
-            <ol role='tablist' aria-label='Choose a case study'>
+            <ol role='tablist' aria-label='Choose a case study' aria-orientation='vertical' onKeyDown={onTabKeyDown}>
               {shown.map((cs, i) => {
                 const isActive = cs.slug === active?.slug
+
+                const registerTab = (node: HTMLButtonElement | null) => {
+                  tabRefs.current[cs.slug] = node
+                }
 
                 return (
                   <li key={cs.slug}>
                     <button
                       type='button'
                       role='tab'
+                      id={tabId(cs.slug)}
+                      ref={registerTab}
                       aria-selected={isActive}
+                      aria-controls={PANEL_ID}
+                      tabIndex={isActive ? 0 : -1}
                       onClick={() => setActiveSlug(cs.slug)}
-                      onFocus={() => setActiveSlug(cs.slug)}
                       className='work-cinema-project group'
                     >
                       <span className='work-cinema-project-number'>{String(i + 1).padStart(2, '0')}</span>
@@ -278,7 +342,13 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
             <p className='work-cinema-selector-foot'>Select a project to change the scene.</p>
           </aside>
 
-          <div className='work-cinema-screen'>
+          <div
+            className='work-cinema-screen'
+            id={PANEL_ID}
+            role='tabpanel'
+            tabIndex={0}
+            aria-labelledby={active ? tabId(active.slug) : undefined}
+          >
             {active && (
               <AnimatePresence mode='wait' initial={false}>
                 <motion.article
@@ -334,11 +404,11 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         <small>BUILT WITH</small>
                         <div>
                           {activeTags?.platform && (
-                            <span className='work-cinema-tech-platform'>
-                              PLATFORM · {activeTags.platform}
-                            </span>
+                            <span className='work-cinema-tech-platform'>PLATFORM · {activeTags.platform}</span>
                           )}
-                          {activeTags?.tools.map(tool => <span key={tool}>{tool}</span>)}
+                          {activeTags?.tools.map(tool => (
+                            <span key={tool}>{tool}</span>
+                          ))}
                         </div>
                       </div>
                     </div>

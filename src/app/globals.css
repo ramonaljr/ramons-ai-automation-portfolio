@@ -84,7 +84,7 @@
 }
 
 :root {
-  --font-editorial: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  --font-editorial: var(--font-faustina), 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
   --radius: 0.625rem;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -1254,7 +1254,6 @@ body::after {
 #platforms .kinetic-card,
 #articles .group,
 #engagement .kinetic-card,
-.experience-card,
 .saas-contact-card {
   border-color: color-mix(in oklch, var(--ink) 13%, transparent);
   border-radius: 0.4rem;
@@ -1266,8 +1265,7 @@ body::after {
 #services .kinetic-card:hover,
 #platforms .kinetic-card:hover,
 #articles .group:hover,
-#engagement .kinetic-card:hover,
-.experience-card:hover {
+#engagement .kinetic-card:hover {
   border-color: color-mix(in oklch, var(--accent) 42%, transparent);
   box-shadow: none;
   transform: translateY(-2px);
@@ -1824,7 +1822,6 @@ body::after {
 #platforms .kinetic-card,
 #articles .group,
 #engagement .kinetic-card,
-.experience-card,
 .saas-contact-card {
   border-color: color-mix(in oklch, var(--accent) 12%, var(--rule));
   box-shadow:
@@ -1836,8 +1833,7 @@ body::after {
 #services .kinetic-card:hover,
 #platforms .kinetic-card:hover,
 #articles .group:hover,
-#engagement .kinetic-card:hover,
-.experience-card:hover {
+#engagement .kinetic-card:hover {
   border-color: color-mix(in oklch, var(--accent) 34%, transparent);
   box-shadow:
     0 2px 4px oklch(0.25 0.05 260 / 0.04),
@@ -2146,26 +2142,203 @@ body::after {
 .experience-history-label {
   display: flex;
   justify-content: space-between;
-  margin: 0 0 1.5rem 3rem;
+  margin: 0 0 2rem 0;
   color: var(--ink-3);
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   letter-spacing: 0.16em;
 }
 
-.experience-layout .experience-card {
-  background: color-mix(in oklch, var(--ground) 70%, transparent);
-  backdrop-filter: blur(12px);
+/* ── Tenure ledger ──────────────────────────────────────────────────────────
+   Roles are grouped under the employer they belong to, so a six-year tenure
+   with two promotions reads as one relationship rather than three jobs. The
+   card-per-role treatment this replaces nested a panel inside the already
+   panelled section and gave four levels of information one visual weight. */
+
+.experience-tenures {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.75rem, 5vw, 4rem);
+}
+
+.experience-tenure-head {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.7rem;
+}
+
+.experience-tenure-rule {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  transform-origin: left;
+  background: linear-gradient(
+    to right,
+    color-mix(in oklch, var(--accent) 55%, transparent),
+    color-mix(in oklch, var(--ink) 12%, transparent) 45%,
+    transparent
+  );
+}
+
+.experience-tenure-company {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.experience-tenure-span {
+  flex-shrink: 0;
+  color: var(--ink-2);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.experience-roles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.experience-role {
+  display: grid;
+  gap: 0.35rem 2rem;
+  padding: 1.6rem 0;
+  border-bottom: 1px solid color-mix(in oklch, var(--ink) 8%, transparent);
+}
+
+.experience-role:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.experience-role-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.experience-role-index {
+  color: var(--ink-3);
+}
+
+.experience-role-period {
+  color: var(--ink-2);
+}
+
+.experience-role-arrangement {
+  padding: 0.15rem 0.5rem;
+  border: 1px solid color-mix(in oklch, var(--accent) 34%, transparent);
+  border-radius: 0.25rem;
+  color: color-mix(in oklch, var(--accent) 78%, var(--ink));
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.experience-role-body {
+  min-width: 0;
+}
+
+.experience-role-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.35rem, 1.9vw, 1.7rem);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+/* The scannable claim: full ink, a step up in size, tight leading. The
+   supporting sentence below is the only thing allowed to be quiet. */
+.experience-role-achievement {
+  margin: 0.7rem 0 0;
+  max-width: 54ch;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.experience-role-description {
+  margin: 0.5rem 0 0;
+  max-width: 62ch;
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  line-height: 1.62;
+}
+
+.experience-role-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.85rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.experience-role-stack li {
+  position: relative;
+  color: var(--ink-2);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+
+.experience-role-stack li + li::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -0.5rem;
+  width: 2px;
+  height: 2px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--ink) 30%, transparent);
+}
+
+@media (min-width: 640px) {
+  .experience-role {
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .experience-role-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 @media (min-width: 1024px) {
   .experience-layout {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   }
 
   .experience-intro {
     position: sticky;
     top: 7.5rem;
+  }
+
+  .experience-role {
+    grid-template-columns: minmax(0, 9.5rem) minmax(0, 1fr);
+  }
+
+  .experience-role-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding-top: 0.35rem;
   }
 }
 
@@ -2173,36 +2346,6 @@ body::after {
   .experience-intro {
     max-width: 48rem;
   }
-}
-
-.experience-node {
-  background: var(--accent);
-  box-shadow:
-    0 0 0 5px color-mix(in oklch, var(--accent) 7%, transparent),
-    0 0 18px color-mix(in oklch, var(--accent) 22%, transparent);
-}
-
-.experience-card {
-  position: relative;
-  overflow: hidden;
-}
-
-.experience-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 2px;
-  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
-  opacity: 0;
-  transform: scaleY(0.2);
-  transition: opacity .45s ease, transform .65s var(--ease-entrance);
-}
-
-.experience-card:hover::before {
-  opacity: 0.65;
-  transform: scaleY(0.72);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2875,9 +3018,22 @@ body::after {
 }
 
 .process-story {
+  /* Viewports of scroll spent per step. At 1 the six-step story ate 7
+     viewports — 35% of the whole page — and pushed Experience past scroll
+     position 12,000px, where almost nobody reaches it. The steps all still
+     play; they just need less scroll each. Mobile gets less again, because a
+     pinned sequence is far more expensive on a phone. */
+  --process-page-scroll: 0.62;
+
   position: relative;
-  height: calc((var(--process-pages) + 1) * 100svh);
+  height: calc((var(--process-pages) * var(--process-page-scroll) + 1) * 100svh);
   margin-top: 5rem;
+}
+
+@media (max-width: 767px) {
+  .process-story {
+    --process-page-scroll: 0.45;
+  }
 }
 
 .process-story-sticky {
@@ -3458,13 +3614,13 @@ body::after {
 .work-proof-strip b {
   color: var(--accent);
   font-family: var(--font-mono), monospace;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 500;
 }
 
 .work-cinema {
   overflow: hidden;
-  min-height: 44rem;
+  min-height: 38rem;
   margin-top: 1.5rem;
   border: 1px solid color-mix(in oklch, var(--ink) 16%, transparent);
   border-radius: 1.25rem;
@@ -3550,6 +3706,25 @@ body::after {
   transform: scaleY(1);
 }
 
+/* The tablist is keyboard-operable now (arrow keys + roving tabindex), so the
+   focused tab has to be findable. Inset because the rail clips its own edge. */
+.work-cinema-project:focus-visible {
+  outline: 2px solid color-mix(in oklch, var(--ground) 85%, transparent);
+  outline-offset: -3px;
+  border-radius: 0.35rem;
+}
+
+.work-cinema-screen:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
+/* The panel is reachable by Tab from the tablist; it should not draw a ring
+   when the pointer put focus there. */
+.work-cinema-screen:focus:not(:focus-visible) {
+  outline: none;
+}
+
 .work-cinema-project-number {
   align-self: start;
   padding-top: 0.2rem;
@@ -3565,6 +3740,7 @@ body::after {
 
 .work-cinema-project-copy strong {
   display: block;
+  color: var(--ground);
   font-family: var(--font-editorial), Georgia, serif;
   font-size: 1rem;
   font-weight: 400;
@@ -3583,9 +3759,9 @@ body::after {
   padding: 0.18rem 0.4rem;
   border: 1px solid color-mix(in oklch, var(--ground) 14%, transparent);
   border-radius: 999px;
-  color: color-mix(in oklch, var(--ground) 42%, transparent);
+  color: color-mix(in oklch, var(--ground) 70%, transparent);
   font-family: var(--font-mono), monospace;
-  font-size: 0.55rem;
+  font-size: 0.7rem;
   font-style: normal;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -3600,7 +3776,7 @@ body::after {
 .work-cinema-project-copy small {
   display: block;
   margin-top: 0.35rem;
-  color: color-mix(in oklch, var(--ground) 38%, transparent);
+  color: color-mix(in oklch, var(--ground) 76%, transparent);
   font-family: var(--font-mono), monospace;
   font-size: 0.75rem;
   letter-spacing: 0.06em;
@@ -3663,8 +3839,9 @@ body::after {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(0.72) contrast(1.04) brightness(0.82);
+  filter: saturate(0.42) contrast(1.02) brightness(0.58);
   transform: scale(1.015);
+  opacity: 0.9;
 }
 
 .work-cinema-art::before,
@@ -3715,9 +3892,9 @@ body::after {
   bottom: 1.15rem;
   left: clamp(1.2rem, 3vw, 3rem);
   z-index: 4;
-  color: color-mix(in oklch, var(--ground) 68%, transparent);
+  color: color-mix(in oklch, var(--ground) 88%, transparent);
   font-family: var(--font-mono), monospace;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -3725,7 +3902,7 @@ body::after {
 .work-story-canvas {
   position: relative;
   z-index: 2;
-  width: min(80%, 48rem);
+  width: min(88%, 52rem);
   border: 1px solid color-mix(in oklch, var(--ink) 16%, transparent);
   border-radius: 0.9rem;
   background: color-mix(in oklch, white 92%, transparent);
@@ -3742,9 +3919,9 @@ body::after {
   min-height: 2.25rem;
   padding: 0.55rem 0.8rem;
   border-bottom: 1px solid color-mix(in oklch, var(--ink) 9%, transparent);
-  color: color-mix(in oklch, var(--ink) 46%, transparent);
+  color: color-mix(in oklch, var(--ink) 66%, transparent);
   font-family: var(--font-mono), monospace;
-  font-size: 0.58rem;
+  font-size: 0.7rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -3806,9 +3983,9 @@ body::after {
   grid-template-columns: auto 1fr auto 1fr auto;
   align-items: center;
   gap: 0.7rem;
-  color: color-mix(in oklch, var(--ground) 72%, transparent);
+  color: color-mix(in oklch, var(--ground) 90%, transparent);
   font-family: var(--font-mono), monospace;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: 0.08em;
 }
 
@@ -3911,7 +4088,7 @@ body::after {
   padding: 0.3rem 0.65rem;
   color: var(--ink-2);
   font-family: var(--font-mono), monospace;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   line-height: 1.2;
 }
 
@@ -3944,7 +4121,7 @@ body::after {
 .work-story-outcome > small {
   color: var(--ink-3);
   font-family: var(--font-mono), monospace;
-  font-size: 0.64rem;
+  font-size: 0.72rem;
   letter-spacing: 0.16em;
 }
 
@@ -4002,7 +4179,7 @@ body::after {
   overflow: hidden;
   color: var(--ink-3);
   font-family: var(--font-mono), monospace;
-  font-size: 0.58rem;
+  font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-overflow: ellipsis;
   text-transform: uppercase;

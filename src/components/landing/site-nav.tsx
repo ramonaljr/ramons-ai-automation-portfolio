@@ -57,7 +57,10 @@ export function SiteNav() {
     <div className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4'>
       <div className='pointer-events-auto w-full max-w-7xl'>
         {/* Main bar */}
-        <nav className='site-nav-glass koisei-nav border-rule relative flex items-center justify-between overflow-hidden rounded-2xl border px-5 py-3' style={NAV_STYLE}>
+        <nav
+          className='site-nav-glass koisei-nav border-rule relative flex items-center justify-between overflow-hidden rounded-2xl border px-5 py-3'
+          style={NAV_STYLE}
+        >
           <a
             href={onLanding ? '#top' : '/'}
             className='nav-brand font-pixel text-ink inline-flex items-center gap-2.5 text-xs tracking-[0.25em] transition-opacity hover:opacity-70'
@@ -97,7 +100,7 @@ export function SiteNav() {
             {/* Burger — mobile only */}
             <button
               onClick={() => setOpen(v => !v)}
-              className='hover:bg-ink/5 flex h-8 w-8 flex-col items-center justify-center gap-[5px] rounded-lg transition-colors md:hidden'
+              className='hover:bg-ink/5 -mr-2 flex h-11 w-11 flex-col items-center justify-center gap-[5px] rounded-lg transition-colors md:hidden'
               aria-label={open ? 'Close menu' : 'Open menu'}
               aria-expanded={open}
             >

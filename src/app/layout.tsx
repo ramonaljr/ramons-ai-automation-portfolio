@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { Geist_Mono, IBM_Plex_Sans } from 'next/font/google'
+import { Faustina, Geist_Mono, IBM_Plex_Sans } from 'next/font/google'
 import localFont from 'next/font/local'
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
@@ -19,6 +19,23 @@ import './globals.css'
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
+  subsets: ['latin']
+})
+
+/**
+ * Every display headline on the site is set in this face. It used to resolve to
+ * a bare system stack ('Iowan Old Style', 'Palatino Linotype', 'Book Antiqua',
+ * Georgia), which meant macOS, Windows and Android visitors each saw a
+ * different page — the one part of the identity that was never actually
+ * shipped. Faustina is a humanist editorial serif with the large x-height and
+ * moderate contrast the old stack was reaching for, and it carries the 300
+ * weight the headlines are set at. The system stack stays as the fallback.
+ */
+const faustina = Faustina({
+  variable: '--font-faustina',
+  weight: ['300', '400', '500', '600'],
+  style: ['normal', 'italic'],
+  display: 'swap',
   subsets: ['latin']
 })
 
@@ -148,12 +165,19 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
         geistMono.variable,
         satoshi.variable,
         ibmPlexSans.variable,
+        faustina.variable,
         'flex min-h-full w-full scroll-smooth antialiased'
       )}
       suppressHydrationWarning
     >
       <body className='flex min-h-full w-full flex-auto flex-col'>
-        <ThemeProvider attribute='class' defaultTheme='light' forcedTheme='light' enableSystem={false} disableTransitionOnChange>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='light'
+          forcedTheme='light'
+          enableSystem={false}
+          disableTransitionOnChange
+        >
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
           <CustomCursor />

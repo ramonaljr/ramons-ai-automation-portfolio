@@ -10,7 +10,23 @@ import { SaasFlowField } from '@/components/landing/saas-flow-field'
 import { PetalField } from '@/components/landing/petal-field'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
-const ROTATING_WORK = ['data entry.', 'capturing new leads.', 'routine follow-ups.', 'recurring reports.']
+
+/**
+ * Kept short on purpose. These set inside a clipped, absolutely-positioned
+ * line, so a phrase that wraps loses its second line entirely — at 375px the
+ * previous "capturing new leads." rendered as "capturing". Short phrases keep
+ * the headline on one line down to 360px; `LONGEST_WORK` below is the
+ * belt-and-braces guarantee for widths and fallback fonts we have not measured.
+ */
+const ROTATING_WORK = ['data entry.', 'new leads.', 'follow-ups.', 'reporting.']
+
+/**
+ * Reserves the line box in normal flow. The rotating word itself is absolutely
+ * positioned so the outgoing and incoming words can cross-fade over each other,
+ * which means it contributes no height — without this sizer the box falls back
+ * to a fixed `min-height` that cannot know how the text actually wrapped.
+ */
+const LONGEST_WORK = ROTATING_WORK.reduce((a, b) => (b.length > a.length ? b : a))
 
 /**
  * `ready` lets the page gate the reveal on the intro animation finishing,
@@ -61,14 +77,18 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           </div>
 
           <h1
-            aria-label='Let automation handle data entry, capturing new leads, routine follow-ups, and recurring reports.'
-            className={`display-xl text-ink text-left text-[clamp(3.25rem,6.4vw,7rem)] leading-[0.88] font-light transition-all duration-1000 ${
+            aria-label='Let automation handle data entry, new leads, follow-ups, and reporting.'
+            className={`display-xl text-ink text-left text-[clamp(3rem,6.4vw,7rem)] leading-[0.88] font-light transition-all duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
             style={{ fontFamily: DISPLAY_FONT }}
           >
             <span className='block'>Let automation handle</span>
-            <span className='hero-word-shell hero-rotating-line relative block min-h-[1.04em] overflow-hidden italic' aria-hidden='true'>
+            <span
+              className='hero-word-shell hero-rotating-line relative block overflow-hidden italic'
+              aria-hidden='true'
+            >
+              <span className='invisible block'>{LONGEST_WORK}</span>
               <AnimatePresence initial={false} mode='wait'>
                 <motion.span
                   key={ROTATING_WORK[wordIndex]}

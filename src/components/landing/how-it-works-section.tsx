@@ -157,9 +157,8 @@ export function HowItWorksSection() {
           tag='HOW IT WORKS'
           title='A clear path from problem to reliable system.'
           blurb='You will always know what is happening, what comes next and what I need from you.'
-          align='center'
           margin='mb-20 lg:mb-28'
-          titleClassName='mx-auto mt-6 max-w-[18ch] text-[clamp(2.5rem,5vw,5.2rem)]'
+          titleClassName='mt-6 max-w-[18ch] text-[clamp(2.5rem,5vw,5.2rem)]'
         />
 
         <ol className='sr-only'>
