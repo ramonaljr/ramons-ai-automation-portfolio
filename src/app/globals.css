@@ -3726,6 +3726,58 @@ body::after {
 }
 
 /* Stated once, at the top, when it applies to everything below it. */
+/* The dialog panel takes focus on open so the dialog is announced, but it is a
+   container rather than a control — the global focus ring drew a 2px accent
+   outline around the whole modal, which read as an error state.
+   `!important` because the rule it overrides is itself `!important`, and this
+   is the one element that should be exempt: nothing here is operable, so no
+   keyboard user loses an indicator. Tailwind's `focus:` variant does not cover
+   `:focus-visible`, which is why this lives in CSS. */
+[role='dialog'] > [tabindex='-1']:focus,
+[role='dialog'] > [tabindex='-1']:focus-visible {
+  outline: none !important;
+}
+
+/* ── Walkthrough and repo links ────────────────────────────────────────────
+   Carried by both the card and the dialog. All six projects ship with empty
+   `videoUrl` and `repoUrl` today, so the resting state is the inert one — the
+   affordance is visible, and it lights up the moment a URL lands in the
+   frontmatter. */
+.work-card-links {
+  position: relative;
+  /* Above the card's stretched hit area, so a walkthrough opens rather than
+     the dialog. */
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+
+.work-aux-link {
+  background: color-mix(in oklch, var(--ink) 4%, transparent);
+}
+
+.work-aux-link[data-empty='true'] {
+  border-style: dashed;
+  color: color-mix(in oklch, var(--ink) 42%, transparent);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+a.work-aux-link:hover {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--ground);
+}
+
+/* Card-sized: the dialog's footer can afford a full pill, a 517px card cannot. */
+.work-card-links .work-aux-link {
+  gap: 0.35rem;
+  padding: 0.32rem 0.6rem;
+  font-size: 0.7rem;
+}
+
 .work-lab-note {
   max-width: 52rem;
   margin-top: clamp(0.9rem, 1.4vw, 1.4rem);
@@ -3882,7 +3934,7 @@ body::after {
 
 .work-card-view[aria-pressed='true'] {
   opacity: 1;
-  box-shadow: inset 0 0 0 2px var(--work-tone);
+  box-shadow: inset 0 0 0 2px var(--work-tone, var(--accent));
 }
 
 .work-card-view:focus-visible {

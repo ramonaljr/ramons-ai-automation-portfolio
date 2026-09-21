@@ -14,6 +14,8 @@ import {
   usePrefersReducedMotion
 } from '@/components/landing/motion'
 import { CaseStudyModal } from '@/components/landing/case-study-modal'
+import { THUMB_VARIANTS, thumbTransition, WORK_TONES, workViews } from '@/lib/work-views'
+import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 
 const WORK_LABELS: Record<string, string> = {
   'ai-voice-receptionist': '24/7 call answering',
@@ -22,23 +24,6 @@ const WORK_LABELS: Record<string, string> = {
   'multi-channel-order-sync': 'Orders & inventory',
   'rag-knowledge-base': 'Company knowledge search',
   'zero-touch-client-onboarding': 'Client onboarding'
-}
-
-/**
- * Each project's accent, used for the eyebrow labels inside the panel. Hues are
- * unchanged from the original set; lightness is solved so every tone clears
- * 4.5:1 on the white panel at 12px. The previous values ran 3.2–4.1:1, so the
- * THE CHALLENGE / THE SYSTEM labels failed AA on all six projects, not just
- * some. Chroma is trimmed only where the darker lightness pushed a hue out of
- * sRGB gamut.
- */
-const WORK_TONES: Record<string, string> = {
-  'ai-voice-receptionist': 'oklch(0.571 0.13 326)',
-  'invoice-processing-gl-reconciliation': 'oklch(0.572 0.14 24)',
-  'lead-routing-and-crm-enrichment': 'oklch(0.562 0.12 68)',
-  'multi-channel-order-sync': 'oklch(0.542 0.11 158)',
-  'rag-knowledge-base': 'oklch(0.562 0.13 274)',
-  'zero-touch-client-onboarding': 'oklch(0.538 0.095 218)'
 }
 
 const WORK_USE_CASES: Record<string, string> = {
@@ -51,15 +36,6 @@ const WORK_USE_CASES: Record<string, string> = {
   'rag-knowledge-base': 'Turn company files into a searchable assistant that answers with links to the source.',
   'zero-touch-client-onboarding':
     'Create agreements, folders, CRM records and team alerts as soon as a client submits a form.'
-}
-
-const WORK_SCENES: Record<string, string> = {
-  'ai-voice-receptionist': '/images/landing/work-scenes/ai-voice-receptionist.webp',
-  'invoice-processing-gl-reconciliation': '/images/landing/work-scenes/invoice-processing-gl-reconciliation.webp',
-  'lead-routing-and-crm-enrichment': '/images/landing/work-scenes/lead-routing-and-crm-enrichment.webp',
-  'multi-channel-order-sync': '/images/landing/work-scenes/multi-channel-order-sync.webp',
-  'rag-knowledge-base': '/images/landing/work-scenes/rag-knowledge-base.webp',
-  'zero-touch-client-onboarding': '/images/landing/work-scenes/zero-touch-client-onboarding.webp'
 }
 
 const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
@@ -78,58 +54,6 @@ const workTags = (cs: CaseStudyMetadata) => {
       )
     })
   }
-}
-
-const has = (u?: string) => typeof u === 'string' && u.trim().length > 0
-
-/**
- * Three views per project — and deliberately three *kinds* of view rather than
- * three screenshots: where the work happened, what the client actually touches,
- * and the canvas that proves it was built. The labels carry that distinction,
- * so a reader knows what the third thumbnail holds before opening it.
- *
- * Every project has all three on disk today. `filter` is there for the day one
- * is missing, not as a hedge against them never existing.
- */
-/**
- * The selected thumbnail widens; the others give way.
- *
- * Expressed as flex-grow rather than the fixed 120/35px of the reference this
- * came from: the strip spans the card, and the card is 517px at desktop and
- * 327px on a phone, so fixed widths would leave a gap at one size and overflow
- * at the other. The 0.3s ease-out is the reference's timing.
- */
-const THUMB_VARIANTS = {
-  active: { flexGrow: 2.2 },
-  inactive: { flexGrow: 1 }
-}
-
-function workViews(cs: CaseStudyMetadata) {
-  const platform = cs.platform ?? 'Workflow'
-
-  // Canvas first, and therefore the default view. The scene photographs are
-  // atmosphere — a tidy desk proves nothing a stock library could not. The
-  // canvas is the only one of the three a competitor cannot reproduce.
-  return [
-    {
-      key: 'canvas',
-      label: `${platform} canvas`,
-      src: cs.workflowImage,
-      alt: `${platform} workflow canvas for ${cs.title ?? cs.slug}`
-    },
-    {
-      key: 'interface',
-      label: 'Interface',
-      src: cs.heroImage ?? cs.image,
-      alt: `Interface mockup for ${cs.title ?? cs.slug}`
-    },
-    {
-      key: 'scene',
-      label: 'Scene',
-      src: WORK_SCENES[cs.slug],
-      alt: `Working environment for ${cs.title ?? cs.slug}`
-    }
-  ].filter(view => has(view.src))
 }
 
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
@@ -299,7 +223,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                         initial={false}
                         animate={itemIndex === viewIndex ? 'active' : 'inactive'}
                         variants={THUMB_VARIANTS}
-                        transition={reduced ? { duration: 0 } : { duration: 0.3, ease: 'easeOut' }}
+                        transition={thumbTransition(reduced)}
                         onClick={() => setViews(current => ({ ...current, [cs.slug]: itemIndex }))}
                       >
                         {/* The thumbnail is the label. A diagram, a UI mockup
@@ -344,6 +268,23 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                   <p className='work-card-stack'>
                     {[tags.platform, ...tags.tools.slice(0, 2)].filter(Boolean).join(' · ')}
                   </p>
+
+                  {/* Above the card's stretched hit area, like the thumbnails,
+                      so a walkthrough opens instead of the dialog. Inert until
+                      the frontmatter carries a URL. */}
+                  <div className='work-card-links'>
+                    <WorkLink href={linkOf(cs.videoUrl)} label='Walkthrough' icon={<VideoIcon size={12} />} />
+                    <WorkLink href={linkOf(cs.repoUrl)} label='GitHub' icon={<GitHubIcon size={12} />} />
+                    {/* Always live — the case-study page exists for every
+                        project, so this one never sits inert. Same page the
+                        dialog's "Read full case study" opens. */}
+                    <WorkLink
+                      href={`/case-study/${cs.slug}`}
+                      label='Read case study'
+                      icon={<Ico d={P.external} size={12} />}
+                      sameTab
+                    />
+                  </div>
                 </div>
               </motion.li>
             )
