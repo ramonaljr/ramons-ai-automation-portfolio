@@ -2255,20 +2255,20 @@ body::after {
 .experience-role-title {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(1.35rem, 1.9vw, 1.7rem);
+  font-size: clamp(1.55rem, 2.4vw, 2.15rem);
   font-weight: 300;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
+  line-height: 1.08;
+  letter-spacing: -0.022em;
 }
 
 /* The scannable claim: full ink, a step up in size, tight leading. The
    supporting sentence below is the only thing allowed to be quiet. */
 .experience-role-achievement {
-  margin: 0.7rem 0 0;
-  max-width: 54ch;
+  margin: 0.75rem 0 0;
+  max-width: 52ch;
   color: var(--ink);
-  font-size: 0.95rem;
-  line-height: 1.45;
+  font-size: 1.02rem;
+  line-height: 1.42;
 }
 
 .experience-role-description {
@@ -2294,6 +2294,37 @@ body::after {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.7rem;
   letter-spacing: 0.04em;
+}
+
+/* Closing line of the section: it is the hinge between the history above and
+   the systems below, so it is set as a statement rather than a caption. */
+.experience-thesis {
+  max-width: 46ch;
+  margin: clamp(2.5rem, 5vw, 3.5rem) 0 0;
+  padding-top: clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid color-mix(in oklch, var(--accent) 30%, var(--rule));
+  color: var(--ink);
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  font-weight: 300;
+  line-height: 1.34;
+}
+
+.experience-thesis a {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--accent);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  padding-bottom: 0.1rem;
+  transition: background-size 0.4s var(--ease-standard);
+}
+
+.experience-thesis a:hover {
+  background-size: 0% 1px;
 }
 
 .experience-role-stack li + li::before {
@@ -3640,8 +3671,8 @@ body::after {
   min-width: 0;
   padding: 1.1rem;
   background:
-    radial-gradient(circle at 10% 10%, color-mix(in oklch, var(--work-tone) 18%, transparent), transparent 30%),
-    var(--ink);
+    radial-gradient(circle at 10% 8%, color-mix(in oklch, var(--work-tone) 26%, transparent), transparent 42%),
+    color-mix(in oklch, var(--work-tone) 9%, var(--ink));
   color: var(--ground);
   transition: background 0.6s ease;
 }
@@ -3998,9 +4029,9 @@ body::after {
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: clamp(1.5rem, 3vw, 3rem);
+  gap: clamp(1.4rem, 2.4vw, 2rem);
   padding: clamp(1.6rem, 2.6vw, 2.6rem);
   border-top: 1px solid var(--rule);
   background:
@@ -4008,7 +4039,7 @@ body::after {
 }
 
 .work-cinema-story-main > p {
-  color: var(--work-tone);
+  color: color-mix(in oklch, var(--work-tone) 76%, var(--ink));
   font-family: var(--font-mono), monospace;
   font-size: 0.75rem;
   letter-spacing: 0.17em;
@@ -4016,8 +4047,8 @@ body::after {
 }
 
 .work-cinema-story-main h3 {
-  max-width: 23ch;
-  margin-top: 0.65rem;
+  max-width: 20ch;
+  margin: 0;
   color: var(--ink);
   font-size: clamp(1.9rem, 2.75vw, 3rem);
   font-weight: 300;
@@ -4025,7 +4056,108 @@ body::after {
   line-height: 0.98;
 }
 
-.work-cinema-brief-grid,
+/* The claim and its figure are one sentence: the headline states the change,
+   the numeral measures it. Parking the number in a corner of the panel made
+   it a stat; setting it on the headline's baseline makes it the point. */
+.work-claim {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(1rem, 3vw, 2.75rem);
+  margin-top: 0.7rem;
+}
+
+.work-claim-figure {
+  margin: 0;
+  text-align: right;
+}
+
+.work-claim-figure strong {
+  display: block;
+  color: var(--work-tone);
+  font-size: clamp(2.4rem, 4.6vw, 4rem);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.045em;
+  line-height: 0.82;
+}
+
+.work-claim-figure span {
+  display: block;
+  max-width: 16ch;
+  margin-top: 0.55rem;
+  margin-left: auto;
+  color: var(--ink-2);
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.work-claim-figure em {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--ink-3);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.66rem;
+  font-style: normal;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* The change plays rather than simply appearing: THEN settles, the hinge
+   draws, NOW lands last and holds. The scene remounts on every project
+   change, so these restart with it. */
+@keyframes work-shift-in {
+  from { opacity: 0; transform: translateY(0.55rem); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes work-hinge-draw {
+  from { opacity: 0; transform: scaleX(0.1); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes work-hinge-draw-v {
+  from { opacity: 0; transform: scaleY(0.1); }
+  to { opacity: 1; transform: none; }
+}
+
+.work-claim-figure {
+  animation: work-shift-in 0.7s var(--ease-entrance) 0.24s backwards;
+}
+
+.work-shift-then {
+  animation: work-shift-in 0.6s var(--ease-entrance) 0.1s backwards;
+}
+
+.work-shift-hinge {
+  transform-origin: left center;
+  animation: work-hinge-draw 0.5s var(--ease-entrance) 0.32s backwards;
+}
+
+.work-shift-now {
+  animation: work-shift-in 0.7s var(--ease-entrance) 0.42s backwards;
+}
+
+@media (max-width: 767px) {
+  .work-claim {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .work-claim-figure {
+    text-align: left;
+  }
+
+  .work-claim-figure span {
+    margin-left: 0;
+  }
+
+  .work-shift-hinge {
+    transform-origin: center top;
+    animation-name: work-hinge-draw-v;
+  }
+}
+
 .work-cinema-tech {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4036,34 +4168,119 @@ body::after {
   border-top: 1px solid var(--rule);
 }
 
-.work-cinema-brief-grid > div {
-  position: relative;
-  min-width: 0;
-  padding: 1rem;
-  border: 1px solid var(--rule);
-  border-radius: 0.85rem;
-  background: color-mix(in oklch, white 42%, transparent);
-}
-
-.work-cinema-brief-grid > div:last-child {
-  border-color: color-mix(in oklch, var(--work-tone) 24%, var(--rule));
-  background: color-mix(in oklch, var(--work-tone) 4%, white);
-}
-
-.work-cinema-brief-grid small,
 .work-cinema-tech small {
-  color: var(--work-tone);
+  color: color-mix(in oklch, var(--work-tone) 76%, var(--ink));
   font-family: var(--font-mono), monospace;
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   line-height: 1.5;
 }
 
-.work-cinema-brief-grid p {
-  margin-top: 0.55rem;
-  color: var(--ink-2);
+/* ── THEN / NOW ───────────────────────────────────────────────────────────
+   The panel used to set the problem and the system as two identical cards,
+   which made them read as a pair of equal facts. They are not: one is the
+   state the client is in, one is the state they are buying. THEN recedes —
+   smaller, quieter, no surface of its own — and NOW holds full ink against
+   the project's tone, with a hinge carrying the eye from one to the other. */
+
+.work-shift {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.15fr);
+  align-items: start;
+  gap: clamp(0.9rem, 2vw, 1.6rem);
+  max-width: 68rem;
+  margin-top: 1.4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+}
+
+.work-shift-half {
+  min-width: 0;
+}
+
+.work-shift-half small {
+  display: block;
+  color: var(--ink-3);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+}
+
+.work-shift-half p {
+  margin-top: 0.6rem;
   font-size: 0.86rem;
+}
+
+.work-shift-then p {
+  max-width: 44ch;
+  color: var(--ink-2);
+  line-height: 1.62;
+}
+
+.work-shift-now {
+  padding-left: clamp(0.9rem, 2vw, 1.5rem);
+  border-left: 1px solid color-mix(in oklch, var(--work-tone) 28%, var(--rule));
+}
+
+.work-shift-now small {
+  color: color-mix(in oklch, var(--work-tone) 76%, var(--ink));
+}
+
+.work-shift-now p {
+  max-width: 48ch;
+  color: var(--ink);
+  font-size: 0.92rem;
   line-height: 1.58;
+}
+
+/* The hinge is drawn rather than typed — a hairline gathering into a
+   chevron. A glyph here would be one more thing to read. */
+.work-shift-hinge {
+  position: relative;
+  align-self: center;
+  width: clamp(1.5rem, 3vw, 2.75rem);
+  height: 1px;
+  margin-top: 1.6rem;
+  background: linear-gradient(to right, transparent, color-mix(in oklch, var(--work-tone) 55%, transparent));
+}
+
+.work-shift-hinge::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 0.38rem;
+  height: 0.38rem;
+  border-top: 1px solid color-mix(in oklch, var(--work-tone) 70%, transparent);
+  border-right: 1px solid color-mix(in oklch, var(--work-tone) 70%, transparent);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+@media (max-width: 767px) {
+  .work-shift {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .work-shift-hinge {
+    width: 1px;
+    height: 1.5rem;
+    margin: 0.2rem 0 0.2rem 0.5rem;
+    background: linear-gradient(to bottom, transparent, color-mix(in oklch, var(--work-tone) 55%, transparent));
+  }
+
+  .work-shift-hinge::after {
+    top: auto;
+    right: auto;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 50%) rotate(135deg);
+  }
+
+  .work-shift-now {
+    padding-left: 0;
+    padding-top: 0.2rem;
+    border-left: 0;
+  }
 }
 
 .work-cinema-tech {
@@ -4100,71 +4317,38 @@ body::after {
 }
 
 .work-cinema-result {
-  display: grid;
-  min-width: 15rem;
-  gap: 1.25rem;
-  padding-top: 0.2rem;
-}
-
-.work-cinema-result > .flex {
-  align-items: stretch;
-  flex-direction: column;
-}
-
-.work-story-outcome {
-  display: grid;
-  gap: 0.7rem;
-  padding-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+  max-width: 68rem;
+  padding-top: 1.2rem;
   border-top: 1px solid var(--rule);
 }
 
-.work-story-outcome > small {
-  color: var(--ink-3);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
+.work-cinema-result > .flex {
+  align-items: center;
+  flex-direction: row;
 }
 
-.work-story-outcome > div {
-  display: flex;
-  align-items: flex-end;
-  gap: 0.8rem;
-}
 
-.work-story-outcome strong {
-  color: var(--work-tone);
-  font-family: var(--font-editorial), Georgia, serif;
-  font-size: clamp(3.2rem, 5vw, 4.8rem);
-  font-weight: 300;
-  line-height: 0.72;
-  letter-spacing: -0.06em;
-}
 
-.work-story-outcome span {
-  max-width: 12ch;
-  color: var(--ink-2);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  line-height: 1.4;
-  text-transform: uppercase;
-}
+
+
 
 .work-story-secondary-metrics {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-block: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.25rem, 3vw, 2.75rem);
 }
 
 .work-story-secondary-metrics > span {
-  display: grid;
-  gap: 0.2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
   min-width: 0;
-  padding: 0.8rem 0.7rem;
-}
-
-.work-story-secondary-metrics > span + span {
-  border-left: 1px solid var(--rule);
+  padding: 0;
 }
 
 .work-story-secondary-metrics b {
@@ -4300,15 +4484,17 @@ a.work-cinema-action:hover {
     padding: 1.5rem;
   }
   .work-cinema-story-main h3 { max-width: 23ch; font-size: clamp(1.8rem, 7.6vw, 2.5rem); }
-  .work-cinema-brief-grid,
   .work-cinema-tech { grid-template-columns: 1fr; gap: 0.6rem; }
-  .work-cinema-brief-grid > div { padding: 0.9rem; }
   .work-cinema-result { min-width: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .work-cinema-art::after,
   .work-story-status-dot { animation: none; }
+
+  .work-shift-then,
+  .work-shift-now,
+  .work-claim-figure { animation: none; opacity: 1; transform: none; }
 }
 
 /* ── About: operator-to-automation cinematic reveal ───────────────────── */

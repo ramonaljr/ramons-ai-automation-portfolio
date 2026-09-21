@@ -102,6 +102,20 @@ export function ExperienceSection() {
                   </ol>
                 </section>
               ))}
+
+              {/* The chronology is only half the argument. This turns four
+                  finance roles into the reason the rest of the page exists,
+                  and hands the reader back to the work. */}
+              <p
+                className='experience-thesis'
+                style={{
+                  opacity: inView ? 1 : 0,
+                  transform: inView ? 'none' : 'translateY(14px)',
+                  transition: `opacity .9s cubic-bezier(0.16,1,0.3,1) ${120 + ROLE_COUNT * 130}ms, transform .9s cubic-bezier(0.16,1,0.3,1) ${120 + ROLE_COUNT * 130}ms`
+                }}
+              >
+                Every system on this page began as something on that list. <a href='#portfolio'>See what they became</a>
+              </p>
             </div>
           </div>
         </div>

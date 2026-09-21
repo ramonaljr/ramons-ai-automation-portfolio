@@ -275,7 +275,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           margin=''
           titleClassName='display-xl mt-2 max-w-[15ch] text-[clamp(2.55rem,5vw,4.8rem)]'
           title='Business problems, designed as systems.'
-          blurb='Explore the challenge, architecture and operational outcome behind each automation.'
+          blurb='Each one starts with what a team was doing by hand, and ends with what runs instead. Pick a project to see both.'
         />
 
         <div className='work-proof-strip' aria-label='Portfolio design principles'>
@@ -387,15 +387,32 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                   <div className='work-cinema-story'>
                     <div className='work-cinema-story-main'>
                       <p>{active.organisation ?? workLabel(active)}</p>
-                      <h3 style={{ fontFamily: DISPLAY_FONT }}>{active.impactHighlight ?? active.title}</h3>
 
-                      <div className='work-cinema-brief-grid'>
-                        <div>
-                          <small>THE CHALLENGE</small>
+                      <div className='work-claim'>
+                        <h3 style={{ fontFamily: DISPLAY_FONT }}>{active.impactHighlight ?? active.title}</h3>
+                        {active.keyOutcome && (
+                          <p className='work-claim-figure'>
+                            <strong style={{ fontFamily: DISPLAY_FONT }}>{active.keyOutcome.value}</strong>
+                            <span>{active.keyOutcome.label}</span>
+                            <em>{active.sample ? 'target outcome' : 'measured'}</em>
+                          </p>
+                        )}
+                      </div>
+
+                      {/* The two halves are the same pair of facts the section
+                          always carried, but weighted: THEN recedes, NOW holds
+                          full ink, and NOW arrives a beat later so the reader
+                          watches the change rather than reading two columns. */}
+                      <div className='work-shift'>
+                        <div className='work-shift-half work-shift-then'>
+                          <small>THEN</small>
                           <p>{active.problem ?? WORK_USE_CASES[active.slug] ?? active.description}</p>
                         </div>
-                        <div>
-                          <small>THE SYSTEM</small>
+
+                        <span className='work-shift-hinge' aria-hidden='true' />
+
+                        <div className='work-shift-half work-shift-now'>
+                          <small>NOW</small>
                           <p>{active.solution ?? WORK_USE_CASES[active.slug] ?? active.description}</p>
                         </div>
                       </div>
@@ -413,16 +430,10 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                       </div>
                     </div>
 
+                    {/* The headline figure moved up beside the claim, where it
+                        is the hinge of the sentence rather than a stat parked
+                        in a corner. What is left here is the supporting pair. */}
                     <div className='work-cinema-result'>
-                      {active.keyOutcome && (
-                        <div className='work-story-outcome'>
-                          <small>{active.sample ? 'TARGET OUTCOME' : 'KEY OUTCOME'}</small>
-                          <div>
-                            <strong>{active.keyOutcome.value}</strong>
-                            <span>{active.keyOutcome.label}</span>
-                          </div>
-                        </div>
-                      )}
                       {active.roi && active.roi.length > 1 && (
                         <div className='work-story-secondary-metrics'>
                           {active.roi.slice(1, 3).map(metric => (
