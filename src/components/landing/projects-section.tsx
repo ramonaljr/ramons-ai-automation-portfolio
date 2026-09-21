@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
+import { useMemo, useState, type CSSProperties } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -187,14 +187,59 @@ function Canvas({ cs, priority = false }: { cs: CaseStudyMetadata; priority?: bo
   )
 }
 
-const tabId = (slug: string) => `work-tab-${slug}`
-const PANEL_ID = 'work-panel'
+const PANEL_ID = 'work-detail-panel'
+
+/**
+ * Three views per project — and deliberately three *kinds* of view rather than
+ * three screenshots: where the work happened, what the client actually touches,
+ * and the canvas that proves it was built. The labels carry that distinction,
+ * so a reader knows what the third thumbnail holds before opening it.
+ *
+ * Every project has all three on disk today. `filter` is there for the day one
+ * is missing, not as a hedge against them never existing.
+ */
+function workViews(cs: CaseStudyMetadata) {
+  const platform = cs.platform ?? 'Workflow'
+
+  // Canvas first, and therefore the default view. The scene photographs are
+  // atmosphere — a tidy desk proves nothing a stock library could not. The
+  // canvas is the only one of the three a competitor cannot reproduce.
+  return [
+    {
+      key: 'canvas',
+      label: `${platform} canvas`,
+      src: cs.workflowImage,
+      alt: `${platform} workflow canvas for ${cs.title ?? cs.slug}`
+    },
+    {
+      key: 'interface',
+      label: 'Interface',
+      src: cs.heroImage ?? cs.image,
+      alt: `Interface mockup for ${cs.title ?? cs.slug}`
+    },
+    {
+      key: 'scene',
+      label: 'Scene',
+      src: WORK_SCENES[cs.slug],
+      alt: `Working environment for ${cs.title ?? cs.slug}`
+    }
+  ].filter(view => has(view.src))
+}
 
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
-  const { ref, inView } = useInView(0.06)
+  const { ref, inView } = useInView<HTMLUListElement>(0.06)
   const [activeSlug, setActiveSlug] = useState<string | null>(null)
   const [selectedStudy, setSelectedStudy] = useState<CaseStudyMetadata | null>(null)
-  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+
+  /**
+   * Which thumbnail each card is showing. One record rather than six pieces of
+   * state, so a card that has never been touched simply has no entry and falls
+   * back to its first view.
+   */
+  const [views, setViews] = useState<Record<string, number>>({})
+
+  /** `null` is "all platforms" rather than a sentinel string. */
+  const [platform, setPlatform] = useState<CaseStudyMetadata['platform'] | null>(null)
 
   /**
    * Delivered work leads; SAMPLE builds sort to the back.
@@ -211,61 +256,34 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   )
 
   /**
-   * The panel always has something to show, so the section reads correctly at
-   * rest rather than waiting for a hover.
-   *
-   * The featured project opens first; after that the left selector owns the
-   * scene without needing an effect or an extra render.
+   * Counts come from the data rather than a hand-kept list, so a new case study
+   * appears in the filter the moment its MDX lands. Order follows the count, so
+   * the platform with the most work leads.
    */
-  const active = shown.find(cs => cs.slug === activeSlug) ?? shown.find(cs => cs.featured) ?? shown[0]
+  const platforms = shown.reduce<{ name: NonNullable<CaseStudyMetadata['platform']>; count: number }[]>((all, cs) => {
+    if (!cs.platform) return all
 
-  const activeIndex = Math.max(
-    0,
-    shown.findIndex(cs => cs.slug === active?.slug)
-  )
+    const seen = all.find(entry => entry.name === cs.platform)
+
+    return seen
+      ? all.map(e => (e === seen ? { ...e, count: e.count + 1 } : e))
+      : [...all, { name: cs.platform, count: 1 }]
+  }, [])
+
+  const visible = platform ? shown.filter(cs => cs.platform === platform) : shown
+
+  /**
+   * The panel always has something to show, and what it shows is always in the
+   * grid above it — picking a filter that excludes the open project moves the
+   * panel to the first project that survived rather than stranding it.
+   */
+  const active = visible.find(cs => cs.slug === activeSlug) ?? visible.find(cs => cs.featured) ?? visible[0]
 
   const sceneStyle = {
     '--work-tone': WORK_TONES[active?.slug ?? ''] ?? 'var(--accent)'
   } as CSSProperties
 
   const activeTags = active ? workTags(active) : null
-
-  /**
-   * The list carried `role="tablist"` and six `role="tab"`s but none of the
-   * keyboard contract that promises: arrow keys did nothing, every tab sat in
-   * the tab order, and there was no panel to move to. A screen reader announced
-   * "tab, 1 of 6" and then stranded the reader. This supplies the missing half
-   * — roving tabindex plus arrow/Home/End — so the ARIA is honest.
-   *
-   * Left unmemoized on purpose: the React Compiler handles that, and a manual
-   * `useCallback` here makes it bail out of optimizing the whole component.
-   */
-  const onTabKeyDown = (event: KeyboardEvent<HTMLOListElement>) => {
-    const keys = ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End']
-
-    if (!keys.includes(event.key)) return
-
-    event.preventDefault()
-
-    const current = shown.findIndex(cs => cs.slug === active?.slug)
-    const last = shown.length - 1
-
-    const next =
-      event.key === 'Home'
-        ? 0
-        : event.key === 'End'
-          ? last
-          : event.key === 'ArrowDown' || event.key === 'ArrowRight'
-            ? (current + 1) % shown.length
-            : (current - 1 + shown.length) % shown.length
-
-    const slug = shown[next]?.slug
-
-    if (!slug) return
-
-    setActiveSlug(slug)
-    tabRefs.current[slug]?.focus()
-  }
 
   return (
     <section id='portfolio' className={`${SECTION_ANCHOR} work-story-section`}>
@@ -290,175 +308,223 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           </span>
         </div>
 
-        <div
-          ref={ref}
-          className='work-cinema mt-10 grid lg:grid-cols-[19rem_minmax(0,1fr)]'
-          style={{ ...sceneStyle, opacity: inView ? 1 : 0, transform: inView ? 'translateY(0)' : 'translateY(30px)' }}
-        >
-          <aside className='work-cinema-selector'>
-            <div className='work-cinema-selector-head'>
-              <span>PROJECTS</span>
-              <span>{String(shown.length).padStart(2, '0')}</span>
-            </div>
-            <ol role='tablist' aria-label='Choose a case study' aria-orientation='vertical' onKeyDown={onTabKeyDown}>
-              {shown.map((cs, i) => {
-                const isActive = cs.slug === active?.slug
+        {platforms.length > 1 && (
+          <div className='work-filters' role='group' aria-label='Filter projects by automation platform'>
+            <button
+              type='button'
+              className='work-filter'
+              aria-pressed={platform === null}
+              onClick={() => setPlatform(null)}
+            >
+              All <b>{shown.length}</b>
+            </button>
+            {platforms.map(entry => (
+              <button
+                key={entry.name}
+                type='button'
+                className='work-filter'
+                aria-pressed={platform === entry.name}
+                onClick={() => setPlatform(entry.name)}
+              >
+                {entry.name} <b>{entry.count}</b>
+              </button>
+            ))}
+          </div>
+        )}
 
-                const registerTab = (node: HTMLButtonElement | null) => {
-                  tabRefs.current[cs.slug] = node
+        {/* Six cards, all six visible. The previous rail showed one project at a
+            time and had to abbreviate every title to fit 84px — "Autonomous RAG
+            Knowledge Base & Document Intelligence System" became "Company
+            knowledge search". A card has room for the name a client would
+            recognise. */}
+        <ul ref={ref} className='work-gallery' style={{ opacity: inView ? 1 : 0 }}>
+          {visible.map((cs, index) => {
+            const gallery = workViews(cs)
+            const viewIndex = Math.min(views[cs.slug] ?? 0, gallery.length - 1)
+            const view = gallery[viewIndex]
+            const outcome = cs.keyOutcome
+            const isActive = cs.slug === active?.slug
+            const tags = workTags(cs)
+
+            return (
+              <li
+                key={cs.slug}
+                className='work-card'
+                data-active={isActive ? 'true' : 'false'}
+                style={
+                  {
+                    '--work-tone': WORK_TONES[cs.slug] ?? 'var(--accent)',
+                    transform: inView ? 'none' : 'translateY(24px)',
+                    transition: `opacity .8s cubic-bezier(0.16,1,0.3,1) ${index * 80}ms, transform .8s cubic-bezier(0.16,1,0.3,1) ${index * 80}ms`,
+                    opacity: inView ? 1 : 0
+                  } as CSSProperties
                 }
-
-                return (
-                  <li key={cs.slug}>
-                    <button
-                      type='button'
-                      role='tab'
-                      id={tabId(cs.slug)}
-                      ref={registerTab}
-                      aria-selected={isActive}
-                      aria-controls={PANEL_ID}
-                      tabIndex={isActive ? 0 : -1}
-                      onClick={() => setActiveSlug(cs.slug)}
-                      className='work-cinema-project group'
-                    >
-                      <span className='work-cinema-project-number'>{String(i + 1).padStart(2, '0')}</span>
-                      <span className='work-cinema-project-copy'>
-                        <span className='work-cinema-project-titleline'>
-                          <strong>{workLabel(cs)}</strong>
-                          <em>{workStatus(cs).short}</em>
-                        </span>
-                        <small>
-                          {cs.keyOutcome?.value ?? cs.speed} {cs.keyOutcome?.label ?? 'RESULT'}
-                        </small>
-                      </span>
-                      <span className='work-cinema-project-arrow'>
-                        <Ico d={P.arrow} size={13} />
-                      </span>
-                    </button>
-                  </li>
-                )
-              })}
-            </ol>
-            <p className='work-cinema-selector-foot'>Select a project to change the scene.</p>
-          </aside>
-
-          <div
-            className='work-cinema-screen'
-            id={PANEL_ID}
-            role='tabpanel'
-            tabIndex={0}
-            aria-labelledby={active ? tabId(active.slug) : undefined}
-          >
-            {active && (
-              <AnimatePresence mode='wait' initial={false}>
-                <motion.article
-                  key={active.slug}
-                  initial={{ opacity: 0, scale: 1.025 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.985 }}
-                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                  className='work-cinema-scene'
-                >
-                  <div className='work-cinema-art'>
+              >
+                <div className='work-card-frame'>
+                  {view && (
                     <img
-                      src={WORK_SCENES[active.slug]}
-                      alt=''
-                      aria-hidden='true'
+                      key={`${cs.slug}-${view.key}`}
+                      src={view.src}
+                      alt={view.alt}
                       width={1400}
                       height={875}
-                      className='work-cinema-scene-image'
+                      loading={index < 2 ? 'eager' : 'lazy'}
+                      className='work-card-image'
                     />
-                    <span className='work-cinema-count'>{String(activeIndex + 1).padStart(2, '0')}</span>
-                    <span className='work-cinema-context-label'>{active.organisation ?? 'Automation system'}</span>
-                    <div className='work-story-status'>
-                      <span className='work-story-status-dot' />
-                      {workStatus(active).label}
-                    </div>
-                    <Canvas cs={active} priority />
-                    <div className='work-story-flowline' aria-hidden='true'>
-                      <span>WORK ARRIVES</span>
-                      <i />
-                      <span>RUNS AUTOMATICALLY</span>
-                      <i />
-                      <span>TEAM NOTIFIED</span>
-                    </div>
+                  )}
+                  {/* Only the exception is marked. "Case study" is the default
+                      and printing it four times told the reader nothing. */}
+                  {cs.sample && <span className='work-card-flag'>Architecture lab</span>}
+                </div>
+
+                {gallery.length > 1 && (
+                  <div className='work-card-views' role='group' aria-label={`Views of ${cs.title ?? cs.slug}`}>
+                    {gallery.map((item, itemIndex) => (
+                      <button
+                        key={item.key}
+                        type='button'
+                        className='work-card-view'
+                        aria-pressed={itemIndex === viewIndex}
+                        onClick={() => setViews(current => ({ ...current, [cs.slug]: itemIndex }))}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
                   </div>
+                )}
 
-                  <div className='work-cinema-story'>
-                    <div className='work-cinema-story-main'>
-                      <p>{active.organisation ?? workLabel(active)}</p>
+                <div className='work-card-body'>
+                  <p className='work-card-context'>
+                    <span className='work-card-index'>{String(index + 1).padStart(2, '0')}</span>
+                    {cs.organisation ?? workLabel(cs)}
+                  </p>
 
-                      <div className='work-claim'>
-                        <h3 style={{ fontFamily: DISPLAY_FONT }}>{active.impactHighlight ?? active.title}</h3>
-                        {active.keyOutcome && (
-                          <p className='work-claim-figure'>
-                            <strong style={{ fontFamily: DISPLAY_FONT }}>{active.keyOutcome.value}</strong>
-                            <span>{active.keyOutcome.label}</span>
-                            <em>{active.sample ? 'target outcome' : 'measured'}</em>
-                          </p>
-                        )}
-                      </div>
+                  {/* The stretched hit area lives on this button, so the whole
+                      card selects while the view buttons above stay clickable
+                      on their own — no nesting, one real control per action. */}
+                  <h3 className='work-card-title'>
+                    <button
+                      type='button'
+                      className='work-card-select'
+                      aria-expanded={isActive}
+                      aria-controls={PANEL_ID}
+                      onClick={() => setActiveSlug(cs.slug)}
+                    >
+                      {cs.title ?? workLabel(cs)}
+                    </button>
+                  </h3>
 
-                      {/* The two halves are the same pair of facts the section
-                          always carried, but weighted: THEN recedes, NOW holds
-                          full ink, and NOW arrives a beat later so the reader
-                          watches the change rather than reading two columns. */}
-                      <div className='work-shift'>
-                        <div className='work-shift-half work-shift-then'>
-                          <small>THEN</small>
-                          <p>{active.problem ?? WORK_USE_CASES[active.slug] ?? active.description}</p>
-                        </div>
+                  {outcome && (
+                    <p className='work-card-outcome'>
+                      <strong style={{ fontFamily: DISPLAY_FONT }}>{outcome.value}</strong>
+                      <span>{outcome.label}</span>
+                      <em>{cs.sample ? 'target outcome' : 'measured'}</em>
+                    </p>
+                  )}
 
-                        <span className='work-shift-hinge' aria-hidden='true' />
+                  <p className='work-card-summary'>{WORK_USE_CASES[cs.slug] ?? cs.description}</p>
 
-                        <div className='work-shift-half work-shift-now'>
-                          <small>NOW</small>
-                          <p>{active.solution ?? WORK_USE_CASES[active.slug] ?? active.description}</p>
-                        </div>
-                      </div>
+                  <p className='work-card-stack'>
+                    {[tags.platform, ...tags.tools.slice(0, 2)].filter(Boolean).join(' · ')}
+                  </p>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
 
-                      <div className='work-cinema-tech' aria-label='Platform, tools and AI models used'>
-                        <small>BUILT WITH</small>
-                        <div>
-                          {activeTags?.platform && (
-                            <span className='work-cinema-tech-platform'>PLATFORM · {activeTags.platform}</span>
-                          )}
-                          {activeTags?.tools.map(tool => (
-                            <span key={tool}>{tool}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+        {/* The written argument stays on the page rather than behind a modal:
+            THEN/NOW is the whole thesis of this portfolio, and a reader who
+            never clicks through should still meet it. */}
+        <div className='work-detail' id={PANEL_ID} style={sceneStyle} aria-live='polite'>
+          {active && (
+            <AnimatePresence mode='wait' initial={false}>
+              <motion.article
+                key={active.slug}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div className='work-detail-head'>
+                  <span className='work-detail-context'>{active.organisation ?? workLabel(active)}</span>
+                  <span className='work-detail-status'>{workStatus(active).label}</span>
+                </div>
 
-                    {/* The headline figure moved up beside the claim, where it
-                        is the hinge of the sentence rather than a stat parked
-                        in a corner. What is left here is the supporting pair. */}
-                    <div className='work-cinema-result'>
-                      {active.roi && active.roi.length > 1 && (
-                        <div className='work-story-secondary-metrics'>
-                          {active.roi.slice(1, 3).map(metric => (
-                            <span key={metric.label}>
-                              <b>{metric.value}</b>
-                              <small>{metric.label}</small>
-                            </span>
-                          ))}
-                        </div>
+                {/* Full width and unobstructed. This is the one asset a reader
+                    cannot get from a competitor's portfolio, and it spent the
+                    last revision cropped behind a desk photo. */}
+                <Canvas cs={active} priority />
+
+                <div className='work-cinema-story'>
+                  <div className='work-cinema-story-main'>
+                    <div className='work-claim'>
+                      <h3 style={{ fontFamily: DISPLAY_FONT }}>{active.impactHighlight ?? active.title}</h3>
+                      {active.keyOutcome && (
+                        <p className='work-claim-figure'>
+                          <strong style={{ fontFamily: DISPLAY_FONT }}>{active.keyOutcome.value}</strong>
+                          <span>{active.keyOutcome.label}</span>
+                          <em>{active.sample ? 'target outcome' : 'measured'}</em>
+                        </p>
                       )}
-                      <div className='flex flex-wrap items-center gap-2.5'>
-                        <button type='button' onClick={() => setSelectedStudy(active)} className='work-story-cta'>
-                          Explore case study <Ico d={P.arrow} size={14} />
-                        </button>
-                        <AuxLinks cs={active} />
+                    </div>
+
+                    {/* The two halves are the same pair of facts the section
+                        always carried, but weighted: THEN recedes, NOW holds
+                        full ink, so the reader watches the change rather than
+                        reading two columns. */}
+                    <div className='work-shift'>
+                      <div className='work-shift-half work-shift-then'>
+                        <small>THEN</small>
+                        <p>{active.problem ?? WORK_USE_CASES[active.slug] ?? active.description}</p>
+                      </div>
+
+                      <span className='work-shift-hinge' aria-hidden='true' />
+
+                      <div className='work-shift-half work-shift-now'>
+                        <small>NOW</small>
+                        <p>{active.solution ?? WORK_USE_CASES[active.slug] ?? active.description}</p>
+                      </div>
+                    </div>
+
+                    <div className='work-cinema-tech' aria-label='Platform, tools and AI models used'>
+                      <small>BUILT WITH</small>
+                      <div>
+                        {activeTags?.platform && (
+                          <span className='work-cinema-tech-platform'>PLATFORM · {activeTags.platform}</span>
+                        )}
+                        {activeTags?.tools.map(tool => (
+                          <span key={tool}>{tool}</span>
+                        ))}
                       </div>
                     </div>
                   </div>
-                </motion.article>
-              </AnimatePresence>
-            )}
-          </div>
+
+                  <div className='work-cinema-result'>
+                    {active.roi && active.roi.length > 1 && (
+                      <div className='work-story-secondary-metrics'>
+                        {active.roi.slice(1, 3).map(metric => (
+                          <span key={metric.label}>
+                            <b>{metric.value}</b>
+                            <small>{metric.label}</small>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className='flex flex-wrap items-center gap-2.5'>
+                      <button type='button' onClick={() => setSelectedStudy(active)} className='work-story-cta'>
+                        Explore case study <Ico d={P.arrow} size={14} />
+                      </button>
+                      <AuxLinks cs={active} />
+                    </div>
+                  </div>
+                </div>
+              </motion.article>
+            </AnimatePresence>
+          )}
         </div>
 
-        {shown.length === 0 && (
+        {visible.length === 0 && (
           <p className='text-fine text-ink-3 py-16 text-center'>Nothing built on this platform yet.</p>
         )}
       </div>

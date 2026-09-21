@@ -3672,6 +3672,331 @@ body::after {
   font-weight: 500;
 }
 
+/* ── Selected Work: platform filter ────────────────────────────────────────
+   `platform` was always documented as driving filter tabs, and the section
+   still carried an orphaned "Nothing built on this platform yet" string, so
+   this restores a control the data model already expected. Counts are shown
+   because two of the platforms hold a single project each — better to say so
+   than to let a reader click into an almost-empty grid. */
+.work-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: clamp(1.6rem, 2.4vw, 2.4rem);
+}
+
+.work-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--ground) 70%, transparent);
+  color: color-mix(in oklch, var(--ink) 62%, transparent);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.work-filter:hover {
+  border-color: color-mix(in oklch, var(--ink) 26%, transparent);
+  color: var(--ink);
+}
+
+.work-filter[aria-pressed='true'] {
+  border-color: color-mix(in oklch, var(--accent) 55%, var(--rule));
+  background: color-mix(in oklch, var(--accent) 12%, var(--ground));
+  color: var(--ink);
+}
+
+.work-filter b {
+  color: color-mix(in oklch, var(--ink) 45%, transparent);
+  font-weight: 400;
+}
+
+.work-filter[aria-pressed='true'] b {
+  color: var(--accent);
+}
+
+/* ── Selected Work gallery ─────────────────────────────────────────────────
+   Six cards, all six visible. The rail this replaces showed one project at a
+   time in a 19rem column, which left 84px for a title and forced every project
+   name to be rewritten into a short stand-in. A card carries the real name. */
+.work-gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 1.5vw, 1.5rem);
+  margin-top: clamp(1.2rem, 2vw, 2rem);
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .work-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 75rem) {
+  .work-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.work-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 1.1rem;
+  background: color-mix(in oklch, var(--ground) 82%, transparent);
+  backdrop-filter: blur(8px);
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.work-card[data-active='true'] {
+  border-color: color-mix(in oklch, var(--work-tone) 55%, var(--rule));
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--work-tone) 30%, transparent);
+}
+
+.work-card-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  background: color-mix(in oklch, var(--ink) 5%, transparent);
+}
+
+/* `contain`, not `cover`: two of the three views are SVG diagrams, and a
+   cropped diagram is worse than a letterboxed one. */
+.work-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.work-card-flag {
+  position: absolute;
+  top: 0.7rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+/* Sits in the body rather than over the image: every workflow canvas prints
+   its own name in its top-left corner, and an overlaid index landed straight
+   on top of it on four of the six cards. */
+.work-card-index {
+  margin-right: 0.5rem;
+  color: color-mix(in oklch, var(--ink) 40%, transparent);
+}
+
+.work-card-flag {
+  right: 0.8rem;
+  padding: 0.22rem 0.55rem;
+  border-radius: 0.4rem;
+  background: color-mix(in oklch, var(--work-tone) 16%, var(--ground));
+  color: color-mix(in oklch, var(--work-tone) 78%, var(--ink));
+  text-transform: uppercase;
+}
+
+/* The thumbnail carousel. Three views, never auto-advancing: six cards
+   cycling at once would be chaos, and a reader cannot compare what keeps
+   moving. */
+.work-card-views {
+  display: flex;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Above the card's stretched hit area, so a view can be changed without
+   selecting the project. */
+.work-card-view {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 0;
+  min-width: 0;
+  /* 44px, matching the menu button rather than settling for the 24px the
+     spec allows — these are thumb targets in a row of three. */
+  min-height: 2.75rem;
+  padding: 0.5rem 0.3rem;
+  border: 0;
+  background: transparent;
+  color: color-mix(in oklch, var(--ink) 52%, transparent);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.work-card-view + .work-card-view {
+  border-left: 1px solid var(--rule);
+}
+
+.work-card-view:hover {
+  background: color-mix(in oklch, var(--ink) 4%, transparent);
+  color: var(--ink);
+}
+
+.work-card-view[aria-pressed='true'] {
+  background: color-mix(in oklch, var(--work-tone) 12%, transparent);
+  color: color-mix(in oklch, var(--work-tone) 80%, var(--ink));
+}
+
+.work-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: clamp(0.9rem, 1.3vw, 1.2rem);
+}
+
+.work-card-context {
+  color: color-mix(in oklch, var(--work-tone) 80%, var(--ink));
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.work-card-title {
+  margin: 0;
+  font-size: clamp(1rem, 1.15vw, 1.15rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+/* The stretched pseudo-element makes the whole card selectable while keeping
+   exactly one real control for the action — the view buttons sit above it. */
+.work-card-select {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.work-card-select::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+}
+
+.work-card-select:focus-visible {
+  outline: 2px solid var(--work-tone);
+  outline-offset: 3px;
+}
+
+.work-card-outcome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.work-card-outcome strong {
+  color: var(--work-tone);
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.work-card-outcome span {
+  color: color-mix(in oklch, var(--ink) 70%, transparent);
+  font-size: 0.78rem;
+}
+
+.work-card-outcome em {
+  color: color-mix(in oklch, var(--ink) 48%, transparent);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.work-card-summary {
+  color: color-mix(in oklch, var(--ink) 66%, transparent);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.work-card-stack {
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--rule);
+  color: color-mix(in oklch, var(--ink) 45%, transparent);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+}
+
+/* ── Selected Work detail panel ───────────────────────────────────────────── */
+.work-detail {
+  margin-top: clamp(1.5rem, 2.4vw, 2.4rem);
+  padding: clamp(1.2rem, 2vw, 2rem);
+  border: 1px solid var(--rule);
+  border-radius: 1.25rem;
+  background: color-mix(in oklch, var(--ground) 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.work-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: clamp(0.9rem, 1.4vw, 1.4rem);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.work-detail-context {
+  color: color-mix(in oklch, var(--work-tone) 80%, var(--ink));
+}
+
+.work-detail-status {
+  color: color-mix(in oklch, var(--ink) 50%, transparent);
+}
+
+/* The canvas was capped at 52rem and tipped in 3D inside a 13.5rem window,
+   which made the one asset a competitor cannot reproduce illegible. In the
+   panel it gets the full width, flat on, and room to be read. */
+.work-detail .work-story-canvas {
+  width: 100%;
+  transform: none;
+  box-shadow: 0 18px 50px -40px color-mix(in oklch, var(--ink) 60%, transparent);
+}
+
+.work-detail .work-story-canvas-body {
+  height: clamp(15rem, 30vw, 30rem);
+}
+
+.work-detail .work-cinema-story {
+  margin-top: clamp(1.2rem, 2vw, 2rem);
+}
+
 .work-cinema {
   overflow: hidden;
   min-height: 38rem;
@@ -4120,7 +4445,7 @@ body::after {
   margin-top: 0.35rem;
   color: var(--ink-3);
   font-family: var(--font-mono), monospace;
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   font-style: normal;
   letter-spacing: 0.14em;
   text-transform: uppercase;
