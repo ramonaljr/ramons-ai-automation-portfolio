@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { usePathname } from 'next/navigation'
 import { motion, useScroll, useSpring } from 'motion/react'
@@ -19,9 +19,88 @@ const NAV_LINKS = [
   { label: 'About', hash: '#about' },
   { label: 'Portfolio', hash: '#portfolio' },
   { label: 'Services', hash: '#services' },
-  { label: 'Blog', hash: '#articles', away: '/blog' },
+  { label: 'Blog', href: '/blog' },
   { label: 'Contact', hash: '#contact' }
 ]
+
+/**
+ * Which nav link owns which section, in DOM order.
+ *
+ * The bar carries five in-page destinations for eleven sections, so this map is
+ * deliberately lossy rather than exhaustive: everything from Process to
+ * Platforms elaborates the offer, and everything from Testimonials to the form
+ * is pre-contact reassurance. The full index lives in the footer.
+ *
+ * `#top` is not listed because it is the id of the page wrapper — it contains
+ * every other section, so it can never be observed as a distinct region. Home
+ * is the fallback state instead: nothing has crossed the line yet.
+ */
+const SECTION_OWNERS: readonly (readonly [id: string, owner: string])[] = [
+  ['about', '#about'],
+  ['portfolio', '#portfolio'],
+  ['services', '#services'],
+  ['process', '#services'],
+  ['experience', '#services'],
+  ['platforms', '#services'],
+  ['testimonials', '#contact'],
+  ['engagement', '#contact'],
+  ['faq', '#contact'],
+  ['contact', '#contact']
+]
+
+/** Where the reading line sits, as a fraction of viewport height. */
+const LINE = 0.45
+
+/**
+ * A 5%-tall band around the reading line. Observing a band rather than the
+ * whole viewport means only a section actually crossing the line reports in, so
+ * the active link cannot flicker between three simultaneous candidates.
+ */
+const BAND = `-${LINE * 100}% 0px -${100 - LINE * 100 - 5}% 0px`
+
+/**
+ * Tracks which nav link owns the section under the reading line.
+ *
+ * The observer is used as a trigger, not as the answer: the set of sections
+ * sitting above the line can only change when one of them crosses it, so the
+ * callback re-reads live geometry and takes the last section to have passed.
+ * That avoids a scroll listener without losing accuracy on fast flicks.
+ */
+function useActiveHash(enabled: boolean) {
+  const [active, setActive] = useState('#top')
+
+  useEffect(() => {
+    if (!enabled) return
+
+    const targets = SECTION_OWNERS.flatMap(([id, owner]) => {
+      const element = document.getElementById(id)
+
+      return element ? [{ element, owner }] : []
+    })
+
+    if (targets.length === 0) return
+
+    const observer = new IntersectionObserver(
+      () => {
+        const line = window.innerHeight * LINE
+        let owner: string | null = null
+
+        for (const target of targets) {
+          if (target.element.getBoundingClientRect().top <= line) owner = target.owner
+        }
+
+        setActive(owner ?? '#top')
+      },
+      { rootMargin: BAND, threshold: 0 }
+    )
+
+    targets.forEach(target => observer.observe(target.element))
+
+    return () => observer.disconnect()
+  }, [enabled])
+
+  return active
+}
 
 /**
  * Glass, with an edge.
@@ -44,11 +123,15 @@ export function SiteNav() {
   const progress = useSpring(scrollYProgress, { stiffness: 130, damping: 28, mass: 0.4 })
 
   const onLanding = pathname === '/'
+  const active = useActiveHash(onLanding)
 
   // Off the landing page a hash alone points at nothing, so send the reader
-  // home first. `away` lets a link prefer a real page over a section anchor.
-  const resolve = (link: (typeof NAV_LINKS)[number]) =>
-    onLanding ? (link.away ?? link.hash) : (link.away ?? `/${link.hash}`)
+  // home first. `href` lets a link prefer a real page over a section anchor.
+  const resolve = (link: (typeof NAV_LINKS)[number]) => link.href ?? (onLanding ? link.hash : `/${link.hash}`)
+
+  // Only in-page links can be "here", and only while the page they point into
+  // is the one being read.
+  const isHere = (link: (typeof NAV_LINKS)[number]) => onLanding && !link.href && link.hash === active
 
   const contactHref = onLanding ? '#contact' : '/#contact'
   const close = () => setOpen(false)
@@ -82,7 +165,8 @@ export function SiteNav() {
               <a
                 key={l.label}
                 href={resolve(l)}
-                className='text-fine text-ink-2 hover:bg-ink/5 hover:text-ink rounded-md px-2.5 py-2 transition-colors duration-200'
+                aria-current={isHere(l) ? 'location' : undefined}
+                className='site-nav-link text-fine text-ink-2 hover:bg-ink/5 hover:text-ink relative rounded-md px-2.5 py-2 transition-colors duration-200'
               >
                 {l.label}
               </a>
@@ -137,7 +221,8 @@ export function SiteNav() {
                 key={l.label}
                 href={resolve(l)}
                 onClick={close}
-                className='text-fine text-ink-2 hover:bg-ink/4 hover:text-ink rounded-xl px-4 py-3 transition-colors'
+                aria-current={isHere(l) ? 'location' : undefined}
+                className='site-nav-link-mobile text-fine text-ink-2 hover:bg-ink/4 hover:text-ink rounded-xl px-4 py-3 transition-colors'
               >
                 {l.label}
               </a>

@@ -1060,6 +1060,34 @@ body::after {
   text-transform: uppercase;
 }
 
+/**
+ * Scroll-spy state.
+ *
+ * The bar already carries an accent progress hairline along its bottom edge, so
+ * a second moving element would compete with it. The active link marks position
+ * with ink weight and a short rule under the label instead — inset to the
+ * link's own horizontal padding so it tracks the word, not the hit target.
+ */
+.site-nav-link[aria-current] {
+  color: var(--ink);
+}
+
+.site-nav-link[aria-current]::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0.625rem;
+  bottom: 0.375rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+/* The dropdown's rows are full-width targets, where a rule under the label
+   would read as a divider. A tinted ground says "here" without that ambiguity. */
+.site-nav-link-mobile[aria-current] {
+  color: var(--ink);
+  background: color-mix(in oklch, var(--accent) 14%, transparent);
+}
+
 .saas-flow-field {
   background:
     radial-gradient(circle at 50% 42%, oklch(0.99 0.01 82 / 0.56), transparent 25%),

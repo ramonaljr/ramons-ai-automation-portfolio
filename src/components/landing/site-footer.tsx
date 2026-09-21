@@ -13,12 +13,24 @@ import { PROFILE } from '@/lib/portfolio'
  * so bare hashes are rewritten to `/#section` away from the landing page.
  */
 
+/**
+ * The complete section index, in the order the page presents them.
+ *
+ * The nav bar deliberately carries only five in-page destinations, so this is
+ * the one place every section is addressable. Keep it in DOM order: read top to
+ * bottom it is a table of contents, and a reader who lands here after scrolling
+ * the whole page can see what they passed.
+ */
 const FOOTER_LINKS = [
   { label: 'About', hash: '#about' },
-  { label: 'Services', hash: '#services' },
-  { label: 'Platforms', hash: '#platforms' },
   { label: 'Portfolio', hash: '#portfolio' },
+  { label: 'Services', hash: '#services' },
+  { label: 'How It Works', hash: '#process' },
   { label: 'Experience', hash: '#experience' },
+  { label: 'Platforms', hash: '#platforms' },
+  { label: 'Testimonials', hash: '#testimonials' },
+  { label: 'Working Together', hash: '#engagement' },
+  { label: 'FAQ', hash: '#faq' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' }
 ]
@@ -50,6 +62,21 @@ export function SiteFooter() {
           </p>
         </div>
 
+        {/* Given its own row rather than squeezed between the identity and the
+            social links: eleven entries wrapping inside a three-up flex row
+            read as leftovers, whereas a full-width line reads as an index. */}
+        <nav aria-label='All sections' className='border-rule mb-10 -ml-2 flex flex-wrap gap-x-1 gap-y-0.5 border-t pt-8'>
+          {FOOTER_LINKS.map(l => (
+            <a
+              key={l.label}
+              href={l.href ?? (onLanding ? l.hash : `/${l.hash}`)}
+              className='text-ink-2 hover:bg-ink/4 hover:text-ink rounded-md px-2 py-1.5 text-[13px] transition-colors'
+            >
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
         <div className='flex flex-col justify-between gap-8 md:flex-row md:items-center'>
           <div>
             <p className='font-pixel text-ink-2 text-xs tracking-[0.25em]'>{PROFILE.shortName.toUpperCase()}</p>
@@ -57,18 +84,6 @@ export function SiteFooter() {
               {PROFILE.title} · {PROFILE.location}
             </p>
           </div>
-
-          <nav className='flex flex-wrap gap-x-3 gap-y-1'>
-            {FOOTER_LINKS.map(l => (
-              <a
-                key={l.label}
-                href={l.href ?? (onLanding ? l.hash : `/${l.hash}`)}
-                className='text-ink-2 hover:bg-ink/4 hover:text-ink rounded-md px-2 py-1.5 text-[13px] transition-colors'
-              >
-                {l.label}
-              </a>
-            ))}
-          </nav>
 
           <div className='flex gap-2'>
             {PROFILE.socials.map(s => (
