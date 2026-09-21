@@ -1,6 +1,8 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+
+import { createPortal } from 'react-dom'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 
@@ -65,13 +67,64 @@ const P = {
   external: 'M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3'
 }
 
+/** Everything inside the dialog a keyboard can land on, in document order. */
+const FOCUSABLE =
+  'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+
 export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | null; onClose: () => void }) {
-  // Lock body scroll and listen for Escape key
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  /**
+   * Scroll lock, Escape, and the focus contract a dialog owes a keyboard.
+   *
+   * `aria-modal` tells assistive tech to ignore the page behind, but it moves
+   * nothing: without this, focus stayed on the card that opened the dialog, Tab
+   * walked the page underneath it, and a screen reader was never told the
+   * dialog had appeared. So focus moves in on open, cycles inside while open,
+   * and returns to whatever opened it on close.
+   */
   useEffect(() => {
     if (!study) return
 
+    const opener = document.activeElement as HTMLElement | null
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        onClose()
+
+        return
+      }
+
+      if (e.key !== 'Tab') return
+
+      const panel = panelRef.current
+
+      if (!panel) return
+
+      const stops = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+        el => el.offsetParent !== null || el === document.activeElement
+      )
+
+      if (stops.length === 0) {
+        e.preventDefault()
+
+        return
+      }
+
+      const first = stops[0]
+      const last = stops[stops.length - 1]
+
+      // Wrap at both ends, and pull focus back in if it has escaped the panel.
+      if (!panel.contains(document.activeElement)) {
+        e.preventDefault()
+        first.focus()
+      } else if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
     }
 
     const prevOverflow = document.body.style.overflow
@@ -79,9 +132,14 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
     document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', handleKeyDown)
 
+    // The panel itself takes focus rather than the close button, so a screen
+    // reader reads the dialog's label before offering a way out of it.
+    panelRef.current?.focus()
+
     return () => {
       document.body.style.overflow = prevOverflow
       window.removeEventListener('keydown', handleKeyDown)
+      opener?.focus?.()
     }
   }, [study, onClose])
 
@@ -89,7 +147,18 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
 
   const leadImage = study.workflowImage || study.heroImage || study.image
 
-  return (
+  /**
+   * Portalled to `document.body` rather than rendered in place.
+   *
+   * This modal is mounted inside `.blossom-story-root`, which carries `isolate`
+   * and so opens a stacking context at `z-10`. Inside it, `z-[200]` only ranks
+   * against its siblings — the fixed nav at `z-50` belongs to the page's root
+   * context and painted straight over the dialog. A portal takes the dialog out
+   * to the root context, where its z-index means what it says.
+   */
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
     <div
       className='bg-ink/60 animate-in fade-in fixed inset-0 z-[200] flex items-center justify-center p-3 backdrop-blur-sm duration-200 sm:p-5 md:p-8'
       onClick={onClose}
@@ -98,14 +167,20 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
       aria-labelledby='modal-case-study-title'
     >
       <div
-        className='bg-surface-raised border-rule animate-in zoom-in-95 relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border shadow-2xl duration-200'
+        ref={panelRef}
+        tabIndex={-1}
+        className='bg-surface-raised border-rule animate-in zoom-in-95 relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border shadow-2xl duration-200 focus:outline-none'
         onClick={e => e.stopPropagation()}
       >
         {/* ── Modal Top Header (Fixed inside modal) ────────────────────────── */}
         <div className='border-rule bg-surface-raised relative border-b px-6 pt-6 pr-16 pb-5 sm:px-8 sm:pt-8'>
           {/* Tags */}
           <div className='mb-3 flex flex-wrap items-center gap-2'>
-            <span className='text-ink-3 font-mono text-[11px] tracking-[0.2em] uppercase'>CASE STUDY</span>
+            {/* One label, not a claim and its own contradiction: this said
+                "CASE STUDY" while a SAMPLE badge sat three chips along. */}
+            <span className='text-ink-3 font-mono text-[11px] tracking-[0.2em] uppercase'>
+              {study.sample ? 'Architecture lab' : 'Case study'}
+            </span>
             {study.platform && (
               <span className='border-rule-strong bg-ink/4 text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-[11px]'>
                 {study.platform}
@@ -122,7 +197,6 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
                 {study.speed}
               </span>
             )}
-            {study.sample && <span className='badge badge-accent'>SAMPLE</span>}
           </div>
 
           {/* Title */}
@@ -300,6 +374,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

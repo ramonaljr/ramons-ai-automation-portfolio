@@ -2,11 +2,17 @@
 
 import { useMemo, useState, type CSSProperties } from 'react'
 
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { SectionIntro } from '@/components/landing/section-intro'
-import { CONTAINER, DISPLAY_FONT, SECTION_ANCHOR, useInView } from '@/components/landing/motion'
+import {
+  CONTAINER,
+  DISPLAY_FONT,
+  SECTION_ANCHOR,
+  useInView,
+  usePrefersReducedMotion
+} from '@/components/landing/motion'
 import { CaseStudyModal } from '@/components/landing/case-study-modal'
 
 const WORK_LABELS: Record<string, string> = {
@@ -58,9 +64,6 @@ const WORK_SCENES: Record<string, string> = {
 
 const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
 
-const workStatus = (cs: CaseStudyMetadata) =>
-  cs.sample ? { label: 'Architecture lab', short: 'Lab' } : { label: 'Detailed case study', short: 'Case study' }
-
 const workTags = (cs: CaseStudyMetadata) => {
   const platform = cs.platform?.trim()
   const tools = cs.integrations?.length ? cs.integrations : (cs.tools ?? [])
@@ -77,117 +80,7 @@ const workTags = (cs: CaseStudyMetadata) => {
   }
 }
 
-function Ico({ d, size = 13 }: { d: string; size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='1.8'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-      aria-hidden='true'
-    >
-      <path d={d} />
-    </svg>
-  )
-}
-
-function VideoIcon({ size = 13 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='1.8'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-      aria-hidden='true'
-    >
-      <polygon points='23 7 16 12 23 17 23 7' />
-      <rect x='1' y='5' width='15' height='14' rx='2' ry='2' />
-    </svg>
-  )
-}
-
-function GitHubIcon({ size = 13 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'>
-      <path
-        fillRule='evenodd'
-        clipRule='evenodd'
-        d='M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z'
-      />
-    </svg>
-  )
-}
-
-const P = {
-  bolt: 'M13 2L4 14h7l-1 8 9-12h-7l1-8z',
-
-  // Sustained volume rather than per-run latency — see `speedKind`.
-  stack: 'M12 2l9 5-9 5-9-5 9-5zM3 17l9 5 9-5M3 12l9 5 9-5',
-  arrow: 'M4 12h14M13 6l6 6-6 6'
-}
-
 const has = (u?: string) => typeof u === 'string' && u.trim().length > 0
-
-function AuxLinks({ cs }: { cs: CaseStudyMetadata }) {
-  const base = 'work-cinema-action'
-
-  if (!has(cs.videoUrl) && !has(cs.repoUrl)) return null
-
-  return (
-    <>
-      {has(cs.videoUrl) && (
-        <a href={cs.videoUrl} target='_blank' rel='noopener noreferrer' className={base}>
-          <VideoIcon size={12} />
-          Live walkthrough
-        </a>
-      )}
-      {has(cs.repoUrl) && (
-        <a href={cs.repoUrl} target='_blank' rel='noopener noreferrer' className={base}>
-          <GitHubIcon size={12} />
-          View GitHub
-        </a>
-      )}
-    </>
-  )
-}
-
-/** The workflow canvas, framed as evidence rather than a decorative thumbnail. */
-function Canvas({ cs, priority = false }: { cs: CaseStudyMetadata; priority?: boolean }) {
-  if (!cs.workflowImage) return null
-
-  return (
-    <div className='work-story-canvas relative overflow-hidden'>
-      <div className='work-story-canvas-head'>
-        <span>System map</span>
-        <span>{cs.stepCount ?? 4} stages</span>
-      </div>
-      {/* Keyed on the slug so React swaps the element rather than mutating src
-          — without it the browser paints the previous canvas until the new one
-          decodes, and the panel appears to lag a row behind the cursor. */}
-      <div className='work-story-canvas-body'>
-        <img
-          key={cs.slug}
-          src={cs.workflowImage}
-          width={1400}
-          height={900}
-          loading={priority ? 'eager' : 'lazy'}
-          alt={`Workflow canvas for ${cs.title}`}
-          className='relative z-1 h-full w-full object-contain'
-        />
-      </div>
-    </div>
-  )
-}
-
-const PANEL_ID = 'work-detail-panel'
 
 /**
  * Three views per project — and deliberately three *kinds* of view rather than
@@ -198,6 +91,19 @@ const PANEL_ID = 'work-detail-panel'
  * Every project has all three on disk today. `filter` is there for the day one
  * is missing, not as a hedge against them never existing.
  */
+/**
+ * The selected thumbnail widens; the others give way.
+ *
+ * Expressed as flex-grow rather than the fixed 120/35px of the reference this
+ * came from: the strip spans the card, and the card is 517px at desktop and
+ * 327px on a phone, so fixed widths would leave a gap at one size and overflow
+ * at the other. The 0.3s ease-out is the reference's timing.
+ */
+const THUMB_VARIANTS = {
+  active: { flexGrow: 2.2 },
+  inactive: { flexGrow: 1 }
+}
+
 function workViews(cs: CaseStudyMetadata) {
   const platform = cs.platform ?? 'Workflow'
 
@@ -228,7 +134,7 @@ function workViews(cs: CaseStudyMetadata) {
 
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
   const { ref, inView } = useInView<HTMLUListElement>(0.06)
-  const [activeSlug, setActiveSlug] = useState<string | null>(null)
+  const reduced = usePrefersReducedMotion()
   const [selectedStudy, setSelectedStudy] = useState<CaseStudyMetadata | null>(null)
 
   /**
@@ -242,13 +148,13 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   const [platform, setPlatform] = useState<CaseStudyMetadata['platform'] | null>(null)
 
   /**
-   * Delivered work leads; SAMPLE builds sort to the back.
+   * Delivered work leads; labs sort to the back.
    *
-   * `getCaseStudies` orders by `publishedAt`, and the two illustrative builds
-   * happen to carry the latest dates — so this section opened on two projects
-   * badged SAMPLE. That was survivable when the section sat at beat 6. It is
-   * not now that it answers the hero directly. The sort is stable, so within
-   * each group the date order is preserved.
+   * `getCaseStudies` orders by `publishedAt`, which put illustrative builds
+   * first simply because they carried the latest dates. Every project is
+   * currently a lab, so this is a no-op today — it earns its place the moment
+   * the first delivered engagement lands. The sort is stable, so within each
+   * group the date order is preserved.
    */
   const shown = useMemo(
     () => [...caseStudies].sort((a, b) => Number(Boolean(a.sample)) - Number(Boolean(b.sample))),
@@ -273,17 +179,13 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   const visible = platform ? shown.filter(cs => cs.platform === platform) : shown
 
   /**
-   * The panel always has something to show, and what it shows is always in the
-   * grid above it — picking a filter that excludes the open project moves the
-   * panel to the first project that survived rather than stranding it.
+   * A per-card badge only means something when it separates one card from
+   * another. When every visible project is a lab it is six repetitions of the
+   * same word, so the qualification moves up to the section and is stated once,
+   * plainly. Flip any project to `sample: false` and the per-card flags return
+   * on their own.
    */
-  const active = visible.find(cs => cs.slug === activeSlug) ?? visible.find(cs => cs.featured) ?? visible[0]
-
-  const sceneStyle = {
-    '--work-tone': WORK_TONES[active?.slug ?? ''] ?? 'var(--accent)'
-  } as CSSProperties
-
-  const activeTags = active ? workTags(active) : null
+  const allLabs = visible.length > 0 && visible.every(cs => cs.sample)
 
   return (
     <section id='portfolio' className={`${SECTION_ANCHOR} work-story-section`}>
@@ -332,33 +234,41 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           </div>
         )}
 
+        {allLabs && (
+          <p className='work-lab-note'>
+            Every system below is an architecture lab — designed, built and run end to end, with the figures stated as
+            target outcomes rather than measured client results.
+          </p>
+        )}
+
         {/* Six cards, all six visible. The previous rail showed one project at a
             time and had to abbreviate every title to fit 84px — "Autonomous RAG
             Knowledge Base & Document Intelligence System" became "Company
             knowledge search". A card has room for the name a client would
             recognise. */}
-        <ul ref={ref} className='work-gallery' style={{ opacity: inView ? 1 : 0 }}>
+        <ul ref={ref} className='work-gallery'>
           {visible.map((cs, index) => {
             const gallery = workViews(cs)
             const viewIndex = Math.min(views[cs.slug] ?? 0, gallery.length - 1)
             const view = gallery[viewIndex]
             const outcome = cs.keyOutcome
-            const isActive = cs.slug === active?.slug
             const tags = workTags(cs)
 
+            /**
+             * A cascade you can actually see: each card lifts 44px, comes out
+             * of a slight recede and fades in, 110ms behind the one before it,
+             * so six cards read as a hand being dealt rather than a block
+             * appearing. `style` carries only the tone token — motion owns
+             * transform and opacity, and the two must not both drive them.
+             */
             return (
-              <li
+              <motion.li
                 key={cs.slug}
                 className='work-card'
-                data-active={isActive ? 'true' : 'false'}
-                style={
-                  {
-                    '--work-tone': WORK_TONES[cs.slug] ?? 'var(--accent)',
-                    transform: inView ? 'none' : 'translateY(24px)',
-                    transition: `opacity .8s cubic-bezier(0.16,1,0.3,1) ${index * 80}ms, transform .8s cubic-bezier(0.16,1,0.3,1) ${index * 80}ms`,
-                    opacity: inView ? 1 : 0
-                  } as CSSProperties
-                }
+                style={{ '--work-tone': WORK_TONES[cs.slug] ?? 'var(--accent)' } as CSSProperties}
+                initial={{ opacity: 0, y: 44, scale: 0.94 }}
+                animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 44, scale: 0.94 }}
+                transition={reduced ? { duration: 0 } : { duration: 0.8, delay: index * 0.11, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className='work-card-frame'>
                   {view && (
@@ -372,27 +282,31 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                       className='work-card-image'
                     />
                   )}
-                  {/* Only the exception is marked. "Case study" is the default
-                      and printing it four times told the reader nothing. */}
-                  {cs.sample && <span className='work-card-flag'>Architecture lab</span>}
+                  {/* Only the exception is marked. A badge repeated on every
+                      card is decoration, not information. */}
+                  {cs.sample && !allLabs && <span className='work-card-flag'>Architecture lab</span>}
                 </div>
 
                 {gallery.length > 1 && (
                   <div className='work-card-views' role='group' aria-label={`Views of ${cs.title ?? cs.slug}`}>
                     {gallery.map((item, itemIndex) => (
-                      <button
+                      <motion.button
                         key={item.key}
                         type='button'
                         className='work-card-view'
                         aria-pressed={itemIndex === viewIndex}
                         aria-label={`Show ${item.label}`}
+                        initial={false}
+                        animate={itemIndex === viewIndex ? 'active' : 'inactive'}
+                        variants={THUMB_VARIANTS}
+                        transition={reduced ? { duration: 0 } : { duration: 0.3, ease: 'easeOut' }}
                         onClick={() => setViews(current => ({ ...current, [cs.slug]: itemIndex }))}
                       >
                         {/* The thumbnail is the label. A diagram, a UI mockup
                             and a photograph are told apart at a glance, so the
                             name only needs to exist for screen readers. */}
                         <img src={item.src} alt='' aria-hidden='true' width={280} height={175} loading='lazy' />
-                      </button>
+                      </motion.button>
                     ))}
                   </div>
                 )}
@@ -410,9 +324,8 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     <button
                       type='button'
                       className='work-card-select'
-                      aria-expanded={isActive}
-                      aria-controls={PANEL_ID}
-                      onClick={() => setActiveSlug(cs.slug)}
+                      aria-haspopup='dialog'
+                      onClick={() => setSelectedStudy(cs)}
                     >
                       {cs.title ?? workLabel(cs)}
                     </button>
@@ -432,7 +345,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                     {[tags.platform, ...tags.tools.slice(0, 2)].filter(Boolean).join(' · ')}
                   </p>
                 </div>
-              </li>
+              </motion.li>
             )
           })}
         </ul>
@@ -440,93 +353,6 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
         {/* The written argument stays on the page rather than behind a modal:
             THEN/NOW is the whole thesis of this portfolio, and a reader who
             never clicks through should still meet it. */}
-        <div className='work-detail' id={PANEL_ID} style={sceneStyle} aria-live='polite'>
-          {active && (
-            <AnimatePresence mode='wait' initial={false}>
-              <motion.article
-                key={active.slug}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <div className='work-detail-head'>
-                  <span className='work-detail-context'>{active.organisation ?? workLabel(active)}</span>
-                  <span className='work-detail-status'>{workStatus(active).label}</span>
-                </div>
-
-                {/* Full width and unobstructed. This is the one asset a reader
-                    cannot get from a competitor's portfolio, and it spent the
-                    last revision cropped behind a desk photo. */}
-                <Canvas cs={active} priority />
-
-                <div className='work-cinema-story'>
-                  <div className='work-cinema-story-main'>
-                    <div className='work-claim'>
-                      <h3 style={{ fontFamily: DISPLAY_FONT }}>{active.impactHighlight ?? active.title}</h3>
-                      {active.keyOutcome && (
-                        <p className='work-claim-figure'>
-                          <strong style={{ fontFamily: DISPLAY_FONT }}>{active.keyOutcome.value}</strong>
-                          <span>{active.keyOutcome.label}</span>
-                          <em>{active.sample ? 'target outcome' : 'measured'}</em>
-                        </p>
-                      )}
-                    </div>
-
-                    {/* The two halves are the same pair of facts the section
-                        always carried, but weighted: THEN recedes, NOW holds
-                        full ink, so the reader watches the change rather than
-                        reading two columns. */}
-                    <div className='work-shift'>
-                      <div className='work-shift-half work-shift-then'>
-                        <small>THEN</small>
-                        <p>{active.problem ?? WORK_USE_CASES[active.slug] ?? active.description}</p>
-                      </div>
-
-                      <span className='work-shift-hinge' aria-hidden='true' />
-
-                      <div className='work-shift-half work-shift-now'>
-                        <small>NOW</small>
-                        <p>{active.solution ?? WORK_USE_CASES[active.slug] ?? active.description}</p>
-                      </div>
-                    </div>
-
-                    <div className='work-cinema-tech' aria-label='Platform, tools and AI models used'>
-                      <small>BUILT WITH</small>
-                      <div>
-                        {activeTags?.platform && (
-                          <span className='work-cinema-tech-platform'>PLATFORM · {activeTags.platform}</span>
-                        )}
-                        {activeTags?.tools.map(tool => (
-                          <span key={tool}>{tool}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className='work-cinema-result'>
-                    {active.roi && active.roi.length > 1 && (
-                      <div className='work-story-secondary-metrics'>
-                        {active.roi.slice(1, 3).map(metric => (
-                          <span key={metric.label}>
-                            <b>{metric.value}</b>
-                            <small>{metric.label}</small>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    <div className='flex flex-wrap items-center gap-2.5'>
-                      <button type='button' onClick={() => setSelectedStudy(active)} className='work-story-cta'>
-                        Explore case study <Ico d={P.arrow} size={14} />
-                      </button>
-                      <AuxLinks cs={active} />
-                    </div>
-                  </div>
-                </div>
-              </motion.article>
-            </AnimatePresence>
-          )}
-        </div>
 
         {visible.length === 0 && (
           <p className='text-fine text-ink-3 py-16 text-center'>Nothing built on this platform yet.</p>
