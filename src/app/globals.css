@@ -2117,6 +2117,19 @@ body::after {
   max-width: none;
 }
 
+/* `.saas-section-intro h2` sets `font-size: … !important`, which silently
+   defeats the `titleClassName` prop SectionIntro exposes for exactly this —
+   every section renders at the same forced size regardless of what it asks
+   for. Overriding by specificity here rather than unpicking that rule, which
+   governs all eleven sections and is its own change.
+   This column is ~670px wide; at the forced 108px the heading ran to four
+   lines and pushed the body copy into the bottom third of the panel. */
+.experience-intro .saas-section-intro h2 {
+  font-size: clamp(1.9rem, 2.6vw, 3.25rem) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -0.03em !important;
+}
+
 .experience-history {
   min-width: 0;
 }
