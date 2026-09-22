@@ -233,13 +233,20 @@ export function HowItWorksSection() {
        * The reference used `200vw`, which at 1920px is 3840px of scrolling to
        * move a rail 972px — four screens to travel less than one — and which
        * gets *longer* on a wider monitor, the opposite of what a height problem
-       * needs. One screen to hold the frame plus the travel itself makes a
-       * pixel of scroll worth roughly a pixel of movement.
+       * needs. Sizing from the travel makes a pixel of scroll worth roughly a
+       * pixel of movement.
+       *
+       * PACE is the dial. Higher is slower: the rail covers the same distance
+       * over more scroll, so each step holds the frame longer. It is also the
+       * only thing standing between this section and its old height, so it
+       * trades directly against the scroll it was shortened to save.
        */
+      const PACE = 1.7
+
       if (pinRef.current) {
         pinRef.current.style.setProperty(
           '--process-track',
-          `${Math.round(viewport.clientHeight + distance * (mobile ? 1.6 : 1.1))}px`
+          `${Math.round(viewport.clientHeight + distance * PACE)}px`
         )
         ScrollTrigger.refresh()
       }
