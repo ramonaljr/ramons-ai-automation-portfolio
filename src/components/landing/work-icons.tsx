@@ -78,17 +78,31 @@ export function WorkLink({
   href,
   label,
   icon,
-  sameTab = false
+  sameTab = false,
+  onClick
 }: {
-  href: string | null
+  href?: string | null
   label: string
   icon: React.ReactNode
 
   /** Internal routes stay in the tab; a walkthrough or a repo does not. */
   sameTab?: boolean
+
+  /** Given instead of `href` when the action happens on this page. */
+  onClick?: () => void
 }) {
   const className =
     'work-aux-link border-rule-strong text-meta text-ink inline-flex items-center gap-2 rounded-full border px-4 py-2.5 font-mono tracking-wide transition-all'
+
+  // An action rather than a destination, so it is a button and never inert.
+  if (onClick) {
+    return (
+      <button type='button' className={className} onClick={onClick}>
+        {icon}
+        {label}
+      </button>
+    )
+  }
 
   if (!href) {
     return (

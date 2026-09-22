@@ -275,14 +275,14 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
                   <div className='work-card-links'>
                     <WorkLink href={linkOf(cs.videoUrl)} label='Walkthrough' icon={<VideoIcon size={12} />} />
                     <WorkLink href={linkOf(cs.repoUrl)} label='GitHub' icon={<GitHubIcon size={12} />} />
-                    {/* Always live — the case-study page exists for every
-                        project, so this one never sits inert. Same page the
-                        dialog's "Read full case study" opens. */}
+                    {/* Opens the dialog, which is where the case study is read.
+                        Going straight to /case-study from here would duplicate
+                        the dialog's own "Read full case study" and skip the
+                        canvas, the views and the metrics on the way. */}
                     <WorkLink
-                      href={`/case-study/${cs.slug}`}
                       label='Read case study'
-                      icon={<Ico d={P.external} size={12} />}
-                      sameTab
+                      icon={<Ico d={P.arrow} size={12} />}
+                      onClick={() => setSelectedStudy(cs)}
                     />
                   </div>
                 </div>
