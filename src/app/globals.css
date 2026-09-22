@@ -3060,205 +3060,333 @@ body::after {
   .build-guard-event { animation: none; }
 }
 
-/* ── How it works: full-screen split-scroll sequence ────────────────────── */
+/* ── How it works: horizontal pinned timeline ─────────────────────────────
+   Replaces a vertical page-per-step sequence that cost six viewports of
+   scroll. The track buys the scroll, the sticky layer holds the frame still,
+   and the slider translates across it. Height is viewport-WIDTH driven, which
+   is what the reference this came from does — it means the track grows on wide
+   monitors, so `--process-track` is the one number to turn if it gets long. */
 .process-section {
   overflow: clip;
   padding-right: 0;
-  padding-left: 0;
 }
 
-.process-section-head {
-  padding-inline: clamp(1.5rem, 5vw, 5rem);
+.process-timeline-section {
+  overflow: clip;
 }
 
-.process-story {
-  /* Viewports of scroll spent per step. At 1 the six-step story ate 7
-     viewports — 35% of the whole page — and pushed Experience past scroll
-     position 12,000px, where almost nobody reaches it. The steps all still
-     play; they just need less scroll each. Mobile gets less again, because a
-     pinned sequence is far more expensive on a phone. */
-  --process-page-scroll: 0.62;
-
+.process-timeline-head {
   position: relative;
-  height: calc((var(--process-pages) * var(--process-page-scroll) + 1) * 100svh);
-  margin-top: 5rem;
-}
-
-@media (max-width: 767px) {
-  .process-story {
-    --process-page-scroll: 0.45;
-  }
-}
-
-.process-story-sticky {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: hidden;
-  isolation: isolate;
-  background: color-mix(in oklch, var(--ground) 24%, transparent);
-}
-
-.process-story-page {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.process-story-page[data-position='active'] {
   z-index: 2;
 }
 
-.process-story-half {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  display: grid;
-  width: 50%;
-  place-items: center;
-  overflow: hidden;
-  transition: transform 0.95s cubic-bezier(0.76, 0, 0.24, 1);
+.process-timeline-pin {
+  --process-track: 200vw;
+
+  position: relative;
+  height: var(--process-track);
+  margin-top: 3rem;
 }
 
-.process-story-half-left { left: 0; }
-.process-story-half-right { right: 0; }
-.process-story-page[data-position='before'] .process-story-half-left { transform: translateY(-100%); }
-.process-story-page[data-position='before'] .process-story-half-right { transform: translateY(100%); }
-.process-story-page[data-position='after'] .process-story-half-left { transform: translateY(100%); }
-.process-story-page[data-position='after'] .process-story-half-right { transform: translateY(-100%); }
+.process-timeline-stick {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  height: 100svh;
+  padding: clamp(4.5rem, 7vw, 7rem) clamp(1.25rem, 4vw, 4rem) clamp(2rem, 4vw, 4rem);
+  overflow: hidden;
 
-.process-story-copy {
+  /* The timeline sits over the autumn background, which is busy enough to eat
+     small type. This is the same ground wash the sequence it replaces used. */
+  background: color-mix(in oklch, var(--ground) 30%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+/* Only the rail scrolls sideways; the stage beside it stays put. */
+.process-timeline-viewport {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* `max-content` so the row is exactly as wide as the steps make it — the
+   scroll distance is then measured from the overflow rather than guessed. */
+.process-timeline-slider {
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  height: 100%;
+  will-change: transform;
+}
+
+/* The active step's visual, in place of the reference's stock photograph. */
+.process-timeline-stage {
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  padding: clamp(4rem, 7vw, 8rem);
-  background: color-mix(in oklch, var(--ground) 84%, transparent);
+  flex-shrink: 0;
+  gap: 0.9rem;
+  width: clamp(16rem, 24vw, 28rem);
+  height: min(100%, 32rem);
+  padding: clamp(1rem, 1.6vw, 1.6rem);
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 1vw;
+  background: color-mix(in oklch, var(--ground) 86%, transparent);
+  backdrop-filter: blur(10px);
 }
 
-.process-story-kicker,
-.process-story-visual-caption {
+.process-timeline-stage-number {
   color: var(--accent);
-  font-family: var(--font-mono), ui-monospace, monospace;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+}
+
+.process-timeline-stage-card {
+  display: grid;
+  place-items: center;
+  flex: 1;
+  min-height: 0;
+  padding: clamp(0.6rem, 1vw, 1rem);
+  border: 1px solid var(--rule);
+  border-radius: 0.7rem;
+  background: color-mix(in oklch, var(--ground) 94%, transparent);
+}
+
+.process-timeline-stage-caption {
+  color: color-mix(in oklch, var(--ink) 45%, transparent);
+  font-family: var(--font-mono), monospace;
   font-size: 0.7rem;
   letter-spacing: 0.16em;
 }
 
-.process-story-copy h3 {
-  max-width: 12ch;
-  margin-top: 2rem;
-  color: var(--ink);
-  font-size: clamp(3.5rem, 6vw, 7rem);
-  font-weight: 400;
-  letter-spacing: -0.06em;
-  line-height: 0.94;
-}
+.process-timeline-track {
+  /* One pitch, shared, so the stagger below can be exactly half of it. */
+  --tl-col: clamp(18rem, 26vw, 30rem);
+  --tl-gap: clamp(4rem, 8vw, 12vw);
 
-.process-story-copy .process-step-summary {
-  max-width: 32rem;
-  margin-top: 2rem;
-  color: var(--ink);
-  font-size: clamp(1.15rem, 1.5vw, 1.5rem);
-  font-weight: 500;
-  line-height: 1.4;
-}
-
-.process-story-copy > p:last-child {
-  max-width: 35rem;
-  margin-top: 0.8rem;
-  color: var(--ink-2);
-  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
-  line-height: 1.7;
-}
-
-.process-story-visual {
   position: relative;
-  display: grid;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  width: max-content;
   height: 100%;
-  place-items: center;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 72% 24%, color-mix(in oklch, var(--accent) 18%, transparent), transparent 36%),
-    linear-gradient(145deg, color-mix(in oklch, var(--surface-raised) 58%, transparent), color-mix(in oklch, var(--ground) 34%, transparent));
 }
 
-.process-story-visual-number {
+/* The rule the steps hang from, drawn on scroll. */
+.process-tl-rule {
   position: absolute;
-  right: -0.02em;
-  bottom: -0.24em;
-  color: color-mix(in oklch, var(--accent) 9%, transparent);
-  font-family: var(--font-editorial), Georgia, serif;
-  font-size: clamp(20rem, 48vw, 45rem);
-  line-height: 1;
-  pointer-events: none;
-}
-
-.process-story-visual-card {
-  position: relative;
-  z-index: 1;
-  width: min(76%, 35rem);
-  border: 1px solid var(--rule);
-  border-radius: 1.4rem;
-  background: var(--surface-raised);
-  box-shadow: 0 3rem 7rem -4rem color-mix(in oklch, var(--ink) 46%, transparent);
-  transform: rotate(-2deg);
-}
-
-.process-story-page:nth-of-type(even) .process-story-visual-card { transform: rotate(2deg); }
-
-.process-story-visual-caption {
-  position: absolute;
-  z-index: 1;
-  bottom: 8%;
-  left: 12%;
-}
-
-.process-story-topline,
-.process-story-progress,
-.process-story-scroll-hint {
-  position: absolute;
-  z-index: 5;
-  color: var(--ink-2);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.66rem;
-  letter-spacing: 0.16em;
-  pointer-events: none;
-}
-
-.process-story-topline {
-  top: 6rem;
-  right: 4rem;
-  left: 4rem;
+  inset-inline: 0;
+  top: 49%;
+  z-index: 0;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
 }
 
-.process-story-progress {
-  bottom: 2.5rem;
-  left: 4rem;
-  display: flex;
-  gap: 0.35rem;
-}
-
-.process-story-progress span {
-  width: 1.5rem;
-  height: 2px;
-  background: var(--rule);
-  transition: width 0.4s ease, background 0.4s ease;
-}
-
-.process-story-progress span[data-active='true'] {
-  width: 3rem;
+.process-tl-cap {
+  flex-shrink: 0;
+  width: 0.8vw;
+  height: 0.8vw;
+  min-width: 0.4rem;
+  min-height: 0.4rem;
+  border-radius: 50%;
   background: var(--accent);
 }
 
-.process-story-scroll-hint {
-  right: 4rem;
-  bottom: 2.2rem;
+.process-tl-line {
+  width: 0;
+  height: 1px;
+  border-radius: 999px;
+  background: var(--accent);
 }
+
+.process-tl-row {
+  display: flex;
+  align-items: stretch;
+  height: 50%;
+  min-height: 0;
+}
+
+.process-tl-rowhead {
+  display: flex;
+  flex-shrink: 0;
+  align-items: flex-start;
+  width: 18vw;
+  padding-top: 2vw;
+  color: color-mix(in oklch, var(--ink) 45%, transparent);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+}
+
+.process-tl-row-bottom .process-tl-rowhead {
+  align-items: flex-end;
+  padding-top: 0;
+  padding-bottom: 2vw;
+}
+
+.process-tl-items {
+  display: flex;
+  gap: var(--tl-gap);
+  height: 100%;
+  min-height: 0;
+}
+
+/* The bottom row sits half a pitch to the right, so steps interleave along the
+   rail instead of stacking into three aligned columns. Without this the rail
+   only ever presents three horizontal positions, and the stage pane beside it
+   could never reach steps four to six — half the visuals never showed. */
+.process-tl-row-bottom .process-tl-items {
+  margin-left: calc((var(--tl-col) + var(--tl-gap)) / 2);
+}
+
+.process-tl-item {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--tl-col);
+  height: 100%;
+  min-height: 0;
+  padding-inline: clamp(1.25rem, 2.5vw, 3vw);
+}
+
+/* The bottom row's marker hangs from the rule rather than standing on the
+   floor, so its stalk occupies the upper half of the cell. */
+.process-tl-row-bottom .process-tl-marker {
+  bottom: auto;
+  height: clamp(2.5rem, 5vw, 5rem);
+}
+
+/* The stalk and dot share a column on the item's leading edge: the offset sits
+   on this wrapper so GSAP owns `transform` on the dot outright, rather than
+   fighting a CSS translate it would have to parse and preserve. */
+.process-tl-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1vw;
+  transform: translateX(-50%);
+}
+
+.process-tl-dot {
+  flex-shrink: 0;
+  width: 1vw;
+  height: 1vw;
+  min-width: 0.5rem;
+  min-height: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.process-tl-stalk {
+  flex: 1;
+  width: 1px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+/* The rail marks the step the stage pane is showing. Emphasis rather than
+   position, because the last columns never reach a reading line early enough
+   to also catch the first — see the note on `onUpdate`. */
+.process-tl-item {
+  transition: opacity 0.45s ease;
+}
+
+.process-tl-item[data-active='false'] {
+  opacity: 0.4;
+}
+
+.process-tl-item[data-active='true'] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .process-tl-item[data-active='false'] {
+    opacity: 1;
+  }
+}
+
+.process-tl-copy-block {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vw;
+}
+
+.process-tl-row-bottom .process-tl-copy-block {
+  justify-content: flex-start;
+  height: 100%;
+  padding-top: clamp(2.5rem, 5vw, 5rem);
+}
+
+.process-tl-title {
+  font-size: clamp(1.35rem, 2.2vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.process-tl-text {
+  width: 90%;
+  color: color-mix(in oklch, var(--ink) 66%, transparent);
+  font-size: clamp(0.95rem, 1.3vw, 1.45rem);
+  line-height: 1.2;
+}
+
+@media (max-width: 600px) {
+  .process-timeline-pin {
+    --process-track: 400vh;
+  }
+
+  .process-timeline-slider {
+    gap: 8vw;
+    width: 760vw;
+    height: 78svh;
+    padding-inline: 7vw;
+  }
+
+  .process-timeline-stage {
+    width: 84vw;
+    border-radius: 4vw;
+  }
+
+  .process-tl-rowhead {
+    width: 30vw;
+  }
+
+  .process-tl-items {
+    gap: 34vw;
+  }
+
+  .process-tl-item {
+    width: 66vw;
+    padding-inline: 6vw;
+  }
+
+  .process-tl-marker,
+  .process-tl-dot {
+    width: 2.4vw;
+  }
+
+  .process-tl-dot {
+    height: 2.4vw;
+  }
+
+  .process-tl-cap {
+    width: 2vw;
+    height: 2vw;
+  }
+}
+
 
 .process-message {
   display: block;
@@ -3591,42 +3719,79 @@ body::after {
 }
 
 @media (max-width: 767px) {
-  .process-story { margin-top: 3rem; }
-  .process-story-half { right: 0; left: 0; width: 100%; }
-  .process-story-half-visual { top: 0; bottom: auto; height: 43%; }
-  .process-story-half-copy { top: 43%; bottom: 0; height: 57%; }
-  .process-story-page[data-position='before'] .process-story-half-left { transform: translateY(-100svh); }
-  .process-story-page[data-position='before'] .process-story-half-right { transform: translateY(100svh); }
-  .process-story-page[data-position='after'] .process-story-half-left { transform: translateY(100svh); }
-  .process-story-page[data-position='after'] .process-story-half-right { transform: translateY(-100svh); }
-  .process-story-copy { padding: 1.25rem 1.5rem 2.75rem; }
-  .process-story-copy h3 { margin-top: 0.6rem; font-size: clamp(2.2rem, 10vw, 3.4rem); }
-  .process-story-copy .process-step-summary { margin-top: 0.85rem; font-size: 1rem; }
-  .process-story-copy > p:last-child { margin-top: 0.45rem; font-size: 0.86rem; line-height: 1.5; }
-  .process-story-visual-card { width: min(72%, 20rem); }
-  .process-story-visual-caption { bottom: 5%; left: 7%; font-size: 0.55rem; }
-  .process-story-topline { top: 5.5rem; right: 1.5rem; left: 1.5rem; }
-  .process-story-progress { bottom: 1rem; left: 1.5rem; }
-  .process-story-scroll-hint { right: 1.5rem; bottom: 0.8rem; font-size: 0.52rem; }
   .process-conversation,
   .process-map,
   .process-terminal,
   .process-monitor { min-height: 12.5rem; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .process-story { height: auto; }
-  .process-story-sticky { position: relative; height: auto; overflow: visible; }
-  .process-story-page { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: 24rem; }
-  .process-story-half { position: relative; top: auto; right: auto; bottom: auto; left: auto; width: 100%; transform: none !important; transition: none; }
-  .process-story-topline,
-  .process-story-progress,
-  .process-story-scroll-hint { display: none; }
-  @media (max-width: 767px) {
-    .process-story-page { display: flex; flex-direction: column; }
-    .process-story-half-visual { min-height: 16rem; }
-    .process-story-half-copy { min-height: 20rem; }
+/* The unpinned layout, shared by phones and by anyone who asked for less
+   movement: the rail becomes an ordinary grid that scrolls normally and costs
+   no extra viewports at all. */
+@media (max-width: 600px) {
+  .process-timeline-pin { height: auto; }
+  .process-timeline-stick { position: relative; height: auto; overflow: visible; padding: 0; background: none; backdrop-filter: none; }
+
+  .process-timeline-slider {
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+    padding-inline: 0;
   }
+
+  .process-timeline-stage { width: 100%; height: auto; min-height: 17rem; }
+  .process-timeline-track { width: 100%; height: auto; }
+  .process-tl-rule { display: none; }
+  .process-tl-row { display: block; height: auto; }
+  .process-tl-rowhead { width: auto; padding: 0 0 0.75rem; }
+
+  .process-tl-items,
+  .process-tl-row-bottom .process-tl-items {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    height: auto;
+    margin-left: 0;
+  }
+
+  .process-tl-item { width: auto; height: auto; padding-inline: 1rem; }
+  .process-tl-item[data-active='false'] { opacity: 1; }
+  .process-tl-marker { display: none; }
+  .process-tl-row-bottom .process-tl-copy-block { height: auto; padding-top: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .process-timeline-pin { height: auto; }
+  .process-timeline-stick { position: relative; height: auto; overflow: visible; }
+
+  .process-timeline-slider {
+    flex-direction: column;
+    gap: 2.5rem;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+    padding-inline: 0;
+  }
+
+  .process-timeline-stage { width: 100%; height: auto; min-height: 18rem; }
+  .process-timeline-track { height: auto; }
+  .process-tl-rule { display: none; }
+
+  .process-tl-row { display: block; height: auto; }
+  .process-tl-rowhead { width: auto; padding: 0 0 0.75rem; }
+
+  .process-tl-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 2rem;
+    height: auto;
+  }
+
+  .process-tl-item { width: auto; height: auto; padding-inline: 1.25rem; }
+  .process-tl-marker { display: none; }
+  .process-tl-row-bottom .process-tl-copy-block { height: auto; padding-bottom: 0; }
   .process-typing i,
   .process-audit-row,
   .process-terminal-progress i,
