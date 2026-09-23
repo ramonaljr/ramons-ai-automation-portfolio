@@ -3903,6 +3903,280 @@ body::after {
   outline: none !important;
 }
 
+/* ── Work canvas: the workflow, running ────────────────────────────────────
+   Dark, like the editor these systems are actually built in. Against the warm
+   page the canvases finally come forward — as pale cream on a pale cream card
+   on a pale cream background, six of them read as one image repeated.
+
+   The SVGs keep their own colours as presentation attributes, which any CSS
+   rule outranks, so the re-theme needs no edits to the files themselves. */
+.work-canvas {
+  --wc-ground: oklch(0.205 0.012 55);
+  --wc-node: oklch(0.265 0.012 55);
+  --wc-ink: oklch(0.95 0.012 75);
+  --wc-span: 1.35s;
+  --wc-lead: 0s;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--wc-ground);
+}
+
+.work-canvas-art,
+.work-canvas-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.work-canvas-fallback {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.work-canvas svg > rect:first-of-type {
+  fill: var(--wc-ground);
+}
+
+.work-canvas svg pattern circle {
+  fill: var(--wc-ink);
+  fill-opacity: 0.07;
+}
+
+.work-canvas svg g[filter] > rect {
+  fill: var(--wc-node);
+  stroke: var(--wc-ink);
+  stroke-opacity: 0.12;
+}
+
+.work-canvas svg text {
+  fill: var(--wc-ink);
+}
+
+/* Edges take the project's tone, lifted toward white so a mid-lightness hue
+   still reads on near-black. */
+.work-canvas svg [data-wc='edge'] {
+  stroke: color-mix(in oklch, var(--work-tone, var(--accent)) 62%, white);
+  stroke-opacity: 0.9;
+}
+
+/* Resting before its first run: empty ground, nothing drawn yet. */
+.work-canvas[data-run='idle'] svg [data-wc='node'],
+.work-canvas[data-run='idle'] svg [data-wc='check'] {
+  opacity: 0;
+}
+
+.work-canvas[data-run='idle'] svg [data-wc='edge'] {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* The run. `--t` is each element's position left to right, so the wave moves
+   through the workflow in the order the work does. */
+.work-canvas[data-run='go'] svg [data-wc='node'] {
+  opacity: 0;
+  animation: wc-node 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
+}
+
+.work-canvas[data-run='go'] svg [data-wc='edge'] {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: wc-edge 0.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.1s);
+}
+
+.work-canvas[data-run='go'] svg [data-wc='check'] {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wc-check 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.5s);
+}
+
+@keyframes wc-node {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes wc-edge {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wc-check {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Status: RUNNING while the wave crosses, then a count of the nodes that
+   completed. Both sit in one grid cell, so the swap never reflows. */
+.work-canvas-status {
+  position: absolute;
+  bottom: 0.7rem;
+  left: 0.8rem;
+  display: grid;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid color-mix(in oklch, var(--wc-ink) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--wc-ground) 80%, transparent);
+  color: var(--wc-ink);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  backdrop-filter: blur(6px);
+}
+
+.wc-running,
+.wc-done {
+  display: inline-flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.wc-running i {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--work-tone, var(--accent)) 62%, white);
+  animation: wc-pulse 0.9s ease-in-out infinite;
+}
+
+.wc-done b {
+  color: oklch(0.78 0.16 150);
+  font-weight: 400;
+}
+
+.work-canvas:not([data-run='go']) .wc-running,
+.work-canvas[data-run='idle'] .wc-done {
+  visibility: hidden;
+}
+
+.work-canvas[data-run='go'] .wc-running {
+  animation: wc-hide 0s linear forwards;
+  animation-delay: calc(var(--wc-lead) + var(--wc-span) + 0.9s);
+}
+
+.work-canvas[data-run='go'] .wc-done {
+  opacity: 0;
+  animation: wc-show 0.35s ease forwards;
+  animation-delay: calc(var(--wc-lead) + var(--wc-span) + 0.9s);
+}
+
+@keyframes wc-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes wc-hide {
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes wc-show {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-canvas svg [data-wc] {
+    animation: none !important;
+    opacity: 1 !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+/* The card frame goes dark with its canvas, so the wipe reveals the editor
+   rather than a pale ground under it. */
+.work-card-frame[data-view='canvas'] {
+  background: oklch(0.205 0.012 55);
+}
+
+/* Thumbnails of the canvas match the dark canvas they switch to. Inverting
+   flips the ground; the half-turn brings the node colours back to their hues. */
+.work-card-view[data-view='canvas'] img {
+  filter: invert(0.9) hue-rotate(180deg) saturate(1.25);
+}
+
+/* A soft spotlight in the project's tone follows the pointer across the card.
+   Behind the content (the card isolates its own stack), so it tints the
+   ground without ever washing over the text. */
+.work-card {
+  isolation: isolate;
+}
+
+.work-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    22rem circle at var(--mx, 50%) var(--my, 30%),
+    color-mix(in oklch, var(--work-tone) 18%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.work-card:hover::before {
+  opacity: 1;
+}
+
+/* Counting digits hold their width, so a figure never jitters as it climbs. */
+.work-card-outcome strong {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Same aspect as the canvas files, capped so the view strip still clears the
+   dialog's pinned footer. */
+.work-dialog-canvas {
+  aspect-ratio: 14 / 9;
+  max-height: 400px;
+  width: 100%;
+}
+
+.work-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2.5rem;
+  margin-top: clamp(1.6rem, 2.4vw, 2.4rem);
+}
+
+.work-toolbar .work-filters,
+.work-toolbar .work-lab-note {
+  margin-top: 0;
+}
+
+.work-toolbar .work-lab-note {
+  max-width: 34rem;
+}
+
 /* ── Walkthrough and repo links ────────────────────────────────────────────
    Carried by both the card and the dialog. All six projects ship with empty
    `videoUrl` and `repoUrl` today, so the resting state is the inert one — the

@@ -10,6 +10,7 @@ import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 import { usePrefersReducedMotion } from '@/components/landing/motion'
 import { THUMB_VARIANTS, thumbTransition, WORK_TONES, workViews } from '@/lib/work-views'
+import { WorkCanvas } from '@/components/landing/work-canvas'
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
@@ -196,14 +197,29 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
                 {view.key === 'canvas' && study.stepCount && <span>{study.stepCount} STAGES</span>}
               </div>
 
-              <div className='bg-ground flex items-center justify-center overflow-hidden rounded-xl'>
-                <img
-                  key={view.key}
-                  src={view.src}
-                  alt={view.alt}
-                  className='h-auto max-h-[400px] w-full object-contain'
-                />
-              </div>
+              {/* The canvas runs here too, dark like the card that opened it,
+                  so the dialog never shows less than the card did. */}
+              {view.key === 'canvas' ? (
+                <div className='work-dialog-canvas overflow-hidden rounded-xl'>
+                  <WorkCanvas
+                    src={view.src}
+                    label={view.alt}
+                    idSuffix={`${study.slug}-dialog`}
+                    run={1}
+                    reduced={reduced}
+                    lead={0.2}
+                  />
+                </div>
+              ) : (
+                <div className='bg-ground flex items-center justify-center overflow-hidden rounded-xl'>
+                  <img
+                    key={view.key}
+                    src={view.src}
+                    alt={view.alt}
+                    className='h-auto max-h-[400px] w-full object-contain'
+                  />
+                </div>
+              )}
 
               {views.length > 1 && (
                 <div className='work-card-views mt-3' role='group' aria-label={`Views of ${study.title ?? study.slug}`}>
@@ -212,6 +228,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
                       key={item.key}
                       type='button'
                       className='work-card-view'
+                      data-view={item.key}
                       aria-pressed={index === viewIndex}
                       aria-label={`Show ${item.label}`}
                       initial={false}
