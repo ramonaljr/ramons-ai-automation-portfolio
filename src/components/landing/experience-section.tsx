@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 import { TENURES } from '@/lib/portfolio'
 import { useInView } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
@@ -40,6 +42,15 @@ const HOW_I_WORK = [
  */
 export function ExperienceJourney() {
   const { ref, inView } = useInView<HTMLDivElement>(0.06)
+
+  /**
+   * Which roles are expanded on phones. Below 768px each role shows its title,
+   * dates and headline achievement, with the description and skills behind a
+   * toggle: four full roles ran to five screens there. The toggle and the
+   * collapse are CSS-only above that width, so desktop is unchanged, and the
+   * text stays in the page for search either way.
+   */
+  const [open, setOpen] = useState<Record<string, boolean>>({})
 
   return (
     <div id='experience' className='about-journey'>
@@ -119,13 +130,30 @@ export function ExperienceJourney() {
                             </h4>
 
                             <p className='experience-role-achievement'>{role.achievement}</p>
-                            <p className='experience-role-description'>{role.description}</p>
 
-                            <ul className='experience-role-stack'>
-                              {role.stack.map(item => (
-                                <li key={item}>{item}</li>
-                              ))}
-                            </ul>
+                            <div
+                              id={`role-more-${role.index}`}
+                              className='experience-role-more'
+                              data-open={Boolean(open[role.index])}
+                            >
+                              <p className='experience-role-description'>{role.description}</p>
+
+                              <ul className='experience-role-stack'>
+                                {role.stack.map(item => (
+                                  <li key={item}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            <button
+                              type='button'
+                              className='experience-role-toggle'
+                              aria-expanded={Boolean(open[role.index])}
+                              aria-controls={`role-more-${role.index}`}
+                              onClick={() => setOpen(current => ({ ...current, [role.index]: !current[role.index] }))}
+                            >
+                              {open[role.index] ? 'Less' : 'More about this role'}
+                            </button>
                           </div>
                         </li>
                       )

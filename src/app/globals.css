@@ -5993,3 +5993,50 @@ div#experience.about-journey {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+/* ── Career history: collapsed on phones ─────────────────────────────────
+   See ExperienceJourney. Desktop shows everything and no toggle. */
+.experience-role-toggle {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .experience-role-more[data-open='false'] {
+    display: none;
+  }
+
+  .experience-role-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--rule-strong);
+    color: var(--ink);
+    font-size: 0.8125rem;
+    cursor: pointer;
+  }
+
+  .experience-role-toggle::after {
+    content: '+';
+    color: var(--accent);
+  }
+
+  .experience-role-toggle[aria-expanded='true']::after {
+    content: '−';
+  }
+
+  /* Collapsed roles are short, so the desktop rhythm around them read as
+     gaps rather than air. */
+  .experience-role {
+    padding: 1.1rem 0;
+  }
+
+  .experience-tenures {
+    gap: 2rem;
+  }
+
+  .experience-role-toggle {
+    margin-top: 0.5rem;
+  }
+}
