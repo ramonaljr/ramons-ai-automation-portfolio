@@ -162,9 +162,32 @@ const VISUALS: ReactNode[] = [
 /** The step whose top has passed this line of the viewport is the one shown. */
 const READING_LINE = 0.45
 
+/** How long each step holds the stage, in ms, when a fast scroll passes several at once. */
+const STEP_HOLD = 480
+
 export function HowItWorksSection() {
   const listRef = useRef<HTMLOListElement>(null)
+
+  // `target` is the step under the reading line; `active` is the one shown.
+  // Shown walks to target one step at a time, so a fast scroll still plays
+  // every stage in order instead of jumping from the first to the fourth.
+  const [target, setTarget] = useState(0)
   const [active, setActive] = useState(0)
+  const lastSwap = useRef(0)
+
+  useEffect(() => {
+    if (active === target) return
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const wait = reduced ? 0 : Math.max(0, STEP_HOLD - (performance.now() - lastSwap.current))
+
+    const timer = window.setTimeout(() => {
+      lastSwap.current = performance.now()
+      setActive(current => (reduced ? target : current + Math.sign(target - current)))
+    }, wait)
+
+    return () => window.clearTimeout(timer)
+  }, [active, target])
 
   useEffect(() => {
     const list = listRef.current
@@ -183,7 +206,7 @@ export function HowItWorksSection() {
         if (step.getBoundingClientRect().top <= line) next = index
       })
 
-      setActive(next)
+      setTarget(next)
     }
 
     const observer = new IntersectionObserver(update, {
