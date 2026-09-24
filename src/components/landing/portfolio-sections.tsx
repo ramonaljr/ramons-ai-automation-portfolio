@@ -126,7 +126,10 @@ function ServicesSection() {
                 style={cardAnim(i)}
               >
                 <span className='service-icon-square border-rule bg-ground group-hover:border-rule-strong flex h-14 w-14 items-center justify-center rounded-2xl border transition-[border-color,box-shadow] duration-300'>
-                  <span className='service-icon-glyph' style={{ '--icon-delay': `${i * -0.72}s` } as React.CSSProperties}>
+                  <span
+                    className='service-icon-glyph'
+                    style={{ '--icon-delay': `${i * -0.72}s` } as React.CSSProperties}
+                  >
                     <PixelIcon type={SERVICE_ICONS[i] ?? 'platform'} size={34} />
                   </span>
                 </span>
@@ -333,34 +336,41 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
       <IntroAnimation onDone={handleIntroDone} />
       <SiteNav />
 
-      <HeroSection ready={heroReady} />
-
-      {/* Everything from About down sits over the constellation field. The
-          wrapper is the positioning context; the canvas is sticky inside it so
-          one viewport of pixels covers the whole scroll range. */}
+      {/* The whole page, hero included, sits in one autumn environment. The
+          wrapper is the positioning context; the video and canvases are sticky
+          inside it so one viewport of pixels covers the whole scroll range. */}
       <div className='blossom-story-root relative isolate'>
         <BlossomStoryBackground />
         <ParticleField />
-        <ScrollAtmosphere />
 
         <div className='relative z-10'>
-          {/* Introduce the person behind the work before the full eight-project
+          <HeroSection ready={heroReady} />
+
+          {/* The three-act story layer starts at About, not the hero: its own
+              wrapper keeps "01 / The old way" from opening over the headline. */}
+          <div className='relative'>
+            <ScrollAtmosphere />
+
+            <div className='relative z-10'>
+              {/* Introduce the person behind the work before the full eight-project
               portfolio. This keeps the biography near the hero without asking
               the visitor to scroll through a long project showcase first. */}
-          <IntroSection />
-          <ProjectsSection caseStudies={caseStudies} />
-          <ServicesSection />
-          <HowItWorksSection />
-          <ExperienceSection />
-          <PlatformsSection />
+              <IntroSection />
+              <ProjectsSection caseStudies={caseStudies} />
+              <ServicesSection />
+              <HowItWorksSection />
+              <ExperienceSection />
+              <PlatformsSection />
 
-          {/* Corroboration immediately before the offer. Clearly labelled
+              {/* Corroboration immediately before the offer. Clearly labelled
               layout placeholders remain until approved client words arrive. */}
-          <TestimonialsSection />
-          <EngagementSection />
-          <FaqSection />
-          <ContactSection />
-          <SiteFooter />
+              <TestimonialsSection />
+              <EngagementSection />
+              <FaqSection />
+              <ContactSection />
+              <SiteFooter />
+            </div>
+          </div>
         </div>
       </div>
 

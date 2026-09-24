@@ -6,8 +6,6 @@ import { AnimatePresence, motion } from 'motion/react'
 
 import { HERO_STATS } from '@/lib/portfolio'
 import { CountUp, Cta, usePrefersReducedMotion } from '@/components/landing/motion'
-import { SaasFlowField } from '@/components/landing/saas-flow-field'
-import { PetalField } from '@/components/landing/petal-field'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 
@@ -58,9 +56,10 @@ export function HeroSection({ ready }: { ready?: boolean }) {
   const isVisible = ready ?? mounted
 
   return (
-    <section className='bg-ground relative flex min-h-dvh flex-col justify-center overflow-hidden'>
-      <SaasFlowField />
-      <PetalField className='z-4' />
+    <section className='hero-autumn relative flex min-h-dvh flex-col justify-center overflow-hidden'>
+      {/* No backdrop of its own: the autumn video and falling leaves behind
+          the whole page show through, so the hero and the sections below share
+          one scene. `.hero-autumn` only adds a wash behind the copy. */}
 
       <div className='relative z-10 mx-auto flex w-full max-w-390 flex-1 flex-col justify-center px-6 pt-32 pb-10 md:px-12 lg:px-20 2xl:max-w-440'>
         <div className='koisei-hero-copy w-full max-w-[62rem] text-left lg:max-w-[58%]'>
@@ -136,12 +135,14 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <div className='border-rule flex flex-wrap items-start justify-center gap-x-12 gap-y-8 border-t pt-8 lg:gap-x-20'>
+        {/* Three across at every width. Wrapping left the third figure alone
+            on its own row on phones. */}
+        <div className='border-rule grid grid-cols-3 items-start gap-x-4 border-t pt-8 sm:flex sm:justify-center sm:gap-x-12 lg:gap-x-20'>
           {HERO_STATS.map(stat => (
             <div key={stat.label} className='flex flex-col gap-1.5'>
               <span
                 data-countup
-                className='display-md text-ink text-3xl font-light lg:text-[2.5rem]'
+                className='display-md text-ink text-2xl font-light sm:text-3xl lg:text-[2.5rem]'
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 <CountUp start={isVisible}>{stat.value}</CountUp>
@@ -151,18 +152,6 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           ))}
         </div>
       </div>
-
-      {/* A tonal fade joins the hero to the routed system below. Keeping this
-          blur-free lets the petal-to-packet morph remain crisp in Chromium. */}
-      <div
-        className='pointer-events-none absolute inset-x-0 bottom-0 z-20'
-        style={{
-          height: '30%',
-          background:
-            'linear-gradient(to top, var(--ground) 0%, color-mix(in oklch, var(--ground) 85%, transparent) 35%,' +
-            ' color-mix(in oklch, var(--ground) 40%, transparent) 65%, transparent 100%)'
-        }}
-      />
     </section>
   )
 }

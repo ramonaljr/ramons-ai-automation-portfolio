@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react'
 
+import { leafEdge, leafTone, type Rgb } from '@/lib/autumn-leaves'
+
 type FlowPoint = { x: number; y: number }
 
 type FlowRoute = {
@@ -20,6 +22,7 @@ type AmbientShard = {
   size: number
   spin: number
   tone: number
+  color: Rgb
 }
 
 /**
@@ -113,6 +116,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
       const desktop = w >= 1024
       const count = desktop ? 10 : 7
+
       // Keep enough leaves in-frame for the drift to read as intentional
       // atmosphere, even through the translucent section veils.
       const shardCount = desktop ? 108 : 64
@@ -126,7 +130,8 @@ export function ParticleField({ className = '' }: { className?: string }) {
         sway: 10 + seeded(index + 607) * (desktop ? 34 : 22),
         size: 5 + seeded(index + 701) * 5.5,
         spin: (seeded(index + 809) - 0.5) * 0.72,
-        tone: seeded(index + 907)
+        tone: seeded(index + 907),
+        color: leafTone(seeded(index + 1009))
       }))
     }
 
@@ -136,9 +141,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
       const x = shard.x + Math.sin(now * 0.42 + shard.phase) * shard.sway
       const rotation = shard.phase + (reduced ? 0 : now * shard.spin)
       const alpha = 0.52 + shard.tone * 0.2
-      const red = Math.round(151 + shard.tone * 38)
-      const green = Math.round(72 + shard.tone * 43)
-      const blue = Math.round(39 + shard.tone * 27)
+      const edge = leafEdge(shard.color)
 
       ctx.save()
       ctx.translate(x, y)
@@ -148,13 +151,9 @@ export function ParticleField({ className = '' }: { className?: string }) {
       ctx.quadraticCurveTo(0, -shard.size * 1.15, shard.size * 1.7, 0)
       ctx.quadraticCurveTo(0, shard.size * 1.15, -shard.size * 1.7, 0)
       ctx.closePath()
-      ctx.fillStyle = dark
-        ? `rgba(224, 143, 92, ${alpha * 0.78})`
-        : `rgba(${red}, ${green}, ${blue}, ${alpha})`
+      ctx.fillStyle = `rgba(${shard.color.join(', ')}, ${dark ? alpha * 0.86 : alpha})`
       ctx.fill()
-      ctx.strokeStyle = dark
-        ? `rgba(255, 211, 169, ${alpha * 0.66})`
-        : `rgba(103, 54, 31, ${alpha * 0.78})`
+      ctx.strokeStyle = `rgba(${edge.join(', ')}, ${alpha * 0.78})`
       ctx.lineWidth = 0.65
       ctx.stroke()
       ctx.restore()
@@ -270,7 +269,6 @@ export function ParticleField({ className = '' }: { className?: string }) {
       const visibility = Math.max(0, Math.min(1, 1 - journey / (h * 0.72)))
 
       if (visibility <= 0) return
-
       ;[-1, 1].forEach((side, index) => {
         const entryX = side === -1 ? w * 0.12 : w * 0.88
         const innerX = side === -1 ? w * 0.22 : w * 0.78
@@ -282,9 +280,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
           { x: innerX, y: 96 }
         ]
 
-        ctx.strokeStyle = dark
-          ? `rgba(235, 240, 248, ${0.22 * visibility})`
-          : `rgba(132, 82, 62, ${0.16 * visibility})`
+        ctx.strokeStyle = dark ? `rgba(235, 240, 248, ${0.22 * visibility})` : `rgba(132, 82, 62, ${0.16 * visibility})`
         ctx.lineWidth = 0.9
         ctx.beginPath()
         ctx.moveTo(points[0].x, points[0].y)
@@ -293,14 +289,12 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
         ctx.stroke()
 
-        ctx.fillStyle = dark
-          ? `rgba(255, 255, 255, ${0.68 * visibility})`
-          : `rgba(126, 67, 51, ${0.52 * visibility})`
+        ctx.fillStyle = dark ? `rgba(255, 255, 255, ${0.68 * visibility})` : `rgba(126, 67, 51, ${0.52 * visibility})`
         ctx.beginPath()
         ctx.arc(innerX, 54, 1.5, 0, Math.PI * 2)
         ctx.fill()
 
-        const progress = ((now * 0.09 + index * 0.46) % 1 + 1) % 1
+        const progress = (((now * 0.09 + index * 0.46) % 1) + 1) % 1
         const packet = pointAlongRoute(points, progress)
         const red = dark ? Math.round(244 + 11 * progress) : Math.round(150 + 42 * progress)
         const green = dark ? Math.round(114 + 141 * progress) : Math.round(73 + 54 * progress)
@@ -377,7 +371,11 @@ export function ParticleField({ className = '' }: { className?: string }) {
       pointer = {
         x: event.clientX - rect.left,
         y: event.clientY - rect.top,
-        active: event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom
+        active:
+          event.clientX >= rect.left &&
+          event.clientX <= rect.right &&
+          event.clientY >= rect.top &&
+          event.clientY <= rect.bottom
       }
     }
 

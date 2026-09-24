@@ -39,10 +39,15 @@ export function GreetingWord({ className = '' }: { className?: string }) {
   const shift = reduced ? 0 : 24
 
   return (
-    <span className={`inline-flex overflow-hidden align-baseline ${className}`} style={{ fontFamily: FALLBACK_STACK }}>
+    <span
+      className={`relative inline-flex overflow-hidden align-baseline ${className}`}
+      style={{ fontFamily: FALLBACK_STACK }}
+    >
       {/* The live region announces each greeting rather than leaving screen
           readers with silently swapping text. */}
-      <AnimatePresence mode='wait' initial={false}>
+      {/* `popLayout` overlaps the outgoing and incoming words. `wait` left the
+          slot empty between them, so the heading read ", I'm" for a beat. */}
+      <AnimatePresence mode='popLayout' initial={false}>
         <motion.span
           key={GREETINGS[index]}
           initial={{ y: shift, opacity: 0 }}
