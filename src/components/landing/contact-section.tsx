@@ -104,6 +104,14 @@ export function ContactSection() {
   const [picked, setPicked] = useState<string | null>(null)
   const [time, setTime] = useState<string | null>(null)
 
+  /**
+   * The first open slot on the next bookable weekday, so the section can say
+   * "Next opening: Tue 10:00" before anyone touches the calendar. One request,
+   * made once the section is on screen; if that day is full or the calendar is
+   * unreachable, the section states the standing hours instead of guessing.
+   */
+  const [nextOpening, setNextOpening] = useState<{ date: string; time: string } | null>(null)
+
   const [slots, setSlots] = useState<Slot[] | null>(null)
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [slotsError, setSlotsError] = useState(false)
@@ -157,6 +165,30 @@ export function ContactSection() {
       live = false
     }
   }, [picked])
+
+  useEffect(() => {
+    if (!inView || !today) return
+
+    const day = new Date(today)
+
+    while (day.getDay() === 0 || day.getDay() === 6) day.setDate(day.getDate() + 1)
+
+    const key = iso(day)
+    let live = true
+
+    fetch(`/api/availability?date=${encodeURIComponent(key)}`)
+      .then(r => r.json())
+      .then((d: { ok?: boolean; slots?: Slot[] }) => {
+        const open = d?.ok && Array.isArray(d.slots) ? d.slots.find(slot => slot.available) : undefined
+
+        if (live && open) setNextOpening({ date: key, time: open.time })
+      })
+      .catch(() => undefined)
+
+    return () => {
+      live = false
+    }
+  }, [inView, today])
 
   const cells = useMemo(() => {
     if (!cursor) return []
@@ -220,13 +252,53 @@ export function ContactSection() {
     : '/contact'
 
   return (
-    <section id='contact' className='saas-section border-rule border-t px-6 py-20 md:px-12 md:py-32 lg:px-20'>
+    <section
+      id='contact'
+      className='contact-scene saas-section border-rule relative border-t px-6 py-20 md:px-12 md:py-32 lg:px-20'
+    >
       <div className={CONTAINER}>
         <SectionIntro
           tag='CONTACT'
           title={<>Book a workflow audit.</>}
           blurb='Thirty minutes, no charge. Bring the process that eats your week and I will tell you whether it is worth automating, and on which platform.'
         />
+
+        {/* What happens after the click, so the booking is not a leap. */}
+        <ol className='contact-steps'>
+          {[
+            ['Pick a time', 'Any open weekday slot below.'],
+            ['30-minute call', 'Walk me through the process that eats your week.'],
+            ['Written plan in 48 hours', 'What to automate, on which platform, and what it costs.']
+          ].map(([title, copy], index) => (
+            <li key={title}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <strong>{title}</strong>
+              <p>{copy}</p>
+            </li>
+          ))}
+        </ol>
+
+        <p className='contact-next' aria-live='polite'>
+          <i aria-hidden='true' />
+          {nextOpening ? (
+            <>
+              Next opening:{' '}
+              <button
+                type='button'
+                onClick={() => {
+                  pickDate(nextOpening.date)
+                  setTime(nextOpening.time)
+                }}
+              >
+                {new Date(`${nextOpening.date}T00:00:00`).toLocaleDateString('en-GB', { weekday: 'short' })}{' '}
+                {nextOpening.time}
+              </button>{' '}
+              (Manila time)
+            </>
+          ) : (
+            <>Calls run Monday to Friday, 9:00–11:00 and 13:00–17:00 Manila time.</>
+          )}
+        </p>
 
         <div ref={ref} className='grid items-start gap-5 lg:grid-cols-2'>
           {/* ── Profile card ────────────────────────────────────────────── */}

@@ -4386,19 +4386,36 @@ a.work-aux-link:hover {
 }
 
 .faq-reference-answer p {
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+/* The collapsing child of the 0fr/1fr grid: it owns the clipping and the
+   padding, so the avatar and the answer fold away together. */
+.faq-reply {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
   min-height: 0;
   overflow: hidden;
   padding: 0 1.6rem;
-  font-size: 0.92rem;
-  line-height: 1.65;
   transition: padding-bottom 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faq-reply img {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  margin-top: 0.1rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
 }
 
 .faq-reference-item[data-open='true'] .faq-reference-answer {
   grid-template-rows: 1fr;
 }
 
-.faq-reference-item[data-open='true'] .faq-reference-answer p {
+.faq-reference-item[data-open='true'] .faq-reply {
   padding-bottom: 1.45rem;
 }
 
@@ -4443,7 +4460,7 @@ a.work-aux-link:hover {
     padding: 1.2rem 1.25rem;
   }
 
-  .faq-reference-answer p {
+  .faq-reply {
     padding-inline: 1.25rem;
   }
 
@@ -6477,5 +6494,235 @@ div#experience.about-journey {
   .experience-role,
   .experience-tenures :is(.experience-role-meta, .experience-role-body) {
     transition: none;
+  }
+}
+
+/* ── FAQ: icons and the way out ───────────────────────────────────────── */
+.faq-question-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.faq-question-icon {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.faq-ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-top: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px dashed color-mix(in oklch, var(--accent) 40%, var(--rule));
+  border-radius: 1rem;
+}
+
+.faq-ask p {
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.faq-ask strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.faq-ask button {
+  flex-shrink: 0;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--ground);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.faq-ask button:hover {
+  background: color-mix(in oklch, var(--ink) 85%, var(--accent));
+}
+
+/* ── Contact: steps, next opening, and the last scene ────────────────── */
+.contact-scene {
+  isolation: isolate;
+}
+
+/* The story's golden-hour desk, faint behind the booking: the page ends
+   where the story did. */
+.contact-scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url('/images/landing/work-scenes/zero-touch-client-onboarding.webp') center 40% / cover no-repeat;
+  opacity: 0.22;
+  mask-image: radial-gradient(ellipse 60% 45% at 78% 18%, #000 25%, transparent 78%);
+  pointer-events: none;
+}
+
+.contact-steps {
+  display: grid;
+  gap: 0.75rem;
+  margin: -1.5rem 0 1.25rem;
+}
+
+.contact-steps li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.85rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--rule);
+  border-radius: 1rem;
+  background: color-mix(in oklch, var(--ground) 78%, transparent);
+}
+
+.contact-steps span {
+  grid-row: span 2;
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  padding-top: 0.2rem;
+}
+
+.contact-steps strong {
+  color: var(--ink);
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+.contact-steps p {
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+@media (min-width: 768px) {
+  .contact-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.contact-next {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+  color: var(--ink-2);
+  font-size: 0.9rem;
+}
+
+.contact-next i {
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.3rem;
+  border-radius: 50%;
+  background: oklch(0.7 0.16 150);
+  box-shadow: 0 0 0 0.25rem oklch(0.7 0.16 150 / 0.2);
+}
+
+.contact-next button {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--ground);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* ── Footer: clock, filling wordmark, three columns ──────────────────── */
+.footer-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.85rem 0 0 1rem;
+  color: var(--ink-2);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+
+.footer-clock i {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: footer-clock-pulse 2s ease-in-out infinite;
+}
+
+@keyframes footer-clock-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* The fill sits in the background, clipped to the letters, and grows from
+   the bottom with the scroll (background-size is driven from the component). */
+.saas-footer .footer-word {
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklch, var(--accent) 13%, transparent),
+    color-mix(in oklch, var(--accent) 5%, transparent)
+  );
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: 100% 0%;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.footer-columns {
+  display: grid;
+  gap: 2rem 1.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+}
+
+.footer-columns ul {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+}
+
+.footer-columns a {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.footer-columns a:hover {
+  color: var(--ink);
+}
+
+@media (min-width: 640px) {
+  .footer-columns {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .footer-identity {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .footer-columns {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.2fr);
+  }
+
+  .footer-identity {
+    grid-column: auto;
+    text-align: right;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-clock i {
+    animation: none;
   }
 }

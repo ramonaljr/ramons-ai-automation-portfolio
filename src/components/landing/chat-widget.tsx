@@ -87,6 +87,9 @@ const P = {
   send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z'
 }
 
+/** Dispatch on `window` to open the chat from anywhere on the page. */
+export const OPEN_CHAT_EVENT = 'portfolio:open-chat'
+
 export function ChatWidget() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([{ id: 0, role: 'bot', text: GREETING }])
@@ -106,6 +109,16 @@ export function ChatWidget() {
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, pending])
+
+  // Other parts of the page (the FAQ's "Ask the assistant") open the chat by
+  // event rather than by prop, so the widget stays self-contained.
+  useEffect(() => {
+    const openChat = () => setOpen(true)
+
+    window.addEventListener(OPEN_CHAT_EVENT, openChat)
+
+    return () => window.removeEventListener(OPEN_CHAT_EVENT, openChat)
+  }, [])
 
   useEffect(() => {
     if (!open) return
