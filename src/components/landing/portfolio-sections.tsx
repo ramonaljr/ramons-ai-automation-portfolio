@@ -11,9 +11,9 @@ import { IntroSection } from '@/components/landing/intro-section'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ProjectsSection } from '@/components/landing/projects-section'
 import { ServicesSection } from '@/components/landing/services-section'
+import { StorySection } from '@/components/landing/story-section'
 import { HowItWorksSection } from '@/components/landing/how-it-works-section'
 import { ToolStackSection } from '@/components/landing/tool-stack-section'
-import { ExperienceSection } from '@/components/landing/experience-section'
 import { ContactSection } from '@/components/landing/contact-section'
 import { TestimonialsSection } from '@/components/landing/testimonials-section'
 import { FaqSection } from '@/components/landing/faq-section'
@@ -209,6 +209,10 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
             <ScrollAtmosphere />
 
             <div className='relative z-10'>
+              {/* The story sits between the promise and the person: what the
+                  problem feels like, what the system does, what comes back. */}
+              <StorySection />
+
               {/* Introduce the person behind the work before the full eight-project
               portfolio. This keeps the biography near the hero without asking
               the visitor to scroll through a long project showcase first. */}
@@ -216,7 +220,6 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
               <ProjectsSection caseStudies={caseStudies} />
               <ServicesSection />
               <HowItWorksSection />
-              <ExperienceSection />
               <PlatformsSection />
 
               {/* Corroboration immediately before the offer. Clearly labelled

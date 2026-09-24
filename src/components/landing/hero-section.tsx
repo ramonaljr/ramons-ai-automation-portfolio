@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
-import { HERO_STATS } from '@/lib/portfolio'
+import { HERO_STATS, PROFILE } from '@/lib/portfolio'
 import { CountUp, Cta, usePrefersReducedMotion } from '@/components/landing/motion'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
@@ -61,8 +61,28 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           the whole page show through, so the hero and the sections below share
           one scene. `.hero-autumn` only adds a wash behind the copy. */}
 
-      <div className='relative z-10 mx-auto flex w-full max-w-390 flex-1 flex-col justify-center px-6 pt-32 pb-10 md:px-12 lg:px-20 2xl:max-w-440'>
+      <div className='relative z-10 mx-auto flex w-full max-w-390 flex-1 flex-col justify-center px-6 pt-32 pb-10 md:px-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16 lg:px-20 2xl:max-w-440'>
         <div className='koisei-hero-copy w-full max-w-[62rem] text-left lg:max-w-[58%]'>
+          {/* Phones get a face too, just smaller: the portrait card below only
+              appears once there is a column to put it in. */}
+          <div
+            className={`hero-byline mb-6 flex items-center gap-3 transition-all duration-700 lg:hidden ${
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+            }`}
+          >
+            <img
+              src='/images/landing/ramon-portrait-autumn.webp'
+              alt=''
+              width={96}
+              height={96}
+              className='hero-byline-avatar'
+            />
+            <span className='text-ink-2 text-sm leading-tight'>
+              <strong className='text-ink block font-medium'>{PROFILE.name}</strong>
+              {PROFILE.title}
+            </span>
+          </div>
+
           {/* Eyebrow */}
           <div
             className={`mb-8 transition-all duration-700 ${
@@ -126,6 +146,32 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             </Cta>
           </div>
         </div>
+
+        {/* People hire people: a face above the fold does trust work before a
+            word is read. The warm office portrait carries the autumn palette;
+            the studio portrait stays with the fuller story in About. */}
+        <figure className='hero-portrait hidden lg:block' data-visible={isVisible}>
+          <div className='hero-portrait-frame'>
+            <img
+              src='/images/landing/ramon-portrait-autumn.webp'
+              alt={PROFILE.name}
+              width={1120}
+              height={1400}
+              fetchPriority='high'
+              className='hero-portrait-image'
+            />
+          </div>
+
+          <span className='hero-portrait-chip'>
+            <i aria-hidden='true' />
+            Available for new projects
+          </span>
+
+          <figcaption className='hero-portrait-caption'>
+            <strong style={{ fontFamily: DISPLAY_FONT }}>{PROFILE.name}</strong>
+            <span>Ten years in finance operations, now automating them.</span>
+          </figcaption>
+        </figure>
       </div>
 
       {/* Stats. Previously `absolute bottom-12`, which on a short viewport put

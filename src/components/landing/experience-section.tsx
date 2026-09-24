@@ -5,7 +5,6 @@ import { useInView } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
-const CONTAINER = 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto'
 
 /**
  * How many roles precede each tenure, so the reveal cascade is staggered across
@@ -20,21 +19,53 @@ const TENURE_OFFSETS = TENURES.reduce<number[]>(
 
 const ROLE_COUNT = TENURE_OFFSETS[TENURE_OFFSETS.length - 1]
 
-export function ExperienceSection() {
+/**
+ * How the work is run, stated once. Every line repeats a commitment made
+ * elsewhere on the page (process, services, contact), so nothing here is a
+ * new claim; it is the same promise gathered where a reader weighing the
+ * person behind it will look.
+ */
+const HOW_I_WORK = [
+  { label: 'Business case first', copy: 'Start with the work and the hours it costs, not the software.' },
+  { label: 'Failure paths mapped', copy: 'Error branches and failure alerts are part of every build.' },
+  { label: 'Human control retained', copy: 'A person reviews anything where a mistake would be expensive.' },
+  { label: 'Documented handover', copy: 'Your team can run and extend it without me.' }
+] as const
+
+/**
+ * The career behind the practice. This used to be its own Experience section
+ * several screens after About; it now closes About, so the person and the
+ * decade that shaped the work are read together. It keeps the `experience`
+ * id so existing links still land on it.
+ */
+export function ExperienceJourney() {
   const { ref, inView } = useInView<HTMLDivElement>(0.06)
 
   return (
-    <section id='experience' className='saas-section border-rule border-t px-6 py-20 md:px-12 md:py-32 lg:px-20'>
-      <div className={CONTAINER}>
+    <div id='experience' className='about-journey'>
+      {/* Same measure as the About panel above, so the two edges line up. */}
+      <div className='mx-auto max-w-[1240px]'>
         <div className='experience-layout'>
           <div className='experience-intro'>
             <SectionIntro
-              tag='EXPERIENCE'
+              tag='THE PATH HERE'
               title='Ten years inside the work I now automate.'
               blurb='I did AP, reconciliation and month-end close by hand before I automated any of it. That is why the workflows I build match how a business actually runs, rather than how a process diagram says it should.'
               margin=''
               titleClassName='mt-5 text-[clamp(1.9rem,3.2vw,3.4rem)]'
             />
+
+            <div className='about-how'>
+              <p className='about-how-label'>HOW I WORK</p>
+              <ul>
+                {HOW_I_WORK.map(item => (
+                  <li key={item.label}>
+                    <strong>{item.label}</strong>
+                    <span>{item.copy}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           <div ref={ref} className='experience-history relative'>
@@ -120,6 +151,6 @@ export function ExperienceSection() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   )
 }

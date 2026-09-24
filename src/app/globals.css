@@ -1147,7 +1147,8 @@ body::after {
 }
 
 .saas-section::before {
-  content: counter(koisei-chapter, decimal-leading-zero) ' / 10';
+  /* Nine chapters since Experience moved into About. */
+  content: counter(koisei-chapter, decimal-leading-zero) ' / 09';
   position: absolute;
   top: 8.5rem;
   left: clamp(0.6rem, 1.8vw, 1.7rem);
@@ -4461,11 +4462,12 @@ a.work-aux-link:hover {
   display: flex;
   justify-content: space-between;
   padding: 1rem 1.1rem;
-  color: white;
+  /* Ink, not white: the About portrait is now the studio shot on a white
+     ground, where white labels disappeared. */
+  color: var(--ink-3);
   font-family: var(--font-mono), monospace;
   font-size: 0.72rem;
   letter-spacing: 0.14em;
-  text-shadow: 0 1px 8px color-mix(in oklch, var(--ink) 65%, transparent);
 }
 
 .about-film-scan {
@@ -5576,4 +5578,543 @@ a.work-aux-link:hover {
     transparent,
     color-mix(in oklch, oklch(0.8 0.035 62) 62%, transparent) 70%
   );
+}
+
+/* ── Hero portrait ────────────────────────────────────────────────────────
+   A framed card inside the autumn scene rather than a cut-out on top of it:
+   the photo's own lamp-lit office matches the palette, so the frame reads as
+   a window into the same world. It wipes open from the base a beat after the
+   headline, the same entrance the work cards use. */
+.hero-portrait {
+  --hero-portrait-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  flex-shrink: 0;
+  width: clamp(17rem, 25vw, 25rem);
+  margin: 0;
+}
+
+.hero-portrait-frame {
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border: 1px solid oklch(1 0 0 / 0.45);
+  border-radius: 1.75rem;
+  background: oklch(0.3 0.03 50);
+  box-shadow:
+    0 40px 90px -44px oklch(0.28 0.06 45 / 0.7),
+    0 12px 30px -18px oklch(0.28 0.06 45 / 0.4);
+  clip-path: inset(100% 0 0 0 round 1.75rem);
+  transition: clip-path 1.2s var(--hero-portrait-ease) 0.35s;
+}
+
+.hero-portrait[data-visible='true'] .hero-portrait-frame {
+  clip-path: inset(0 0 0 0 round 1.75rem);
+}
+
+.hero-portrait-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%;
+  transform: scale(1.14);
+  transition: transform 1.8s var(--hero-portrait-ease) 0.35s;
+}
+
+.hero-portrait[data-visible='true'] .hero-portrait-image {
+  transform: scale(1);
+}
+
+.hero-portrait-caption {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 4.5rem 1.5rem 1.4rem;
+  border-radius: 0 0 1.75rem 1.75rem;
+  background: linear-gradient(to top, oklch(0.18 0.03 45 / 0.88), oklch(0.18 0.03 45 / 0.5) 55%, transparent);
+  color: oklch(0.97 0.012 80);
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition:
+    opacity 0.8s ease 1.2s,
+    transform 0.8s var(--hero-portrait-ease) 1.2s;
+}
+
+.hero-portrait-caption strong {
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.hero-portrait-caption span {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: oklch(0.97 0.012 80 / 0.82);
+}
+
+.hero-portrait-chip {
+  position: absolute;
+  top: 1.1rem;
+  left: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid oklch(1 0 0 / 0.5);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--ground) 82%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--ink-2);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.8s ease 1.4s;
+}
+
+.hero-portrait-chip i {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: oklch(0.7 0.16 150);
+  box-shadow: 0 0 0 0.25rem oklch(0.7 0.16 150 / 0.2);
+}
+
+.hero-portrait[data-visible='true'] .hero-portrait-caption,
+.hero-portrait[data-visible='true'] .hero-portrait-chip {
+  opacity: 1;
+  transform: none;
+}
+
+.hero-byline-avatar {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border: 1px solid oklch(1 0 0 / 0.6);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 15%;
+  box-shadow: 0 6px 16px -8px oklch(0.28 0.06 45 / 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait-frame,
+  .hero-portrait-image,
+  .hero-portrait-caption,
+  .hero-portrait-chip {
+    transition: none;
+  }
+}
+
+/* ── Story: problem → system → outcome ───────────────────────────────────
+   A three-screen pinned scene on desktop; three stacked panels on phones and
+   for reduced motion. Exactly one of the two is displayed at a time. */
+.story-section {
+  --story-cream: oklch(0.97 0.012 80);
+  --story-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+}
+
+.story-track {
+  position: relative;
+  height: 300vh;
+}
+
+.story-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding: 5.75rem clamp(1rem, 3vw, 3rem) clamp(1rem, 2.5vw, 2rem);
+}
+
+.story-screen {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  border: 1px solid oklch(1 0 0 / 0.35);
+  border-radius: 2rem;
+  background: oklch(0.2 0.025 45);
+  box-shadow: 0 50px 120px -60px oklch(0.25 0.06 45 / 0.8);
+  color: var(--story-cream);
+}
+
+.story-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform, filter;
+}
+
+.story-image-golden {
+  filter: saturate(1.08) brightness(0.9);
+}
+
+.story-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, oklch(0.16 0.025 45 / 0.9) 0%, oklch(0.16 0.025 45 / 0.55) 42%, transparent 70%),
+    linear-gradient(0deg, oklch(0.16 0.025 45 / 0.7) 0%, transparent 35%);
+}
+
+.story-copy {
+  position: absolute;
+  left: clamp(1.75rem, 5vw, 5rem);
+  bottom: clamp(5.5rem, 13vh, 8rem);
+  max-width: min(40rem, 52%);
+}
+
+.story-copy-tag {
+  margin-bottom: 1rem;
+  color: oklch(0.8 0.1 60);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.story-copy-title {
+  font-size: clamp(2.4rem, 4.6vw, 4.75rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.story-copy-body {
+  max-width: 46ch;
+  margin-top: 1.25rem;
+  font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+  line-height: 1.6;
+  color: color-mix(in oklch, var(--story-cream) 82%, transparent);
+}
+
+.story-outcome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1.25rem 2rem;
+  margin-top: 1.75rem;
+}
+
+.story-outcome p {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.story-outcome strong {
+  font-size: clamp(2.2rem, 3.6vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1;
+  color: oklch(0.86 0.11 75);
+}
+
+.story-outcome span {
+  max-width: 14ch;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: color-mix(in oklch, var(--story-cream) 80%, transparent);
+}
+
+.story-outcome-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: var(--story-cream);
+  color: oklch(0.22 0.03 45);
+  font-size: 0.875rem;
+  transition: transform 0.3s var(--story-ease), background 0.3s ease;
+}
+
+.story-outcome-link::after {
+  content: '→';
+}
+
+.story-outcome-link:hover {
+  transform: translateX(3px);
+  background: oklch(1 0 0);
+}
+
+/* The backlog sits top right, so it reads as a notification stack. */
+.story-backlog {
+  position: absolute;
+  top: clamp(1.75rem, 5vh, 3rem);
+  right: clamp(1.75rem, 4vw, 4rem);
+  display: grid;
+  gap: 0.6rem;
+  min-width: 15rem;
+}
+
+.story-backlog li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  padding: 0.75rem 1.1rem;
+  border: 1px solid oklch(1 0 0 / 0.14);
+  border-radius: 1rem;
+  background: oklch(0.16 0.02 45 / 0.62);
+  backdrop-filter: blur(8px);
+}
+
+.story-backlog strong {
+  min-width: 2.2ch;
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+  color: oklch(0.8 0.13 45);
+  font-variant-numeric: tabular-nums;
+}
+
+.story-backlog span {
+  font-size: 0.8125rem;
+  color: color-mix(in oklch, var(--story-cream) 78%, transparent);
+}
+
+.story-flow {
+  position: absolute;
+  top: 42%;
+  left: clamp(1.75rem, 5vw, 5rem);
+  right: clamp(1.75rem, 5vw, 5rem);
+}
+
+.story-flow-line {
+  position: absolute;
+  top: 0.55rem;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.16);
+}
+
+.story-flow-line i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: oklch(0.8 0.13 65);
+  box-shadow: 0 0 12px oklch(0.8 0.13 65 / 0.6);
+  transform-origin: left;
+}
+
+.story-flow ol {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+
+.story-flow li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.story-flow-node {
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid oklch(0.8 0.13 65);
+  border-radius: 50%;
+  background: oklch(0.2 0.025 45);
+}
+
+.story-rail {
+  position: absolute;
+  right: clamp(1.75rem, 4vw, 4rem);
+  bottom: clamp(1.5rem, 4vh, 2.5rem);
+  width: min(22rem, 34%);
+}
+
+.story-rail-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in oklch, var(--story-cream) 70%, transparent);
+}
+
+.story-rail-track {
+  height: 2px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.18);
+}
+
+.story-rail-track i {
+  display: block;
+  height: 100%;
+  background: oklch(0.8 0.13 65);
+  transform-origin: left;
+}
+
+/* Stacked version. */
+.story-stacked {
+  display: none;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 3rem;
+}
+
+.story-panel {
+  position: relative;
+  overflow: hidden;
+  min-height: 30rem;
+  border: 1px solid oklch(1 0 0 / 0.35);
+  border-radius: 1.5rem;
+  background: oklch(0.2 0.025 45);
+  color: var(--story-cream);
+}
+
+.story-panel-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.story-panel[data-act='0'] .story-panel-image {
+  filter: grayscale(0.85) brightness(0.45) contrast(1.1);
+}
+
+.story-panel[data-act='1'] .story-panel-image {
+  filter: grayscale(0.2) brightness(0.6);
+}
+
+.story-panel-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, oklch(0.16 0.025 45 / 0.92) 0%, oklch(0.16 0.025 45 / 0.6) 55%, oklch(0.16 0.025 45 / 0.25));
+}
+
+.story-panel-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 30rem;
+  padding: 1.75rem 1.5rem;
+}
+
+.story-panel-title {
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.story-panel-list {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  color: color-mix(in oklch, var(--story-cream) 82%, transparent);
+}
+
+.story-panel-list strong {
+  color: oklch(0.8 0.13 45);
+  font-weight: 500;
+}
+
+.story-panel-tools {
+  margin-top: 1.25rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: oklch(0.8 0.13 65);
+}
+
+.story-panel-stat {
+  margin: 1.25rem 0 1.25rem;
+  font-size: 0.875rem;
+  color: color-mix(in oklch, var(--story-cream) 82%, transparent);
+}
+
+.story-panel-stat strong {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 300;
+  line-height: 1;
+  color: oklch(0.86 0.11 75);
+}
+
+.story-panel .story-outcome-link {
+  align-self: flex-start;
+}
+
+@media (max-width: 767px) {
+  .story-track { display: none; }
+  .story-stacked { display: grid; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .story-track { display: none; }
+
+  .story-stacked {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    max-width: 1600px;
+    margin-inline: auto;
+    padding-inline: clamp(1.5rem, 5vw, 5rem);
+  }
+}
+
+/* ── About → the path here ───────────────────────────────────────────────
+   The career history that used to be its own section, now closing About. */
+.about-journey {
+  position: relative;
+  z-index: 2;
+  margin-top: clamp(4rem, 8vw, 7rem);
+}
+
+.about-how {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.about-how-label {
+  margin-bottom: 1rem;
+  color: var(--ink-3);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+}
+
+.about-how ul {
+  display: grid;
+  gap: 1rem;
+}
+
+.about-how li {
+  display: grid;
+  gap: 0.2rem;
+  padding-left: 1rem;
+  border-left: 2px solid color-mix(in oklch, var(--accent) 45%, transparent);
+}
+
+.about-how strong {
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.about-how span {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.5;
 }

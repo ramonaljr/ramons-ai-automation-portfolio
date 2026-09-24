@@ -8,6 +8,7 @@ import { GreetingWord } from '@/components/landing/greeting-word'
 import { READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
 import { PROFILE } from '@/lib/portfolio'
 import { SectionIntro, introStep } from '@/components/landing/section-intro'
+import { ExperienceJourney } from '@/components/landing/experience-section'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 
@@ -226,8 +227,8 @@ export function IntroSection() {
             </div>
 
             <div className='relative'>
-              {/* The portrait keeps Ramon's identity and pose while the warm
-                  editorial workspace carries the page's autumn atmosphere. */}
+              {/* The studio portrait: the warm office portrait now leads the
+                  hero, and the same photo twice would read as filler. */}
               <div
                 className='saas-portrait-frame about-film-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border'
                 data-visible={inView}
@@ -237,23 +238,15 @@ export function IntroSection() {
                   <span>BUSINESS × AUTOMATION</span>
                 </div>
                 <img
-                  src='/images/landing/ramon-portrait-autumn.webp'
+                  src='/images/landing/ramon-portrait.webp'
                   alt='Ramon A. Vallejera, Jr.'
-                  width={1120}
-                  height={1400}
+                  width={1200}
+                  height={1500}
                   className='h-auto w-full object-cover'
                 />
                 <div className='about-film-scan' aria-hidden='true' />
               </div>
 
-              {/* Availability chip */}
-              <div className='bg-surface-raised border-rule absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 backdrop-blur-sm'>
-                <span className='relative flex h-1.5 w-1.5'>
-                  <span className='absolute -inset-1 animate-[pulse-dot_2s_ease-in-out_infinite] rounded-full bg-emerald-500/30' />
-                  <span className='relative h-1.5 w-1.5 rounded-full bg-emerald-500' />
-                </span>
-                <span className='text-ink-2 font-mono text-[11px] tracking-widest'>AVAILABLE</span>
-              </div>
             </div>
 
             {/* Credentials strip */}
@@ -277,6 +270,8 @@ export function IntroSection() {
           </motion.div>
         </div>
       </div>
+
+      <ExperienceJourney />
     </section>
   )
 }
