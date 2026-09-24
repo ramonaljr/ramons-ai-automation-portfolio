@@ -614,12 +614,9 @@ export const TENURES: Tenure[] = EXPERIENCE.reduce<Tenure[]>((groups, role) => {
  * Engagement tiers.
  *
  * `forWhen` names the state the reader is in, not what they get — that is
- * `summary`'s job. Three tiers with no way to tell them apart give a reader no
- * basis to choose one, which is what "Three ways to start" is for. A price
- * would have solved that too, and was the first thing considered, but it would
- * contradict the section's own blurb and the chatbot's instruction never to
- * quote one — and it anchors the ceiling before the problem has been
- * described. Recognition does the same job without a number.
+ * `summary`'s job. Prices are published as starting points (`price`,
+ * `priceNote`); llms.txt states the same figures, and the chatbot's n8n
+ * prompt, which lives outside this repo, needs to agree with them.
  */
 export const ENGAGEMENTS = [
   {
@@ -634,7 +631,15 @@ export const ENGAGEMENTS = [
       'Prioritised roadmap'
     ],
     cta: 'Book the audit',
-    href: '#contact'
+    href: '#contact',
+
+    // Sample prices, set from 2026 market rates for freelance n8n / Make /
+    // Zapier work (single builds $400-1,200, multi-workflow systems
+    // $1,500-4,500, retainers $1,200-3,800/mo). Replace with real ones.
+    price: '$750',
+    priceNote: 'fixed fee',
+    outcome: 'A prioritised roadmap and a platform recommendation.',
+    start: true
   },
   {
     name: 'Fixed-Scope Build',
@@ -648,7 +653,10 @@ export const ENGAGEMENTS = [
       'Documentation and handover'
     ],
     cta: 'Request a quote',
-    featured: true
+    featured: true,
+    price: 'From $1,800',
+    priceNote: 'per workflow, fixed quote',
+    outcome: 'A tested workflow running in your accounts, documented.'
   },
   {
     name: 'Ongoing Retainer',
@@ -661,6 +669,9 @@ export const ENGAGEMENTS = [
       'New workflows as they come up',
       'Priority availability'
     ],
-    cta: 'Request a quote'
+    cta: 'Request a quote',
+    price: 'From $1,200',
+    priceNote: 'per month',
+    outcome: 'Workflows that keep working as your tools change.'
   }
 ]

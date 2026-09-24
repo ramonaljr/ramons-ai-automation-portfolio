@@ -8,9 +8,9 @@ import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { HeroSection } from '@/components/landing/hero-section'
 import { IntroSection } from '@/components/landing/intro-section'
-import { SectionIntro } from '@/components/landing/section-intro'
 import { ProjectsSection } from '@/components/landing/projects-section'
 import { ServicesSection } from '@/components/landing/services-section'
+import { EngagementSection } from '@/components/landing/engagement-section'
 import { StorySection } from '@/components/landing/story-section'
 import { HowItWorksSection } from '@/components/landing/how-it-works-section'
 import { ContactSection } from '@/components/landing/contact-section'
@@ -19,99 +19,9 @@ import { FaqSection } from '@/components/landing/faq-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
 import { ScrollAtmosphere } from '@/components/landing/scroll-atmosphere'
-import {
-  ArrowIcon,
-  CONTAINER,
-  DISPLAY_FONT,
-  PAGE,
-  SECTION_ANCHOR,
-  sweep,
-  useInView
-} from '@/components/landing/motion'
+import { PAGE } from '@/components/landing/motion'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
-import { ENGAGEMENTS } from '@/lib/portfolio'
-
-// ── Shared primitives ────────────────────────────────────────────────────────
-
-/**
- * Kept as a thin alias so these four call sites read the same as before. The
- * cascade itself lives in SectionIntro, shared with the sections that do not
- * route through here.
- */
-function SectionHead({ tag, title, blurb }: { tag: string; title: React.ReactNode; blurb?: string }) {
-  return <SectionIntro tag={tag} title={title} blurb={blurb} />
-}
-
-// ── Engagement ───────────────────────────────────────────────────────────────
-
-function EngagementSection() {
-  const { ref, inView } = useInView(0.08)
-
-  return (
-    <section id='engagement' className={SECTION_ANCHOR}>
-      <div className={CONTAINER}>
-        <SectionHead
-          tag='WORKING TOGETHER'
-          title={
-            <>
-              Three ways
-              <br />
-              to start.
-            </>
-          }
-          blurb='Scope and timeline are fixed up front. Pricing depends on systems involved and volume — tell me what you are dealing with and I will quote it.'
-        />
-
-        <div ref={ref} className='grid gap-5 md:grid-cols-3'>
-          {ENGAGEMENTS.map((e, i) => (
-            <div
-              key={e.name}
-              className={`kinetic-card flex flex-col overflow-hidden rounded-2xl border p-8 transition-all duration-300 ${
-                e.featured
-                  ? 'border-rule-strong bg-surface-raised shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]'
-                  : 'border-rule bg-surface hover:bg-surface-raised hover:border-rule'
-              }`}
-              style={sweep(inView, i)}
-            >
-              <span className='text-ink-2 font-mono text-[12px] tracking-widest'>{e.duration.toUpperCase()}</span>
-              <h3 className='text-ink mt-3 text-2xl font-light tracking-tight' style={{ fontFamily: DISPLAY_FONT }}>
-                {e.name}
-              </h3>
-
-              {/* Recognition before description: a reader scanning three tiers
-                  picks the one they see themselves in, so that line leads and
-                  carries full ink. What the tier delivers follows, quieter. */}
-              <p className='text-ink mt-3 text-[14px] leading-relaxed'>{e.forWhen}</p>
-              <p className='text-ink-2 mt-2 text-[14px] leading-relaxed'>{e.summary}</p>
-
-              <ul className='mt-6 flex-1 space-y-2.5'>
-                {e.includes.map(it => (
-                  <li key={it} className='text-ink-2 flex items-start gap-2.5 text-[14px] leading-snug'>
-                    <span className='bg-ink/30 mt-1.75 h-1 w-1 shrink-0 rounded-full' />
-                    {it}
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href={e.href ?? '/contact'}
-                className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[13px] tracking-wide transition-colors ${
-                  e.featured
-                    ? 'bg-ink text-ground hover:bg-ink/90'
-                    : 'border-rule text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/3 border'
-                }`}
-              >
-                {e.cta}
-                <ArrowIcon />
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 

@@ -31,7 +31,7 @@ function DiscoveryVisual() {
   )
 }
 
-function AuditVisual() {
+export function AuditVisual() {
   return (
     <div className='process-audit' aria-hidden='true'>
       <div className='process-audit-head'>
@@ -72,7 +72,7 @@ function DesignVisual() {
   )
 }
 
-function BuildVisual() {
+export function BuildVisual() {
   return (
     <div className='process-terminal' aria-hidden='true'>
       <div className='process-terminal-top'>
@@ -126,7 +126,7 @@ function TestVisual() {
   )
 }
 
-function LaunchVisual() {
+export function LaunchVisual() {
   return (
     <div className='process-monitor' aria-hidden='true'>
       <div className='process-monitor-status'>

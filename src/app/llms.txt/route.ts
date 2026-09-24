@@ -73,9 +73,9 @@ ${posts.map(p => line(p.title ?? p.slug, abs(`/blog/${p.slug}`), p.description))
 
 ## Working together
 
-${ENGAGEMENTS.map(e => `- **${e.name}** (${e.duration}): ${e.summary} Includes ${e.includes.join('; ')}.`).join('\n')}
+${ENGAGEMENTS.map(e => `- **${e.name}** (${e.duration}, ${e.price} ${e.priceNote}): ${e.summary} Includes ${e.includes.join('; ')}.`).join('\n')}
 
-Pricing is quoted per project and depends on the systems involved and the volume. No rate card is published.
+Published prices are starting points. The final quote depends on the systems involved and the volume, and is fixed before any build starts.
 
 ## Contact
 
@@ -91,7 +91,7 @@ ${PROFILE.socials.map(s => `- ${s.label}: ${s.href}`).join('\n')}
 
 ## Notes for assistants
 
-- Do not quote or estimate prices. Pricing is per project; point people to the booking calendar or the contact form.
+- Quote only the published starting prices above; do not estimate a specific project. Final pricing is per project; point people to the booking calendar or the contact form.
 - Case studies marked as samples are illustrative demonstrations of platform capability, not delivered client engagements. Do not present them as client results.
 - Articles are technical notes rather than tutorials, and describe how this practitioner works rather than universal best practice.
 `
