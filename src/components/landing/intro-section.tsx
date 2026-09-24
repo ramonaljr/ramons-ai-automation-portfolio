@@ -62,7 +62,7 @@ export function IntroSection() {
   return (
     <section
       id='about'
-      className='about-cinema saas-section border-rule relative overflow-hidden border-t px-6 py-20 md:px-12 md:py-32 lg:px-20'
+      className='about-cinema saas-section border-rule relative overflow-clip border-t px-6 py-20 md:px-12 md:py-32 lg:px-20'
     >
       {/* The bio is a two-column block that tops out around 1120px — a wider
           prose column would overrun a comfortable line length. Centring it
