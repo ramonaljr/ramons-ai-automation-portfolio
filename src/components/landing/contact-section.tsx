@@ -220,7 +220,7 @@ export function ContactSection() {
     : '/contact'
 
   return (
-    <section id='contact' className='saas-section border-rule border-t px-6 py-32 md:px-12 lg:px-20'>
+    <section id='contact' className='saas-section border-rule border-t px-6 py-20 md:px-12 md:py-32 lg:px-20'>
       <div className={CONTAINER}>
         <SectionIntro
           tag='CONTACT'

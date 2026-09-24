@@ -24,7 +24,7 @@ export function ExperienceSection() {
   const { ref, inView } = useInView<HTMLDivElement>(0.06)
 
   return (
-    <section id='experience' className='saas-section border-rule border-t px-6 py-32 md:px-12 lg:px-20'>
+    <section id='experience' className='saas-section border-rule border-t px-6 py-20 md:px-12 md:py-32 lg:px-20'>
       <div className={CONTAINER}>
         <div className='experience-layout'>
           <div className='experience-intro'>

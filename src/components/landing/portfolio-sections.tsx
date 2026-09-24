@@ -205,7 +205,7 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
 
           {/* The three-act story layer starts at About, not the hero: its own
               wrapper keeps "01 / The old way" from opening over the headline. */}
-          <div className='relative'>
+          <div className='story-content relative'>
             <ScrollAtmosphere />
 
             <div className='relative z-10'>

@@ -5,7 +5,7 @@ import { useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { motion, useScroll, useTransform } from 'motion/react'
 
-import { CONTAINER, READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
+import { CONTAINER, DISPLAY_FONT, READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
 import { PROFILE } from '@/lib/portfolio'
 
 /**
@@ -57,7 +57,10 @@ export function SiteFooter() {
       <div className={`${CONTAINER} ${READABLE} relative z-10 flex min-h-[44vh] flex-col justify-end`}>
         <div className='mb-20 max-w-2xl'>
           <span className='eyebrow'>END OF THE MANUAL LOOP</span>
-          <p className='text-ink mt-5 text-[clamp(2rem,4vw,4.25rem)] leading-[1.02] font-light tracking-tight'>
+          <p
+            className='text-ink mt-5 text-[clamp(2rem,4vw,4.25rem)] leading-[1.02] font-light tracking-tight'
+            style={{ fontFamily: DISPLAY_FONT }}
+          >
             Better systems.<br />More human work.
           </p>
         </div>
@@ -102,8 +105,14 @@ export function SiteFooter() {
 
         {/* TODO: privacy + terms links belong here — the routes do not exist
             yet, and linking them before they do would only ship two 404s. */}
-        <div className='border-rule text-meta text-ink-3 mt-10 flex flex-wrap items-center justify-between gap-4 border-t pt-6'>
-          <p>© {new Date().getFullYear()} {PROFILE.name}. Built and maintained in-house.</p>
+        {/* ink-2, not ink-3: the lighter tone was unreadable on the footer's
+            darkened ground. The name already ends in a full stop ("Jr."), so
+            one is only added when it does not. */}
+        <div className='border-rule text-meta text-ink-2 mt-10 flex flex-wrap items-center justify-between gap-4 border-t pt-6'>
+          <p>
+            © {new Date().getFullYear()} {PROFILE.name.endsWith('.') ? PROFILE.name : `${PROFILE.name}.`} Built and
+            maintained in-house.
+          </p>
           <a href={onLanding ? '#top' : '/#top'} className='text-ink-2 hover:text-ink group inline-flex items-center gap-2 transition-colors'>
             Back to top
             <span className='transition-transform duration-300 group-hover:-translate-y-1' aria-hidden='true'>↑</span>

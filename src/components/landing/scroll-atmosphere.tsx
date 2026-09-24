@@ -62,7 +62,6 @@ export function ScrollAtmosphere() {
           className='story-chapter story-chapter-route absolute inset-0'
           style={reduced ? undefined : { opacity: routeOpacity, scale: routeScale, x: pointerX }}
         >
-          <span className='story-kicker'>02 / CONNECT THE WORK</span>
           <div className='story-route story-route-a'>
             <i />
             <i />
@@ -72,23 +71,14 @@ export function ScrollAtmosphere() {
             <i />
             <i />
           </div>
-          <div className='story-route-core'>
-            <span>IF</span>
-            <strong>THEN</strong>
-          </div>
         </motion.div>
 
         <motion.div
           className='story-chapter story-chapter-outcome absolute inset-0'
           style={reduced ? undefined : { opacity: outcomeOpacity, scale: outcomeScale, x: pointerX }}
         >
-          <span className='story-kicker'>03 / TIME RETURNED</span>
           <div className='story-outcome-ring story-outcome-ring-a' />
           <div className='story-outcome-ring story-outcome-ring-b' />
-          <div className='story-outcome-core'>
-            <i />
-            RUNNING
-          </div>
         </motion.div>
       </div>
     </div>

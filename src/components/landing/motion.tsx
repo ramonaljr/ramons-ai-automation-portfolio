@@ -37,15 +37,18 @@ const GUTTER = 'px-6 md:px-12 lg:px-20'
  *                    as a continuation of the one above rather than a new
  *                    chapter (platforms under services, tools under process)
  *
+ * Phones take roughly two thirds of each measure: the desktop values left
+ * 250–320px of empty scroll between sections on a 390px-wide screen.
+ *
  * The asymmetry is intentional: bottom padding runs slightly heavier than top
  * because a heading sits optically higher in its own space than a block of
  * cards does, so equal padding reads as bottom-light.
  */
-export const SECTION = `saas-section pt-28 pb-32 ${GUTTER} border-t border-rule`
+export const SECTION = `saas-section pt-20 pb-24 md:pt-28 md:pb-32 ${GUTTER} border-t border-rule`
 
-export const SECTION_ANCHOR = `saas-section pt-36 pb-44 ${GUTTER}`
+export const SECTION_ANCHOR = `saas-section pt-24 pb-28 md:pt-36 md:pb-44 ${GUTTER}`
 
-export const SECTION_CONT = `saas-section pt-6 pb-28 ${GUTTER}`
+export const SECTION_CONT = `saas-section pt-6 pb-20 md:pb-28 ${GUTTER}`
 
 /** Cream page ground. Applied to the outermost wrapper of every page. */
 export const PAGE = 'koisei-page bg-ground text-ink min-h-dvh font-sans antialiased'

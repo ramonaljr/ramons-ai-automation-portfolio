@@ -744,26 +744,6 @@ li {
   }
 }
 
-@keyframes hero-drift {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.06);
-  }
-}
-
-/* ── SaaS workflow hero ─────────────────────────────────────────────────────
-   A calm product canvas replaces the cinematic background. The visual reads
-   as the service itself: an input enters, logic handles it, and a result exits. */
-.saas-flow-field {
-  z-index: 0;
-  background:
-    radial-gradient(circle at 82% 30%, oklch(0.93 0.055 260 / 0.86), transparent 34%),
-    radial-gradient(circle at 68% 70%, oklch(0.95 0.045 205 / 0.72), transparent 28%),
-    linear-gradient(180deg, oklch(0.995 0.002 250), var(--ground));
-}
-
 .saas-grid {
   opacity: 0.72;
   background-image:
@@ -1088,13 +1068,6 @@ body::after {
   background: color-mix(in oklch, var(--accent) 14%, transparent);
 }
 
-.saas-flow-field {
-  background:
-    radial-gradient(circle at 50% 42%, oklch(0.99 0.01 82 / 0.56), transparent 25%),
-    radial-gradient(circle at 74% 30%, oklch(0.87 0.06 42 / 0.34), transparent 34%),
-    linear-gradient(180deg, oklch(0.925 0.028 70), var(--ground));
-}
-
 .saas-grid {
   opacity: 0.28;
   background-image:
@@ -1371,118 +1344,6 @@ body::after {
   }
 }
 
-/* ── Cinematic data current ─────────────────────────────────────────────────
-   Generated environment + live SVG traffic. The central veil is deliberately
-   local rather than a flat page-wide wash, preserving detail at the edges. */
-.data-current-field {
-  z-index: 0;
-  background: var(--ground);
-}
-
-.data-current-art {
-  position: absolute;
-  inset: -3%;
-  width: 106%;
-  height: 106%;
-  object-fit: cover;
-  object-position: 62% center;
-  opacity: 0;
-  filter: saturate(0.82) contrast(0.94) brightness(1.03);
-  transform: scale(1.035);
-  transition: opacity 1.2s var(--ease-entrance), transform 1.8s var(--ease-entrance);
-  animation: data-current-camera 24s ease-in-out 1.8s infinite alternate;
-}
-
-.data-current-field.is-ready .data-current-art {
-  opacity: 0.92;
-  transform: scale(1);
-}
-
-.data-current-bloom {
-  position: absolute;
-  top: 4%;
-  left: 50%;
-  width: min(62vw, 58rem);
-  aspect-ratio: 1.4;
-  border-radius: 999px;
-  background: radial-gradient(ellipse, oklch(0.985 0.012 80 / 0.64), transparent 70%);
-  filter: blur(28px);
-  transform: translateX(-50%);
-  animation: data-current-breathe 8s ease-in-out infinite alternate;
-}
-
-.data-current-map {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 1.4s ease 0.45s;
-}
-
-.data-current-field.is-ready .data-current-map {
-  opacity: 1;
-}
-
-.data-current-traces {
-  fill: none;
-  stroke: oklch(0.72 0.1 58 / 0.26);
-  stroke-width: 1.1;
-  stroke-dasharray: 7 13;
-  animation: data-current-dash 18s linear infinite;
-}
-
-.data-current-particle,
-.data-current-packet {
-  fill: oklch(0.67 0.17 43);
-}
-
-.data-current-particle-soft {
-  fill: oklch(0.91 0.08 75 / 0.78);
-}
-
-.data-current-side-note {
-  position: absolute;
-  z-index: 3;
-  color: oklch(0.27 0.03 50 / 0.58);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.625rem;
-  letter-spacing: 0.2em;
-  writing-mode: vertical-rl;
-}
-
-.data-current-side-note-left {
-  top: 42%;
-  left: 1.7rem;
-}
-
-.data-current-side-note-right {
-  right: 1.7rem;
-  bottom: 24%;
-}
-
-.data-current-veil {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, oklch(0.96 0.014 82 / 0.94) 0%, oklch(0.96 0.014 82 / 0.76) 34%, transparent 68%),
-    linear-gradient(to top, var(--ground) 0%, transparent 22%, transparent 72%, oklch(0.96 0.014 82 / 0.22) 100%);
-}
-
-@keyframes data-current-camera {
-  from { transform: scale(1) translate3d(-0.6%, -0.3%, 0); }
-  to { transform: scale(1.065) translate3d(0.8%, 0.5%, 0); }
-}
-
-@keyframes data-current-breathe {
-  from { opacity: 0.68; transform: translateX(-50%) scale(0.94); }
-  to { opacity: 0.94; transform: translateX(-50%) scale(1.08); }
-}
-
-@keyframes data-current-dash {
-  to { stroke-dashoffset: -160; }
-}
-
 .scroll-orbit {
   border-color: color-mix(in oklch, var(--accent) 14%, transparent);
   background:
@@ -1493,45 +1354,6 @@ body::after {
 .scroll-light-beam {
   opacity: 0.42;
   background: linear-gradient(90deg, transparent, color-mix(in oklch, var(--accent) 6%, transparent), transparent);
-}
-
-@media (max-width: 767px) {
-  .data-current-art {
-    inset: 0;
-    width: 100%;
-    height: 70%;
-    object-position: 56% 12%;
-    opacity: 0.68;
-    filter: saturate(0.72) contrast(0.8) brightness(1.16);
-    mask-image: linear-gradient(to bottom, black 0%, black 52%, transparent 96%);
-  }
-
-  .data-current-veil {
-    background:
-      linear-gradient(90deg, oklch(0.96 0.014 82 / 0.78), oklch(0.96 0.014 82 / 0.42)),
-      linear-gradient(to top, var(--ground), transparent 28%);
-  }
-
-  .data-current-side-note {
-    display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .data-current-art,
-  .data-current-bloom,
-  .data-current-traces {
-    animation: none;
-  }
-}
-
-.hero-drift {
-  animation: hero-drift 44s ease-in-out infinite alternate;
-}
-
-.hero-blossom-video {
-  opacity: 0.68;
-  filter: saturate(1.28) sepia(0.05) brightness(1.02) contrast(1.05);
 }
 
 .hero-word-shell {
@@ -1560,11 +1382,6 @@ body::after {
   24% { opacity: 0.78; transform: scaleX(0.94); }
   78% { opacity: 0.58; transform: scaleX(0.98); }
   100% { opacity: 0; transform: scaleX(0.35); }
-}
-
-.dark .hero-blossom-video {
-  opacity: 0.88;
-  filter: saturate(1.75) brightness(0.72) contrast(1.16) hue-rotate(-4deg);
 }
 
 .site-nav-glass {
@@ -1959,12 +1776,6 @@ body::after {
 .dark .footer-word {
   color: oklch(1 0 0 / 0.025);
   -webkit-text-stroke-color: oklch(1 0 0 / 0.075);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-drift {
-    animation: none;
-  }
 }
 
 /* ── Cursor ──────────────────────────────────────────────────────────────────
@@ -3732,7 +3543,27 @@ body::after {
    no extra viewports at all. */
 @media (max-width: 600px) {
   .process-timeline-pin { height: auto; }
-  .process-timeline-stick { position: relative; height: auto; overflow: visible; padding: 0; background: none; backdrop-filter: none; }
+
+  /* Stacked, not side by side: in a row the full-width stage left the rail a
+     width of zero, so all six steps rendered off the right edge of the phone. */
+  .process-timeline-stick {
+    position: relative;
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    overflow: visible;
+    padding: 0;
+    background: none;
+    backdrop-filter: none;
+  }
+
+  .process-timeline-viewport {
+    flex: none;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    mask-image: none;
+  }
 
   .process-timeline-slider {
     flex-direction: column;
@@ -3744,19 +3575,38 @@ body::after {
   }
 
   .process-timeline-stage { width: 100%; height: auto; min-height: 17rem; }
-  .process-timeline-track { width: 100%; height: auto; }
-  .process-tl-rule { display: none; }
-  .process-tl-row { display: block; height: auto; }
-  .process-tl-rowhead { width: auto; padding: 0 0 0.75rem; }
 
+  /* One column in step order. Desktop splits odd and even steps into two
+     staggered rows; stacked as-is they read 01, 03, 05, 02, 04, 06. Flattening
+     the rows lets `order` put the six steps back in sequence. */
+  .process-timeline-track {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    width: 100%;
+    height: auto;
+  }
+
+  .process-tl-rule { display: none; }
+
+  .process-tl-row,
   .process-tl-items,
   .process-tl-row-bottom .process-tl-items {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.75rem;
-    height: auto;
-    margin-left: 0;
+    display: contents;
   }
+
+  .process-tl-rowhead { width: auto; padding: 0; }
+  .process-tl-row-top .process-tl-rowhead { order: -1; }
+
+  /* The live "01 / 06" counter follows the pinned scroll, which phones do not
+     have, so it would only ever read 01. */
+  .process-tl-row-bottom .process-tl-rowhead { display: none; }
+
+  .process-tl-item[data-step-index='1'] { order: 1; }
+  .process-tl-item[data-step-index='2'] { order: 2; }
+  .process-tl-item[data-step-index='3'] { order: 3; }
+  .process-tl-item[data-step-index='4'] { order: 4; }
+  .process-tl-item[data-step-index='5'] { order: 5; }
 
   .process-tl-item { width: auto; height: auto; padding-inline: 1rem; }
   .process-tl-item[data-active='false'] { opacity: 1; }
@@ -5257,16 +5107,6 @@ a.work-aux-link:hover {
   box-shadow: 0 0 24px color-mix(in oklch, var(--accent) 65%, transparent);
 }
 
-.story-kicker {
-  position: absolute;
-  top: 14vh;
-  left: clamp(1.5rem, 5vw, 5rem);
-  color: color-mix(in oklch, var(--accent) 62%, transparent);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.2em;
-}
-
 .story-fragment {
   position: absolute;
   min-width: 6.5rem;
@@ -5322,45 +5162,6 @@ a.work-aux-link:hover {
   right: 24%;
   bottom: 18%;
   transform: rotate(-4deg);
-}
-
-.story-route-core {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: grid;
-  place-items: center;
-  width: 9rem;
-  aspect-ratio: 1;
-  border: 1px solid color-mix(in oklch, var(--accent) 24%, transparent);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    color-mix(in oklch, var(--accent) 10%, var(--ground)),
-    color-mix(in oklch, var(--ground) 30%, transparent) 60%
-  );
-  transform: translate(-50%, -50%);
-  box-shadow:
-    0 0 0 2rem color-mix(in oklch, var(--accent) 2.5%, transparent),
-    0 0 0 4rem color-mix(in oklch, var(--accent) 1.5%, transparent);
-}
-
-.story-route-core span,
-.story-route-core strong {
-  position: absolute;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.62rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
-}
-
-.story-route-core span {
-  top: 2.8rem;
-  color: var(--ink-3);
-}
-.story-route-core strong {
-  bottom: 2.8rem;
-  color: var(--accent);
 }
 
 .story-route {
@@ -5436,35 +5237,9 @@ a.work-aux-link:hover {
   animation: work-orbit 42s linear infinite;
 }
 
-.story-outcome-core {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  color: color-mix(in oklch, var(--ink) 28%, transparent);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
-  transform: translate(-50%, -50%);
-}
-
-.story-outcome-core i {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 0.45rem color-mix(in oklch, var(--accent) 9%, transparent);
-}
-
 @media (max-width: 767px) {
   .story-atmosphere {
     opacity: 0.5;
-  }
-  .story-kicker {
-    top: 10vh;
-    left: 1.25rem;
   }
   .story-fragment-b {
     left: 8%;
@@ -5767,4 +5542,38 @@ a.work-aux-link:hover {
   .service-panel[data-open='true'] .service-panel-body {
     transition: none;
   }
+}
+
+/* ── One continuous wash from About to the footer ────────────────────────
+   Each section used to paint its own translucent background and a top rule.
+   Side by side, those slightly different washes drew hard horizontal lines
+   across the autumn scene, so the page read as a stack of boxes. The wash now
+   lives once on the wrapper, fading in below the hero, and the sections are
+   transparent. Declared last and scoped to the story, so it wins over the
+   earlier per-section rules without touching other pages. */
+.blossom-story-root .story-content {
+  background: linear-gradient(
+    180deg,
+    transparent 0,
+    oklch(0.945 0.022 76 / 0.5) 60vh,
+    oklch(0.945 0.022 76 / 0.5) 100%
+  );
+}
+
+/* `:is()` with the ids carries id-level specificity, which the earlier
+   `.blossom-story-root #services`-style !important rules need to be beaten. */
+.blossom-story-root
+  .story-content
+  section:is(#about, #portfolio, #services, #process, #experience, #platforms, #testimonials, #engagement, #faq, #contact) {
+  background: none !important;
+  border-top-color: transparent !important;
+}
+
+.blossom-story-root .story-content .saas-footer {
+  border-top-color: transparent;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in oklch, oklch(0.8 0.035 62) 62%, transparent) 70%
+  );
 }
