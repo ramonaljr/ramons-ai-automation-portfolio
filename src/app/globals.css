@@ -5492,3 +5492,279 @@ a.work-aux-link:hover {
     opacity: 0.46;
   }
 }
+
+/* ── Services: image accordion ───────────────────────────────────────────
+   One panel open, the rest folded to a spine. `data-open` drives everything,
+   so the component only tracks an index. Desktop folds sideways; phones fold
+   downwards, since five spines across 360px would leave no room to read. */
+.service-accordion {
+  --service-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --service-cream: oklch(0.97 0.012 80);
+
+  display: flex;
+  gap: 0.75rem;
+  height: clamp(28rem, 64vh, 36rem);
+  margin-top: 0.5rem;
+}
+
+.service-panel {
+  position: relative;
+  flex: 0 0 4.75rem;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 1.25rem;
+  background: oklch(0.24 0.03 50);
+  box-shadow: 0 24px 60px -40px oklch(0.25 0.05 45 / 0.55);
+  transition:
+    flex 0.8s var(--service-ease),
+    border-color 0.4s ease;
+}
+
+.service-panel[data-open='true'] {
+  flex: 1 1 0;
+  border-color: var(--rule-strong);
+}
+
+.service-panel-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.12);
+  filter: saturate(0.55) brightness(0.62);
+  transition:
+    transform 1.2s var(--service-ease),
+    filter 0.8s ease;
+}
+
+.service-panel[data-open='true'] .service-panel-image {
+  transform: scale(1);
+  filter: saturate(1.05) brightness(0.9);
+}
+
+.service-panel-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, oklch(0.18 0.03 45 / 0.94) 0%, oklch(0.18 0.03 45 / 0.62) 38%, transparent 72%),
+    linear-gradient(to right, oklch(0.18 0.03 45 / 0.35), transparent 60%);
+}
+
+/* The toggle covers the whole panel so a tap anywhere opens it. */
+.service-panel-heading {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
+.service-panel-toggle {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  color: var(--service-cream);
+  text-align: left;
+}
+
+.service-panel-toggle:focus-visible {
+  outline: 2px solid var(--service-cream);
+  outline-offset: -6px;
+  border-radius: 1.25rem;
+}
+
+.service-panel-index {
+  position: absolute;
+  top: 1.35rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  color: color-mix(in oklch, var(--service-cream) 72%, transparent);
+  transition: left 0.6s var(--service-ease), transform 0.6s var(--service-ease);
+}
+
+.service-panel[data-open='true'] .service-panel-index {
+  left: 1.75rem;
+  transform: none;
+}
+
+/* The folded label reads bottom-to-top along the spine. */
+.service-panel-spine {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  writing-mode: vertical-rl;
+  transform: translateX(-50%) rotate(180deg);
+  max-height: calc(100% - 5rem);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+  transition: opacity 0.3s ease;
+}
+
+.service-panel[data-open='true'] .service-panel-spine {
+  opacity: 0;
+}
+
+/* Above the toggle so the link stays clickable; the toggle still catches
+   taps everywhere else on the panel. */
+.service-panel-body {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 2rem 1.75rem 1.75rem;
+  min-width: 22rem;
+  max-width: 40rem;
+  color: var(--service-cream);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.service-panel[data-open='true'] .service-panel-body {
+  pointer-events: auto;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.6s ease 0.3s,
+    transform 0.8s var(--service-ease) 0.3s;
+}
+
+.service-panel-title {
+  font-size: clamp(1.6rem, 2.4vw, 2.25rem);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.service-panel-copy {
+  max-width: 44ch;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: color-mix(in oklch, var(--service-cream) 84%, transparent);
+}
+
+.service-panel-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.service-panel-tags li {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid color-mix(in oklch, var(--service-cream) 26%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--service-cream) 8%, transparent);
+  font-size: 0.75rem;
+  color: color-mix(in oklch, var(--service-cream) 90%, transparent);
+}
+
+.service-panel-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  padding-bottom: 0.15rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--service-cream) 45%, transparent);
+  font-size: 0.875rem;
+  color: var(--service-cream);
+  transition: border-color 0.3s ease, gap 0.3s ease;
+}
+
+.service-panel-link:hover {
+  gap: 0.75rem;
+  border-color: var(--service-cream);
+}
+
+.service-accordion-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  margin-top: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid var(--rule);
+  border-radius: 1.25rem;
+  background: color-mix(in oklch, var(--ground) 72%, transparent);
+}
+
+@media (max-width: 767px) {
+  .service-accordion {
+    flex-direction: column;
+    height: auto;
+    gap: 0.6rem;
+  }
+
+  .service-panel {
+    flex: none;
+    height: 4.25rem;
+    transition:
+      height 0.7s var(--service-ease),
+      border-color 0.4s ease;
+  }
+
+  .service-panel[data-open='true'] {
+    flex: none;
+    height: 29rem;
+  }
+
+  .service-panel-index,
+  .service-panel[data-open='true'] .service-panel-index {
+    top: 50%;
+    left: 1.25rem;
+    transform: translateY(-50%);
+  }
+
+  .service-panel[data-open='true'] .service-panel-index {
+    top: 1.4rem;
+    transform: none;
+  }
+
+  /* Two lines rather than an ellipsis: the longer titles lost their ends. */
+  .service-panel-spine {
+    top: 50%;
+    bottom: auto;
+    left: 3.5rem;
+    right: 1.25rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    writing-mode: horizontal-tb;
+    transform: translateY(-50%);
+    max-height: none;
+    white-space: normal;
+    font-size: 0.95rem;
+    line-height: 1.25;
+  }
+
+  .service-panel-body {
+    min-width: 0;
+    padding: 1.5rem 1.25rem 1.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-panel,
+  .service-panel-image,
+  .service-panel-index,
+  .service-panel-spine,
+  .service-panel-body,
+  .service-panel[data-open='true'] .service-panel-body {
+    transition: none;
+  }
+}

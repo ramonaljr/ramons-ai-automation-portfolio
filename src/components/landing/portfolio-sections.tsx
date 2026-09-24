@@ -10,8 +10,8 @@ import { HeroSection } from '@/components/landing/hero-section'
 import { IntroSection } from '@/components/landing/intro-section'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ProjectsSection } from '@/components/landing/projects-section'
+import { ServicesSection } from '@/components/landing/services-section'
 import { HowItWorksSection } from '@/components/landing/how-it-works-section'
-import { PixelIcon } from '@/components/landing/pixel-icon'
 import { ToolStackSection } from '@/components/landing/tool-stack-section'
 import { ExperienceSection } from '@/components/landing/experience-section'
 import { ContactSection } from '@/components/landing/contact-section'
@@ -23,10 +23,8 @@ import { ScrollAtmosphere } from '@/components/landing/scroll-atmosphere'
 import {
   ArrowIcon,
   CONTAINER,
-  Cta,
   DISPLAY_FONT,
   PAGE,
-  SECTION,
   SECTION_ANCHOR,
   SECTION_CONT,
   sweep,
@@ -34,7 +32,7 @@ import {
 } from '@/components/landing/motion'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
-import { ENGAGEMENTS, PLATFORMS, SERVICES } from '@/lib/portfolio'
+import { ENGAGEMENTS, PLATFORMS } from '@/lib/portfolio'
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 
@@ -45,147 +43,6 @@ import { ENGAGEMENTS, PLATFORMS, SERVICES } from '@/lib/portfolio'
  */
 function SectionHead({ tag, title, blurb }: { tag: string; title: React.ReactNode; blurb?: string }) {
   return <SectionIntro tag={tag} title={title} blurb={blurb} />
-}
-
-// ── Services ─────────────────────────────────────────────────────────────────
-
-const SERVICE_ICONS: ('platform' | 'agents' | 'workflow' | 'integrations' | 'pricing')[] = [
-  'agents',
-  'workflow',
-  'platform',
-  'integrations',
-  'pricing'
-]
-
-const SERVICE_PRESENTATION: Record<string, { title: string; description: string; outcomes: string[] }> = {
-  'n8n-ai-agents': {
-    title: 'Routine work handled automatically',
-    description:
-      'Move information, prepare recurring reports and carry multi-step office work forward without someone checking every screen.',
-    outcomes: ['Data entry', 'Follow-ups', 'Recurring reports']
-  },
-  'business-process-automation': {
-    title: 'Smoother onboarding and approvals',
-    description:
-      'Turn forms, checks, approvals, folders and handoffs into one reliable process that keeps everyone informed.',
-    outcomes: ['Onboarding', 'Approvals', 'Invoices']
-  },
-  'llm-rag-integrations': {
-    title: 'Answers from your company documents',
-    description:
-      'Find information across policies, contracts and internal files, with links back to the source so every answer can be checked.',
-    outcomes: ['Document reading', 'Knowledge search', 'Source links']
-  },
-  'saas-api-integrations': {
-    title: 'Your everyday tools kept in sync',
-    description:
-      'Keep customer details, orders and updates consistent across spreadsheets, databases, inboxes and team channels.',
-    outcomes: ['Spreadsheets', 'Customer records', 'Team alerts']
-  },
-  'ai-voice-agents': {
-    title: 'Calls and customer questions answered 24/7',
-    description:
-      'Respond to common questions, collect the right details and book confirmed appointments even when your team is unavailable.',
-    outcomes: ['Phone calls', 'Lead capture', 'Bookings']
-  }
-}
-
-function ServicesSection() {
-  const { ref, inView } = useInView(0.12)
-
-  const cardAnim = (i: number) => ({
-    opacity: inView ? 1 : 0,
-    transform: inView ? 'translateY(0px)' : 'translateY(36px)',
-    filter: inView ? 'blur(0px)' : 'blur(10px)',
-    transition: `opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${i * 100}ms, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${i * 100}ms, filter 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${i * 100}ms, border-color 0.3s, background-color 0.3s`
-  })
-
-  return (
-    <section id='services' className={SECTION}>
-      <div className={CONTAINER}>
-        <SectionHead
-          tag='SERVICES'
-          title={
-            <>
-              What comes off
-              <br />
-              your team&rsquo;s desk.
-            </>
-          }
-          blurb='Five practical ways to remove repetitive work — from intake and follow-up to approvals, reporting and customer response. Every build is documented so your team can run it without me.'
-        />
-
-        <div ref={ref} className='grid gap-x-5 gap-y-5 pt-4 sm:grid-cols-2 lg:grid-cols-3'>
-          {SERVICES.map((s, i) => {
-            const copy = SERVICE_PRESENTATION[s.slug]
-
-            return (
-              <div
-                key={s.slug}
-                className='group kinetic-card lift-hover border-rule bg-surface hover:border-rule-strong hover:bg-surface-raised relative flex flex-col overflow-hidden rounded-2xl border p-7'
-                style={cardAnim(i)}
-              >
-                <span className='service-icon-square border-rule bg-ground group-hover:border-rule-strong flex h-14 w-14 items-center justify-center rounded-2xl border transition-[border-color,box-shadow] duration-300'>
-                  <span
-                    className='service-icon-glyph'
-                    style={{ '--icon-delay': `${i * -0.72}s` } as React.CSSProperties}
-                  >
-                    <PixelIcon type={SERVICE_ICONS[i] ?? 'platform'} size={34} />
-                  </span>
-                </span>
-
-                <h3
-                  className='display-md text-ink mt-6 text-xl leading-snug font-light'
-                  style={{ fontFamily: DISPLAY_FONT }}
-                >
-                  {copy?.title ?? s.title}
-                </h3>
-
-                <p className='text-fine text-ink-2 mt-3 flex-1'>{copy?.description ?? s.description}</p>
-
-                <div className='mt-5 flex flex-wrap gap-1.5'>
-                  {(copy?.outcomes ?? s.tools.slice(0, 3)).map(t => (
-                    <span key={t} className='border-rule bg-ink/2 text-meta text-ink-3 rounded-md border px-2.5 py-1'>
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                <a
-                  href={`/services/${s.slug}`}
-                  className='text-fine text-ink mt-6 inline-flex items-center gap-2 self-start border-t border-transparent pt-1 transition-colors'
-                >
-                  <span className='bg-[linear-gradient(currentColor,currentColor)] bg-size-[0%_1px] bg-position-[0_100%] bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:bg-size-[100%_1px]'>
-                    See how it works
-                  </span>
-                  <span className='transition-transform duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-1'>
-                    <ArrowIcon />
-                  </span>
-                </a>
-              </div>
-            )
-          })}
-
-          {/* Sixth cell balances the grid and routes to contact. It carries the
-              section's one filled CTA, which is now the only one in the grid. */}
-          <div
-            className='border-rule bg-ink/2.5 flex flex-col justify-center rounded-2xl border p-7'
-            style={cardAnim(SERVICES.length)}
-          >
-            <p className='display-md text-ink text-xl leading-snug font-light' style={{ fontFamily: DISPLAY_FONT }}>
-              Not sure which you need?
-            </p>
-            <p className='text-fine text-ink-2 mt-3 max-w-[30ch]'>
-              Describe the process that eats your week and I will tell you where it fits.
-            </p>
-            <Cta href='#contact' className='mt-6 self-start'>
-              Book a workflow audit
-            </Cta>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
 }
 
 // ── Platforms ────────────────────────────────────────────────────────────────
