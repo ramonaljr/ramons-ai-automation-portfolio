@@ -17,6 +17,7 @@ import {
 } from '@/components/landing/motion'
 import { CaseStudyModal } from '@/components/landing/case-study-modal'
 import { WorkCanvas } from '@/components/landing/work-canvas'
+import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 import { THUMB_VARIANTS, thumbTransition, WORK_TONES, workViews } from '@/lib/work-views'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 
@@ -107,72 +108,6 @@ function OutcomeFigure({ value, reduced }: { value: string; reduced: boolean }) 
       {text}
     </motion.strong>
   )
-}
-
-/** Lens radius in CSS pixels, and how much it enlarges what is under it. */
-const LENS_RADIUS = 92
-const LENS_ZOOM = 2.4
-
-/**
- * A magnifying lens over the card's picture.
- *
- * The lens holds a clone of whatever the frame is showing (the running
- * canvas, the interface mockup or the photo), enlarged and shifted so the
- * point under the pointer sits at the lens centre. Cloning keeps the lens
- * identical to the view it magnifies, including the canvas's dark restyle,
- * which a plain background image of the source file would lose.
- *
- * Everything is written straight to the DOM on pointer move: a lens that
- * re-rendered React on every mouse event would drag. Mouse only: touch has
- * no hover, and a tap already opens the case study.
- */
-function useMagnifier() {
-  const frameRef = useRef<HTMLDivElement>(null)
-  const lensRef = useRef<HTMLDivElement>(null)
-  const artRef = useRef<HTMLDivElement>(null)
-  const sourceRef = useRef<Element | null>(null)
-
-  const hide = () => {
-    if (lensRef.current) lensRef.current.dataset.on = 'false'
-  }
-
-  const move = (event: PointerEvent<HTMLElement>) => {
-    const frame = frameRef.current
-    const lens = lensRef.current
-    const art = artRef.current
-
-    if (!frame || !lens || !art || event.pointerType !== 'mouse') return
-
-    const box = frame.getBoundingClientRect()
-    const x = event.clientX - box.left
-    const y = event.clientY - box.top
-
-    if (x < 0 || y < 0 || x > box.width || y > box.height) {
-      hide()
-
-      return
-    }
-
-    const source = frame.querySelector('.work-canvas, .work-canvas-fallback, .work-card-image')
-
-    // Re-cloned whenever the frame switches view (a thumbnail click swaps it).
-    if (source && source !== sourceRef.current) {
-      const copy = source.cloneNode(true) as HTMLElement
-
-      // Always the finished drawing, whatever point the live run is at.
-      if (copy.classList.contains('work-canvas')) copy.dataset.run = 'static'
-      art.replaceChildren(copy)
-      sourceRef.current = source
-    }
-
-    art.style.width = `${box.width}px`
-    art.style.height = `${box.height}px`
-    art.style.transform = `translate(${LENS_RADIUS - x * LENS_ZOOM}px, ${LENS_RADIUS - y * LENS_ZOOM}px) scale(${LENS_ZOOM})`
-    lens.style.transform = `translate(${x - LENS_RADIUS}px, ${y - LENS_RADIUS}px)`
-    lens.dataset.on = 'true'
-  }
-
-  return { frameRef, lensRef, artRef, move, hide }
 }
 
 /** Moves the card's spotlight to the pointer. Written straight to the style so no frame re-renders. */
@@ -269,9 +204,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
             decoration, not information. */}
         {cs.sample && !allLabs && <span className='work-card-flag'>Architecture lab</span>}
 
-        <div ref={lensRef} className='work-lens' data-on='false' aria-hidden='true'>
-          <div ref={artRef} className='work-lens-art' />
-        </div>
+        <MagnifierLens lensRef={lensRef} artRef={artRef} />
       </motion.div>
 
       {gallery.length > 1 && (

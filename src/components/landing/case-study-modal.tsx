@@ -11,6 +11,7 @@ import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/la
 import { usePrefersReducedMotion } from '@/components/landing/motion'
 import { THUMB_VARIANTS, thumbTransition, WORK_TONES, workViews } from '@/lib/work-views'
 import { WorkCanvas } from '@/components/landing/work-canvas'
+import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
@@ -20,6 +21,7 @@ const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, select, [ta
 export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | null; onClose: () => void }) {
   const panelRef = useRef<HTMLDivElement>(null)
   const reduced = usePrefersReducedMotion()
+  const { frameRef, lensRef, artRef, move: moveLens, hide: hideLens } = useMagnifier()
 
   /**
    * Which of the project's views the dialog is showing. The cards carry the
@@ -199,27 +201,38 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
 
               {/* The canvas runs here too, dark like the card that opened it,
                   so the dialog never shows less than the card did. */}
-              {view.key === 'canvas' ? (
-                <div className='work-dialog-canvas overflow-hidden rounded-xl'>
-                  <WorkCanvas
-                    src={view.src}
-                    label={view.alt}
-                    idSuffix={`${study.slug}-dialog`}
-                    run={1}
-                    reduced={reduced}
-                    lead={0.2}
-                  />
-                </div>
-              ) : (
-                <div className='bg-ground flex items-center justify-center overflow-hidden rounded-xl'>
-                  <img
-                    key={view.key}
-                    src={view.src}
-                    alt={view.alt}
-                    className='h-auto max-h-[400px] w-full object-contain'
-                  />
-                </div>
-              )}
+              {/* One frame for every view, so the magnifying lens measures
+                  whichever one is showing. */}
+              <div
+                ref={frameRef}
+                className='work-magnify relative overflow-hidden rounded-xl'
+                onPointerMove={moveLens}
+                onPointerLeave={hideLens}
+              >
+                {view.key === 'canvas' ? (
+                  <div className='work-dialog-canvas'>
+                    <WorkCanvas
+                      src={view.src}
+                      label={view.alt}
+                      idSuffix={`${study.slug}-dialog`}
+                      run={1}
+                      reduced={reduced}
+                      lead={0.2}
+                    />
+                  </div>
+                ) : (
+                  <div className='bg-ground flex items-center justify-center'>
+                    <img
+                      key={view.key}
+                      src={view.src}
+                      alt={view.alt}
+                      className='h-auto max-h-[400px] w-full object-contain'
+                    />
+                  </div>
+                )}
+
+                <MagnifierLens lensRef={lensRef} artRef={artRef} />
+              </div>
 
               {views.length > 1 && (
                 <div className='work-card-views mt-3' role='group' aria-label={`Views of ${study.title ?? study.slug}`}>

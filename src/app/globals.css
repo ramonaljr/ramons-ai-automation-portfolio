@@ -5906,15 +5906,24 @@ div#experience.about-journey {
   scale: 1;
 }
 
-.work-card-frame[data-view='canvas'] .work-lens {
+.work-lens[data-dark='true'] {
   background: oklch(0.205 0.012 55);
 }
 
+/* Centres the clone the way the dialog's frame centres a letterboxed image;
+   a full-size canvas fills it either way. */
 .work-lens-art {
   position: absolute;
   top: 0;
   left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transform-origin: 0 0;
+}
+
+.work-lens-art > img {
+  display: block;
 }
 
 /* The status chip is furniture; the lens is for the drawing. */
@@ -5924,7 +5933,8 @@ div#experience.about-journey {
 
 /* The frame is the magnifier's target, so it says so. */
 @media (hover: hover) and (pointer: fine) {
-  .work-card-frame {
+  .work-card-frame,
+  .work-magnify {
     cursor: zoom-in;
   }
 }
