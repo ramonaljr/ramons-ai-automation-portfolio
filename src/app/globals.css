@@ -1569,7 +1569,7 @@ body::after {
   /* Warm paper, not white: a stark white card was the one surface on the
      page that did not belong to the autumn scene. */
   background: linear-gradient(135deg, oklch(0.975 0.014 80 / 0.92), oklch(0.955 0.022 72 / 0.86));
-  box-shadow: 0 28px 80px -48px oklch(0.38 0.14 55 / 0.34);
+  box-shadow: 0 28px 80px -48px oklch(0.38 0.035 55 / 0.34);
   overflow: hidden;
 }
 
@@ -1608,7 +1608,7 @@ body::after {
   position: relative;
   box-shadow:
     0 1px 2px oklch(0.25 0.05 55 / 0.04),
-    0 24px 54px -28px oklch(0.35 0.15 55 / 0.3);
+    0 24px 54px -28px oklch(0.35 0.035 55 / 0.3);
 }
 
 .saas-project-browser {
@@ -1616,7 +1616,7 @@ body::after {
   border-radius: 1.5rem;
   padding: clamp(1rem, 2.5vw, 2rem);
   background: oklch(1 0 0 / 0.78);
-  box-shadow: 0 30px 80px -52px oklch(0.35 0.14 55 / 0.38);
+  box-shadow: 0 30px 80px -52px oklch(0.35 0.035 55 / 0.38);
   backdrop-filter: blur(16px);
 }
 
@@ -1652,7 +1652,7 @@ body::after {
   border-color: color-mix(in oklch, var(--accent) 12%, var(--rule));
   box-shadow:
     0 1px 2px oklch(0.25 0.05 55 / 0.035),
-    0 18px 44px -34px oklch(0.35 0.14 55 / 0.28);
+    0 18px 44px -34px oklch(0.35 0.035 55 / 0.28);
   backdrop-filter: blur(14px);
 }
 
@@ -1663,7 +1663,7 @@ body::after {
   border-color: color-mix(in oklch, var(--accent) 34%, transparent);
   box-shadow:
     0 2px 4px oklch(0.25 0.05 55 / 0.04),
-    0 28px 58px -34px oklch(0.35 0.16 55 / 0.32);
+    0 28px 58px -34px oklch(0.35 0.035 55 / 0.32);
 }
 
 #services .service-icon-square {
@@ -1692,7 +1692,7 @@ body::after {
 #principles [data-active='true'] {
   border-radius: 0 1rem 1rem 0;
   background: linear-gradient(90deg, color-mix(in oklch, var(--accent) 7%, white), oklch(1 0 0 / 0.6)) !important;
-  box-shadow: 0 18px 42px -34px oklch(0.35 0.14 55 / 0.35);
+  box-shadow: 0 18px 42px -34px oklch(0.35 0.035 55 / 0.35);
 }
 
 #stack .group {
@@ -1702,7 +1702,7 @@ body::after {
 #stack .group span.rounded-full {
   border-color: color-mix(in oklch, var(--accent) 13%, var(--rule));
   background: oklch(1 0 0 / 0.78);
-  box-shadow: 0 12px 26px -22px oklch(0.35 0.14 55 / 0.32);
+  box-shadow: 0 12px 26px -22px oklch(0.35 0.035 55 / 0.32);
 }
 
 .saas-contact-card {
@@ -5862,4 +5862,10 @@ div#experience.about-journey {
 
 .hero-portrait-chip {
   font-size: 0.6875rem;
+}
+
+/* The accent-tinted rings behind the About panel's corner read as a pink
+   haze on the warm paper, not as a shape. */
+.saas-about-panel::after {
+  display: none;
 }
