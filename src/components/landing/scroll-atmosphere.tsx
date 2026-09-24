@@ -52,7 +52,6 @@ export function ScrollAtmosphere() {
           className='story-chapter story-chapter-input absolute inset-0'
           style={reduced ? undefined : { opacity: inputOpacity, y: inputY, x: pointerX }}
         >
-          <span className='story-kicker'>01 / THE OLD WAY</span>
           <span className='story-fragment story-fragment-a'>COPY</span>
           <span className='story-fragment story-fragment-b'>CHECK</span>
           <span className='story-fragment story-fragment-c'>CHASE</span>
