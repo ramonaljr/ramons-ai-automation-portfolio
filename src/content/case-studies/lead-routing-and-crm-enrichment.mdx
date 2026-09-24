@@ -5,7 +5,7 @@ description: 'Built a Zapier pipeline that enriches every inbound lead, scores i
 organisation: 'Sales Operations'
 role: 'AI Automation Specialist'
 duration: '1 Week'
-tools: ['Zapier', 'HubSpot', 'Clearbit', 'Slack', 'Google Sheets', 'OpenAI GPT-4o']
+tools: ['Zapier', 'HubSpot', 'Clearbit', 'Slack', 'Google Sheets', 'OpenAI']
 publishedAt: '2026-05-25'
 image: '/images/case-study/mockups/lead-routing-and-crm-enrichment.svg'
 heroImage: '/images/case-study/mockups/lead-routing-and-crm-enrichment.svg'
@@ -20,13 +20,13 @@ platform: 'Zapier'
 categories: ['CRM & Leads']
 speed: '< 60 SEC'
 workflowImage: '/images/workflows/lead-routing-and-crm-enrichment.svg'
-logicSummary: 'Form intake → normalise → Clearbit enrichment → GPT-4o scoring → path routing → Slack alert.'
+logicSummary: 'Form intake → normalise → Clearbit enrichment → GPT scoring → path routing → Slack alert.'
 keyOutcome:
   value: '100%'
   label: 'Leads Logged'
 integrations: ['Zapier', 'HubSpot', 'Clearbit', 'Slack', 'Gmail']
 problem: 'Sales reps frequently missed inbound demo requests sitting in a shared inbox, taking over four hours to first contact, and roughly one in six leads was never logged at all.'
-solution: 'Engineered a Zapier pipeline that normalises every intake source into one shape, enriches with Clearbit, scores fit with GPT-4o against written ICP rules, routes on paths by score and territory, and posts a briefed alert to the owning rep.'
+solution: 'Engineered a Zapier pipeline that normalises every intake source into one shape, enriches with Clearbit, scores fit with GPT against written ICP rules, routes on paths by score and territory, and posts a briefed alert to the owning rep.'
 stepCount: 4
 impactHighlight: 'First-touch time drops from about four hours to under a minute.'
 impactHighlightDesc: 'Reps open an enriched, scored and briefed lead rather than a bare name and email address.'
@@ -60,7 +60,7 @@ The team had already standardised on Zapier across marketing and sales, and had 
 
 ## My Role
 
-I designed and built the entire routing pipeline in **Zapier**, using **Clearbit** for firmographic enrichment, **GPT-4o** for qualification summaries, and **HubSpot** as the system of record. I chose Zapier deliberately here: every system involved had a first-class Zapier connector, the logic was linear, and the team needed to own and edit it themselves after handover.
+I designed and built the entire routing pipeline in **Zapier**, using **Clearbit** for firmographic enrichment, **GPT** for qualification summaries, and **HubSpot** as the system of record. I chose Zapier deliberately here: every system involved had a first-class Zapier connector, the logic was linear, and the team needed to own and edit it themselves after handover.
 
 ## Key Outcomes
 
@@ -80,7 +80,7 @@ Rather than a Zap per form, I normalised every source into a single intake step:
 
 ### 2. Enrichment and Qualification
 - Clearbit lookup by email domain returns headcount, industry, and funding stage.
-- A GPT-4o step turns the raw enrichment payload plus the prospect's own message into a two-sentence brief and a fit score against written ICP criteria.
+- A GPT step turns the raw enrichment payload plus the prospect's own message into a two-sentence brief and a fit score against written ICP criteria.
 - The scoring prompt is pinned to explicit rules — headcount bands, excluded industries — so the model classifies rather than judges.
 
 ### 3. Routing and Alerting

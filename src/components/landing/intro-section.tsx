@@ -227,6 +227,7 @@ export function IntroSection() {
                   alt='Ramon A. Vallejera, Jr.'
                   width={1200}
                   height={1500}
+                  loading='lazy'
                   className='about-portrait-studio h-auto w-full object-cover'
                 />
                 <div className='about-film-scan' aria-hidden='true' />

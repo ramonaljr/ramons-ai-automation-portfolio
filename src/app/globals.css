@@ -3228,88 +3228,12 @@ body::after {
   min-height: 100vh;
 }
 
-.work-proof-strip {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: 2rem;
-  border-block: 1px solid var(--rule);
-}
-
-.work-proof-strip span {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  min-height: 3.5rem;
-  padding: 0.8rem 1rem;
-  color: var(--ink-2);
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-}
-
-.work-proof-strip span + span {
-  border-left: 1px solid var(--rule);
-}
-
-.work-proof-strip b {
-  color: var(--accent);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.72rem;
-  font-weight: 500;
-}
-
 /* ── Selected Work: platform filter ────────────────────────────────────────
    `platform` was always documented as driving filter tabs, and the section
    still carried an orphaned "Nothing built on this platform yet" string, so
    this restores a control the data model already expected. Counts are shown
    because two of the platforms hold a single project each — better to say so
    than to let a reader click into an almost-empty grid. */
-.work-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: clamp(1.6rem, 2.4vw, 2.4rem);
-}
-
-.work-filter {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.55rem 0.9rem;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  background: color-mix(in oklch, var(--ground) 70%, transparent);
-  color: color-mix(in oklch, var(--ink) 62%, transparent);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 0.25s ease,
-    background-color 0.25s ease,
-    color 0.25s ease;
-}
-
-.work-filter:hover {
-  border-color: color-mix(in oklch, var(--ink) 26%, transparent);
-  color: var(--ink);
-}
-
-.work-filter[aria-pressed='true'] {
-  border-color: color-mix(in oklch, var(--accent) 55%, var(--rule));
-  background: color-mix(in oklch, var(--accent) 12%, var(--ground));
-  color: var(--ink);
-}
-
-.work-filter b {
-  color: color-mix(in oklch, var(--ink) 45%, transparent);
-  font-weight: 400;
-}
-
-.work-filter[aria-pressed='true'] b {
-  color: var(--accent);
-}
-
 /* Stated once, at the top, when it applies to everything below it. */
 /* The dialog panel takes focus on open so the dialog is announced, but it is a
    container rather than a control — the global focus ring drew a 2px accent
@@ -3588,7 +3512,6 @@ body::after {
   margin-top: clamp(1.6rem, 2.4vw, 2.4rem);
 }
 
-.work-toolbar .work-filters,
 .work-toolbar .work-lab-note {
   margin-top: 0;
 }
@@ -3919,24 +3842,6 @@ a.work-aux-link:hover {
 
 @keyframes work-status {
   50% { opacity: 0.48; transform: scale(0.82); }
-}
-
-@media (max-width: 1023px) {
-  .work-proof-strip { margin-top: 1.5rem; }
-}
-
-@media (max-width: 767px) {
-  .work-proof-strip {
-    grid-template-columns: 1fr;
-  }
-  .work-proof-strip span {
-    min-height: 2.8rem;
-    padding-inline: 0.25rem;
-  }
-  .work-proof-strip span + span {
-    border-top: 1px solid var(--rule);
-    border-left: 0;
-  }
 }
 
 /* ── About: operator-to-automation cinematic reveal ───────────────────── */
@@ -5843,8 +5748,7 @@ div#experience.about-journey {
 .story-copy-tag,
 .work-card-context,
 .work-card-stack,
-.work-card-outcome em,
-.work-filter {
+.work-card-outcome em {
   font-size: 0.75rem;
 }
 
@@ -5854,10 +5758,6 @@ div#experience.about-journey {
 .work-card-stack,
 .work-card-outcome em {
   color: var(--ink-2);
-}
-
-.work-filter {
-  color: color-mix(in oklch, var(--ink) 80%, transparent);
 }
 
 .hero-portrait-chip {
@@ -5942,5 +5842,49 @@ div#experience.about-journey {
 @media (prefers-reduced-motion: reduce) {
   .work-lens {
     transition: none;
+  }
+}
+
+/* ── Phones: no intro, and a hero that does not wait for JavaScript ──────
+   The hero's entrance is gated on the intro finishing, which on a phone
+   meant waiting for hydration and then for the intro's timer. Below 768px
+   the intro is hidden (IntroAnimation also skips it) and the hero runs the
+   same rise as a CSS animation from first paint. An animation outranks the
+   opacity-0 utility the gated classes start with, and `both` holds the end
+   state after the JavaScript classes arrive. */
+/* Starts at 0.01, not 0: Chrome never counts an element that first paints
+   fully transparent toward Largest Contentful Paint, so the headline was
+   skipped and each rotating word that appeared later became the LCP instead
+   (4.7s, 5.4s, 8.2s on a throttled phone). Visually identical to 0. */
+@keyframes hero-reveal {
+  from {
+    opacity: 0.01;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .intro-overlay {
+    display: none;
+  }
+
+  .hero-reveal {
+    animation: hero-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .hero-reveal.delay-200 { animation-delay: 0.15s; }
+  .hero-reveal.delay-300 { animation-delay: 0.25s; }
+  .hero-reveal.delay-500 { animation-delay: 0.4s; }
+}
+
+@media (max-width: 767px) and (prefers-reduced-motion: reduce) {
+  .hero-reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }

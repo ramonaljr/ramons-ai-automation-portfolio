@@ -288,8 +288,6 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
    */
   const [views, setViews] = useState<Record<string, number>>({})
 
-  /** `null` is "all platforms" rather than a sentinel string. */
-  const [platform, setPlatform] = useState<CaseStudyMetadata['platform'] | null>(null)
 
   /**
    * Delivered work leads; labs sort to the back.
@@ -305,22 +303,10 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
     [caseStudies]
   )
 
-  /**
-   * Counts come from the data rather than a hand-kept list, so a new case study
-   * appears in the filter the moment its MDX lands. Order follows the count, so
-   * the platform with the most work leads.
-   */
-  const platforms = shown.reduce<{ name: NonNullable<CaseStudyMetadata['platform']>; count: number }[]>((all, cs) => {
-    if (!cs.platform) return all
-
-    const seen = all.find(entry => entry.name === cs.platform)
-
-    return seen
-      ? all.map(e => (e === seen ? { ...e, count: e.count + 1 } : e))
-      : [...all, { name: cs.platform, count: 1 }]
-  }, [])
-
-  const visible = platform ? shown.filter(cs => cs.platform === platform) : shown
+  // No platform filter: with one project on Make and one on Zapier, two of
+  // the three buttons filtered down to a single card. It can come back once
+  // each platform has enough work to be worth narrowing to.
+  const visible = shown
 
   /**
    * A per-card badge only means something when it separates one card from
@@ -342,45 +328,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           blurb='Each one starts with what a team was doing by hand, and ends with what runs instead. Pick a project to see both.'
         />
 
-        <div className='work-proof-strip' aria-label='Portfolio design principles'>
-          <span>
-            <b>01</b> Business case first
-          </span>
-          <span>
-            <b>02</b> Failure paths mapped
-          </span>
-          <span>
-            <b>03</b> Human control retained
-          </span>
-        </div>
-
-        {/* Filters and the lab statement share one row: stacked, they spent a
-            screen-height of intro before the first card appeared. */}
         <div className='work-toolbar'>
-          {platforms.length > 1 && (
-            <div className='work-filters' role='group' aria-label='Filter projects by automation platform'>
-              <button
-                type='button'
-                className='work-filter'
-                aria-pressed={platform === null}
-                onClick={() => setPlatform(null)}
-              >
-                All <b>{shown.length}</b>
-              </button>
-              {platforms.map(entry => (
-                <button
-                  key={entry.name}
-                  type='button'
-                  className='work-filter'
-                  aria-pressed={platform === entry.name}
-                  onClick={() => setPlatform(entry.name)}
-                >
-                  {entry.name} <b>{entry.count}</b>
-                </button>
-              ))}
-            </div>
-          )}
-
           {allLabs && (
             <p className='work-lab-note'>
               Every system below is an architecture lab — designed, built and run end to end, with the figures stated as
@@ -407,9 +355,6 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           ))}
         </ul>
 
-        {visible.length === 0 && (
-          <p className='text-fine text-ink-3 py-16 text-center'>Nothing built on this platform yet.</p>
-        )}
       </div>
 
       <CaseStudyModal study={selectedStudy} onClose={() => setSelectedStudy(null)} />

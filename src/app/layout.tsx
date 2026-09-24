@@ -17,9 +17,13 @@ import { SITE_URL } from '@/lib/site'
 
 import './globals.css'
 
+// Not preloaded: the mono face only sets small labels, and preloading every
+// family put eight font files ahead of the hero on a phone's connection. It
+// still loads, just after the text a visitor reads first.
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
-  subsets: ['latin']
+  subsets: ['latin'],
+  preload: false
 })
 
 /**
@@ -43,7 +47,8 @@ const faustina = Faustina({
 const ibmPlexSans = IBM_Plex_Sans({
   variable: '--font-ibm-plex',
   weight: ['300', '400', '500', '600'],
-  subsets: ['latin']
+  subsets: ['latin'],
+  preload: false
 })
 
 const satoshi = localFont({

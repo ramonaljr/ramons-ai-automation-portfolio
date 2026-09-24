@@ -66,12 +66,12 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           {/* Phones get a face too, just smaller: the portrait card below only
               appears once there is a column to put it in. */}
           <div
-            className={`hero-byline mb-6 flex items-center gap-3 transition-all duration-700 lg:hidden ${
+            className={`hero-reveal hero-byline mb-6 flex items-center gap-3 transition-all duration-700 lg:hidden ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
             <img
-              src='/images/landing/ramon-portrait-autumn.webp'
+              src='/images/landing/ramon-avatar.webp'
               alt=''
               width={96}
               height={96}
@@ -85,7 +85,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
 
           {/* Eyebrow */}
           <div
-            className={`mb-8 transition-all duration-700 ${
+            className={`hero-reveal mb-8 transition-all duration-700 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
@@ -99,7 +99,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
 
           <h1
             aria-label='Let automation handle data entry, new leads, follow-ups, and reporting.'
-            className={`display-xl text-ink text-left text-[clamp(3rem,6.4vw,7rem)] leading-[0.88] font-light transition-all duration-1000 ${
+            className={`hero-reveal display-xl text-ink text-left text-[clamp(3rem,6.4vw,7rem)] leading-[0.88] font-light transition-all duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
             style={{ fontFamily: DISPLAY_FONT }}
@@ -129,7 +129,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               stats with no call to action anywhere above the fold, so the
               first thing a visitor could act on was ten sections down. */}
           <p
-            className={`text-lead text-ink-2 mt-9 max-w-[53ch] transition-all delay-200 duration-1000 ${
+            className={`hero-reveal text-lead text-ink-2 mt-9 max-w-[53ch] transition-all delay-200 duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
@@ -138,7 +138,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           </p>
 
           <div
-            className={`mt-10 flex flex-wrap items-center gap-x-3 gap-y-3 transition-all delay-300 duration-1000 ${
+            className={`hero-reveal mt-10 flex flex-wrap items-center gap-x-3 gap-y-3 transition-all delay-300 duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
@@ -154,14 +154,20 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             the studio portrait stays with the fuller story in About. */}
         <figure className='hero-portrait hidden lg:block' data-visible={isVisible}>
           <div className='hero-portrait-frame'>
-            <img
-              src='/images/landing/ramon-portrait-autumn.webp'
-              alt={PROFILE.name}
-              width={1120}
-              height={1400}
-              fetchPriority='high'
-              className='hero-portrait-image'
-            />
+            {/* The card only shows at 1024px and up, but a hidden <img> still
+                downloads. Below that the source is a 1px placeholder, so
+                phones skip 118 KB they would never see. */}
+            <picture>
+              <source media='(max-width: 1023px)' srcSet='data:image/gif;base64,R0lGODlhAQABAAAAACw=' />
+              <img
+                src='/images/landing/ramon-portrait-autumn.webp'
+                alt={PROFILE.name}
+                width={1120}
+                height={1400}
+                fetchPriority='high'
+                className='hero-portrait-image'
+              />
+            </picture>
           </div>
 
           <span className='hero-portrait-chip'>
@@ -179,7 +185,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
       {/* Stats. Previously `absolute bottom-12`, which on a short viewport put
           them straight through the headline. In flow, the hero simply grows. */}
       <div
-        className={`relative z-30 mx-auto w-full max-w-390 px-6 pb-14 transition-all delay-500 duration-700 md:px-12 lg:px-20 2xl:max-w-440 ${
+        className={`hero-reveal relative z-30 mx-auto w-full max-w-390 px-6 pb-14 transition-all delay-500 duration-700 md:px-12 lg:px-20 2xl:max-w-440 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >

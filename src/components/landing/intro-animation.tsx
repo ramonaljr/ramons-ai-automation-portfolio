@@ -22,6 +22,9 @@ const TOTAL_DURATION = INTRO_DURATION_MS + 120
 
 type Phase = 'idle' | 'in' | 'out' | 'done'
 
+/** Below this the intro never plays. Match `.intro-overlay` in globals.css. */
+const PHONE = '(max-width: 767px)'
+
 export function IntroAnimation({ onDone }: { onDone: () => void }) {
   const [phase, setPhase] = useState<Phase>('idle')
   const [curtainUp, setCurtainUp] = useState(false)
@@ -35,6 +38,16 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
     // body scheduled a second render purely to reach a conclusion the first
     // render already had.
     if (reducedMotion) {
+      onDone()
+
+      return
+    }
+
+    // Phones skip the intro (the overlay is hidden in CSS below 768px, so the
+    // server-rendered page never shows it). On a mid-range phone the intro
+    // plus the wait for JavaScript held the hero back by over three seconds,
+    // which was most of the page's Largest Contentful Paint.
+    if (window.matchMedia(PHONE).matches) {
       onDone()
 
       return
@@ -96,7 +109,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <div className='pointer-events-none fixed inset-0 z-[100]' aria-hidden='true'>
+    <div className='intro-overlay pointer-events-none fixed inset-0 z-[100]' aria-hidden='true'>
       {/* Curtain background — retracts upward to reveal the hero */}
       <div
         className='absolute inset-x-0 top-0'

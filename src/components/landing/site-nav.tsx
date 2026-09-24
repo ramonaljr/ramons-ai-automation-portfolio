@@ -26,24 +26,26 @@ const NAV_LINKS = [
 /**
  * Which nav link owns which section, in DOM order.
  *
- * The bar carries five in-page destinations for eleven sections, so this map is
- * deliberately lossy rather than exhaustive: everything from Process to
- * Platforms elaborates the offer, and everything from Testimonials to the form
- * is pre-contact reassurance. The full index lives in the footer.
+ * Only sections a link actually names own it. The rest map to `null`, which
+ * clears the highlight: "Services" used to stay lit through How it works and
+ * Platforms, and "Contact" through testimonials, pricing and the FAQ, which
+ * read as the bar being stuck rather than as a choice. The full index lives
+ * in the footer.
  *
  * `#top` is not listed because it is the id of the page wrapper — it contains
  * every other section, so it can never be observed as a distinct region. Home
  * is the fallback state instead: nothing has crossed the line yet.
  */
-const SECTION_OWNERS: readonly (readonly [id: string, owner: string])[] = [
+const SECTION_OWNERS: readonly (readonly [id: string, owner: string | null])[] = [
+  ['story', null],
   ['about', '#about'],
   ['portfolio', '#portfolio'],
   ['services', '#services'],
-  ['process', '#services'],
-  ['platforms', '#services'],
-  ['testimonials', '#contact'],
-  ['engagement', '#contact'],
-  ['faq', '#contact'],
+  ['process', null],
+  ['platforms', null],
+  ['testimonials', null],
+  ['engagement', null],
+  ['faq', null],
   ['contact', '#contact']
 ]
 
@@ -82,13 +84,16 @@ function useActiveHash(enabled: boolean) {
     const observer = new IntersectionObserver(
       () => {
         const line = window.innerHeight * LINE
-        let owner: string | null = null
+
+        // `undefined` until a section passes the line (Home); a passed section
+        // with no link of its own leaves nothing highlighted.
+        let owner: string | null | undefined
 
         for (const target of targets) {
           if (target.element.getBoundingClientRect().top <= line) owner = target.owner
         }
 
-        setActive(owner ?? '#top')
+        setActive(owner === undefined ? '#top' : (owner ?? ''))
       },
       { rootMargin: BAND, threshold: 0 }
     )

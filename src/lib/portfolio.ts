@@ -146,7 +146,7 @@ export const SERVICES: Service[] = [
     title: 'Claude, OpenAI & LLM Integrations (RAG)',
     short: 'LLM & RAG',
     duration: '1 to 3 weeks',
-    tools: ['Claude 3.5 Sonnet', 'OpenAI GPT-4o', 'Prompt Engineering', 'RAG'],
+    tools: ['Claude', 'OpenAI', 'Prompt Engineering', 'RAG'],
     description:
       'Frontier LLM intelligence inside your daily operations: incoming email classified, structured data pulled out of messy documents and PDFs, and a secure internal knowledge base your team can question.',
     detail:
