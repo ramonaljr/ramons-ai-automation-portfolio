@@ -5,7 +5,9 @@ import { useState, type PointerEvent } from 'react'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ArrowIcon, CONTAINER, Cta, DISPLAY_FONT, rise, SECTION, useInView } from '@/components/landing/motion'
 
-import { SERVICES } from '@/lib/portfolio'
+import { ToolStackSection } from '@/components/landing/tool-stack-section'
+
+import { PLATFORMS, SERVICES } from '@/lib/portfolio'
 
 /**
  * Buyer-facing copy for each service. The catalogue in `lib/portfolio` is
@@ -69,6 +71,10 @@ const SIDEWAYS = '(min-width: 768px)'
  */
 export function ServicesSection() {
   const { ref, inView } = useInView<HTMLUListElement>(0.12)
+
+  // Its own trigger: tied to the accordion's, a jump that skipped the
+  // accordion left this block invisible.
+  const { ref: platformsRef, inView: platformsInView } = useInView<HTMLDivElement>(0.15)
   const [active, setActive] = useState(0)
 
   // Hover only opens panels in the sideways layout. Stacked, an opening panel
@@ -165,6 +171,27 @@ export function ServicesSection() {
           </div>
           <Cta href='#contact'>Book a workflow audit</Cta>
         </div>
+
+        {/* Platforms used to be a section of their own, with four cards of
+            bullets. Visitors rarely choose the platform (they want it
+            recommended), so it is now one line each under the offer; the
+            longer reasoning lives in the FAQ. */}
+        <div ref={platformsRef} className='service-platforms' style={rise(platformsInView)}>
+          <p className='eyebrow'>WHERE I BUILD IT</p>
+          <ul>
+            {PLATFORMS.map(platform => (
+              <li key={platform.name} data-primary={platform.primary || undefined}>
+                <strong style={{ fontFamily: DISPLAY_FONT }}>
+                  {platform.name}
+                  {platform.primary && <span>Primary</span>}
+                </strong>
+                <span>{platform.tagline}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <ToolStackSection embedded />
       </div>
     </section>
   )

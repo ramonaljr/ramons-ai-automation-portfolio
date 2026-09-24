@@ -13,7 +13,6 @@ import { ProjectsSection } from '@/components/landing/projects-section'
 import { ServicesSection } from '@/components/landing/services-section'
 import { StorySection } from '@/components/landing/story-section'
 import { HowItWorksSection } from '@/components/landing/how-it-works-section'
-import { ToolStackSection } from '@/components/landing/tool-stack-section'
 import { ContactSection } from '@/components/landing/contact-section'
 import { TestimonialsSection } from '@/components/landing/testimonials-section'
 import { FaqSection } from '@/components/landing/faq-section'
@@ -26,13 +25,12 @@ import {
   DISPLAY_FONT,
   PAGE,
   SECTION_ANCHOR,
-  SECTION_CONT,
   sweep,
   useInView
 } from '@/components/landing/motion'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
-import { ENGAGEMENTS, PLATFORMS } from '@/lib/portfolio'
+import { ENGAGEMENTS } from '@/lib/portfolio'
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 
@@ -44,73 +42,6 @@ import { ENGAGEMENTS, PLATFORMS } from '@/lib/portfolio'
 function SectionHead({ tag, title, blurb }: { tag: string; title: React.ReactNode; blurb?: string }) {
   return <SectionIntro tag={tag} title={title} blurb={blurb} />
 }
-
-// ── Platforms ────────────────────────────────────────────────────────────────
-
-function PlatformsSection() {
-  const { ref, inView } = useInView(0.08)
-
-  return (
-    <section id='platforms' className={SECTION_CONT}>
-      <div className={CONTAINER}>
-        <SectionHead
-          tag='PLATFORMS & TOOLS'
-          title={
-            <>
-              Built where your team
-              <br />
-              can keep running it.
-            </>
-          }
-          blurb='I choose the platform around your existing tools, the amount of work moving through them and who will maintain the system afterwards.'
-        />
-
-        {/* Two-up before four-up: each card carries a tagline, four bullets
-            and a note, which is too much to read at a quarter of 1400px until
-            there is real width for it. */}
-        <div ref={ref} className='grid gap-5 sm:grid-cols-2 xl:grid-cols-4'>
-          {PLATFORMS.map((p, i) => (
-            <div
-              key={p.name}
-              className={`kinetic-card relative overflow-hidden rounded-2xl border p-8 transition-all duration-300 ${
-                p.primary
-                  ? 'border-rule-strong bg-surface-raised shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]'
-                  : 'border-rule bg-surface hover:bg-surface-raised hover:border-rule'
-              }`}
-              style={sweep(inView, i)}
-            >
-              {p.primary && (
-                <span className='text-ground bg-ink absolute top-6 right-6 rounded px-2 py-1 font-mono text-xs tracking-widest'>
-                  PRIMARY
-                </span>
-              )}
-
-              <h3 className='text-ink text-3xl font-light tracking-tight' style={{ fontFamily: DISPLAY_FONT }}>
-                {p.name}
-              </h3>
-              <p className='text-ink-2 mt-2 text-sm leading-relaxed'>{p.tagline}</p>
-
-              <ul className='mt-6 space-y-2.5'>
-                {p.bestFor.map(b => (
-                  <li key={b} className='text-ink-2 flex items-start gap-2.5 text-[14px] leading-snug'>
-                    <span className='bg-ink/30 mt-1.75 h-1 w-1 shrink-0 rounded-full' />
-                    {b}
-                  </li>
-                ))}
-              </ul>
-
-              <p className='border-rule text-ink-2 mt-6 border-t pt-5 text-[13px] leading-relaxed italic'>{p.note}</p>
-            </div>
-          ))}
-        </div>
-
-        <ToolStackSection embedded />
-      </div>
-    </section>
-  )
-}
-
-// ── Principles ───────────────────────────────────────────────────────────────
 
 // ── Engagement ───────────────────────────────────────────────────────────────
 
@@ -220,7 +151,6 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
               <ProjectsSection caseStudies={caseStudies} />
               <ServicesSection />
               <HowItWorksSection />
-              <PlatformsSection />
 
               {/* Corroboration immediately before the offer. Clearly labelled
               layout placeholders remain until approved client words arrive. */}

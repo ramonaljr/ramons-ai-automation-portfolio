@@ -19,7 +19,6 @@ const SECTION_MOODS: readonly (readonly [id: string, mood: Mood])[] = [
   ['portfolio', 'dusk'],
   ['services', 'warm'],
   ['process', 'warm'],
-  ['platforms', 'warm'],
   ['testimonials', 'golden'],
   ['engagement', 'golden'],
   ['faq', 'golden'],

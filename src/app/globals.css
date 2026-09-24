@@ -1147,8 +1147,8 @@ body::after {
 }
 
 .saas-section::before {
-  /* Nine chapters since Experience moved into About. */
-  content: counter(koisei-chapter, decimal-leading-zero) ' / 09';
+  /* Eight chapters: Experience moved into About, Platforms into Services. */
+  content: counter(koisei-chapter, decimal-leading-zero) ' / 08';
   position: absolute;
   top: 8.5rem;
   left: clamp(0.6rem, 1.8vw, 1.7rem);
@@ -2959,6 +2959,9 @@ body::after {
 
 .process-map {
   position: relative;
+  /* Every part of the map is absolutely positioned, so it has no width of its
+     own; inside a centring card it collapsed to zero and showed nothing. */
+  width: 100%;
   min-height: 14rem;
   overflow: hidden;
 }
@@ -5924,4 +5927,69 @@ div#experience.about-journey {
 
 .work-card-frame .view-tabs {
   pointer-events: auto;
+}
+
+/* ── Services: where I build it ──────────────────────────────────────────
+   The four platforms as one line each, replacing the old Platforms section. */
+.service-platforms {
+  margin-top: 2.5rem;
+}
+
+.service-platforms ul {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.service-platforms li {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--rule);
+  border-radius: 1rem;
+  background: color-mix(in oklch, var(--ground) 70%, transparent);
+}
+
+.service-platforms li[data-primary] {
+  border-color: var(--rule-strong);
+  background: color-mix(in oklch, var(--ground) 88%, transparent);
+}
+
+.service-platforms strong {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--ink);
+  font-size: 1.35rem;
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.service-platforms strong span {
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.3rem;
+  background: var(--ink);
+  color: var(--ground);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.service-platforms li > span {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+@media (min-width: 640px) {
+  .service-platforms ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .service-platforms ul {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }

@@ -27,6 +27,11 @@ const FAQS = [
       'Important workflows include failure alerts, safe retry rules and a human review step where a wrong decision would be costly. Failures are surfaced instead of disappearing silently.'
   },
   {
+    question: 'Which platform will you build on?',
+    answer:
+      'Usually n8n: it handles sensitive data in your own environment, branching logic and custom steps, and higher volumes without paying per task. Zapier suits simple handoffs between familiar apps, especially if your team already uses it. Make fits visual, multi-route processes that reshape larger sets of data. GoHighLevel is the choice when the CRM, pipelines and campaigns are the centre of the work. I recommend one after the audit, based on your tools, volume and who maintains it afterwards.'
+  },
+  {
     question: 'How long does a typical project take?',
     answer:
       'A focused workflow usually takes one to four weeks after the process and access are clear. An initial audit takes one week and gives you a prioritized plan before committing to a build.'

@@ -27,7 +27,6 @@ const FOOTER_LINKS = [
   { label: 'Services', hash: '#services' },
   { label: 'How It Works', hash: '#process' },
   { label: 'Experience', hash: '#experience' },
-  { label: 'Platforms', hash: '#platforms' },
   { label: 'Testimonials', hash: '#testimonials' },
   { label: 'Working Together', hash: '#engagement' },
   { label: 'FAQ', hash: '#faq' },

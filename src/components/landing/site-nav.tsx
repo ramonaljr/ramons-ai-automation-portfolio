@@ -42,7 +42,6 @@ const SECTION_OWNERS: readonly (readonly [id: string, owner: string | null])[] =
   ['portfolio', '#portfolio'],
   ['services', '#services'],
   ['process', null],
-  ['platforms', null],
   ['testimonials', null],
   ['engagement', null],
   ['faq', null],
