@@ -72,20 +72,3 @@ export function workViews(cs: CaseStudyMetadata): WorkView[] {
 
   return candidates.filter((view): view is WorkView => view !== null)
 }
-
-/**
- * The selected thumbnail widens; the others give way.
- *
- * Expressed as flex-grow rather than the fixed 120/35px of the reference this
- * came from: the strip spans its container, and that container is 517px in a
- * desktop card, 327px on a phone and wider again inside the dialog, so fixed
- * widths would leave a gap at one size and overflow at another.
- */
-export const THUMB_VARIANTS = {
-  active: { flexGrow: 2.2 },
-  inactive: { flexGrow: 1 }
-}
-
-/** The reference's timing, collapsed to nothing when motion is unwelcome. */
-export const thumbTransition = (reduced: boolean) =>
-  reduced ? { duration: 0 } : { duration: 0.3, ease: 'easeOut' as const }

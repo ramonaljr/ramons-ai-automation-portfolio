@@ -3460,10 +3460,6 @@ body::after {
 
 /* Thumbnails of the canvas match the dark canvas they switch to. Inverting
    flips the ground; the half-turn brings the node colours back to their hues. */
-.work-card-view[data-view='canvas'] img {
-  filter: invert(0.9) hue-rotate(180deg) saturate(1.25);
-}
-
 /* A soft spotlight in the project's tone follows the pointer across the card.
    Behind the content (the card isolates its own stack), so it tints the
    ground without ever washing over the text. */
@@ -3666,65 +3662,11 @@ a.work-aux-link:hover {
 /* The thumbnail carousel. Three views, never auto-advancing: six cards
    cycling at once would be chaos, and a reader cannot compare what keeps
    moving. */
-.work-card-views {
-  display: flex;
-  gap: 2px;
-  padding: 2px;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  background: color-mix(in oklch, var(--ink) 6%, transparent);
-}
-
 /* Above the card's stretched hit area, so a view can be changed without
    selecting the project. */
 /* Above the card's stretched hit area, so a view can be changed without
    selecting the project. The selected thumbnail widens rather than merely
    tinting — at three-up the width itself reads as the state. */
-.work-card-view {
-  position: relative;
-  z-index: 2;
-  flex: 1 1 0;
-  min-width: 0;
-  /* 44px, matching the menu button rather than settling for the 24px the
-     spec allows — these are thumb targets. */
-  min-height: 2.75rem;
-  height: 3.5rem;
-  overflow: hidden;
-  padding: 0;
-  border: 0;
-  border-radius: 0.3rem;
-  background: color-mix(in oklch, var(--ground) 60%, transparent);
-  cursor: pointer;
-  opacity: 0.5;
-  /* Width is animated by motion's variants, not here — two systems driving one
-     property fight each other and the slower one wins at random. */
-  transition:
-    opacity 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.work-card-view img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-
-.work-card-view:hover {
-  opacity: 0.85;
-}
-
-.work-card-view[aria-pressed='true'] {
-  opacity: 1;
-  box-shadow: inset 0 0 0 2px var(--work-tone, var(--accent));
-}
-
-.work-card-view:focus-visible {
-  opacity: 1;
-  outline: 2px solid var(--work-tone);
-  outline-offset: 2px;
-}
-
 
 .work-card-body {
   display: flex;
@@ -5887,4 +5829,108 @@ div#experience.about-journey {
     opacity: 1;
     transform: none;
   }
+}
+
+/* ── Project views: round thumbnails and a circular reveal ───────────────
+   See view-stage.tsx. The layers fill whatever frame holds them. */
+.view-stage-layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.work-card-frame .work-card-image,
+.work-dialog-frame .work-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* The dialog's frame takes the canvas files' own aspect, capped so the body
+   still has room below it. */
+.work-dialog-frame {
+  width: min(100%, calc(400px * 14 / 9));
+  margin-inline: auto;
+  aspect-ratio: 14 / 9;
+  background: var(--ground);
+}
+
+.work-dialog-frame:has(.view-stage-layer[style*='z-index: 2'] .work-canvas) {
+  background: oklch(0.205 0.012 55);
+}
+
+.view-tabs {
+  position: absolute;
+  left: 50%;
+  bottom: 0.85rem;
+  z-index: 4;
+  display: flex;
+  gap: 0.55rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  background: oklch(0.18 0.02 45 / 0.35);
+  backdrop-filter: blur(6px);
+  transform: translateX(-50%);
+}
+
+.view-tab {
+  position: relative;
+  width: 2.25rem;
+  height: 2.25rem;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid oklch(1 0 0 / 0.55);
+  border-radius: 50%;
+  background: var(--ground);
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.view-tab img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Canvas thumbnails match the dark canvas they switch to: inverting flips the
+   ground, and the half-turn brings the node colours back to their hues. */
+.view-tab[data-view='canvas'] img {
+  filter: invert(0.9) hue-rotate(180deg) saturate(1.25);
+}
+
+.view-tab:hover {
+  border-color: oklch(1 0 0 / 0.95);
+  transform: scale(1.08);
+}
+
+.view-tab[aria-pressed='true'] {
+  border-color: oklch(1 0 0);
+  box-shadow: 0 0 0 2px var(--work-tone, var(--accent));
+}
+
+.view-tab:focus-visible {
+  outline: 2px solid oklch(1 0 0);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view-tab {
+    transition: none;
+  }
+}
+
+/* The card's stretched "open case study" hit area (z-index 1) covers the
+   whole card. The frame sits above it so its thumbnails can be clicked, but
+   lets every other click fall through, so tapping the picture still opens
+   the case study. */
+.work-card-frame {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.work-card-frame .view-tabs {
+  pointer-events: auto;
 }

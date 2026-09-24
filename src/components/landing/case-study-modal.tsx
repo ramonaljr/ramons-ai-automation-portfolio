@@ -4,14 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 
 import { createPortal } from 'react-dom'
 
-import { motion } from 'motion/react'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 import { usePrefersReducedMotion } from '@/components/landing/motion'
-import { THUMB_VARIANTS, thumbTransition, WORK_TONES, workViews } from '@/lib/work-views'
+import { WORK_TONES, workViews } from '@/lib/work-views'
 import { WorkCanvas } from '@/components/landing/work-canvas'
 import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
+import { ViewStage } from '@/components/landing/view-stage'
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
@@ -205,56 +205,34 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
                   whichever one is showing. */}
               <div
                 ref={frameRef}
-                className='work-magnify relative overflow-hidden rounded-xl'
+                className='work-magnify work-dialog-frame relative overflow-hidden rounded-xl'
                 onPointerMove={moveLens}
                 onPointerLeave={hideLens}
               >
-                {view.key === 'canvas' ? (
-                  <div className='work-dialog-canvas'>
-                    <WorkCanvas
-                      src={view.src}
-                      label={view.alt}
-                      idSuffix={`${study.slug}-dialog`}
-                      run={1}
-                      reduced={reduced}
-                      lead={0.2}
-                    />
-                  </div>
-                ) : (
-                  <div className='bg-ground flex items-center justify-center'>
-                    <img
-                      key={view.key}
-                      src={view.src}
-                      alt={view.alt}
-                      className='h-auto max-h-[400px] w-full object-contain'
-                    />
-                  </div>
-                )}
+                <ViewStage
+                  views={views}
+                  index={viewIndex}
+                  onSelect={index => setPicked({ slug: study.slug, index })}
+                  reduced={reduced}
+                  label={study.title ?? study.slug}
+                  renderView={item =>
+                    item.key === 'canvas' ? (
+                      <WorkCanvas
+                        src={item.src}
+                        label={item.alt}
+                        idSuffix={`${study.slug}-dialog`}
+                        run={1}
+                        reduced={reduced}
+                        lead={0.2}
+                      />
+                    ) : (
+                      <img src={item.src} alt={item.alt} className='work-card-image' />
+                    )
+                  }
+                />
 
                 <MagnifierLens lensRef={lensRef} artRef={artRef} />
               </div>
-
-              {views.length > 1 && (
-                <div className='work-card-views mt-3' role='group' aria-label={`Views of ${study.title ?? study.slug}`}>
-                  {views.map((item, index) => (
-                    <motion.button
-                      key={item.key}
-                      type='button'
-                      className='work-card-view'
-                      data-view={item.key}
-                      aria-pressed={index === viewIndex}
-                      aria-label={`Show ${item.label}`}
-                      initial={false}
-                      animate={index === viewIndex ? 'active' : 'inactive'}
-                      variants={THUMB_VARIANTS}
-                      transition={thumbTransition(reduced)}
-                      onClick={() => setPicked({ slug: study.slug, index })}
-                    >
-                      <img src={item.src} alt='' aria-hidden='true' width={280} height={175} loading='lazy' />
-                    </motion.button>
-                  ))}
-                </div>
-              )}
 
               {study.logicSummary && (
                 <div className='border-rule text-ink-2 mt-3 flex items-center gap-2 border-t pt-3 font-mono text-[12px]'>

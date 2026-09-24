@@ -43,14 +43,17 @@ export function useMagnifier() {
     const x = event.clientX - box.left
     const y = event.clientY - box.top
 
-    if (x < 0 || y < 0 || x > box.width || y > box.height) {
+    // Off the frame, or over the view thumbnails, which need to be seen to be picked.
+    const overTabs = event.target instanceof Element && event.target.closest('.view-tabs')
+
+    if (x < 0 || y < 0 || x > box.width || y > box.height || overTabs) {
       hide()
 
       return
     }
 
-    // The lens's own clone matches the selector too, so skip anything inside it.
-    const source = [...frame.querySelectorAll(SOURCES)].find(el => !lens.contains(el))
+    // The lens's own clone and the thumbnails match the selector too; skip them.
+    const source = [...frame.querySelectorAll(SOURCES)].find(el => !lens.contains(el) && !el.closest('.view-tabs'))
 
     // Re-cloned whenever the frame switches view (a thumbnail click swaps it).
     if (source && source !== sourceRef.current) {

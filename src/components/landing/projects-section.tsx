@@ -18,7 +18,8 @@ import {
 import { CaseStudyModal } from '@/components/landing/case-study-modal'
 import { WorkCanvas } from '@/components/landing/work-canvas'
 import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
-import { THUMB_VARIANTS, thumbTransition, WORK_TONES, workViews } from '@/lib/work-views'
+import { ViewStage } from '@/components/landing/view-stage'
+import { WORK_TONES, workViews } from '@/lib/work-views'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 
 const WORK_LABELS: Record<string, string> = {
@@ -178,59 +179,41 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
         animate={dealt ? { clipPath: 'inset(0% 0% 0% 0%)' } : { clipPath: 'inset(100% 0% 0% 0%)' }}
         transition={reduced ? { duration: 0 } : { duration: 0.9, delay: delay + 0.18, ease: [0.76, 0, 0.24, 1] }}
       >
-        {view?.key === 'canvas' ? (
-          <WorkCanvas
-            src={view.src}
-            label={view.alt}
-            idSuffix={`${cs.slug}-card`}
-            run={seen ? replays + 1 : 0}
-            reduced={reduced}
-            lead={delay + 0.55}
-          />
-        ) : (
-          view && (
-            <img
-              key={`${cs.slug}-${view.key}`}
-              src={view.src}
-              alt={view.alt}
-              width={1400}
-              height={875}
-              loading={index < 2 ? 'eager' : 'lazy'}
-              className='work-card-image'
-            />
-          )
-        )}
+        <ViewStage
+          views={gallery}
+          index={Math.min(viewIndex, gallery.length - 1)}
+          onSelect={onView}
+          reduced={reduced}
+          label={cs.title ?? cs.slug}
+          renderView={item =>
+            item.key === 'canvas' ? (
+              <WorkCanvas
+                src={item.src}
+                label={item.alt}
+                idSuffix={`${cs.slug}-card`}
+                run={seen ? replays + 1 : 0}
+                reduced={reduced}
+                lead={delay + 0.55}
+              />
+            ) : (
+              <img
+                src={item.src}
+                alt={item.alt}
+                width={1400}
+                height={875}
+                loading={index < 2 ? 'eager' : 'lazy'}
+                className='work-card-image'
+              />
+            )
+          }
+        />
+
         {/* Only the exception is marked. A badge repeated on every card is
             decoration, not information. */}
         {cs.sample && !allLabs && <span className='work-card-flag'>Architecture lab</span>}
 
         <MagnifierLens lensRef={lensRef} artRef={artRef} />
       </motion.div>
-
-      {gallery.length > 1 && (
-        <div className='work-card-views' role='group' aria-label={`Views of ${cs.title ?? cs.slug}`}>
-          {gallery.map((item, itemIndex) => (
-            <motion.button
-              key={item.key}
-              type='button'
-              className='work-card-view'
-              data-view={item.key}
-              aria-pressed={itemIndex === viewIndex}
-              aria-label={`Show ${item.label}`}
-              initial={false}
-              animate={itemIndex === viewIndex ? 'active' : 'inactive'}
-              variants={THUMB_VARIANTS}
-              transition={thumbTransition(reduced)}
-              onClick={() => onView(itemIndex)}
-            >
-              {/* The thumbnail is the label. A diagram, a UI mockup and a
-                  photograph are told apart at a glance, so the name only needs
-                  to exist for screen readers. */}
-              <img src={item.src} alt='' aria-hidden='true' width={280} height={175} loading='lazy' />
-            </motion.button>
-          ))}
-        </div>
-      )}
 
       <div className='work-card-body'>
         <p className='work-card-context'>
