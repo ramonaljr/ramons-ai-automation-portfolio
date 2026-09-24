@@ -1573,16 +1573,7 @@ body::after {
   overflow: hidden;
 }
 
-/* The studio portrait was shot on white. Multiplied over a warm frame, the
-   white takes the frame's tone and the subject is untouched, so the photo
-   sits in the panel rather than on it. */
-.saas-portrait-frame:has(.about-portrait-studio) {
-  background: oklch(0.945 0.024 74);
-}
 
-.about-portrait-studio {
-  mix-blend-mode: multiply;
-}
 
 .saas-about-panel::after {
   content: '';
@@ -3876,9 +3867,9 @@ a.work-aux-link:hover {
   display: flex;
   justify-content: space-between;
   padding: 1rem 1.1rem;
-  /* Ink, not white: the About portrait is now the studio shot on a white
-     ground, where white labels disappeared. */
-  color: var(--ink-3);
+  /* Over the dark office photo, so light type with a soft shadow. */
+  color: oklch(0.97 0.012 80 / 0.9);
+  text-shadow: 0 1px 8px oklch(0.2 0.03 45 / 0.6);
   font-family: var(--font-mono), monospace;
   font-size: 0.72rem;
   letter-spacing: 0.14em;

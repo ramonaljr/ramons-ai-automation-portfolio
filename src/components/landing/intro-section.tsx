@@ -212,8 +212,8 @@ export function IntroSection() {
             </div>
 
             <div className='relative'>
-              {/* The studio portrait: the warm office portrait now leads the
-                  hero, and the same photo twice would read as filler. */}
+              {/* The warm office portrait; the hero carries the one facing the
+                  camera, and the same photo twice would read as filler. */}
               <div
                 className='saas-portrait-frame about-film-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border'
                 data-visible={inView}
@@ -223,12 +223,12 @@ export function IntroSection() {
                   <span>BUSINESS × AUTOMATION</span>
                 </div>
                 <img
-                  src='/images/landing/ramon-portrait.webp'
+                  src='/images/landing/ramon-portrait-autumn.webp'
                   alt='Ramon A. Vallejera, Jr.'
-                  width={1200}
-                  height={1500}
+                  width={1120}
+                  height={1400}
                   loading='lazy'
-                  className='about-portrait-studio h-auto w-full object-cover'
+                  className='h-auto w-full object-cover'
                 />
                 <div className='about-film-scan' aria-hidden='true' />
               </div>

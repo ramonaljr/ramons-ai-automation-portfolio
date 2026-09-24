@@ -150,8 +150,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
         </div>
 
         {/* People hire people: a face above the fold does trust work before a
-            word is read. The warm office portrait carries the autumn palette;
-            the studio portrait stays with the fuller story in About. */}
+            word is read, and this one looks at the visitor. Warm-graded to the
+            autumn palette; the office portrait carries About. */}
         <figure className='hero-portrait hidden lg:block' data-visible={isVisible}>
           <div className='hero-portrait-frame'>
             {/* The card only shows at 1024px and up, but a hidden <img> still
@@ -160,10 +160,10 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             <picture>
               <source media='(max-width: 1023px)' srcSet='data:image/gif;base64,R0lGODlhAQABAAAAACw=' />
               <img
-                src='/images/landing/ramon-portrait-autumn.webp'
+                src='/images/landing/ramon-portrait-casual.webp'
                 alt={PROFILE.name}
-                width={1120}
-                height={1400}
+                width={880}
+                height={1100}
                 fetchPriority='high'
                 className='hero-portrait-image'
               />
