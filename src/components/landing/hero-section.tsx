@@ -79,7 +79,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
             />
             <span className='text-ink-2 text-sm leading-tight'>
               <strong className='text-ink block font-medium'>{PROFILE.name}</strong>
-              {PROFILE.title}
+              {PROFILE.title} · MBA
             </span>
           </div>
 
@@ -91,7 +91,9 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           >
             <span className='inline-flex items-center gap-3'>
               <span className='bg-ink/25 h-px w-8' />
-              <span className='eyebrow'>Less admin · faster follow-up · more time</span>
+              {/* Positioning in order of breadth: what I do for anyone, the
+                  field I know from the inside, then the credential. */}
+              <span className='eyebrow'>AI automation · Accounting &amp; finance · MBA</span>
             </span>
           </div>
 
@@ -131,8 +133,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            I connect the tools you already use so information goes where it needs to, new customers get a faster
-            response, and your team gets hours back every week.
+            I connect the tools you already use so work moves on its own, from lead follow-up to invoices and
+            month-end close. Built by a former AP supervisor and accountant with an MBA.
           </p>
 
           <div
@@ -169,7 +171,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
 
           <figcaption className='hero-portrait-caption'>
             <strong style={{ fontFamily: DISPLAY_FONT }}>{PROFILE.name}</strong>
-            <span>Ten years in finance operations, now automating them.</span>
+            <span>Automation specialist · former AP supervisor &amp; accountant · MBA</span>
           </figcaption>
         </figure>
       </div>

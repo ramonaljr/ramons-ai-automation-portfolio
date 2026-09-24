@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 
-import { motion, useScroll, useTransform, type MotionValue } from 'motion/react'
+import { motion, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react'
 
 import { DISPLAY_FONT } from '@/components/landing/motion'
 
@@ -80,7 +80,12 @@ export function StorySection() {
 
 function PinnedStory() {
   const trackRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress: progress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] })
+  const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] })
+
+  // Slow on purpose. The track is long, so each act takes real scrolling, and
+  // the scene follows the scroll through a soft spring rather than locking to
+  // it: a hard flick of the wheel still plays out as a slow camera move.
+  const progress = useSpring(scrollYProgress, { stiffness: 38, damping: 18, mass: 0.9, restDelta: 0.0005 })
 
   const imageScale = useTransform(progress, [0, 1], [1.14, 1])
 

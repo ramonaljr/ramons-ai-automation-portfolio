@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { motion, useScroll, useTransform } from 'motion/react'
 
@@ -34,6 +34,34 @@ export function BlossomStoryBackground() {
   const rootRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const reduced = usePrefersReducedMotion()
+
+  /**
+   * The video is 3.2 MB and was fetched eagerly on every device, competing
+   * with the hero for bandwidth; on phones it only ever showed at 36%
+   * opacity. It now mounts after the page has loaded, on screens wide enough
+   * to show it and on connections that have not asked to save data. Everyone
+   * else gets the still autumn scene, which the overlay and tone layers
+   * already carry.
+   */
+  const [withVideo, setWithVideo] = useState(false)
+
+  useEffect(() => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+
+    if (connection?.saveData || !window.matchMedia('(min-width: 768px)').matches) return
+
+    const mount = () => setWithVideo(true)
+
+    if (document.readyState === 'complete') {
+      const id = window.setTimeout(mount, 300)
+
+      return () => window.clearTimeout(id)
+    }
+
+    window.addEventListener('load', mount, { once: true })
+
+    return () => window.removeEventListener('load', mount)
+  }, [])
   const { scrollYProgress } = useScroll({ target: rootRef, offset: ['start start', 'end end'] })
   const scale = useTransform(scrollYProgress, [0, 0.28, 0.62, 1], [1.02, 1.1, 1.16, 1.08])
   const x = useTransform(scrollYProgress, [0, 0.28, 0.62, 1], ['-2%', '3%', '-4%', '1%'])
@@ -92,7 +120,7 @@ export function BlossomStoryBackground() {
     }
 
     void video.play().catch(() => undefined)
-  }, [reduced])
+  }, [reduced, withVideo])
 
   return (
     <div
@@ -102,18 +130,20 @@ export function BlossomStoryBackground() {
       aria-hidden='true'
     >
       <div className='sticky top-0 h-screen overflow-hidden'>
-        <motion.video
-          ref={videoRef}
-          className='blossom-story-video absolute inset-0 h-full w-full object-cover'
-          style={reduced ? undefined : { scale, x, y, opacity }}
-          autoPlay={!reduced}
-          muted
-          loop
-          playsInline
-          preload='auto'
-        >
-          <source src='/video/hero-compute.mp4' type='video/mp4' />
-        </motion.video>
+        {withVideo && (
+          <motion.video
+            ref={videoRef}
+            className='blossom-story-video absolute inset-0 h-full w-full object-cover'
+            style={reduced ? undefined : { scale, x, y, opacity }}
+            autoPlay={!reduced}
+            muted
+            loop
+            playsInline
+            preload='auto'
+          >
+            <source src='/video/hero-compute.mp4' type='video/mp4' />
+          </motion.video>
+        )}
 
         <div className='blossom-story-tone absolute inset-0' />
         <motion.div className='blossom-story-glow absolute inset-0' style={reduced ? undefined : { x: glowX }} />

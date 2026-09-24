@@ -68,7 +68,7 @@
 
   /* Type scale — a 1.125 minor-third at the small end, opening up for display.
      Replaces 17 arbitrary px values (13.5px, 15.5px, 14.5px…). */
-  --text-meta: 0.6875rem; /* 11px — eyebrows, badges, legal */
+  --text-meta: 0.75rem; /* 12px — eyebrows, badges, legal. 11px read as noise at a glance. */
   --text-meta--line-height: 1.45;
   --text-fine: 0.8125rem; /* 13px — captions, list items, chips */
   --text-fine--line-height: 1.55;
@@ -1295,13 +1295,6 @@ body::after {
   box-shadow: none;
 }
 
-#process ol > li {
-  border-width: 1px 0 0;
-  border-radius: 0;
-  background: transparent;
-  padding-inline: 0;
-}
-
 #stack .group span.rounded-full {
   border-color: color-mix(in oklch, var(--ink) 13%, transparent);
   background: color-mix(in oklch, white 28%, transparent);
@@ -1480,14 +1473,14 @@ body::after {
 }
 
 .dark .scroll-orbit {
-  border-color: oklch(0.84 0.035 250 / 0.085);
+  border-color: oklch(0.84 0.035 55 / 0.085);
   background:
-    radial-gradient(circle at 50% 50%, transparent 58%, oklch(0.75 0.045 245 / 0.035) 59%, transparent 70%),
-    conic-gradient(from 30deg, transparent, oklch(0.72 0.06 260 / 0.055), transparent 38%);
+    radial-gradient(circle at 50% 50%, transparent 58%, oklch(0.75 0.045 55 / 0.035) 59%, transparent 70%),
+    conic-gradient(from 30deg, transparent, oklch(0.72 0.06 55 / 0.055), transparent 38%);
 }
 
 .dark .scroll-light-beam {
-  background: linear-gradient(90deg, transparent, oklch(0.76 0.045 245 / 0.045), transparent);
+  background: linear-gradient(90deg, transparent, oklch(0.76 0.045 55 / 0.045), transparent);
 }
 
 .closing-art {
@@ -1560,7 +1553,7 @@ body::after {
 #contact {
   background:
     radial-gradient(circle at 88% 16%, color-mix(in oklch, var(--accent) 5%, transparent), transparent 22rem),
-    oklch(0.973 0.009 250 / 0.66);
+    oklch(0.973 0.009 55 / 0.66);
 }
 
 .saas-section-intro .eyebrow {
@@ -1573,9 +1566,22 @@ body::after {
   border: 1px solid var(--rule);
   border-radius: 1.5rem;
   padding: clamp(1.5rem, 4vw, 3.5rem);
-  background: linear-gradient(135deg, oklch(1 0 0 / 0.96), oklch(0.985 0.01 250 / 0.84));
-  box-shadow: 0 28px 80px -48px oklch(0.38 0.14 260 / 0.34);
+  /* Warm paper, not white: a stark white card was the one surface on the
+     page that did not belong to the autumn scene. */
+  background: linear-gradient(135deg, oklch(0.975 0.014 80 / 0.92), oklch(0.955 0.022 72 / 0.86));
+  box-shadow: 0 28px 80px -48px oklch(0.38 0.14 55 / 0.34);
   overflow: hidden;
+}
+
+/* The studio portrait was shot on white. Multiplied over a warm frame, the
+   white takes the frame's tone and the subject is untouched, so the photo
+   sits in the panel rather than on it. */
+.saas-portrait-frame:has(.about-portrait-studio) {
+  background: oklch(0.945 0.024 74);
+}
+
+.about-portrait-studio {
+  mix-blend-mode: multiply;
 }
 
 .saas-about-panel::after {
@@ -1601,8 +1607,8 @@ body::after {
 .saas-portrait-frame {
   position: relative;
   box-shadow:
-    0 1px 2px oklch(0.25 0.05 260 / 0.04),
-    0 24px 54px -28px oklch(0.35 0.15 260 / 0.3);
+    0 1px 2px oklch(0.25 0.05 55 / 0.04),
+    0 24px 54px -28px oklch(0.35 0.15 55 / 0.3);
 }
 
 .saas-project-browser {
@@ -1610,7 +1616,7 @@ body::after {
   border-radius: 1.5rem;
   padding: clamp(1rem, 2.5vw, 2rem);
   background: oklch(1 0 0 / 0.78);
-  box-shadow: 0 30px 80px -52px oklch(0.35 0.14 260 / 0.38);
+  box-shadow: 0 30px 80px -52px oklch(0.35 0.14 55 / 0.38);
   backdrop-filter: blur(16px);
 }
 
@@ -1645,8 +1651,8 @@ body::after {
 .saas-contact-card {
   border-color: color-mix(in oklch, var(--accent) 12%, var(--rule));
   box-shadow:
-    0 1px 2px oklch(0.25 0.05 260 / 0.035),
-    0 18px 44px -34px oklch(0.35 0.14 260 / 0.28);
+    0 1px 2px oklch(0.25 0.05 55 / 0.035),
+    0 18px 44px -34px oklch(0.35 0.14 55 / 0.28);
   backdrop-filter: blur(14px);
 }
 
@@ -1656,8 +1662,8 @@ body::after {
 #engagement .kinetic-card:hover {
   border-color: color-mix(in oklch, var(--accent) 34%, transparent);
   box-shadow:
-    0 2px 4px oklch(0.25 0.05 260 / 0.04),
-    0 28px 58px -34px oklch(0.35 0.16 260 / 0.32);
+    0 2px 4px oklch(0.25 0.05 55 / 0.04),
+    0 28px 58px -34px oklch(0.35 0.16 55 / 0.32);
 }
 
 #services .service-icon-square {
@@ -1686,14 +1692,7 @@ body::after {
 #principles [data-active='true'] {
   border-radius: 0 1rem 1rem 0;
   background: linear-gradient(90deg, color-mix(in oklch, var(--accent) 7%, white), oklch(1 0 0 / 0.6)) !important;
-  box-shadow: 0 18px 42px -34px oklch(0.35 0.14 260 / 0.35);
-}
-
-#process ol > li {
-  border: 1px solid var(--rule);
-  border-radius: 1rem;
-  padding: 1.25rem;
-  background: oklch(1 0 0 / 0.68);
+  box-shadow: 0 18px 42px -34px oklch(0.35 0.14 55 / 0.35);
 }
 
 #stack .group {
@@ -1703,7 +1702,7 @@ body::after {
 #stack .group span.rounded-full {
   border-color: color-mix(in oklch, var(--accent) 13%, var(--rule));
   background: oklch(1 0 0 / 0.78);
-  box-shadow: 0 12px 26px -22px oklch(0.35 0.14 260 / 0.32);
+  box-shadow: 0 12px 26px -22px oklch(0.35 0.14 55 / 0.32);
 }
 
 .saas-contact-card {
@@ -1724,13 +1723,13 @@ body::after {
 }
 
 .saas-closing-cta {
-  background: linear-gradient(180deg, oklch(0.985 0.008 250 / 0.78), oklch(0.96 0.025 255 / 0.82));
+  background: linear-gradient(180deg, oklch(0.985 0.008 55 / 0.78), oklch(0.96 0.025 55 / 0.82));
 }
 
 .saas-footer {
   background:
     radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--accent) 9%, transparent), transparent 34rem),
-    linear-gradient(180deg, oklch(0.97 0.016 255 / 0.8), oklch(0.985 0.006 250 / 0.84));
+    linear-gradient(180deg, oklch(0.97 0.016 55 / 0.8), oklch(0.985 0.006 55 / 0.84));
 }
 
 .saas-footer .footer-word {
@@ -1766,7 +1765,7 @@ body::after {
 .footer-scene.saas-footer {
   background:
     radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--accent) 11%, transparent), transparent 34rem),
-    linear-gradient(180deg, oklch(0.97 0.016 255 / 0.66), oklch(0.985 0.006 250 / 0.72));
+    linear-gradient(180deg, oklch(0.97 0.016 55 / 0.66), oklch(0.985 0.006 55 / 0.72));
 }
 
 .footer-word {
@@ -1894,15 +1893,15 @@ body::after {
 
 .dark .service-icon-square {
   border-color: oklch(1 0 0 / 0.16);
-  background: linear-gradient(145deg, oklch(0.28 0.008 260 / 0.94), oklch(0.215 0.006 260 / 0.98));
+  background: linear-gradient(145deg, oklch(0.28 0.008 55 / 0.94), oklch(0.215 0.006 55 / 0.98));
   box-shadow:
     inset 0 1px 0 oklch(1 0 0 / 0.12),
     inset 0 -1px 0 oklch(0 0 0 / 0.3),
-    0 8px 24px -15px oklch(0.82 0.035 250 / 0.42);
+    0 8px 24px -15px oklch(0.82 0.035 55 / 0.42);
 }
 
 .dark .service-icon-glyph canvas {
-  filter: drop-shadow(0 0 5px oklch(0.92 0.03 250 / 0.38));
+  filter: drop-shadow(0 0 5px oklch(0.92 0.03 55 / 0.38));
 }
 
 .group:hover .service-icon-glyph {
@@ -1918,11 +1917,11 @@ body::after {
 
 .dark .group:hover .service-icon-square {
   border-color: oklch(1 0 0 / 0.34);
-  background: linear-gradient(145deg, oklch(0.32 0.01 250 / 0.96), oklch(0.24 0.008 250 / 0.98));
+  background: linear-gradient(145deg, oklch(0.32 0.01 55 / 0.96), oklch(0.24 0.008 55 / 0.98));
   box-shadow:
     inset 0 1px 0 oklch(1 0 0 / 0.18),
     inset 0 0 20px oklch(1 0 0 / 0.045),
-    0 10px 28px -14px oklch(0.88 0.025 250 / 0.5);
+    0 10px 28px -14px oklch(0.88 0.025 55 / 0.5);
 }
 
 @keyframes service-icon-drift {
@@ -2872,335 +2871,8 @@ body::after {
   .build-guard-event { animation: none; }
 }
 
-/* ── How it works: horizontal pinned timeline ─────────────────────────────
-   Replaces a vertical page-per-step sequence that cost six viewports of
-   scroll. The track buys the scroll, the sticky layer holds the frame still,
-   and the slider translates across it. Height is viewport-WIDTH driven, which
-   is what the reference this came from does — it means the track grows on wide
-   monitors, so `--process-track` is the one number to turn if it gets long. */
-.process-section {
-  overflow: clip;
-  padding-right: 0;
-}
-
-.process-timeline-section {
-  overflow: clip;
-}
-
-.process-timeline-head {
-  position: relative;
-  z-index: 2;
-}
-
-.process-timeline-pin {
-  --process-track: 200vw;
-
-  position: relative;
-  height: var(--process-track);
-  margin-top: 3rem;
-}
-
-.process-timeline-stick {
-  position: sticky;
-  top: 0;
-  display: flex;
-  align-items: center;
-  gap: clamp(1.5rem, 3vw, 3rem);
-  height: 100svh;
-  padding: clamp(4.5rem, 7vw, 7rem) clamp(1.25rem, 4vw, 4rem) clamp(2rem, 4vw, 4rem);
-  overflow: hidden;
-
-  /* The timeline sits over the autumn background, which is busy enough to eat
-     small type. This is the same ground wash the sequence it replaces used. */
-  background: color-mix(in oklch, var(--ground) 30%, transparent);
-  backdrop-filter: blur(3px);
-}
-
-/* Only the rail scrolls sideways; the stage beside it stays put. The edge
-   mask fades neighbouring steps out rather than cutting their titles mid-word. */
-.process-timeline-viewport {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 88%, transparent 100%);
-}
-
-/* `max-content` so the row is exactly as wide as the steps make it — the
-   scroll distance is then measured from the overflow rather than guessed. */
-.process-timeline-slider {
-  display: flex;
-  align-items: stretch;
-  width: max-content;
-  height: 100%;
-  will-change: transform;
-}
-
-/* The active step's visual, in place of the reference's stock photograph. */
-.process-timeline-stage {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  gap: 0.9rem;
-  width: clamp(16rem, 24vw, 28rem);
-  height: min(100%, 32rem);
-  padding: clamp(1rem, 1.6vw, 1.6rem);
-  overflow: hidden;
-  border: 1px solid var(--rule);
-  border-radius: 1vw;
-  background: color-mix(in oklch, var(--ground) 86%, transparent);
-  backdrop-filter: blur(10px);
-}
-
-.process-timeline-stage-number {
-  color: var(--accent);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-}
-
-.process-timeline-stage-card {
-  display: grid;
-  place-items: center;
-  flex: 1;
-  min-height: 0;
-  padding: clamp(0.6rem, 1vw, 1rem);
-  border: 1px solid var(--rule);
-  border-radius: 0.7rem;
-  background: color-mix(in oklch, var(--ground) 94%, transparent);
-}
-
-.process-timeline-stage-caption {
-  color: color-mix(in oklch, var(--ink) 45%, transparent);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
-}
-
-.process-timeline-track {
-  /* One pitch, shared, so the stagger below can be exactly half of it. */
-  --tl-col: clamp(18rem, 26vw, 30rem);
-  --tl-gap: clamp(4rem, 8vw, 12vw);
-
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: max-content;
-  height: 100%;
-}
-
-/* The rule the steps hang from, drawn on scroll. */
-.process-tl-rule {
-  position: absolute;
-  inset-inline: 0;
-  top: 49%;
-  z-index: 0;
-  display: flex;
-  align-items: center;
-}
-
-.process-tl-cap {
-  flex-shrink: 0;
-  width: 0.8vw;
-  height: 0.8vw;
-  min-width: 0.4rem;
-  min-height: 0.4rem;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.process-tl-line {
-  width: 0;
-  height: 1px;
-  border-radius: 999px;
-  background: var(--accent);
-}
-
-.process-tl-row {
-  display: flex;
-  align-items: stretch;
-  height: 50%;
-  min-height: 0;
-}
-
-.process-tl-rowhead {
-  display: flex;
-  flex-shrink: 0;
-  align-items: flex-start;
-  width: 18vw;
-  padding-top: 2vw;
-  color: color-mix(in oklch, var(--ink) 45%, transparent);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.16em;
-}
-
-.process-tl-row-bottom .process-tl-rowhead {
-  align-items: flex-end;
-  padding-top: 0;
-  padding-bottom: 2vw;
-}
-
-.process-tl-items {
-  display: flex;
-  gap: var(--tl-gap);
-  height: 100%;
-  min-height: 0;
-}
-
-/* The bottom row sits half a pitch to the right, so steps interleave along the
-   rail instead of stacking into three aligned columns. Without this the rail
-   only ever presents three horizontal positions, and the stage pane beside it
-   could never reach steps four to six — half the visuals never showed. */
-.process-tl-row-bottom .process-tl-items {
-  margin-left: calc((var(--tl-col) + var(--tl-gap)) / 2);
-}
-
-.process-tl-item {
-  position: relative;
-  flex-shrink: 0;
-  width: var(--tl-col);
-  height: 100%;
-  min-height: 0;
-  padding-inline: clamp(1.25rem, 2.5vw, 3vw);
-}
-
-/* The bottom row's marker hangs from the rule rather than standing on the
-   floor, so its stalk occupies the upper half of the cell. */
-.process-tl-row-bottom .process-tl-marker {
-  bottom: auto;
-  height: clamp(2.5rem, 5vw, 5rem);
-}
-
-/* The stalk and dot share a column on the item's leading edge: the offset sits
-   on this wrapper so GSAP owns `transform` on the dot outright, rather than
-   fighting a CSS translate it would have to parse and preserve. */
-.process-tl-marker {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 1vw;
-  transform: translateX(-50%);
-}
-
-.process-tl-dot {
-  flex-shrink: 0;
-  width: 1vw;
-  height: 1vw;
-  min-width: 0.5rem;
-  min-height: 0.5rem;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.process-tl-stalk {
-  flex: 1;
-  width: 1px;
-  border-radius: 999px;
-  background: var(--accent);
-}
-
-/* The rail marks the step the stage pane is showing. Emphasis rather than
-   position, because the last columns never reach a reading line early enough
-   to also catch the first — see the note on `onUpdate`. */
-.process-tl-item {
-  transition: opacity 0.45s ease;
-}
-
-.process-tl-item[data-active='false'] {
-  opacity: 0.4;
-}
-
-.process-tl-item[data-active='true'] {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .process-tl-item[data-active='false'] {
-    opacity: 1;
-  }
-}
-
-.process-tl-copy-block {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6vw;
-}
-
-.process-tl-row-bottom .process-tl-copy-block {
-  justify-content: flex-start;
-  height: 100%;
-  padding-top: clamp(2.5rem, 5vw, 5rem);
-}
-
-.process-tl-title {
-  font-size: clamp(1.35rem, 2.2vw, 2.6rem);
-  font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-}
-
-.process-tl-text {
-  width: 90%;
-  color: color-mix(in oklch, var(--ink) 66%, transparent);
-  font-size: clamp(0.95rem, 1.3vw, 1.45rem);
-  line-height: 1.2;
-}
-
-@media (max-width: 600px) {
-  .process-timeline-pin {
-    --process-track: 400vh;
-  }
-
-  .process-timeline-slider {
-    gap: 8vw;
-    width: 760vw;
-    height: 78svh;
-    padding-inline: 7vw;
-  }
-
-  .process-timeline-stage {
-    width: 84vw;
-    border-radius: 4vw;
-  }
-
-  .process-tl-rowhead {
-    width: 30vw;
-  }
-
-  .process-tl-items {
-    gap: 34vw;
-  }
-
-  .process-tl-item {
-    width: 66vw;
-    padding-inline: 6vw;
-  }
-
-  .process-tl-marker,
-  .process-tl-dot {
-    width: 2.4vw;
-  }
-
-  .process-tl-dot {
-    height: 2.4vw;
-  }
-
-  .process-tl-cap {
-    width: 2vw;
-    height: 2vw;
-  }
-}
-
+/* ── How it works: the step visuals ──────────────────────────────────────
+   Illustrations shown in the sticky stage beside the step list. */
 
 .process-message {
   display: block;
@@ -3539,112 +3211,7 @@ body::after {
   .process-monitor { min-height: 12.5rem; }
 }
 
-/* The unpinned layout, shared by phones and by anyone who asked for less
-   movement: the rail becomes an ordinary grid that scrolls normally and costs
-   no extra viewports at all. */
-@media (max-width: 600px) {
-  .process-timeline-pin { height: auto; }
-
-  /* Stacked, not side by side: in a row the full-width stage left the rail a
-     width of zero, so all six steps rendered off the right edge of the phone. */
-  .process-timeline-stick {
-    position: relative;
-    flex-direction: column;
-    align-items: stretch;
-    height: auto;
-    overflow: visible;
-    padding: 0;
-    background: none;
-    backdrop-filter: none;
-  }
-
-  .process-timeline-viewport {
-    flex: none;
-    width: 100%;
-    height: auto;
-    overflow: visible;
-    mask-image: none;
-  }
-
-  .process-timeline-slider {
-    flex-direction: column;
-    gap: 2rem;
-    width: 100%;
-    height: auto;
-    transform: none !important;
-    padding-inline: 0;
-  }
-
-  .process-timeline-stage { width: 100%; height: auto; min-height: 17rem; }
-
-  /* One column in step order. Desktop splits odd and even steps into two
-     staggered rows; stacked as-is they read 01, 03, 05, 02, 04, 06. Flattening
-     the rows lets `order` put the six steps back in sequence. */
-  .process-timeline-track {
-    display: flex;
-    flex-direction: column;
-    gap: 1.75rem;
-    width: 100%;
-    height: auto;
-  }
-
-  .process-tl-rule { display: none; }
-
-  .process-tl-row,
-  .process-tl-items,
-  .process-tl-row-bottom .process-tl-items {
-    display: contents;
-  }
-
-  .process-tl-rowhead { width: auto; padding: 0; }
-  .process-tl-row-top .process-tl-rowhead { order: -1; }
-
-  /* The live "01 / 06" counter follows the pinned scroll, which phones do not
-     have, so it would only ever read 01. */
-  .process-tl-row-bottom .process-tl-rowhead { display: none; }
-
-  .process-tl-item[data-step-index='1'] { order: 1; }
-  .process-tl-item[data-step-index='2'] { order: 2; }
-  .process-tl-item[data-step-index='3'] { order: 3; }
-  .process-tl-item[data-step-index='4'] { order: 4; }
-  .process-tl-item[data-step-index='5'] { order: 5; }
-
-  .process-tl-item { width: auto; height: auto; padding-inline: 1rem; }
-  .process-tl-item[data-active='false'] { opacity: 1; }
-  .process-tl-marker { display: none; }
-  .process-tl-row-bottom .process-tl-copy-block { height: auto; padding-top: 0; }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .process-timeline-pin { height: auto; }
-  .process-timeline-stick { position: relative; height: auto; overflow: visible; }
-
-  .process-timeline-slider {
-    flex-direction: column;
-    gap: 2.5rem;
-    width: 100%;
-    height: auto;
-    transform: none !important;
-    padding-inline: 0;
-  }
-
-  .process-timeline-stage { width: 100%; height: auto; min-height: 18rem; }
-  .process-timeline-track { height: auto; }
-  .process-tl-rule { display: none; }
-
-  .process-tl-row { display: block; height: auto; }
-  .process-tl-rowhead { width: auto; padding: 0 0 0.75rem; }
-
-  .process-tl-items {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    gap: 2rem;
-    height: auto;
-  }
-
-  .process-tl-item { width: auto; height: auto; padding-inline: 1.25rem; }
-  .process-tl-marker { display: none; }
-  .process-tl-row-bottom .process-tl-copy-block { height: auto; padding-bottom: 0; }
   .process-typing i,
   .process-audit-row,
   .process-terminal-progress i,
@@ -5720,7 +5287,8 @@ a.work-aux-link:hover {
 
 .story-track {
   position: relative;
-  height: 300vh;
+  /* Nearly five screens for three acts: the story should unfold, not flash. */
+  height: 480vh;
 }
 
 .story-stage {
@@ -6078,7 +5646,15 @@ a.work-aux-link:hover {
 .about-journey {
   position: relative;
   z-index: 2;
-  margin-top: clamp(4rem, 8vw, 7rem);
+  margin-top: clamp(5rem, 10vw, 9rem);
+}
+
+/* It keeps the old section's `experience` id so links still land here, which
+   also dragged in that section's translucent `#experience` background: a
+   box with "Role history" pressed against its top edge. It sits on the same
+   wash as the rest of About instead. `div#` outranks the old id rules. */
+div#experience.about-journey {
+  background: none !important;
 }
 
 .about-how {
@@ -6117,4 +5693,173 @@ a.work-aux-link:hover {
   color: var(--ink-2);
   font-size: 0.875rem;
   line-height: 1.5;
+}
+
+/* ── How it works: step list with a sticky stage ─────────────────────────
+   Scrolls at the page's own pace. On wide screens the stage holds still
+   beside the list and shows the step under the reading line; below that the
+   list stands alone. */
+.process-flow {
+  display: grid;
+  gap: clamp(2rem, 4vw, 4rem);
+}
+
+.process-flow-stage {
+  display: none;
+}
+
+.process-flow-steps {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.process-flow-step {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.process-flow-step-number {
+  color: var(--accent);
+  font-size: 1.75rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.process-flow-step-title {
+  color: var(--ink);
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.process-flow-step-summary {
+  margin-top: 0.6rem;
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.process-flow-step-desc {
+  max-width: 56ch;
+  margin-top: 0.5rem;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+
+@media (min-width: 1024px) {
+  .process-flow {
+    grid-template-columns: minmax(20rem, 0.8fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .process-flow-stage {
+    position: sticky;
+    top: 18vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    height: min(64vh, 30rem);
+    padding: 1.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 1.5rem;
+    background: color-mix(in oklch, var(--ground) 86%, transparent);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 30px 70px -48px oklch(0.3 0.05 45 / 0.5);
+  }
+
+  .process-flow-stage-number {
+    color: var(--accent);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+  }
+
+  .process-flow-stage-card {
+    display: grid;
+    flex: 1;
+    place-items: center;
+    min-height: 0;
+    padding: 1rem;
+    border: 1px solid var(--rule);
+    border-radius: 1rem;
+    background: color-mix(in oklch, var(--ground) 94%, transparent);
+    animation: process-flow-swap 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .process-flow-stage-caption {
+    color: var(--ink-2);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+  }
+
+  /* Each step holds the stage long enough to be read against its visual. */
+  .process-flow-step {
+    min-height: 42vh;
+    align-content: start;
+    opacity: 0.4;
+    transition: opacity 0.6s ease;
+  }
+
+  .process-flow-step[data-active='true'] {
+    opacity: 1;
+  }
+}
+
+@keyframes process-flow-swap {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .process-flow-stage-card { animation: none; }
+  .process-flow-step { transition: none; }
+}
+
+/* ── Readability floor ───────────────────────────────────────────────────
+   Labels a reader is meant to read are at least 12px and in a readable ink.
+   Many were 11px at 45-65% ink, which on the warm wash read as texture rather
+   than text. Purely decorative marks (the side chapter counters, the faint
+   story fragments) are left quiet on purpose. */
+.eyebrow {
+  font-size: 0.75rem;
+  color: var(--ink-2);
+}
+
+.experience-history-label,
+.experience-role-index,
+.experience-tenure-span,
+.about-how-label,
+.story-copy-tag,
+.work-card-context,
+.work-card-stack,
+.work-card-outcome em,
+.work-filter {
+  font-size: 0.75rem;
+}
+
+.experience-history-label,
+.experience-role-index,
+.about-how-label,
+.work-card-stack,
+.work-card-outcome em {
+  color: var(--ink-2);
+}
+
+.work-filter {
+  color: color-mix(in oklch, var(--ink) 80%, transparent);
+}
+
+.hero-portrait-chip {
+  font-size: 0.6875rem;
 }

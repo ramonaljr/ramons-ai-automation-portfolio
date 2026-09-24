@@ -106,7 +106,9 @@ export function ParticleField({ className = '' }: { className?: string }) {
       w = Math.max(1, Math.round(rect.width))
       h = Math.max(1, Math.round(rect.height))
 
-      const dpr = Math.min(2, Math.max(1.5, window.devicePixelRatio || 1))
+      // The device's own density, capped. Forcing 1.5x on 1x screens drew
+      // more than twice the pixels anyone could see, every frame.
+      const dpr = Math.min(1.5, window.devicePixelRatio || 1)
 
       canvas.width = Math.round(w * dpr)
       canvas.height = Math.round(h * dpr)
@@ -119,7 +121,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
       // Keep enough leaves in-frame for the drift to read as intentional
       // atmosphere, even through the translucent section veils.
-      const shardCount = desktop ? 108 : 64
+      const shardCount = desktop ? 64 : 26
 
       routes = Array.from({ length: count }, (_, index) => createRoute(index, count, desktop))
       shards = Array.from({ length: shardCount }, (_, index) => ({
@@ -140,7 +142,10 @@ export function ParticleField({ className = '' }: { className?: string }) {
       const y = ((shard.y + travel + window.scrollY * (0.018 + (index % 3) * 0.006) + 60) % (h + 120)) - 60
       const x = shard.x + Math.sin(now * 0.42 + shard.phase) * shard.sway
       const rotation = shard.phase + (reduced ? 0 : now * shard.spin)
-      const alpha = 0.52 + shard.tone * 0.2
+
+      // Fainter than before: leaves drift behind body copy for most of the
+      // page, and at 0.52-0.72 they competed with it.
+      const alpha = 0.4 + shard.tone * 0.18
       const edge = leafEdge(shard.color)
 
       ctx.save()

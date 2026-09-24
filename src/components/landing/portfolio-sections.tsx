@@ -80,7 +80,7 @@ function PlatformsSection() {
               style={sweep(inView, i)}
             >
               {p.primary && (
-                <span className='text-ground bg-ink absolute top-6 right-6 rounded px-2 py-1 font-mono text-[11px] tracking-widest'>
+                <span className='text-ground bg-ink absolute top-6 right-6 rounded px-2 py-1 font-mono text-xs tracking-widest'>
                   PRIMARY
                 </span>
               )}

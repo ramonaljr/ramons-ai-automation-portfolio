@@ -129,7 +129,7 @@ export function IntroSection() {
                 }
               ].map(item => (
                 <div key={item.label} className='border-rule bg-surface rounded-xl border p-4'>
-                  <p className='text-ink font-mono text-[11px] tracking-[0.12em]'>{item.label}</p>
+                  <p className='text-ink font-mono text-xs tracking-[0.12em]'>{item.label}</p>
                   <p className='text-ink-2 mt-2 text-[13px] leading-relaxed'>{item.copy}</p>
                 </div>
               ))}
@@ -156,26 +156,11 @@ export function IntroSection() {
               ))}
             </div>
 
-            {/* ── CTA + socials ─────────────────────────────────────────── */}
+            {/* ── CV + socials ──────────────────────────────────────────────
+                No "Book a workflow audit" here: it already sits in the nav,
+                the hero, Services, pricing and Contact, and About now leads
+                into the career history rather than out to a form. */}
             <div className='mt-10 flex flex-wrap items-center gap-4' style={reveal(300)}>
-              <a
-                href='#contact'
-                className='group bg-ink text-ground hover:bg-ink/90 inline-flex items-center gap-3 rounded-full py-2 pr-2 pl-6 text-[14px] tracking-wide transition-colors'
-              >
-                Book a workflow audit
-                <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
-                  <svg width='13' height='13' viewBox='0 0 14 14' fill='none' aria-hidden='true'>
-                    <path
-                      d='M3 11L11 3M11 3H5M11 3V9'
-                      stroke='currentColor'
-                      strokeWidth='1.6'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                  </svg>
-                </span>
-              </a>
-
               <a
                 href={PROFILE.cv}
                 download
@@ -242,11 +227,10 @@ export function IntroSection() {
                   alt='Ramon A. Vallejera, Jr.'
                   width={1200}
                   height={1500}
-                  className='h-auto w-full object-cover'
+                  className='about-portrait-studio h-auto w-full object-cover'
                 />
                 <div className='about-film-scan' aria-hidden='true' />
               </div>
-
             </div>
 
             {/* Credentials strip */}
@@ -263,7 +247,7 @@ export function IntroSection() {
                   <div className='text-ink text-lg font-light' style={{ fontFamily: DISPLAY_FONT }}>
                     {s.value}
                   </div>
-                  <div className='text-ink-2 mt-1 text-[11px] leading-tight'>{s.label}</div>
+                  <div className='text-ink-2 mt-1 text-xs leading-tight'>{s.label}</div>
                 </div>
               ))}
             </div>

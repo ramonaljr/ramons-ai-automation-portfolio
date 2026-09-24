@@ -140,16 +140,16 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           <div className='mb-3 flex flex-wrap items-center gap-2'>
             {/* One label, not a claim and its own contradiction: this said
                 "CASE STUDY" while a SAMPLE badge sat three chips along. */}
-            <span className='text-ink-3 font-mono text-[11px] tracking-[0.2em] uppercase'>
+            <span className='text-ink-3 font-mono text-xs tracking-[0.2em] uppercase'>
               {study.sample ? 'Architecture lab' : 'Case study'}
             </span>
             {study.platform && (
-              <span className='border-rule-strong bg-ink/4 text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-[11px]'>
+              <span className='border-rule-strong bg-ink/4 text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-xs'>
                 {study.platform}
               </span>
             )}
             {study.categories?.map(c => (
-              <span key={c} className='border-rule text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-[11px]'>
+              <span key={c} className='border-rule text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-xs'>
                 {c}
               </span>
             ))}
@@ -191,7 +191,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           {/* 1. Workflow Canvas Frame */}
           {view && (
             <div className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'>
-              <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-[11px] tracking-wide uppercase'>
+              <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-xs tracking-wide uppercase'>
                 <span>{view.label}</span>
                 {/* Stage count describes the canvas, so it goes when the canvas does. */}
                 {view.key === 'canvas' && study.stepCount && <span>{study.stepCount} STAGES</span>}
@@ -255,7 +255,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           {/* 2. ROI & Key Metrics */}
           {study.roi && study.roi.length > 0 && (
             <div>
-              <p className='text-ink-4 mb-3 font-mono text-[11px] tracking-[0.2em] uppercase'>
+              <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase'>
                 KEY OUTCOMES &amp; IMPACT
               </p>
               <div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
@@ -276,7 +276,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
             <div className='grid gap-4 sm:grid-cols-2'>
               {study.problem && (
                 <div className='border-rule bg-ink/3 rounded-2xl border p-5 sm:p-6'>
-                  <p className='text-ink-2 font-mono text-[11px] font-medium tracking-[0.2em] uppercase'>
+                  <p className='text-ink-2 font-mono text-xs font-medium tracking-[0.2em] uppercase'>
                     THE PROBLEM
                   </p>
                   <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{study.problem}</p>
@@ -285,7 +285,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
 
               {study.solution && (
                 <div className='rounded-2xl border border-[color-mix(in_oklch,var(--accent)_22%,transparent)] bg-[color-mix(in_oklch,var(--accent)_5%,transparent)] p-5 sm:p-6'>
-                  <p className='text-accent font-mono text-[11px] font-medium tracking-[0.2em] uppercase'>
+                  <p className='text-accent font-mono text-xs font-medium tracking-[0.2em] uppercase'>
                     WHAT I BUILT (THE SOLUTION)
                   </p>
                   <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{study.solution}</p>
@@ -297,7 +297,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           {/* 4. Active Integrations & Tech Stack */}
           {(study.integrations || study.tools) && (
             <div>
-              <p className='text-ink-4 mb-3 font-mono text-[11px] tracking-[0.2em] uppercase'>
+              <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase'>
                 ACTIVE INTEGRATIONS &amp; STACK
               </p>
               <div className='flex flex-wrap gap-2'>
@@ -316,7 +316,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           {/* 5. Fail-safes & Resilience */}
           {study.failsafes && study.failsafes.length > 0 && (
             <div className='border-rule bg-surface-raised rounded-2xl border p-5 shadow-sm sm:p-6'>
-              <p className='text-accent mb-2 font-mono text-[11px] font-medium tracking-[0.2em] uppercase'>
+              <p className='text-accent mb-2 font-mono text-xs font-medium tracking-[0.2em] uppercase'>
                 SYSTEM RESILIENCE &amp; ERROR HANDLING
               </p>
               {study.failsafeDesc && <p className='text-ink-2 mb-4 text-[13.5px]'>{study.failsafeDesc}</p>}
