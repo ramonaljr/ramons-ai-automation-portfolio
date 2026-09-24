@@ -5869,3 +5869,68 @@ div#experience.about-journey {
 .saas-about-panel::after {
   display: none;
 }
+
+/* ── Selected work: magnifying lens ──────────────────────────────────────
+   Follows the pointer over a card's picture (see useMagnifier). The size here
+   must match LENS_RADIUS in projects-section.tsx. */
+.work-card-frame {
+  overflow: hidden;
+}
+
+.work-lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 184px;
+  height: 184px;
+  overflow: hidden;
+  border: 2px solid oklch(1 0 0 / 0.85);
+  border-radius: 50%;
+  background: var(--ground);
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--work-tone, var(--accent)) 45%, transparent),
+    0 18px 40px -12px oklch(0.2 0.03 45 / 0.55),
+    inset 0 0 18px oklch(0 0 0 / 0.18);
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.6;
+  transition:
+    opacity 0.2s ease,
+    scale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.work-lens[data-on='true'] {
+  opacity: 1;
+  scale: 1;
+}
+
+.work-card-frame[data-view='canvas'] .work-lens {
+  background: oklch(0.205 0.012 55);
+}
+
+.work-lens-art {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+/* The status chip is furniture; the lens is for the drawing. */
+.work-lens .work-canvas-status {
+  display: none;
+}
+
+/* The frame is the magnifier's target, so it says so. */
+@media (hover: hover) and (pointer: fine) {
+  .work-card-frame {
+    cursor: zoom-in;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-lens {
+    transition: none;
+  }
+}
