@@ -1,24 +1,26 @@
 'use client'
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
+import { MotionConfig, motion } from 'motion/react'
 
-import { CONTAINER, DISPLAY_FONT, SECTION } from '@/components/landing/motion'
+import { CONTAINER, DISPLAY_FONT, SECTION, usePrefersReducedMotion } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
-import { PROCESS } from '@/lib/portfolio'
+import { ENGAGEMENTS, PROCESS } from '@/lib/portfolio'
 
 /**
- * How it works, as a list that scrolls normally.
+ * How it works, as a step explorer that fits in one screen.
  *
- * This used to be a pinned horizontal rail driven by GSAP, three screens long,
- * directly after the pinned problem-to-outcome story. Two pinned sequences in
- * a row was scroll fatigue, so the story keeps the cinematic moment and this
- * section reads at the pace of the page: six steps on the right, and on wide
- * screens a sticky stage on the left showing the step being read. Dropping
- * GSAP also removed it, ScrollTrigger and SplitText from the landing bundle.
+ * It replaced a list of six tall steps beside a sticky stage, which ran to
+ * about 2,400px on desktop and twice that on phones. Now the step titles sit
+ * in one column, grouped by the Working Together engagement they belong to,
+ * and the chosen step's illustration and detail sit beside them.
  *
- * Each step names the Working Together engagement it belongs to and what the
- * client is asked for. Below the stage's breakpoint the illustration sits
- * inside its own step instead, so phones see them too.
+ * Hovering, clicking, tapping or arrowing to a title chooses it: the title's
+ * letters roll up into full ink and the illustration wipes in over the last
+ * one. Until someone does, it plays through the steps once on its own, with a
+ * line under the current title filling for as long as it holds; it pauses
+ * while the pointer is over it or it is off screen, and never plays under
+ * reduced motion.
  */
 
 function DiscoveryVisual() {
@@ -163,130 +165,238 @@ const VISUALS: ReactNode[] = [
   <LaunchVisual key='launch' />
 ]
 
-/** The step whose top has passed this line of the viewport is the one shown. */
-const READING_LINE = 0.45
+/** The steps grouped by engagement, with that engagement's duration. Phases
+ *  are in ENGAGEMENTS order: audit, build, retainer. */
+const PHASES = (['Audit', 'Build', 'Retainer'] as const).map((name, index) => ({
+  name,
+  duration: ENGAGEMENTS[index]?.duration,
+  steps: PROCESS.flatMap((step, stepIndex) => (step.phase === name ? [stepIndex] : []))
+}))
 
-/** How long each step holds the stage, in ms, when a fast scroll passes several at once. */
-const STEP_HOLD = 480
+const TOTAL = String(PROCESS.length).padStart(2, '0')
+
+/** The illustration is fully drawn or cut away to its top edge. */
+const WIPE = {
+  shown: { clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' },
+  hidden: { clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)' }
+}
+
+/**
+ * A step title whose letters roll: the faint copy lifts out as the inked copy
+ * rises in behind it, one letter after another. Screen readers get the plain
+ * title from the button; the letters are hidden from them.
+ */
+function RollingTitle({ text, active }: { text: string; active: boolean }) {
+  return (
+    <span className='process-explorer-roll' aria-hidden='true'>
+      {[...text].map((char, index) => (
+        <span key={index} className='process-explorer-roll-char'>
+          <MotionConfig transition={{ delay: index * 0.022, duration: 0.32, ease: [0.25, 0.46, 0.45, 0.94] }}>
+            <motion.span initial={false} animate={{ y: active ? '-110%' : '0%' }}>
+              {char === ' ' ? '\u00a0' : char}
+            </motion.span>
+            <motion.span
+              className='process-explorer-roll-ink'
+              initial={false}
+              animate={{ y: active ? '0%' : '110%' }}
+            >
+              {char === ' ' ? '\u00a0' : char}
+            </motion.span>
+          </MotionConfig>
+        </span>
+      ))}
+    </span>
+  )
+}
 
 export function HowItWorksSection() {
-  const listRef = useRef<HTMLOListElement>(null)
+  const reduced = usePrefersReducedMotion()
+  const rootRef = useRef<HTMLDivElement>(null)
+  const navRef = useRef<HTMLDivElement>(null)
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
 
-  // `target` is the step under the reading line; `active` is the one shown.
-  // Shown walks to target one step at a time, so a fast scroll still plays
-  // every stage in order instead of jumping from the first to the fourth.
-  const [target, setTarget] = useState(0)
   const [active, setActive] = useState(0)
-  const lastSwap = useRef(0)
+
+  // Autoplay runs once through until anyone chooses a step themselves.
+  const [autoplay, setAutoplay] = useState(true)
+  const [visible, setVisible] = useState(false)
+  const [held, setHeld] = useState(false)
+  const playing = autoplay && !reduced && visible && !held
 
   useEffect(() => {
-    if (active === target) return
+    const root = rootRef.current
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const wait = reduced ? 0 : Math.max(0, STEP_HOLD - (performance.now() - lastSwap.current))
+    if (!root) return
 
-    const timer = window.setTimeout(() => {
-      lastSwap.current = performance.now()
-      setActive(current => (reduced ? target : current + Math.sign(target - current)))
-    }, wait)
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.4 })
 
-    return () => window.clearTimeout(timer)
-  }, [active, target])
-
-  useEffect(() => {
-    const list = listRef.current
-
-    if (!list) return
-
-    const steps = [...list.querySelectorAll<HTMLElement>('[data-step-index]')]
-
-    // The observer is only a trigger: the answer is re-read from geometry, so
-    // a fast flick past several steps still lands on the right one.
-    const update = () => {
-      const line = window.innerHeight * READING_LINE
-      let next = 0
-
-      steps.forEach((step, index) => {
-        if (step.getBoundingClientRect().top <= line) next = index
-      })
-
-      setTarget(next)
-    }
-
-    const observer = new IntersectionObserver(update, {
-      rootMargin: `-${READING_LINE * 100}% 0px -${100 - READING_LINE * 100 - 1}% 0px`
-    })
-
-    steps.forEach(step => observer.observe(step))
-    update()
+    observer.observe(root)
 
     return () => observer.disconnect()
   }, [])
 
+  // On phones the titles scroll sideways; keep the current one in view
+  // without moving the page.
+  useEffect(() => {
+    const nav = navRef.current
+    const tab = tabRefs.current[active]
+
+    if (!nav || !tab || nav.scrollWidth <= nav.clientWidth) return
+
+    nav.scrollTo({
+      left: tab.offsetLeft - (nav.clientWidth - tab.offsetWidth) / 2,
+      behavior: reduced ? 'auto' : 'smooth'
+    })
+  }, [active, reduced])
+
+  const choose = (index: number, focus = false) => {
+    setAutoplay(false)
+    setActive(index)
+
+    if (focus) tabRefs.current[index]?.focus()
+  }
+
+  const advance = () => {
+    if (active === PROCESS.length - 1) {
+      setAutoplay(false)
+      setActive(0)
+    } else {
+      setActive(active + 1)
+    }
+  }
+
+  const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    const last = PROCESS.length - 1
+    const next = {
+      ArrowDown: Math.min(active + 1, last),
+      ArrowRight: Math.min(active + 1, last),
+      ArrowUp: Math.max(active - 1, 0),
+      ArrowLeft: Math.max(active - 1, 0),
+      Home: 0,
+      End: last
+    }[event.key]
+
+    if (next === undefined) return
+
+    event.preventDefault()
+    choose(next, true)
+  }
+
+  const step = PROCESS[active]
+
   return (
-    <section id='process' className={`${SECTION} process-flow-section`}>
+    <section id='process' className={SECTION}>
       <div className={CONTAINER}>
         <SectionIntro
           tag='HOW IT WORKS'
           title='A clear path from problem to reliable system.'
           blurb='You will always know what is happening, what comes next and what I need from you.'
-          margin='mb-14 lg:mb-20'
+          margin='mb-12 lg:mb-16'
           titleClassName='mt-6 max-w-[18ch] text-[clamp(2.5rem,5vw,5.2rem)]'
         />
 
-        <div className='process-flow'>
-          {/* Decorative: the step list carries the content. Re-keyed on each
-              change so the visual's own entrance animation plays again. */}
-          <div className='process-flow-stage' aria-hidden='true'>
-            <div className='process-flow-stage-head'>
-              <span className='process-flow-stage-count'>
-                {PROCESS[active]?.step} / {String(PROCESS.length).padStart(2, '0')}
-              </span>
-              <span className='process-flow-stage-label'>{PROCESS[active]?.label}</span>
-            </div>
-            <div key={active} className='process-flow-stage-card'>
-              {VISUALS[active]}
-            </div>
-            <div className='process-flow-stage-progress'>
-              {PROCESS.map((step, index) => (
-                <i key={step.step} data-done={index <= active} />
+        <MotionConfig reducedMotion='user'>
+          <div
+            ref={rootRef}
+            className='process-explorer'
+            onPointerEnter={() => setHeld(true)}
+            onPointerLeave={() => setHeld(false)}
+          >
+            <div ref={navRef} className='process-explorer-nav' role='tablist' aria-label='Steps'>
+              {PHASES.map(phase => (
+                <div key={phase.name} className='process-explorer-phase' role='presentation'>
+                  <p className='process-explorer-phase-label' aria-hidden='true'>
+                    {phase.name} <span>· {phase.duration}</span>
+                  </p>
+
+                  {phase.steps.map(index => {
+                    const item = PROCESS[index]
+                    const isActive = index === active
+
+                    return (
+                      <button
+                        key={item.step}
+                        ref={el => {
+                          tabRefs.current[index] = el
+                        }}
+                        type='button'
+                        role='tab'
+                        id={`process-tab-${index}`}
+                        aria-selected={isActive}
+                        aria-controls='process-panel'
+                        tabIndex={isActive ? 0 : -1}
+                        className='process-explorer-tab'
+                        data-active={isActive}
+                        onPointerEnter={event => event.pointerType === 'mouse' && !isActive && choose(index)}
+                        onClick={() => choose(index)}
+                        onKeyDown={onKeyDown}
+                      >
+                        <span className='process-explorer-tab-number'>{item.step}</span>
+                        <span className='process-explorer-tab-title' style={{ fontFamily: DISPLAY_FONT }}>
+                          <span className='sr-only'>{item.label}</span>
+                          <RollingTitle text={item.label} active={isActive} />
+                        </span>
+                        {isActive && autoplay && !reduced && (
+                          <i
+                            className='process-explorer-timer'
+                            data-playing={playing}
+                            onAnimationEnd={advance}
+                            aria-hidden='true'
+                          />
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
               ))}
             </div>
-          </div>
 
-          <ol ref={listRef} className='process-flow-steps'>
-            {PROCESS.map((step, index) => (
-              <li
-                key={step.step}
-                data-step-index={index}
-                data-active={index === active}
-                className='process-flow-step'
-                style={{ '--step-index': index } as CSSProperties}
-              >
-                <span className='process-flow-step-number' style={{ fontFamily: DISPLAY_FONT }}>
-                  {step.step}
-                </span>
-                <div>
-                  <p className='process-flow-step-phase'>
-                    {step.phase} <span>· {step.timing}</span>
-                  </p>
-                  <h3 className='process-flow-step-title' style={{ fontFamily: DISPLAY_FONT }}>
-                    {step.label}
-                  </h3>
-                  <p className='process-flow-step-summary'>{step.summary}</p>
-                  <p className='process-flow-step-desc'>{step.desc}</p>
-                  <p className='process-flow-step-ask'>
-                    <b>From you</b>
-                    {step.fromYou}
-                  </p>
-                </div>
-                <div className='process-flow-step-visual' aria-hidden='true'>
-                  {VISUALS[index]}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
+            <div
+              id='process-panel'
+              role='tabpanel'
+              aria-labelledby={`process-tab-${active}`}
+              className='process-explorer-panel'
+            >
+              {/* Every illustration is mounted and stacked; the chosen one is
+                  drawn on top so it wipes in over the one it replaces. */}
+              <div className='process-explorer-stage' aria-hidden='true'>
+                {VISUALS.map((visual, index) => (
+                  <motion.div
+                    key={index}
+                    className='process-explorer-visual'
+                    initial={false}
+                    variants={WIPE}
+                    animate={index === active ? 'shown' : 'hidden'}
+                    transition={{ ease: [0.33, 1, 0.68, 1], duration: 0.8 }}
+                    style={{ zIndex: index === active ? 1 : 0 } as CSSProperties}
+                  >
+                    {visual}
+                  </motion.div>
+                ))}
+              </div>
+
+              <div key={active} className='process-explorer-detail'>
+                <p className='process-explorer-kicker'>
+                  {step.step} / {TOTAL} <span>· {step.phase} · {step.timing}</span>
+                </p>
+                <p className='process-explorer-summary' style={{ fontFamily: DISPLAY_FONT }}>
+                  {step.summary}
+                </p>
+                <p className='process-explorer-desc'>{step.desc}</p>
+                <dl className='process-explorer-terms'>
+                  <div>
+                    <dt>From you</dt>
+                    <dd>{step.fromYou}</dd>
+                  </div>
+                  <div>
+                    <dt>You get</dt>
+                    <dd>{step.youGet}</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </MotionConfig>
       </div>
     </section>
   )

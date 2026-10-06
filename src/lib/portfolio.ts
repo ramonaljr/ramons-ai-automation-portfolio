@@ -338,6 +338,9 @@ export type Step = {
 
   /** What the client is asked for at this step. The section's blurb promises it. */
   fromYou: string
+
+  /** What the client has in hand once the step is done. */
+  youGet: string
 }
 
 export const PROCESS: Step[] = [
@@ -348,7 +351,8 @@ export const PROCESS: Step[] = [
     desc: 'We talk through the outcome you need, who touches the process today and where repetitive work, delays or errors are costing you time.',
     phase: 'Audit',
     timing: 'Day 1',
-    fromYou: 'A 30-minute call, and a walk through how the work happens today.'
+    fromYou: 'A 30-minute call, and a walk through how the work happens today.',
+    youGet: 'A plain statement of the problem and how success will be measured.'
   },
   {
     step: '02',
@@ -357,7 +361,8 @@ export const PROCESS: Step[] = [
     desc: 'I document the current workflow, measure the bottlenecks and separate useful automation from steps that still need human judgment.',
     phase: 'Audit',
     timing: 'Week 1',
-    fromYou: 'View access to the tools involved and an hour with whoever runs the process.'
+    fromYou: 'View access to the tools involved and an hour with whoever runs the process.',
+    youGet: 'A prioritised list of what to automate and the time each one saves.'
   },
   {
     step: '03',
@@ -366,7 +371,8 @@ export const PROCESS: Step[] = [
     desc: 'I define the data flow, business rules, AI responsibilities, approvals and failure paths. You see exactly what gets built and why.',
     phase: 'Build',
     timing: 'First days',
-    fromYou: 'Sign-off on the system map before anything is built.'
+    fromYou: 'Sign-off on the system map before anything is built.',
+    youGet: 'A system map covering data flow, rules, approvals and failure paths.'
   },
   {
     step: '04',
@@ -375,7 +381,8 @@ export const PROCESS: Step[] = [
     desc: 'I build the automation, integrate your apps and APIs, configure AI agents and add logging, alerts and recovery paths from the start.',
     phase: 'Build',
     timing: '1 to 4 weeks',
-    fromYou: 'Access to the apps being connected, and quick answers on edge cases.'
+    fromYou: 'Access to the apps being connected, and quick answers on edge cases.',
+    youGet: 'A working workflow in your own accounts, with logging and alerts.'
   },
   {
     step: '05',
@@ -384,7 +391,8 @@ export const PROCESS: Step[] = [
     desc: 'We test real scenarios, exceptions, permissions and failed connections. Your team gets clear documentation and a practical walkthrough.',
     phase: 'Build',
     timing: 'Final days',
-    fromYou: 'Real examples to test with, and the people who will use it at the walkthrough.'
+    fromYou: 'Real examples to test with, and the people who will use it at the walkthrough.',
+    youGet: 'Test results, documentation and a walkthrough for your team.'
   },
   {
     step: '06',
@@ -393,7 +401,8 @@ export const PROCESS: Step[] = [
     desc: 'I monitor early runs, fix unexpected edge cases and measure the result. The system evolves as your volume, tools and process change.',
     phase: 'Retainer',
     timing: 'Monthly',
-    fromYou: 'Flag anything odd in the first weeks. The retainer is optional.'
+    fromYou: 'Flag anything odd in the first weeks. The retainer is optional.',
+    youGet: 'Close monitoring of the first runs and a measured result.'
   }
 ]
 
