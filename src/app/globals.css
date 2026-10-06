@@ -5555,8 +5555,8 @@ div#experience.about-journey {
 
 /* ── How it works: step list with a sticky stage ─────────────────────────
    Scrolls at the page's own pace. On wide screens the stage holds still
-   beside the list and shows the step under the reading line; below that the
-   list stands alone. */
+   beside the list and shows the step under the reading line; below that each
+   step carries its own illustration. */
 .process-flow {
   display: grid;
   gap: clamp(2rem, 4vw, 4rem);
@@ -5577,6 +5577,19 @@ div#experience.about-journey {
   gap: 1.25rem;
   padding: clamp(1.25rem, 2.5vw, 2rem) 0;
   border-top: 1px solid var(--rule);
+}
+
+.process-flow-step-phase {
+  margin-bottom: 0.6rem;
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.process-flow-step-phase span {
+  color: var(--ink-2);
 }
 
 .process-flow-step-number {
@@ -5608,6 +5621,44 @@ div#experience.about-journey {
   line-height: 1.65;
 }
 
+.process-flow-step-ask {
+  display: grid;
+  gap: 0.2rem;
+  max-width: 52ch;
+  margin-top: 1rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid color-mix(in oklch, var(--accent) 45%, transparent);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.process-flow-step-ask b {
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Phones and tablets: the step's own illustration, full width under its text. */
+.process-flow-step-visual {
+  display: grid;
+  grid-column: 1 / -1;
+  place-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--rule);
+  border-radius: 1rem;
+  background: color-mix(in oklch, var(--ground) 90%, transparent);
+}
+
+/* The illustrations are sized for the desktop stage; inline they sit lower so
+   six of them do not double the section's length. */
+.process-flow-step-visual > * {
+  min-height: 11rem;
+}
+
 @media (min-width: 1024px) {
   .process-flow {
     grid-template-columns: minmax(20rem, 0.8fr) minmax(0, 1fr);
@@ -5629,11 +5680,25 @@ div#experience.about-journey {
     box-shadow: 0 30px 70px -48px oklch(0.3 0.05 45 / 0.5);
   }
 
-  .process-flow-stage-number {
+  .process-flow-stage-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+  }
+
+  .process-flow-stage-count {
     color: var(--accent);
     font-family: var(--font-geist-mono), ui-monospace, monospace;
     font-size: 0.75rem;
     letter-spacing: 0.18em;
+  }
+
+  .process-flow-stage-label {
+    color: var(--ink);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
   }
 
   .process-flow-stage-card {
@@ -5648,17 +5713,33 @@ div#experience.about-journey {
     animation: process-flow-swap 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .process-flow-stage-caption {
-    color: var(--ink-2);
-    font-family: var(--font-geist-mono), ui-monospace, monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.16em;
+  .process-flow-stage-progress {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
+    gap: 0.4rem;
   }
 
-  /* Each step holds the stage long enough to be read against its visual. */
+  .process-flow-stage-progress i {
+    height: 3px;
+    border-radius: 999px;
+    background: var(--rule);
+    transition: background-color 0.4s ease;
+  }
+
+  .process-flow-stage-progress i[data-done='true'] {
+    background: var(--accent);
+  }
+
+  .process-flow-step-visual {
+    display: none;
+  }
+
+  /* Each step holds the stage long enough to be read against its visual,
+     with the text centred in that space rather than leaving a gap below. */
   .process-flow-step {
-    min-height: 42vh;
-    align-content: start;
+    min-height: 32vh;
+    align-content: center;
     opacity: 0.4;
     transition: opacity 0.6s ease;
   }
@@ -5681,7 +5762,8 @@ div#experience.about-journey {
 
 @media (prefers-reduced-motion: reduce) {
   .process-flow-stage-card { animation: none; }
-  .process-flow-step { transition: none; }
+  .process-flow-step,
+  .process-flow-stage-progress i { transition: none; }
 }
 
 /* ── Readability floor ───────────────────────────────────────────────────

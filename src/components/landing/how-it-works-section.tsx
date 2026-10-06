@@ -15,6 +15,10 @@ import { PROCESS } from '@/lib/portfolio'
  * section reads at the pace of the page: six steps on the right, and on wide
  * screens a sticky stage on the left showing the step being read. Dropping
  * GSAP also removed it, ScrollTrigger and SplitText from the landing bundle.
+ *
+ * Each step names the Working Together engagement it belongs to and what the
+ * client is asked for. Below the stage's breakpoint the illustration sits
+ * inside its own step instead, so phones see them too.
  */
 
 function DiscoveryVisual() {
@@ -234,11 +238,20 @@ export function HowItWorksSection() {
           {/* Decorative: the step list carries the content. Re-keyed on each
               change so the visual's own entrance animation plays again. */}
           <div className='process-flow-stage' aria-hidden='true'>
-            <span className='process-flow-stage-number'>{PROCESS[active]?.step}</span>
+            <div className='process-flow-stage-head'>
+              <span className='process-flow-stage-count'>
+                {PROCESS[active]?.step} / {String(PROCESS.length).padStart(2, '0')}
+              </span>
+              <span className='process-flow-stage-label'>{PROCESS[active]?.label}</span>
+            </div>
             <div key={active} className='process-flow-stage-card'>
               {VISUALS[active]}
             </div>
-            <span className='process-flow-stage-caption'>FROM IDEA TO WORKING SYSTEM</span>
+            <div className='process-flow-stage-progress'>
+              {PROCESS.map((step, index) => (
+                <i key={step.step} data-done={index <= active} />
+              ))}
+            </div>
           </div>
 
           <ol ref={listRef} className='process-flow-steps'>
@@ -254,11 +267,21 @@ export function HowItWorksSection() {
                   {step.step}
                 </span>
                 <div>
+                  <p className='process-flow-step-phase'>
+                    {step.phase} <span>· {step.timing}</span>
+                  </p>
                   <h3 className='process-flow-step-title' style={{ fontFamily: DISPLAY_FONT }}>
                     {step.label}
                   </h3>
                   <p className='process-flow-step-summary'>{step.summary}</p>
                   <p className='process-flow-step-desc'>{step.desc}</p>
+                  <p className='process-flow-step-ask'>
+                    <b>From you</b>
+                    {step.fromYou}
+                  </p>
+                </div>
+                <div className='process-flow-step-visual' aria-hidden='true'>
+                  {VISUALS[index]}
                 </div>
               </li>
             ))}

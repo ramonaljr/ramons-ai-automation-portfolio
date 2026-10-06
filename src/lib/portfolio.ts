@@ -330,6 +330,14 @@ export type Step = {
   /** Bold one-line statement of what this stage settles. */
   summary: string
   desc: string
+
+  /** Which Working Together engagement the step sits in, and when, so the
+   *  two sections read as one path. Matches ENGAGEMENTS' names and durations. */
+  phase: 'Audit' | 'Build' | 'Retainer'
+  timing: string
+
+  /** What the client is asked for at this step. The section's blurb promises it. */
+  fromYou: string
 }
 
 export const PROCESS: Step[] = [
@@ -337,37 +345,55 @@ export const PROCESS: Step[] = [
     step: '01',
     label: 'Discovery',
     summary: 'Start with the work, not the software.',
-    desc: 'We talk through the outcome you need, who touches the process today and where repetitive work, delays or errors are costing you time.'
+    desc: 'We talk through the outcome you need, who touches the process today and where repetitive work, delays or errors are costing you time.',
+    phase: 'Audit',
+    timing: 'Day 1',
+    fromYou: 'A 30-minute call, and a walk through how the work happens today.'
   },
   {
     step: '02',
     label: 'Process audit',
     summary: 'Find the best automation opportunities.',
-    desc: 'I document the current workflow, measure the bottlenecks and separate useful automation from steps that still need human judgment.'
+    desc: 'I document the current workflow, measure the bottlenecks and separate useful automation from steps that still need human judgment.',
+    phase: 'Audit',
+    timing: 'Week 1',
+    fromYou: 'View access to the tools involved and an hour with whoever runs the process.'
   },
   {
     step: '03',
     label: 'Solution design',
     summary: 'Map the system before writing a workflow.',
-    desc: 'I define the data flow, business rules, AI responsibilities, approvals and failure paths. You see exactly what gets built and why.'
+    desc: 'I define the data flow, business rules, AI responsibilities, approvals and failure paths. You see exactly what gets built and why.',
+    phase: 'Build',
+    timing: 'First days',
+    fromYou: 'Sign-off on the system map before anything is built.'
   },
   {
     step: '04',
     label: 'Build & integration',
     summary: 'Connect the tools and bring the plan to life.',
-    desc: 'I build the automation, integrate your apps and APIs, configure AI agents and add logging, alerts and recovery paths from the start.'
+    desc: 'I build the automation, integrate your apps and APIs, configure AI agents and add logging, alerts and recovery paths from the start.',
+    phase: 'Build',
+    timing: '1 to 4 weeks',
+    fromYou: 'Access to the apps being connected, and quick answers on edge cases.'
   },
   {
     step: '05',
     label: 'Testing & handover',
     summary: 'Prove it works beyond the happy path.',
-    desc: 'We test real scenarios, exceptions, permissions and failed connections. Your team gets clear documentation and a practical walkthrough.'
+    desc: 'We test real scenarios, exceptions, permissions and failed connections. Your team gets clear documentation and a practical walkthrough.',
+    phase: 'Build',
+    timing: 'Final days',
+    fromYou: 'Real examples to test with, and the people who will use it at the walkthrough.'
   },
   {
     step: '06',
     label: 'Launch & optimize',
     summary: 'Go live, watch closely and keep improving.',
-    desc: 'I monitor early runs, fix unexpected edge cases and measure the result. The system evolves as your volume, tools and process change.'
+    desc: 'I monitor early runs, fix unexpected edge cases and measure the result. The system evolves as your volume, tools and process change.',
+    phase: 'Retainer',
+    timing: 'Monthly',
+    fromYou: 'Flag anything odd in the first weeks. The retainer is optional.'
   }
 ]
 
