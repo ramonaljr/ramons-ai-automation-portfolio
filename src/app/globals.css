@@ -5553,34 +5553,176 @@ div#experience.about-journey {
   line-height: 1.5;
 }
 
-/* ── How it works: step list with a sticky stage ─────────────────────────
-   Scrolls at the page's own pace. On wide screens the stage holds still
-   beside the list and shows the step under the reading line; below that each
-   step carries its own illustration. */
-.process-flow {
+/* ── How it works: step explorer ────────────────────────────────────────
+   Titles grouped by engagement beside the chosen step's illustration and
+   detail. On phones the titles become a row of chips that scrolls sideways
+   above the panel. */
+.process-explorer {
   display: grid;
-  gap: clamp(2rem, 4vw, 4rem);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  padding: clamp(1rem, 2.5vw, 2.25rem);
+  border: 1px solid var(--rule);
+  border-radius: 1.75rem;
+  background: color-mix(in oklch, var(--ground) 86%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 30px 70px -48px oklch(0.3 0.05 45 / 0.5);
 }
 
-.process-flow-stage {
+.process-explorer-nav {
+  display: flex;
+  gap: 1.25rem;
+  margin-inline: calc(clamp(1rem, 2.5vw, 2.25rem) * -1);
+  padding-inline: clamp(1rem, 2.5vw, 2.25rem);
+  padding-bottom: 0.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.process-explorer-nav::-webkit-scrollbar {
   display: none;
 }
 
-.process-flow-steps {
+.process-explorer-phase {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: none;
+}
+
+.process-explorer-phase-label {
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.process-explorer-phase-label span {
+  color: var(--ink-2);
+}
+
+.process-explorer-phase-steps {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.process-explorer-tab {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  padding: 0.6rem 0.95rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.process-explorer-tab[data-active='true'] {
+  border-color: color-mix(in oklch, var(--accent) 45%, var(--rule));
+  background: color-mix(in oklch, var(--accent) 7%, transparent);
+}
+
+.process-explorer-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.process-explorer-tab-number {
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+
+.process-explorer-tab-title {
+  font-size: 1.05rem;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+/* Each letter is a window: the faint copy lifts out of it as the inked copy
+   rises in. */
+.process-explorer-roll {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.process-explorer-roll-char {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.2;
+  vertical-align: top;
+}
+
+.process-explorer-roll-char > span {
+  display: inline-block;
+  color: var(--ink-3);
+}
+
+.process-explorer-roll-char > .process-explorer-roll-ink {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--ink);
+}
+
+/* Fills for as long as the step holds while it plays itself. */
+.process-explorer-timer {
+  position: absolute;
+  right: 0.95rem;
+  bottom: 0.3rem;
+  left: 0.95rem;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+  transform-origin: left;
+  animation: process-explorer-timer 7s linear forwards;
+  animation-play-state: paused;
+}
+
+.process-explorer-timer[data-playing='true'] {
+  animation-play-state: running;
+}
+
+.process-explorer-panel {
   display: grid;
+  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  align-content: start;
+}
+
+.process-explorer-stage {
+  display: grid;
+  height: 15.5rem;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 1.25rem;
+  background: var(--ground);
+}
+
+/* Opaque, so the incoming illustration covers the outgoing one as it wipes. */
+.process-explorer-visual {
+  display: grid;
+  grid-area: 1 / 1;
+  place-items: center;
+  padding: 0.75rem;
+  background: var(--ground);
+}
+
+.process-explorer-detail {
+  display: grid;
+  align-content: start;
   gap: 0.75rem;
+  animation: process-explorer-in 0.6s var(--ease-entrance);
 }
 
-.process-flow-step {
-  display: grid;
-  grid-template-columns: 3.25rem minmax(0, 1fr);
-  gap: 1.25rem;
-  padding: clamp(1.25rem, 2.5vw, 2rem) 0;
-  border-top: 1px solid var(--rule);
-}
-
-.process-flow-step-phase {
-  margin-bottom: 0.6rem;
+.process-explorer-kicker {
   color: var(--accent);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.75rem;
@@ -5588,171 +5730,124 @@ div#experience.about-journey {
   text-transform: uppercase;
 }
 
-.process-flow-step-phase span {
+.process-explorer-kicker span {
   color: var(--ink-2);
 }
 
-.process-flow-step-number {
-  color: var(--accent);
-  font-size: 1.75rem;
-  font-weight: 300;
-  line-height: 1;
-}
-
-.process-flow-step-title {
+.process-explorer-summary {
   color: var(--ink);
-  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
   font-weight: 300;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
 }
 
-.process-flow-step-summary {
-  margin-top: 0.6rem;
-  color: var(--ink);
-  font-size: 1rem;
-}
-
-.process-flow-step-desc {
-  max-width: 56ch;
-  margin-top: 0.5rem;
+.process-explorer-desc {
+  max-width: 60ch;
   color: var(--ink-2);
   font-size: 0.9375rem;
   line-height: 1.65;
 }
 
-.process-flow-step-ask {
+.process-explorer-terms {
   display: grid;
-  gap: 0.2rem;
-  max-width: 52ch;
-  margin-top: 1rem;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.process-explorer-terms > div {
+  display: grid;
+  gap: 0.25rem;
   padding-left: 0.9rem;
   border-left: 2px solid color-mix(in oklch, var(--accent) 45%, transparent);
+}
+
+.process-explorer-terms dt {
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.process-explorer-terms dd {
   color: var(--ink);
   font-size: 0.9375rem;
   line-height: 1.5;
 }
 
-.process-flow-step-ask b {
-  color: var(--accent);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+@media (min-width: 640px) {
+  .process-explorer-terms {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
 }
 
-/* Phones and tablets: the step's own illustration, full width under its text. */
-.process-flow-step-visual {
-  display: grid;
-  grid-column: 1 / -1;
-  place-items: center;
-  padding: 0.75rem;
-  border: 1px solid var(--rule);
-  border-radius: 1rem;
-  background: color-mix(in oklch, var(--ground) 90%, transparent);
-}
-
-/* The illustrations are sized for the desktop stage; inline they sit lower so
-   six of them do not double the section's length. */
-.process-flow-step-visual > * {
-  min-height: 11rem;
-}
-
+/* Wide screens: titles in a column on the left, set large. */
 @media (min-width: 1024px) {
-  .process-flow {
-    grid-template-columns: minmax(20rem, 0.8fr) minmax(0, 1fr);
-    align-items: start;
+  .process-explorer {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(2.5rem, 4vw, 4.5rem);
   }
 
-  .process-flow-stage {
-    position: sticky;
-    top: 18vh;
-    display: flex;
+  .process-explorer-nav {
     flex-direction: column;
-    gap: 0.9rem;
-    height: min(64vh, 30rem);
-    padding: 1.5rem;
-    border: 1px solid var(--rule);
-    border-radius: 1.5rem;
-    background: color-mix(in oklch, var(--ground) 86%, transparent);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 30px 70px -48px oklch(0.3 0.05 45 / 0.5);
+    gap: 1.75rem;
+    margin-inline: 0;
+    padding: 0;
+    overflow: visible;
   }
 
-  .process-flow-stage-head {
-    display: flex;
-    align-items: baseline;
-    gap: 0.9rem;
+  .process-explorer-phase-steps {
+    flex-direction: column;
+    gap: 0;
   }
 
-  .process-flow-stage-count {
-    color: var(--accent);
-    font-family: var(--font-geist-mono), ui-monospace, monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-  }
-
-  .process-flow-stage-label {
-    color: var(--ink);
-    font-family: var(--font-geist-mono), ui-monospace, monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-
-  .process-flow-stage-card {
+  .process-explorer-tab {
     display: grid;
-    flex: 1;
-    place-items: center;
-    min-height: 0;
-    padding: 1rem;
-    border: 1px solid var(--rule);
-    border-radius: 1rem;
-    background: color-mix(in oklch, var(--ground) 94%, transparent);
-    animation: process-flow-swap 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    align-items: center;
+    padding: 0.7rem 0 0.85rem;
+    border: 0;
+    border-bottom: 1px solid var(--rule);
+    border-radius: 0;
+    background: transparent;
   }
 
-  .process-flow-stage-progress {
-    display: grid;
-    grid-auto-columns: 1fr;
-    grid-auto-flow: column;
-    gap: 0.4rem;
+  .process-explorer-tab[data-active='true'] {
+    border-bottom-color: color-mix(in oklch, var(--accent) 45%, var(--rule));
+    background: transparent;
   }
 
-  .process-flow-stage-progress i {
-    height: 3px;
-    border-radius: 999px;
-    background: var(--rule);
-    transition: background-color 0.4s ease;
+  .process-explorer-tab-title {
+    font-size: clamp(1.6rem, 2.5vw, 2.5rem);
   }
 
-  .process-flow-stage-progress i[data-done='true'] {
-    background: var(--accent);
+  .process-explorer-timer {
+    right: 0;
+    bottom: -1px;
+    left: 2.25rem;
   }
 
-  .process-flow-step-visual {
-    display: none;
+  .process-explorer-stage {
+    height: 18rem;
   }
 
-  /* Each step holds the stage long enough to be read against its visual,
-     with the text centred in that space rather than leaving a gap below. */
-  .process-flow-step {
-    min-height: 32vh;
-    align-content: center;
-    opacity: 0.4;
-    transition: opacity 0.6s ease;
-  }
-
-  .process-flow-step[data-active='true'] {
-    opacity: 1;
+  /* The longest step's detail, so the panel does not jump between steps. */
+  .process-explorer-detail {
+    min-height: 16rem;
   }
 }
 
-@keyframes process-flow-swap {
+@keyframes process-explorer-timer {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes process-explorer-in {
   from {
     opacity: 0;
-    transform: translateY(0.75rem) scale(0.98);
+    transform: translateY(0.5rem);
   }
   to {
     opacity: 1;
@@ -5761,9 +5856,8 @@ div#experience.about-journey {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .process-flow-stage-card { animation: none; }
-  .process-flow-step,
-  .process-flow-stage-progress i { transition: none; }
+  .process-explorer-detail { animation: none; }
+  .process-explorer-tab { transition: none; }
 }
 
 /* ── Readability floor ───────────────────────────────────────────────────

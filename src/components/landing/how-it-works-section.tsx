@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
+
 import { MotionConfig, motion } from 'motion/react'
 
 import { CONTAINER, DISPLAY_FONT, SECTION, usePrefersReducedMotion } from '@/components/landing/motion'
@@ -195,11 +196,7 @@ function RollingTitle({ text, active }: { text: string; active: boolean }) {
             <motion.span initial={false} animate={{ y: active ? '-110%' : '0%' }}>
               {char === ' ' ? '\u00a0' : char}
             </motion.span>
-            <motion.span
-              className='process-explorer-roll-ink'
-              initial={false}
-              animate={{ y: active ? '0%' : '110%' }}
-            >
+            <motion.span className='process-explorer-roll-ink' initial={false} animate={{ y: active ? '0%' : '110%' }}>
               {char === ' ' ? '\u00a0' : char}
             </motion.span>
           </MotionConfig>
@@ -267,6 +264,7 @@ export function HowItWorksSection() {
 
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     const last = PROCESS.length - 1
+
     const next = {
       ArrowDown: Math.min(active + 1, last),
       ArrowRight: Math.min(active + 1, last),
@@ -309,44 +307,46 @@ export function HowItWorksSection() {
                     {phase.name} <span>· {phase.duration}</span>
                   </p>
 
-                  {phase.steps.map(index => {
-                    const item = PROCESS[index]
-                    const isActive = index === active
+                  <div className='process-explorer-phase-steps' role='presentation'>
+                    {phase.steps.map(index => {
+                      const item = PROCESS[index]
+                      const isActive = index === active
 
-                    return (
-                      <button
-                        key={item.step}
-                        ref={el => {
-                          tabRefs.current[index] = el
-                        }}
-                        type='button'
-                        role='tab'
-                        id={`process-tab-${index}`}
-                        aria-selected={isActive}
-                        aria-controls='process-panel'
-                        tabIndex={isActive ? 0 : -1}
-                        className='process-explorer-tab'
-                        data-active={isActive}
-                        onPointerEnter={event => event.pointerType === 'mouse' && !isActive && choose(index)}
-                        onClick={() => choose(index)}
-                        onKeyDown={onKeyDown}
-                      >
-                        <span className='process-explorer-tab-number'>{item.step}</span>
-                        <span className='process-explorer-tab-title' style={{ fontFamily: DISPLAY_FONT }}>
-                          <span className='sr-only'>{item.label}</span>
-                          <RollingTitle text={item.label} active={isActive} />
-                        </span>
-                        {isActive && autoplay && !reduced && (
-                          <i
-                            className='process-explorer-timer'
-                            data-playing={playing}
-                            onAnimationEnd={advance}
-                            aria-hidden='true'
-                          />
-                        )}
-                      </button>
-                    )
-                  })}
+                      return (
+                        <button
+                          key={item.step}
+                          ref={el => {
+                            tabRefs.current[index] = el
+                          }}
+                          type='button'
+                          role='tab'
+                          id={`process-tab-${index}`}
+                          aria-selected={isActive}
+                          aria-controls='process-panel'
+                          tabIndex={isActive ? 0 : -1}
+                          className='process-explorer-tab'
+                          data-active={isActive}
+                          onPointerEnter={event => event.pointerType === 'mouse' && !isActive && choose(index)}
+                          onClick={() => choose(index)}
+                          onKeyDown={onKeyDown}
+                        >
+                          <span className='process-explorer-tab-number'>{item.step}</span>
+                          <span className='process-explorer-tab-title' style={{ fontFamily: DISPLAY_FONT }}>
+                            <span className='sr-only'>{item.label}</span>
+                            <RollingTitle text={item.label} active={isActive} />
+                          </span>
+                          {isActive && autoplay && !reduced && (
+                            <i
+                              className='process-explorer-timer'
+                              data-playing={playing}
+                              onAnimationEnd={advance}
+                              aria-hidden='true'
+                            />
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
                 </div>
               ))}
             </div>
@@ -377,7 +377,10 @@ export function HowItWorksSection() {
 
               <div key={active} className='process-explorer-detail'>
                 <p className='process-explorer-kicker'>
-                  {step.step} / {TOTAL} <span>· {step.phase} · {step.timing}</span>
+                  {step.step} / {TOTAL}{' '}
+                  <span>
+                    · {step.phase} · {step.timing}
+                  </span>
                 </p>
                 <p className='process-explorer-summary' style={{ fontFamily: DISPLAY_FONT }}>
                   {step.summary}
