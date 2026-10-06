@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
 
-import { MotionConfig, motion } from 'motion/react'
+import { MotionConfig, motion, type Variants } from 'motion/react'
 
 import { CONTAINER, DISPLAY_FONT, SECTION, usePrefersReducedMotion } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
@@ -176,10 +176,22 @@ const PHASES = (['Audit', 'Build', 'Retainer'] as const).map((name, index) => ({
 
 const TOTAL = String(PROCESS.length).padStart(2, '0')
 
-/** The illustration is fully drawn or cut away to its top edge. */
-const WIPE = {
-  shown: { clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' },
-  hidden: { clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)' }
+/**
+ * The chosen illustration wipes down from its top edge. The one it replaces
+ * fades out first rather than wiping away under it: the stage is see-through
+ * so the page's leaves show, and two half-drawn illustrations would overlap.
+ */
+const WIPE: Variants = {
+  shown: {
+    clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    opacity: 1,
+    transition: { clipPath: { ease: [0.33, 1, 0.68, 1] as const, duration: 0.8 }, opacity: { duration: 0 } }
+  },
+  hidden: {
+    clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+    opacity: 0,
+    transition: { opacity: { duration: 0.2 }, clipPath: { delay: 0.2, duration: 0 } }
+  }
 }
 
 /**
@@ -245,6 +257,15 @@ export function HowItWorksSection() {
       behavior: reduced ? 'auto' : 'smooth'
     })
   }, [active, reduced])
+
+  // Hover chooses only in the titles column. In the sideways row, centring
+  // the chosen chip slides another under a still pointer, which would
+  // choose that one in turn.
+  const navScrolls = () => {
+    const nav = navRef.current
+
+    return !!nav && nav.scrollWidth > nav.clientWidth
+  }
 
   const choose = (index: number, focus = false) => {
     setAutoplay(false)
@@ -326,7 +347,7 @@ export function HowItWorksSection() {
                           tabIndex={isActive ? 0 : -1}
                           className='process-explorer-tab'
                           data-active={isActive}
-                          onPointerEnter={event => event.pointerType === 'mouse' && !isActive && choose(index)}
+                          onPointerEnter={event => event.pointerType === 'mouse' && !isActive && !navScrolls() && choose(index)}
                           onClick={() => choose(index)}
                           onKeyDown={onKeyDown}
                         >
@@ -357,8 +378,7 @@ export function HowItWorksSection() {
               aria-labelledby={`process-tab-${active}`}
               className='process-explorer-panel'
             >
-              {/* Every illustration is mounted and stacked; the chosen one is
-                  drawn on top so it wipes in over the one it replaces. */}
+              {/* Every illustration is mounted and stacked in one cell. */}
               <div className='process-explorer-stage' aria-hidden='true'>
                 {VISUALS.map((visual, index) => (
                   <motion.div
@@ -367,8 +387,6 @@ export function HowItWorksSection() {
                     initial={false}
                     variants={WIPE}
                     animate={index === active ? 'shown' : 'hidden'}
-                    transition={{ ease: [0.33, 1, 0.68, 1], duration: 0.8 }}
-                    style={{ zIndex: index === active ? 1 : 0 } as CSSProperties}
                   >
                     {visual}
                   </motion.div>
