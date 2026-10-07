@@ -24,11 +24,15 @@ export const PROFILE = {
   cv: '/ramon-vallejera-cv.pdf'
 } as const
 
-/** Headline figures. Each is traceable to a case study or to work history. */
+/**
+ * Headline figures. Each is traceable to Selected Work, work history or the
+ * profile: the seven n8n systems are the seven case studies. No measured
+ * time savings are claimed until a client result backs one.
+ */
 export const HERO_STATS = [
-  { value: '25+ hrs', label: 'of manual invoice work removed each week' },
+  { value: '7', label: 'complete n8n systems built, end to end' },
   { value: '10 yrs', label: 'running business operations' },
-  { value: '4', label: 'automations built and running' }
+  { value: 'MBA', label: 'business thinking behind every build' }
 ] as const
 
 // ─── Services ────────────────────────────────────────────────────────────────

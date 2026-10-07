@@ -269,7 +269,7 @@ function StackedStory() {
             {index === 2 && (
               <>
                 <p className='story-panel-stat'>
-                  <strong style={{ fontFamily: DISPLAY_FONT }}>25+ hrs</strong> of manual work back each week
+                  <strong style={{ fontFamily: DISPLAY_FONT }}>7 systems</strong> built to hand that time back
                 </p>
                 <a href='#portfolio' className='story-outcome-link'>
                   See the systems behind it
