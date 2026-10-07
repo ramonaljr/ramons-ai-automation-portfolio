@@ -21,13 +21,13 @@ const FAQS = [
     icon: 'lock',
     question: 'Will my business data remain private?',
     answer:
-      'Yes. I work inside accounts and systems you control, request only the access the workflow needs, and support self-hosted setups when sensitive data should stay in your environment.'
+      'Yes. I work inside accounts and systems you control, request only the access the workflow needs, and can run everything on your own servers when sensitive data should never leave your business.'
   },
   {
     icon: 'key',
     question: 'What access will you need?',
     answer:
-      'Usually a test account, sample records and limited access to the tools being connected. We agree on access before the build, and production credentials stay in your own password or secrets manager.'
+      'Usually a test account, sample records and limited access to the tools being connected. We agree on access before the build, and your real passwords stay in your own password manager.'
   },
   {
     icon: 'handshake',
@@ -39,13 +39,13 @@ const FAQS = [
     icon: 'bell',
     question: 'What happens if a workflow fails?',
     answer:
-      'Important workflows include failure alerts, safe retry rules and a human review step where a wrong decision would be costly. Failures are surfaced instead of disappearing silently.'
+      'Important workflows alert you when something fails, retry safely without creating duplicates, and pause for a person to check anything where a wrong decision would be costly. Problems are flagged, never hidden.'
   },
   {
     icon: 'tools',
     question: 'Which platform will you build on?',
     answer:
-      'Usually n8n: it handles sensitive data in your own environment, branching logic and custom steps, and higher volumes without paying per task. Zapier suits simple handoffs between familiar apps, especially if your team already uses it. Make fits visual, multi-route processes that reshape larger sets of data. GoHighLevel is the choice when the CRM, pipelines and campaigns are the centre of the work. I recommend one after the audit, based on your tools, volume and who maintains it afterwards.'
+      'Usually n8n: it can run on your own servers for sensitive data, handles processes with many decisions and custom steps, and does not charge per task as volume grows. Zapier suits simple handoffs between familiar apps, especially if your team already uses it. Make fits processes with several routes that move larger amounts of data. GoHighLevel is the choice when your customer list, sales tracking and marketing campaigns are the centre of the work. I recommend one after the audit, based on your tools, volume and who maintains it afterwards.'
   },
   {
     icon: 'clock',
@@ -111,7 +111,9 @@ export function FaqSection() {
                       </svg>
                       {item.question}
                     </span>
-                    <span className='faq-reference-toggle' aria-hidden='true'>{open ? '−' : '+'}</span>
+                    <span className='faq-reference-toggle' aria-hidden='true'>
+                      {open ? '−' : '+'}
+                    </span>
                   </button>
                   {/* Answered in Ramon's voice, with his face beside it, so the
                       FAQ reads as a reply rather than a policy page. */}

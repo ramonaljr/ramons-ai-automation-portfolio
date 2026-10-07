@@ -101,12 +101,13 @@ export function IntroSection() {
                 I spent a decade inside the work I now automate.
               </p>
               <p className='text-ink-2 text-base leading-[1.7]'>
-                I handled invoices, reconciliations, approvals, reporting and month-end close by hand. That experience
+                I handled invoices, account checks, approvals, reporting and month-end accounts by hand. That experience
                 taught me where work really slows down—and which checks cannot be skipped.
               </p>
               <p className='text-ink-2 text-base leading-[1.7]'>
-                Today I connect the tools companies already use so intake, follow-ups, paperwork and reporting move on
-                their own. Every system includes human review where it matters, failure alerts and a clear handover.
+                Today I connect the tools companies already use so new requests, follow-ups, paperwork and reporting
+                move on their own. Every system includes human review where it matters, failure alerts and a clear
+                handover.
               </p>
             </div>
 
@@ -117,7 +118,7 @@ export function IntroSection() {
               {[
                 {
                   label: 'I SPECIALIZE IN',
-                  copy: 'n8n workflows, AI agents, business process automation and API integrations.'
+                  copy: 'Automated workflows, AI assistants, and connecting the apps your business already uses.'
                 },
                 {
                   label: 'BEST FIT FOR',
@@ -240,9 +241,9 @@ export function IntroSection() {
               data-visible={inView}
             >
               {[
-                { value: 'AP · GL', label: 'closed by hand for a decade' },
+                { value: 'Books', label: 'balanced by hand for a decade' },
                 { value: 'MBA', label: 'business strategy' },
-                { value: 'n8n', label: 'cloud + self-hosted' }
+                { value: 'n8n', label: 'my main automation tool' }
               ].map(s => (
                 <div key={s.label} className='px-3 py-4 text-center'>
                   <div className='text-ink text-lg font-light' style={{ fontFamily: DISPLAY_FONT }}>

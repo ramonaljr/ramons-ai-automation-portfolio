@@ -1,6 +1,6 @@
 ---
 slug: 'rag-knowledge-base'
-title: 'Autonomous RAG Knowledge Base & Document Intelligence System'
+title: 'An Assistant That Answers From Your Company Documents'
 description: 'Engineered a semantic Retrieval-Augmented Generation (RAG) pipeline in n8n with Pinecone and Claude to index company documentation and deliver instant cited answers.'
 organisation: 'Knowledge & Operations'
 role: 'AI Automation Specialist'
@@ -23,7 +23,7 @@ workflowImage: '/images/workflows/rag-knowledge-base.svg'
 logicSummary: 'Drive watcher → chunk + embed → Pinecone upsert → query with citations via Telegram.'
 keyOutcome:
   value: '100%'
-  label: 'Cited Answers'
+  label: 'Answers With Sources'
 integrations: ['n8n', 'Claude', 'Pinecone', 'Supabase', 'Telegram']
 problem: 'Company documentation was spread across Drive folders and nobody could find authoritative answers, so the same questions were re-asked and re-answered by whoever happened to know.'
 solution: 'Engineered a semantic RAG pipeline in n8n that watches Drive, chunks and embeds new documents into Pinecone, and answers questions in Telegram with citations linking back to the source document.'
@@ -32,7 +32,7 @@ impactHighlight: 'Turns scattered documentation into instant, checkable answers.
 impactHighlightDesc: 'Every response carries a citation back to the source file, so answers can be verified rather than trusted.'
 roi:
   - value: '100%'
-    label: 'Cited Answers'
+    label: 'Answers With Sources'
   - value: '< 4 SEC'
     label: 'Query Response'
   - value: '24/7'

@@ -42,7 +42,10 @@ const pad = (value: number) => String(value).padStart(2, '0')
  */
 const HOW_I_WORK = [
   { label: 'Business case first', copy: 'Start with the work and the hours it costs, not the software.' },
-  { label: 'Failure paths mapped', copy: 'Error branches and failure alerts are part of every build.' },
+  {
+    label: 'Ready for when things fail',
+    copy: 'Every build checks for errors and alerts you when something goes wrong.'
+  },
   { label: 'Human control retained', copy: 'A person reviews anything where a mistake would be expensive.' },
   { label: 'Documented handover', copy: 'Your team can run and extend it without me.' }
 ] as const
@@ -112,7 +115,7 @@ export function ExperienceJourney() {
             <SectionIntro
               tag='THE PATH HERE'
               title='Four roles. One habit: map the work first.'
-              blurb='Each role handed me a process to run by hand: invoices and vendor controls, project cost ledgers, month-end close, then forecasting. That is why the workflows I build match how a business actually runs, rather than how a process diagram says it should.'
+              blurb='Each role handed me a process to run by hand: invoices and supplier payments, project cost records, month-end accounts, then forecasting. That is why the workflows I build match how a business actually runs, rather than how a process diagram says it should.'
               margin=''
               titleClassName='mt-5 text-[clamp(1.9rem,3.2vw,3.4rem)]'
             />
@@ -229,7 +232,8 @@ export function ExperienceJourney() {
                 style={{
                   opacity: inView ? 1 : 0,
                   transform: inView ? 'none' : 'translateY(14px)',
-                  transition: 'opacity .9s cubic-bezier(0.16,1,0.3,1) 200ms, transform .9s cubic-bezier(0.16,1,0.3,1) 200ms'
+                  transition:
+                    'opacity .9s cubic-bezier(0.16,1,0.3,1) 200ms, transform .9s cubic-bezier(0.16,1,0.3,1) 200ms'
                 }}
               >
                 Every system on this page began as something on that list. <a href='#portfolio'>See what they became</a>

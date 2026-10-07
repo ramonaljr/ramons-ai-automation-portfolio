@@ -1,6 +1,6 @@
 ---
 slug: 'multi-channel-order-sync'
-title: 'Multi-Channel Order Sync & Inventory Reconciliation'
+title: 'Orders and Stock Kept in Sync Across Every Sales Channel'
 description: 'Built a Make scenario that consolidates orders from three sales channels, reconciles stock across warehouses, and flags oversells before they ship — processing 4,000+ orders a week.'
 organisation: 'E-commerce Operations'
 role: 'AI Automation Specialist'
@@ -24,7 +24,7 @@ workflowImage: '/images/workflows/multi-channel-order-sync.svg'
 logicSummary: 'Three channel triggers → normalise → iterate line items → transactional stock decrement → write-back.'
 keyOutcome:
   value: '0'
-  label: 'Overnight Drift'
+  label: 'Stock Mismatches'
 integrations: ['Make', 'Shopify', 'Amazon', 'PostgreSQL', 'Slack']
 problem: 'Three sales channels each kept their own stock count, reconciled by CSV export the next morning. Oversells were discovered only when a warehouse pick failed, and staff lost around 15 hours a week to manual reconciliation.'
 solution: 'Built Make scenarios that normalise orders from Shopify, Amazon and a wholesale portal into one schema, explode them into line items with an Iterator, and decrement a single authoritative PostgreSQL stock table transactionally.'
@@ -33,7 +33,7 @@ impactHighlight: 'One authoritative stock figure across three channels, continuo
 impactHighlightDesc: 'Oversells are caught at order ingestion rather than at the shelf, and reconciliation stops being a daily manual job.'
 roi:
   - value: '0'
-    label: 'Overnight Drift'
+    label: 'Stock Mismatches'
   - value: '~15 hrs'
     label: 'Saved Weekly'
   - value: '4,000+'

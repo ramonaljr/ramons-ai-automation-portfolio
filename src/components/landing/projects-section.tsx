@@ -210,7 +210,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
 
         {/* Only the exception is marked. A badge repeated on every card is
             decoration, not information. */}
-        {cs.sample && !allLabs && <span className='work-card-flag'>Architecture lab</span>}
+        {cs.sample && !allLabs && <span className='work-card-flag'>Demo project</span>}
 
         <MagnifierLens lensRef={lensRef} artRef={artRef} />
       </motion.div>
@@ -271,7 +271,6 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
    */
   const [views, setViews] = useState<Record<string, number>>({})
 
-
   /**
    * Delivered work leads; labs sort to the back.
    *
@@ -314,8 +313,8 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
         <div className='work-toolbar'>
           {allLabs && (
             <p className='work-lab-note'>
-              Every system below is an architecture lab — designed, built and run end to end, with the figures stated as
-              target outcomes rather than measured client results.
+              Every system below is a demo project, designed, built and run end to end. The figures are targets, not
+              results measured with a client.
             </p>
           )}
         </div>
@@ -337,7 +336,6 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
             />
           ))}
         </ul>
-
       </div>
 
       <CaseStudyModal study={selectedStudy} onClose={() => setSelectedStudy(null)} />

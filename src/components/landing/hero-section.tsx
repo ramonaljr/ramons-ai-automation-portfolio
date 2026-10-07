@@ -70,13 +70,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
-            <img
-              src='/images/landing/ramon-avatar.webp'
-              alt=''
-              width={96}
-              height={96}
-              className='hero-byline-avatar'
-            />
+            <img src='/images/landing/ramon-avatar.webp' alt='' width={96} height={96} className='hero-byline-avatar' />
             <span className='text-ink-2 text-sm leading-tight'>
               <strong className='text-ink block font-medium'>{PROFILE.name}</strong>
               {PROFILE.title} · MBA
@@ -133,8 +127,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            I connect the tools you already use so work moves on its own, from lead follow-up to invoices and
-            month-end close. Built by a former AP supervisor and accountant with an MBA.
+            I connect the tools you already use so work moves on its own, from following up leads to invoices and
+            month-end accounts. Built by a former accountant and payables supervisor with an MBA.
           </p>
 
           <div
@@ -177,7 +171,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
 
           <figcaption className='hero-portrait-caption'>
             <strong style={{ fontFamily: DISPLAY_FONT }}>{PROFILE.name}</strong>
-            <span>Automation specialist · former AP supervisor &amp; accountant · MBA</span>
+            <span>Automation specialist · former accountant · MBA</span>
           </figcaption>
         </figure>
       </div>

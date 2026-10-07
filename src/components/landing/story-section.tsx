@@ -42,7 +42,7 @@ const ACTS = [
   {
     tag: '02 · The system',
     title: 'Then the work starts moving on its own.',
-    copy: 'Email, AI, accounting and team chat connected into one workflow. Every step checked, every exception handed to a person.'
+    copy: 'Email, AI, accounting and team chat connected into one workflow. Every step checked, every unusual case handed to a person.'
   },
   {
     tag: '03 · The outcome',

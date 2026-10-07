@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 
 import { createPortal } from 'react-dom'
 
-
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 import { usePrefersReducedMotion } from '@/components/landing/motion'
@@ -143,7 +142,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
             {/* One label, not a claim and its own contradiction: this said
                 "CASE STUDY" while a SAMPLE badge sat three chips along. */}
             <span className='text-ink-3 font-mono text-xs tracking-[0.2em] uppercase'>
-              {study.sample ? 'Architecture lab' : 'Case study'}
+              {study.sample ? 'Demo project' : 'Case study'}
             </span>
             {study.platform && (
               <span className='border-rule-strong bg-ink/4 text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-xs'>
@@ -246,9 +245,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           {/* 2. ROI & Key Metrics */}
           {study.roi && study.roi.length > 0 && (
             <div>
-              <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase'>
-                KEY OUTCOMES &amp; IMPACT
-              </p>
+              <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase'>KEY OUTCOMES &amp; IMPACT</p>
               <div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
                 {study.roi.map((r, idx) => (
                   <div key={idx} className='border-rule bg-surface-raised rounded-xl border p-4 text-center shadow-sm'>
@@ -267,9 +264,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
             <div className='grid gap-4 sm:grid-cols-2'>
               {study.problem && (
                 <div className='border-rule bg-ink/3 rounded-2xl border p-5 sm:p-6'>
-                  <p className='text-ink-2 font-mono text-xs font-medium tracking-[0.2em] uppercase'>
-                    THE PROBLEM
-                  </p>
+                  <p className='text-ink-2 font-mono text-xs font-medium tracking-[0.2em] uppercase'>THE PROBLEM</p>
                   <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{study.problem}</p>
                 </div>
               )}

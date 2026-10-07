@@ -60,7 +60,7 @@ export const SERVICES: Service[] = [
   {
     slug: 'n8n-ai-agents',
     title: 'n8n AI Agents & Workflow Automation',
-    short: 'n8n AI Agents',
+    short: 'Workflow Automation',
     duration: '1 to 3 weeks',
     tools: ['n8n (Cloud & Self-Hosted)', 'Webhooks', 'Triggers', 'Error Handling'],
     description:
@@ -144,7 +144,7 @@ export const SERVICES: Service[] = [
   {
     slug: 'llm-rag-integrations',
     title: 'Claude, OpenAI & LLM Integrations (RAG)',
-    short: 'LLM & RAG',
+    short: 'AI Document Answers',
     duration: '1 to 3 weeks',
     tools: ['Claude', 'OpenAI', 'Prompt Engineering', 'RAG'],
     description:
@@ -183,7 +183,7 @@ export const SERVICES: Service[] = [
   {
     slug: 'saas-api-integrations',
     title: 'Cross-Platform SaaS & API Integrations',
-    short: 'SaaS & API',
+    short: 'App Integrations',
     duration: '1 to 2 weeks',
     tools: ['Google Workspace', 'Airtable', 'Notion', 'Slack & Telegram', 'REST APIs'],
     description:
@@ -225,7 +225,7 @@ export const SERVICES: Service[] = [
   {
     slug: 'ai-voice-agents',
     title: 'Autonomous AI Voice & Customer Agents',
-    short: 'AI Voice Agents',
+    short: 'AI Phone Receptionist',
     duration: '2 to 3 weeks',
     tools: ['VAPI', 'Retell AI', 'ElevenLabs', 'Cal.com', 'WhatsApp & Twilio'],
     description:
@@ -310,7 +310,7 @@ export const PLATFORMS: Platform[] = [
   },
   {
     name: 'GoHighLevel',
-    tagline: 'Customer follow-up, pipelines and campaigns in one place',
+    tagline: 'Customer follow-up, sales tracking and campaigns in one place',
     bestFor: [
       'Capturing and following up with leads',
       'Email, text and voice campaigns',
@@ -358,7 +358,7 @@ export const PROCESS: Step[] = [
     step: '02',
     label: 'Process audit',
     summary: 'Find the best automation opportunities.',
-    desc: 'I document the current workflow, measure the bottlenecks and separate useful automation from steps that still need human judgment.',
+    desc: 'I write down how the work is done today, measure where it gets stuck and separate what is worth automating from what still needs a person.',
     phase: 'Audit',
     timing: 'Week 1',
     fromYou: 'View access to the tools involved and an hour with whoever runs the process.',
@@ -368,27 +368,27 @@ export const PROCESS: Step[] = [
     step: '03',
     label: 'Solution design',
     summary: 'Map the system before writing a workflow.',
-    desc: 'I define the data flow, business rules, AI responsibilities, approvals and failure paths. You see exactly what gets built and why.',
+    desc: 'I set out where information goes, the rules it follows, what the AI does, who approves what and what happens when something fails. You see exactly what gets built and why.',
     phase: 'Build',
     timing: 'First days',
     fromYou: 'Sign-off on the system map before anything is built.',
-    youGet: 'A system map covering data flow, rules, approvals and failure paths.'
+    youGet: 'A one-page map of how the system will work, including approvals and what happens on errors.'
   },
   {
     step: '04',
-    label: 'Build & integration',
+    label: 'Build & connect',
     summary: 'Connect the tools and bring the plan to life.',
-    desc: 'I build the automation, integrate your apps and APIs, configure AI agents and add logging, alerts and recovery paths from the start.',
+    desc: 'I build the automation, connect your apps, set up the AI steps, and add a record of every run, alerts and a way to recover when something fails.',
     phase: 'Build',
     timing: '1 to 4 weeks',
-    fromYou: 'Access to the apps being connected, and quick answers on edge cases.',
-    youGet: 'A working workflow in your own accounts, with logging and alerts.'
+    fromYou: 'Access to the apps being connected, and quick answers on unusual cases.',
+    youGet: 'A working automation in your own accounts, with a record of every run and alerts.'
   },
   {
     step: '05',
     label: 'Testing & handover',
-    summary: 'Prove it works beyond the happy path.',
-    desc: 'We test real scenarios, exceptions, permissions and failed connections. Your team gets clear documentation and a practical walkthrough.',
+    summary: 'Prove it works when things go wrong, not just when they go right.',
+    desc: 'We test real cases, unusual ones, who can access what and what happens when an app stops responding. Your team gets clear instructions and a practical walkthrough.',
     phase: 'Build',
     timing: 'Final days',
     fromYou: 'Real examples to test with, and the people who will use it at the walkthrough.',
@@ -398,7 +398,7 @@ export const PROCESS: Step[] = [
     step: '06',
     label: 'Launch & optimize',
     summary: 'Go live, watch closely and keep improving.',
-    desc: 'I monitor early runs, fix unexpected edge cases and measure the result. The system evolves as your volume, tools and process change.',
+    desc: 'I watch the first runs closely, fix anything unexpected and measure the result. The system evolves as your volume, tools and process change.',
     phase: 'Retainer',
     timing: 'Monthly',
     fromYou: 'Flag anything odd in the first weeks. The retainer is optional.',
@@ -578,8 +578,8 @@ export const EXPERIENCE: Role[] = [
     role: 'Financial Analyst',
     period: '2022 — Present',
     arrangement: 'US Remote',
-    stack: ['Claude', 'DCF Modeling', 'Financial Analysis', 'Forecasting', 'Excel'],
-    achievement: 'Maintain DCF valuation models and forecasts across US public portfolios',
+    stack: ['Claude', 'Valuation Models', 'Financial Analysis', 'Forecasting', 'Excel'],
+    achievement: 'Build company valuation models and forecasts for US stock portfolios',
     description:
       'Claude and AI tooling carry the research, market-data analysis and structured reporting around that work — the habit of handing repeatable analysis to a machine started here.'
   },
@@ -588,30 +588,30 @@ export const EXPERIENCE: Role[] = [
     company: 'Johndorf Ventures Corporation',
     role: 'Branch Accountant',
     period: '2020 — 2021',
-    stack: ['Team Leadership', 'AP/AR', 'Reconciliation', 'SAP', 'Process Mapping'],
-    achievement: 'Led a 10-person accounting team delivering monthly and annual closes',
+    stack: ['Team Leadership', 'Payables & Receivables', 'Account Reconciliation', 'SAP', 'Process Mapping'],
+    achievement: 'Led a 10-person accounting team closing the books every month and year',
     description:
-      'Owned and documented repeatable close, reconciliation, and approval processes across AP, AR, and disbursement — establishing the exact process-mapping discipline required for enterprise automation.'
+      'Ran and documented the month-end close, account checks and approvals for supplier bills, customer payments and payouts — the same step-by-step mapping that automation depends on.'
   },
   {
     index: '03',
     company: 'Johndorf Ventures Corporation',
     role: 'Project Cost Accountant',
     period: '2016 — 2020',
-    stack: ['Cost Accounting', 'Variance Analysis', 'QuickBooks', 'Workbooks'],
-    achievement: 'Reconciled multi-million project cost ledgers with automated reporting',
+    stack: ['Cost Accounting', 'Budget vs Actual', 'QuickBooks', 'Workbooks'],
+    achievement: 'Checked multi-million project costs against the books, with automated reports',
     description:
-      'Performed standard costing and variance analysis for a major real estate developer. Reconciled material, labor, and overhead costs against item ledgers and built recurring reporting systems.'
+      'Compared planned and actual costs for a major real estate developer, checked material, labour and overhead costs against the records, and built reports that ran on a schedule.'
   },
   {
     index: '04',
     company: 'Johndorf Ventures Corporation',
-    role: 'AP Supervisor & Tax Compliance Analyst',
+    role: 'Accounts Payable Supervisor & Tax Compliance Analyst',
     period: '2015 — 2018',
-    stack: ['Tax Compliance', 'Invoicing', 'Vendor Reconciliation', 'Voucher Controls'],
-    achievement: 'Supervised the full AP lifecycle and strict statutory filing calendars',
+    stack: ['Tax Compliance', 'Invoicing', 'Supplier Reconciliation', 'Payment Approvals'],
+    achievement: 'Ran supplier invoices from receipt to payment and kept every tax filing on time',
     description:
-      'Supervised end-to-end invoice processing, vendor aging, and voucher controls. Managed statutory tax compliance calendars — high-volume, rules-based operations prime for automation.'
+      'Oversaw invoice processing, overdue supplier balances and payment approvals, and managed the tax filing calendar — high-volume, rule-based work that is ideal for automation.'
   }
 ]
 
@@ -660,10 +660,10 @@ export const ENGAGEMENTS = [
     forWhen: 'You know something is eating the week, but not what to automate first.',
     summary: 'Map what you do manually and what is worth automating.',
     includes: [
-      'Process and SOP mapping',
-      'Automation opportunity list',
-      'Platform recommendation',
-      'Prioritised roadmap'
+      'How the work is done today, written down',
+      'A list of what is worth automating',
+      'Which tool to build it on',
+      'A plan in order of priority'
     ],
     cta: 'Book the audit',
     href: '#contact',
@@ -673,18 +673,18 @@ export const ENGAGEMENTS = [
     // $1,500-4,500, retainers $1,200-3,800/mo). Replace with real ones.
     price: '$750',
     priceNote: 'fixed fee',
-    outcome: 'A prioritised roadmap and a platform recommendation.',
+    outcome: 'A prioritised plan and which tool to build it on.',
     start: true
   },
   {
-    name: 'Fixed-Scope Build',
+    name: 'Fixed-Price Build',
     duration: '1 to 4 weeks',
-    forWhen: 'You know exactly which process, and want it shipped and handed over.',
-    summary: 'One pipeline, built, tested against real data and documented.',
+    forWhen: 'You know exactly which process, and want it built and handed over.',
+    summary: 'One automation, built, tested on your real data and documented.',
     includes: [
-      'Architecture and error design',
+      'System design, including what happens on errors',
       'Build on n8n, Zapier, Make or GoHighLevel',
-      'Testing against your edge cases',
+      'Testing with your unusual cases',
       'Documentation and handover'
     ],
     cta: 'Request a quote',
@@ -700,9 +700,9 @@ export const ENGAGEMENTS = [
     summary: 'Keep existing workflows healthy and keep extending them.',
     includes: [
       'Monitoring and failure alerts',
-      'Fixes and platform changes',
+      'Fixes when your tools change',
       'New workflows as they come up',
-      'Priority availability'
+      'Faster replies when you need me'
     ],
     cta: 'Request a quote',
     price: 'From $1,200',

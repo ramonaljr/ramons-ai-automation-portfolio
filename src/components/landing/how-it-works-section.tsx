@@ -73,7 +73,7 @@ function DesignVisual() {
       <span className='process-map-node process-map-top'>Team alert</span>
       <span className='process-map-node process-map-bottom'>Approved record</span>
       <span className='process-map-status'>
-        logic mapped <b>✓</b>
+        rules mapped <b>✓</b>
       </span>
     </div>
   )
@@ -99,7 +99,7 @@ export function BuildVisual() {
           <span>✓</span> rules configured
         </p>
         <p>
-          <span>✓</span> edge cases tested
+          <span>✓</span> unusual cases tested
         </p>
         <div className='process-terminal-progress'>
           <i />
@@ -113,11 +113,11 @@ function TestVisual() {
   return (
     <div className='process-tests' aria-hidden='true'>
       <div className='process-tests-head'>
-        <span>VALIDATION RUN</span>
+        <span>TEST RUN</span>
         <b>12 / 12 passed</b>
       </div>
       <div className='process-tests-grid'>
-        {['Standard case', 'Missing field', 'Duplicate entry', 'API timeout'].map((label, index) => (
+        {['Standard case', 'Missing field', 'Duplicate entry', 'App not responding'].map((label, index) => (
           <span key={label} style={{ '--test-index': index } as CSSProperties}>
             <i>✓</i>
             {label}
@@ -347,7 +347,9 @@ export function HowItWorksSection() {
                           tabIndex={isActive ? 0 : -1}
                           className='process-explorer-tab'
                           data-active={isActive}
-                          onPointerEnter={event => event.pointerType === 'mouse' && !isActive && !navScrolls() && choose(index)}
+                          onPointerEnter={event =>
+                            event.pointerType === 'mouse' && !isActive && !navScrolls() && choose(index)
+                          }
                           onClick={() => choose(index)}
                           onKeyDown={onKeyDown}
                         >

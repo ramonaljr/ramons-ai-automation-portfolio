@@ -91,8 +91,8 @@ export function EngagementSection() {
         </ol>
 
         <p className='engagement-reassure'>
-          The audit begins with the free 30-minute workflow call. Every scope and price is fixed in writing before
-          any build starts.
+          The audit begins with a free 30-minute call. What is included and the price are agreed in writing before any
+          build starts.
         </p>
       </div>
     </section>
