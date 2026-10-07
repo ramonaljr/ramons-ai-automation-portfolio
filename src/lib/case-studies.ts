@@ -19,6 +19,13 @@ export type CaseStudyMetadata = {
   publishedAt?: string
   image?: string
   heroImage?: string
+
+  /**
+   * What `heroImage` shows, when it is not an interface mock-up: a real
+   * build's screenshot reads "n8n build". Labels its view on the card and in
+   * the dialog, and captions it on the case study page.
+   */
+  heroLabel?: string
   logo?: string
 
   /** Illustrative example rather than a delivered engagement. */
@@ -53,6 +60,9 @@ export type CaseStudyMetadata = {
 
   /** Workflow canvas diagram shown in the modal. */
   workflowImage?: string
+
+  /** Names `workflowImage` when it is not the platform canvas, e.g. "Process map". */
+  canvasLabel?: string
 
   /** One-line trigger-to-outcome summary. */
   logicSummary?: string

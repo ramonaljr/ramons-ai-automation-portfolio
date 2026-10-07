@@ -1,0 +1,80 @@
+---
+slug: 'hr-evaluation-assistant'
+title: 'HR Evaluation and Job Posting Assistant with AI'
+description: 'Every job application is read against the role it was made for, shortlisted or declined, and recorded. Shortlisted applicants get questions written for the role, a personal interview invite and a booked interview, and the interviewer gets screening questions. Built in n8n.'
+organisation: 'HR & Recruitment'
+role: 'AI Automation Specialist'
+tools: ['n8n', 'Groq', 'OpenAI', 'Airtable', 'Google Drive', 'Gmail', 'Google Calendar']
+publishedAt: '2026-10-07'
+image: '/images/workflows/hr-evaluation-assistant-build.webp'
+heroImage: '/images/workflows/hr-evaluation-assistant-build.webp'
+heroLabel: 'n8n build'
+logo: '/images/features/logo-02.webp'
+sample: false
+# Fill these in to reveal the buttons on the case study page.
+videoUrl: ''
+repoUrl: ''
+
+# ── Selected Work grid + detail modal ──
+platform: 'n8n'
+categories: ['HR', 'AI Agents']
+workflowImage: '/images/workflows/hr-evaluation-assistant-map.webp'
+canvasLabel: 'Process map'
+logicSummary: 'Application form → CV filed and scored against the role → shortlist or decline → role-specific questions → personal invite → interview booked → screening questions for the interviewer.'
+keyOutcome:
+  value: '5'
+  label: 'Hiring Stages Automated'
+integrations: ['n8n', 'Airtable', 'Gmail', 'Google Drive', 'Google Calendar', 'Groq', 'OpenAI']
+problem: 'Every application meant opening a CV, comparing it with the job post and deciding by hand. Good applicants waited days for a reply, shortlisted ones got generic emails, interviews took rounds of back-and-forth to schedule, and interviewers walked in without questions prepared for the person in front of them.'
+solution: 'Built an n8n workflow with five AI steps. The application form saves the CV to Google Drive and the applicant to Airtable, AI reads the CV against the matching job posting and shortlists or declines, shortlisted applicants answer questions written for that role, AI writes a personal interview invite sent from Gmail, books the interview in Google Calendar, and prepares screening questions for the interviewer.'
+stepCount: 5
+impactHighlight: 'From application to booked interview without anyone reading a CV first.'
+impactHighlightDesc: 'Every applicant is screened against the role the moment they apply, and the hiring team sees every decision in Airtable.'
+roi:
+  - value: '5'
+    label: 'Hiring Stages Automated'
+  - value: '100%'
+    label: 'Applicants Screened & Recorded'
+  - value: '0'
+    label: 'Invites Written by Hand'
+failsafeHeadline: 'Every Decision Is on Record'
+failsafeDesc: 'Shortlisted and declined applicants are both written to Airtable, so the team can review any decision the AI made.'
+failsafes:
+  - title: '1. Judged Against the Real Job'
+    desc: 'The AI scores each CV against the job posting stored in Airtable, not a generic idea of a good candidate.'
+  - title: '2. Fixed-Format Answers'
+    desc: 'Every AI step must return its answer in a set format, so a vague or broken reply cannot slip into the records or an email.'
+---
+
+## The problem
+
+Hiring ran on inboxes and spreadsheets. Every application meant opening a CV, reading it against the job post and deciding whether to take it further, by hand, one at a time.
+
+- **Slow replies.** Strong applicants waited days to hear back, and some accepted other offers in the meantime.
+- **Generic follow-up.** Shortlisted applicants got the same email whatever the role, because writing a personal one each time was not realistic.
+- **Scheduling back-and-forth.** Booking an interview took several emails to find a time.
+- **Unprepared interviews.** Interviewers often went in without questions based on the applicant's CV and answers.
+- **Scattered records.** CVs, answers and decisions lived in different places, so nobody had the full picture.
+
+## What I built
+
+An n8n workflow that takes an applicant from the application form to a booked interview, in five stages, each handled by its own AI step.
+
+1. **Receive and screen.** The application form uploads the CV to Google Drive and logs the applicant in Airtable. The CV text is extracted and an AI agent (Groq) reads it against the matching job posting in Airtable, then marks the applicant as a potential hire or declined. Both outcomes are recorded.
+2. **Role-specific questionnaire.** For shortlisted applicants, AI (OpenAI) writes questions for that role, shown as the next page of the same form. The answers are saved to Airtable.
+3. **Personal interview invite.** AI (Groq) reads the applicant's record and the job posting, writes a personal email and sends it from Gmail.
+4. **Interview booked.** An AI step creates the interview in Google Calendar and records the schedule in Airtable.
+5. **Screening questions for the interviewer.** AI (OpenAI) uses the applicant's CV and answers to prepare screening questions and saves them to the applicant's record.
+
+## Safeguards
+
+- **Every decision is recorded.** Shortlisted and declined applicants are both written to Airtable, so the team can check any decision.
+- **Judged against the real job.** The AI looks up the actual job posting before scoring, so applicants are measured against the role they applied for.
+- **Fixed-format AI answers.** Each AI step must return a set structure, so a vague or broken reply cannot reach a record or an email.
+
+## Outcomes
+
+- Every applicant is screened the moment they apply, and every outcome is on record.
+- Shortlisted applicants get questions, an invite and an interview without anyone writing an email or checking a calendar.
+- Interviewers start each interview with questions prepared for that applicant.
+- The hiring team works from one Airtable base instead of an inbox, a Drive folder and a spreadsheet.

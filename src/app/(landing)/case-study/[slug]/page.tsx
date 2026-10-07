@@ -260,12 +260,16 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
                 <div className='border-rule bg-surface-raised rounded-2xl border p-3'>
                   <img
                     src={leadImage}
-                    alt={`What the team sees when ${metadata.title} runs`}
+                    alt={
+                      metadata.heroLabel
+                        ? `${metadata.heroLabel} of ${metadata.title}`
+                        : `What the team sees when ${metadata.title} runs`
+                    }
                     className='w-full rounded-xl'
                   />
                 </div>
                 <figcaption className='text-ink-3 mt-3 font-mono text-[11px] tracking-[0.18em]'>
-                  WHAT THE TEAM SEES
+                  {metadata.heroLabel?.toUpperCase() ?? 'WHAT THE TEAM SEES'}
                 </figcaption>
               </figure>
             </Reveal>
@@ -296,13 +300,14 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
                   <div className='border-rule bg-surface-raised rounded-2xl border p-3'>
                     <img
                       src={metadata.workflowImage}
-                      alt={`Workflow canvas for ${metadata.title}`}
+                      alt={`${metadata.canvasLabel ?? 'Workflow canvas'} for ${metadata.title}`}
                       loading='lazy'
                       className='w-full rounded-xl'
                     />
                   </div>
                   <figcaption className='text-ink-3 mt-3 font-mono text-[11px] tracking-[0.18em]'>
-                    {metadata.platform ? `${metadata.platform.toUpperCase()} CANVAS` : 'WORKFLOW CANVAS'}
+                    {metadata.canvasLabel?.toUpperCase() ??
+                      (metadata.platform ? `${metadata.platform.toUpperCase()} CANVAS` : 'WORKFLOW CANVAS')}
                     {metadata.stepCount ? ` · ${metadata.stepCount} STAGES` : ''}
                   </figcaption>
                 </figure>

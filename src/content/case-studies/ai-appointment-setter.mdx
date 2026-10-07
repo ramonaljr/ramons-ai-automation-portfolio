@@ -1,0 +1,79 @@
+---
+slug: 'ai-appointment-setter'
+title: 'AI Appointment Setter'
+description: 'An AI voice agent that answers calls, checks the calendar, and books, moves or cancels appointments while the caller is still on the line, keeping Google Calendar and Airtable in step. Built with VAPI and n8n.'
+organisation: 'Appointments & Voice AI'
+role: 'AI Automation Specialist'
+tools: ['n8n', 'VAPI', 'Google Calendar', 'Airtable']
+publishedAt: '2026-10-06'
+image: '/images/workflows/ai-appointment-setter-build.webp'
+heroImage: '/images/workflows/ai-appointment-setter-build.webp'
+heroLabel: 'n8n build'
+logo: '/images/features/logo-02.webp'
+sample: false
+# Fill these in to reveal the buttons on the case study page.
+videoUrl: ''
+repoUrl: ''
+
+# ── Selected Work grid + detail modal ──
+platform: 'n8n'
+categories: ['Sales', 'Voice AI']
+workflowImage: '/images/workflows/ai-appointment-setter-map.webp'
+canvasLabel: 'Process map'
+logicSummary: 'Caller asks for a time → agent checks Google Calendar → offers free times → books, moves or cancels the event → confirms on the call → call result saved in Airtable.'
+keyOutcome:
+  value: '24/7'
+  label: 'Booking Line Open'
+integrations: ['n8n', 'VAPI', 'Google Calendar', 'Airtable']
+problem: 'Calls that came in after hours or while the team was busy went unanswered, and most callers never left a voicemail. The calls that were answered meant reading out free times, typing bookings into the calendar by hand, and doing it again whenever someone needed to reschedule or cancel, with the calendar and the records often out of step.'
+solution: 'Built five n8n flows that a VAPI voice agent calls during the conversation: one checks free times in Google Calendar, one books the slot and logs it in Airtable, one finds and moves an existing appointment, one finds and cancels it, and one saves the result of every call.'
+stepCount: 5
+impactHighlight: 'Callers book, move or cancel appointments at any hour, without waiting for a person.'
+impactHighlightDesc: 'Every change lands in Google Calendar and Airtable together, so the calendar and the records always agree.'
+roi:
+  - value: '24/7'
+    label: 'Booking Line Open'
+  - value: '4'
+    label: 'Caller Requests Handled'
+  - value: '2'
+    label: 'Systems Kept in Step'
+failsafeHeadline: 'Checks Before It Commits'
+failsafeDesc: 'Nothing is booked, moved or cancelled until the details are complete and the time is confirmed free.'
+failsafes:
+  - title: '1. Missing Details Caught'
+    desc: 'If the caller has not given everything needed, the agent is told what is missing and asks again instead of guessing.'
+  - title: '2. Friendly Errors'
+    desc: 'If a booking cannot be made, the agent gets a plain explanation to pass on, so the caller is never left hanging.'
+---
+
+## The problem
+
+Appointments came in by phone, and the phone was not always answered.
+
+- **Missed calls.** Calls after hours or during busy periods went unanswered, and most callers hung up without leaving a message.
+- **Slow booking.** Answered calls meant reading out free times and typing the booking into the calendar by hand.
+- **Rescheduling and cancelling.** Every change meant finding the original booking, editing the calendar and updating the records, and the two often drifted apart.
+- **No record of calls.** There was no consistent log of who called and what happened.
+
+## What I built
+
+A VAPI voice agent that holds the conversation, and five n8n flows it uses during the call to act on the real calendar and records.
+
+1. **Check availability.** Looks up the requested time in Google Calendar. If it is taken, it returns the free time ranges so the agent can offer alternatives.
+2. **Book.** Checks the caller has given everything needed, converts the time to the business's time zone, creates the Google Calendar event and logs the booking in Airtable.
+3. **Reschedule.** Finds the original appointment in Airtable, moves the calendar event and updates the record.
+4. **Cancel.** Finds the appointment, deletes the calendar event and marks the record as cancelled.
+5. **Call results.** Saves the outcome of every call in Airtable, creating or updating the caller's record.
+
+## Safeguards
+
+- **Missing details caught.** Each workflow checks the details first. If something is missing, the agent is told what to ask for instead of guessing.
+- **Confirmed free before booking.** A time is only booked once the calendar shows it is free.
+- **Friendly errors.** If a booking fails, the agent gets a plain message to pass on, so the caller always knows what happened.
+- **Calendar and records together.** Bookings, changes and cancellations update Google Calendar and Airtable in the same run.
+
+## Outcomes
+
+- Callers can book, reschedule or cancel at any hour without waiting for a person.
+- The calendar and Airtable stay in step, because every change is made to both.
+- Every call leaves a record, so the team can see who called and what was agreed.

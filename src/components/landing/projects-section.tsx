@@ -28,7 +28,9 @@ const WORK_LABELS: Record<string, string> = {
   'lead-routing-and-crm-enrichment': 'Lead capture & follow-up',
   'multi-channel-order-sync': 'Orders & inventory',
   'rag-knowledge-base': 'Company knowledge search',
-  'zero-touch-client-onboarding': 'Client onboarding'
+  'zero-touch-client-onboarding': 'Client onboarding',
+  'hr-evaluation-assistant': 'Applicant screening',
+  'ai-appointment-setter': 'Appointment booking'
 }
 
 const WORK_USE_CASES: Record<string, string> = {
@@ -40,7 +42,10 @@ const WORK_USE_CASES: Record<string, string> = {
   'multi-channel-order-sync': 'Keep orders and stock aligned across Shopify, Amazon and wholesale channels.',
   'rag-knowledge-base': 'Turn company files into a searchable assistant that answers with links to the source.',
   'zero-touch-client-onboarding':
-    'Create agreements, folders, CRM records and team alerts as soon as a client submits a form.'
+    'Create agreements, folders, CRM records and team alerts as soon as a client submits a form.',
+  'hr-evaluation-assistant':
+    'Screen every applicant against the job, send tailored questions and invites, and book interviews automatically.',
+  'ai-appointment-setter': 'Let callers book, move or cancel appointments with an AI voice agent, at any hour.'
 }
 
 const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
@@ -234,7 +239,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
           <p className='work-card-outcome'>
             <OutcomeFigure value={outcome.value} reduced={reduced} />
             <span>{outcome.label}</span>
-            <em>{cs.sample ? 'target outcome' : 'measured'}</em>
+            <em>{cs.sample ? 'target outcome' : 'real build'}</em>
           </p>
         )}
 

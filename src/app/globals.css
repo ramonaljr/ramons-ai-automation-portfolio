@@ -3646,6 +3646,8 @@ a.work-aux-link:hover {
 }
 
 .work-card-flag {
+  /* Above the view stage, which paints over later siblings. */
+  z-index: 4;
   right: 0.8rem;
   padding: 0.22rem 0.55rem;
   border-radius: 0.4rem;

@@ -29,11 +29,13 @@ export const WORK_TONES: Record<string, string> = {
   'lead-routing-and-crm-enrichment': 'oklch(0.562 0.12 68)',
   'multi-channel-order-sync': 'oklch(0.542 0.11 158)',
   'rag-knowledge-base': 'oklch(0.562 0.13 274)',
-  'zero-touch-client-onboarding': 'oklch(0.538 0.095 218)'
+  'zero-touch-client-onboarding': 'oklch(0.538 0.095 218)',
+  'hr-evaluation-assistant': 'oklch(0.55 0.12 300)',
+  'ai-appointment-setter': 'oklch(0.54 0.1 190)'
 }
 
 export type WorkView = {
-  key: 'canvas' | 'interface' | 'scene'
+  key: 'canvas' | 'map' | 'interface' | 'scene'
   label: string
   src: string
   alt: string
@@ -58,15 +60,23 @@ export function workViews(cs: CaseStudyMetadata): WorkView[] {
   const scene = WORK_SCENES[cs.slug]
 
   const candidates: (WorkView | null)[] = [
+    // Only an SVG canvas can run; a raster process map is shown as a picture.
     cs.workflowImage
       ? {
-          key: 'canvas',
-          label: `${platform} canvas`,
+          key: cs.workflowImage.endsWith('.svg') ? 'canvas' : 'map',
+          label: cs.canvasLabel ?? `${platform} canvas`,
           src: cs.workflowImage,
           alt: `${platform} workflow canvas for ${name}`
         }
       : null,
-    mockup ? { key: 'interface', label: 'Interface', src: mockup, alt: `Interface mockup for ${name}` } : null,
+    mockup
+      ? {
+          key: 'interface',
+          label: cs.heroLabel ?? 'Interface',
+          src: mockup,
+          alt: cs.heroLabel ? `${cs.heroLabel} of ${name}` : `Interface mockup for ${name}`
+        }
+      : null,
     scene ? { key: 'scene', label: 'Scene', src: scene, alt: `Working environment for ${name}` } : null
   ]
 
