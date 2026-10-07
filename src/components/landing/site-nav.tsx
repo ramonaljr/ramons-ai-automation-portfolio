@@ -181,7 +181,7 @@ export function SiteNav() {
               href={contactHref}
               className='bg-ink text-fine text-ground hover:bg-ink/90 relative z-10 hidden min-w-[9.75rem] rounded-full px-5 py-2 text-center whitespace-nowrap transition-[background-color,transform] duration-300 active:scale-[0.97] motion-reduce:active:scale-100 md:block'
             >
-              Book an audit
+              Book a free call
             </a>
 
             {/* Burger — mobile only */}
@@ -236,7 +236,7 @@ export function SiteNav() {
                 onClick={close}
                 className='bg-ink text-fine text-ground hover:bg-ink/90 block w-full rounded-full px-4 py-3 text-center transition-colors duration-300'
               >
-                Book an audit
+                Book a free call
               </a>
             </div>
           </div>

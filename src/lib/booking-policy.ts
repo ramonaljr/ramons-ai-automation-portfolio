@@ -20,15 +20,33 @@ function parseDateParts(value: string): DateParts | null {
   const [year, month, day] = value.split('-').map(Number)
   const canonical = new Date(Date.UTC(year, month - 1, day))
 
-  if (
-    canonical.getUTCFullYear() !== year ||
-    canonical.getUTCMonth() !== month - 1 ||
-    canonical.getUTCDate() !== day
-  ) {
+  if (canonical.getUTCFullYear() !== year || canonical.getUTCMonth() !== month - 1 || canonical.getUTCDate() !== day) {
     return null
   }
 
   return { year, month, day }
+}
+
+/** The moment a Manila slot starts, so it can be shown in a visitor's own time zone. */
+export function slotInstant(date: string, time: string) {
+  return new Date(`${date}T${time}:00${BOOKING_UTC_OFFSET}`)
+}
+
+/** True when the visitor's clock already reads Manila time at that moment. */
+export function isManilaClock(at: Date) {
+  return -at.getTimezoneOffset() === 8 * 60
+}
+
+/**
+ * A slot as the visitor reads it: their weekday, date and time. Booking still
+ * uses the Manila date and time; this only changes what is shown.
+ */
+export function formatSlotLocal(date: string, time: string, withDate = true) {
+  return slotInstant(date, time).toLocaleString(undefined, {
+    ...(withDate ? { weekday: 'short', day: 'numeric', month: 'short' } : {}),
+    hour: 'numeric',
+    minute: '2-digit'
+  })
 }
 
 export function manilaDateKey(now = Date.now()) {
@@ -63,7 +81,9 @@ export function validateBookingSlot(date: string, time: string, now = Date.now()
   if (!TIME_RE.test(time)) errors.push('time')
 
   if (!errors.length && dateResult.valid) {
-    const weekday = new Date(Date.UTC(dateResult.parts.year, dateResult.parts.month - 1, dateResult.parts.day)).getUTCDay()
+    const weekday = new Date(
+      Date.UTC(dateResult.parts.year, dateResult.parts.month - 1, dateResult.parts.day)
+    ).getUTCDay()
 
     if (weekday === 0 || weekday === 6 || !BOOKABLE_TIMES.includes(time as (typeof BOOKABLE_TIMES)[number])) {
       errors.push('not_offered')

@@ -91,7 +91,7 @@ export function EngagementSection() {
         </ol>
 
         <p className='engagement-reassure'>
-          The audit begins with a free 30-minute call. What is included and the price are agreed in writing before any
+          Every engagement starts with a free 30-minute call. What is included and the price are agreed in writing before any
           build starts.
         </p>
       </div>

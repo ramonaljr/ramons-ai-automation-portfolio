@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { CONTAINER, Cta, SECTION_ANCHOR } from '@/components/landing/motion'
 import { OPEN_CHAT_EVENT } from '@/components/landing/chat-widget'
 import { SectionIntro } from '@/components/landing/section-intro'
+import { FAQS } from '@/lib/portfolio'
 
 /** Line icons, one per question, so a scanning reader finds theirs by shape. */
 const FAQ_ICONS: Record<string, string> = {
@@ -15,45 +16,6 @@ const FAQ_ICONS: Record<string, string> = {
   tools: 'M14 6a4 4 0 00-5 5l-6 6 3 3 6-6a4 4 0 005-5l-3 3-3-3 3-3z',
   clock: 'M12 7v5l3 2M12 21a9 9 0 110-18 9 9 0 010 18z'
 }
-
-const FAQS = [
-  {
-    icon: 'lock',
-    question: 'Will my business data remain private?',
-    answer:
-      'Yes. I work inside accounts and systems you control, request only the access the workflow needs, and can run everything on your own servers when sensitive data should never leave your business.'
-  },
-  {
-    icon: 'key',
-    question: 'What access will you need?',
-    answer:
-      'Usually a test account, sample records and limited access to the tools being connected. We agree on access before the build, and your real passwords stay in your own password manager.'
-  },
-  {
-    icon: 'handshake',
-    question: 'Who owns and maintains the automation?',
-    answer:
-      'You do. The finished workflow runs in your accounts and includes documentation, a recorded handover and clear instructions for the person who maintains it next.'
-  },
-  {
-    icon: 'bell',
-    question: 'What happens if a workflow fails?',
-    answer:
-      'Important workflows alert you when something fails, retry safely without creating duplicates, and pause for a person to check anything where a wrong decision would be costly. Problems are flagged, never hidden.'
-  },
-  {
-    icon: 'tools',
-    question: 'Which platform will you build on?',
-    answer:
-      'Usually n8n: it can run on your own servers for sensitive data, handles processes with many decisions and custom steps, and does not charge per task as volume grows. Zapier suits simple handoffs between familiar apps, especially if your team already uses it. Make fits processes with several routes that move larger amounts of data. GoHighLevel is the choice when your customer list, sales tracking and marketing campaigns are the centre of the work. I recommend one after the audit, based on your tools, volume and who maintains it afterwards.'
-  },
-  {
-    icon: 'clock',
-    question: 'How long does a typical project take?',
-    answer:
-      'A focused workflow usually takes one to four weeks after the process and access are clear. An initial audit takes one week and gives you a prioritized plan before committing to a build.'
-  }
-]
 
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState(0)

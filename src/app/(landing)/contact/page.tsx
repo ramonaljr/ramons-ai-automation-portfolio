@@ -120,7 +120,7 @@ const ContactUsPage = async () => {
                   <div>
                     <dt className='text-ink-3 font-mono text-[11px] tracking-[0.18em]'>FIRST STEP</dt>
                     <dd className='text-ink-2 mt-1.5 text-[14px]'>
-                      A free 30-minute workflow audit — no deck, just your process on a call
+                      A free 30-minute call — no deck, just your process
                     </dd>
                   </div>
                 </dl>

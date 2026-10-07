@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { PortfolioSections } from '@/components/landing/portfolio-sections'
 
 import { getCaseStudies } from '@/lib/case-studies'
-import { PROFILE, SERVICES } from '@/lib/portfolio'
+import { FAQS, PROFILE, SERVICES } from '@/lib/portfolio'
 import { abs, SITE_URL } from '@/lib/site'
 
 export const metadata: Metadata = {
@@ -11,7 +11,8 @@ export const metadata: Metadata = {
 }
 
 /**
- * Person + ProfessionalService describe who is selling and what is on offer.
+ * Person + ProfessionalService describe who is selling and what is on offer;
+ * FAQPage marks up the questions answered on the page, from the same data.
  * WebSite alone told search engines a site exists but nothing about the
  * practice behind it, and produced no entity for a knowledge panel.
  */
@@ -74,6 +75,15 @@ const jsonLd = {
           }
         }))
       }
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${SITE_URL}#faq`,
+      mainEntity: FAQS.map(item => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: { '@type': 'Answer', text: item.answer }
+      }))
     }
   ]
 }

@@ -86,7 +86,7 @@ Published prices are starting points. The final quote depends on the systems inv
 
 ## Contact
 
-- [Book a workflow audit](${abs('/#contact')}): 30 minutes, free. Live calendar on the site; bookable 09:00–11:00 and 13:00–17:00 Asia/Manila, Monday to Friday.
+- [Book a free 30-minute call](${abs('/#contact')}): no charge. Separate from the paid Automation Audit. Live calendar on the site; bookable 09:00–11:00 and 13:00–17:00 Asia/Manila, Monday to Friday.
 - [Contact form](${abs('/contact')})
 - Email: ${PROFILE.email}
 ${PROFILE.socials.map(s => `- ${s.label}: ${s.href}`).join('\n')}

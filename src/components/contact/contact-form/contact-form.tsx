@@ -19,6 +19,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup } from '@/components/ui/select'
 
 // Util Imports
+import { formatSlotLocal, isManilaClock, slotInstant } from '@/lib/booking-policy'
 import { cn } from '@/lib/utils'
 
 type ContactFormProps = {
@@ -71,9 +72,14 @@ const ContactForm = ({ className }: ContactFormProps) => {
       })
 
       setSlot({ date, time })
+
+      // Both clocks, so neither side has to convert: the visitor's own time
+      // first, and the Manila time the booking is actually made in.
+      const theirs = isManilaClock(slotInstant(date, time)) ? null : formatSlotLocal(date, time)
+
       form.setValue(
         'message',
-        `I'd like to book the ${time} slot on ${readable} (PH time).\n\nThe process I want to automate:\n`
+        `I'd like to book the ${time} slot on ${readable} (PH time)${theirs ? `, which is ${theirs} my time` : ''}.\n\nThe process I want to automate:\n`
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

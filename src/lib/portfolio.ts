@@ -721,3 +721,54 @@ export const ENGAGEMENTS = [
     outcome: 'Workflows that keep working as your tools change.'
   }
 ]
+
+// ─── FAQ ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Shared by the FAQ section and the landing page's FAQPage structured data,
+ * so the answers search engines show are the ones on the page.
+ */
+export const FAQS = [
+  {
+    icon: 'handshake',
+    question: 'Is the first call really free, and how is it different from the audit?',
+    answer:
+      'Yes. The 30-minute call is free: you walk me through the process and I tell you whether it is worth automating, on which platform, and roughly what it would take. The Automation Audit is a separate, paid week of work that maps everything in detail and gives you a prioritised plan. You can skip the audit and go straight to a build.'
+  },
+  {
+    icon: 'lock',
+    question: 'Will my business data remain private?',
+    answer:
+      'Yes. I work inside accounts and systems you control, request only the access the workflow needs, and can run everything on your own servers when sensitive data should never leave your business.'
+  },
+  {
+    icon: 'key',
+    question: 'What access will you need?',
+    answer:
+      'Usually a test account, sample records and limited access to the tools being connected. We agree on access before the build, and your real passwords stay in your own password manager.'
+  },
+  {
+    icon: 'handshake',
+    question: 'Who owns and maintains the automation?',
+    answer:
+      'You do. The finished workflow runs in your accounts and includes documentation, a recorded handover and clear instructions for the person who maintains it next.'
+  },
+  {
+    icon: 'bell',
+    question: 'What happens if a workflow fails?',
+    answer:
+      'Important workflows alert you when something fails, retry safely without creating duplicates, and pause for a person to check anything where a wrong decision would be costly. Problems are flagged, never hidden.'
+  },
+  {
+    icon: 'tools',
+    question: 'Which platform will you build on?',
+    answer:
+      'Usually n8n: it can run on your own servers for sensitive data, handles processes with many decisions and custom steps, and does not charge per task as volume grows. Zapier suits simple handoffs between familiar apps, especially if your team already uses it. Make fits processes with several routes that move larger amounts of data. GoHighLevel is the choice when your customer list, sales tracking and marketing campaigns are the centre of the work. I recommend one after the audit, based on your tools, volume and who maintains it afterwards.'
+  },
+  {
+    icon: 'clock',
+    question: 'How long does a typical project take?',
+    answer:
+      'A focused workflow usually takes one to four weeks after the process and access are clear. The Automation Audit takes one week and gives you a prioritised plan before you commit to a build.'
+  }
+]

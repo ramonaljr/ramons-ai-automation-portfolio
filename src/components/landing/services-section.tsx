@@ -169,7 +169,7 @@ export function ServicesSection() {
               Describe the process that eats your week and I will tell you where it fits.
             </p>
           </div>
-          <Cta href='#contact'>Book a workflow audit</Cta>
+          <Cta href='#contact'>Book a free call</Cta>
         </div>
 
         {/* Platforms used to be a section of their own, with four cards of

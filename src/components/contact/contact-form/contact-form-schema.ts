@@ -4,7 +4,7 @@ import { SERVICES } from '@/lib/portfolio'
 
 /** Built from SERVICES, so a renamed service cannot leave the dropdown stale. */
 export const SERVICE_OPTIONS = [
-  'Workflow Audit (30 min, free)',
+  'Free 30-minute call',
   ...SERVICES.map(service => service.title),
   'Something else'
 ]

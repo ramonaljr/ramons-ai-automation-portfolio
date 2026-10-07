@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { manilaDateKey, MAX_BOOKING_DAYS } from '@/lib/booking-policy'
+import { formatSlotLocal, isManilaClock, manilaDateKey, MAX_BOOKING_DAYS, slotInstant } from '@/lib/booking-policy'
 
 import { PROFILE } from '@/lib/portfolio'
 import { SectionIntro } from '@/components/landing/section-intro'
@@ -113,6 +113,35 @@ export function ContactSection() {
   const [nextOpening, setNextOpening] = useState<{ date: string; time: string } | null>(null)
 
   const [slots, setSlots] = useState<Slot[] | null>(null)
+
+  /**
+   * The visitor's time zone, read on the client. Slots are Manila times, which
+   * left a visitor in New York converting 13:00 UTC+8 in their head; every
+   * slot is shown in their own time instead, and booked as the Manila slot it
+   * is. Null until mounted, and for visitors already on Manila time.
+   */
+  const [zone, setZone] = useState<string | null>(null)
+
+  useEffect(() => {
+    const local = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!isManilaClock(new Date())) setZone(local || 'your time zone')
+  }, [])
+
+  /**
+   * A Manila slot in the visitor's own time, always with their weekday: the
+   * same Manila day can span two of theirs, and a bare "1:00 AM" after a run
+   * of evening slots hides that the day has changed.
+   */
+  const localTime = (date: string, slot: string) => {
+    if (!zone) return slot
+
+    const at = slotInstant(date, slot)
+
+    return `${at.toLocaleDateString(undefined, { weekday: 'short' })} ${formatSlotLocal(date, slot, false)}`
+  }
+
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [slotsError, setSlotsError] = useState(false)
 
@@ -230,8 +259,7 @@ export function ContactSection() {
 
   latest?.setDate(latest.getDate() + MAX_BOOKING_DAYS)
 
-  const atLatestMonth =
-    !!latest && !!cursor && cursor.y === latest.getFullYear() && cursor.m === latest.getMonth()
+  const atLatestMonth = !!latest && !!cursor && cursor.y === latest.getFullYear() && cursor.m === latest.getMonth()
 
   const ready = picked && time
 
@@ -240,15 +268,17 @@ export function ContactSection() {
   // ever set by a click.
   const slotLabel =
     picked && time
-      ? `${new Date(`${picked}T00:00:00`).toLocaleDateString('en-GB', {
-          weekday: 'short',
-          day: 'numeric',
-          month: 'short'
-        })}, ${time}`
+      ? zone
+        ? formatSlotLocal(picked, time)
+        : `${new Date(`${picked}T00:00:00`).toLocaleDateString('en-GB', {
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short'
+          })}, ${time}`
       : ''
 
   const bookHref = ready
-    ? `/contact?date=${encodeURIComponent(picked)}&time=${encodeURIComponent(time)}&topic=${encodeURIComponent('Workflow Audit')}`
+    ? `/contact?date=${encodeURIComponent(picked)}&time=${encodeURIComponent(time)}&topic=${encodeURIComponent('Free 30-minute call')}`
     : '/contact'
 
   return (
@@ -259,8 +289,8 @@ export function ContactSection() {
       <div className={CONTAINER}>
         <SectionIntro
           tag='CONTACT'
-          title={<>Book a workflow audit.</>}
-          blurb='Thirty minutes, no charge. Bring the process that eats your week and I will tell you whether it is worth automating, and on which platform.'
+          title={<>Book a free 30-minute call.</>}
+          blurb='No charge, no deck. Bring the process that eats your week and I will tell you whether it is worth automating, and on which platform.'
         />
 
         {/* What happens after the click, so the booking is not a leap. */}
@@ -290,10 +320,11 @@ export function ContactSection() {
                   setTime(nextOpening.time)
                 }}
               >
-                {new Date(`${nextOpening.date}T00:00:00`).toLocaleDateString('en-GB', { weekday: 'short' })}{' '}
-                {nextOpening.time}
+                {zone
+                  ? formatSlotLocal(nextOpening.date, nextOpening.time)
+                  : `${new Date(`${nextOpening.date}T00:00:00`).toLocaleDateString('en-GB', { weekday: 'short' })} ${nextOpening.time}`}
               </button>{' '}
-              (Manila time)
+              {zone ? '(your time)' : '(Manila time)'}
             </>
           ) : (
             <>Calls run Monday to Friday, 9:00–11:00 and 13:00–17:00 Manila time.</>
@@ -353,7 +384,7 @@ export function ContactSection() {
                 </span>
                 <div>
                   <p className='eyebrow'>AVAILABILITY</p>
-                  <p className='text-ink-2 mt-1 text-[14px]'>Open for workflow audits &amp; custom builds</p>
+                  <p className='text-ink-2 mt-1 text-[14px]'>Open for new projects &amp; custom builds</p>
                 </div>
               </div>
 
@@ -399,7 +430,10 @@ export function ContactSection() {
                   Book a slot
                 </h3>
                 <p className='text-ink-2 mt-1.5 text-[14px]'>
-                  Thirty minutes, free. All times Philippine time (UTC+8).
+                  Thirty minutes, free.{' '}
+                  {zone
+                    ? `Times shown in your time zone (${zone}); dates follow the Manila calendar.`
+                    : 'All times Philippine time (UTC+8).'}
                 </p>
               </div>
               <span className='border-rule text-ink-2 hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border sm:flex'>
@@ -516,7 +550,7 @@ export function ContactSection() {
                       type='button'
                       disabled={!s.available}
                       aria-pressed={time === s.time}
-                      aria-label={s.available ? s.time : `${s.time} — unavailable`}
+                      aria-label={`${localTime(picked, s.time)}${zone ? ` your time (${s.time} Manila)` : ''}${s.available ? '' : ' — unavailable'}`}
                       onClick={() => setTime(s.time)}
                       className={`rounded-lg border px-4 py-2.5 text-[14px] tabular-nums transition-all ${
                         time === s.time
@@ -526,7 +560,7 @@ export function ContactSection() {
                             : 'border-rule text-ink-4 decoration-ink/25 cursor-default line-through'
                       }`}
                     >
-                      {s.time}
+                      {localTime(picked, s.time)}
                     </button>
                   )
                 })

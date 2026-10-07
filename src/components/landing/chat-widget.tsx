@@ -156,7 +156,7 @@ export function ChatWidget() {
         {
           id: nextId.current++,
           role: 'bot',
-          text: `I can't reach my backend right now. Email ${PROFILE.email} or book a workflow audit from the contact section and Ramon will pick it up directly.`
+          text: `I can't reach my backend right now. Email ${PROFILE.email} or book a free call from the contact section and Ramon will pick it up directly.`
         }
       ])
     } finally {

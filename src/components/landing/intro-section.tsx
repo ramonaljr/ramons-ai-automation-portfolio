@@ -158,7 +158,7 @@ export function IntroSection() {
             </div>
 
             {/* ── CV + socials ──────────────────────────────────────────────
-                No "Book a workflow audit" here: it already sits in the nav,
+                No "Book a free call" here: it already sits in the nav,
                 the hero, Services, pricing and Contact, and About now leads
                 into the career history rather than out to a form. */}
             <div className='mt-10 flex flex-wrap items-center gap-4' style={reveal(300)}>

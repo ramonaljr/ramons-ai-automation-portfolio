@@ -65,11 +65,13 @@ const satoshi = localFont({
 export const metadata: Metadata = {
   title: {
     template: '%s - Ramon Vallejera Jr.',
-    default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
+    default: 'AI Automation Specialist | n8n, Zapier & Make — Ramon Vallejera'
   },
   description:
-    'Production automation on n8n, Zapier, Make and GoHighLevel — AI agents, LLM integrations and RAG systems that take manual work off your team’s desk.',
+    'I automate data entry, lead follow-up, invoices and reporting with n8n, Zapier, Make and AI. Built by a former accountant with an MBA. Free 30-minute call.',
   robots: 'index,follow',
+
+  // Search engines ignore this list; it stays for the few tools that read it.
   keywords: [
     'AI Automation Specialist',
     'n8n developer',
@@ -133,10 +135,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: {
       template: '%s - Ramon Vallejera Jr.',
-      default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
+      default: 'AI Automation Specialist | n8n, Zapier & Make — Ramon Vallejera'
     },
     description:
-      'Production automation on n8n, Zapier, Make and GoHighLevel — AI agents, LLM integrations and RAG systems that take manual work off your team’s desk.',
+      'I automate data entry, lead follow-up, invoices and reporting with n8n, Zapier, Make and AI. Built by a former accountant with an MBA. Free 30-minute call.',
     type: 'website',
     siteName: 'Ramon A. Vallejera, Jr.',
     url: SITE_URL,
@@ -154,10 +156,10 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: {
       template: '%s - Ramon Vallejera Jr.',
-      default: 'Ramon A. Vallejera, Jr. — AI Automation Specialist'
+      default: 'AI Automation Specialist | n8n, Zapier & Make — Ramon Vallejera'
     },
     description:
-      'Production automation on n8n, Zapier, Make and GoHighLevel — AI agents, LLM integrations and RAG systems that take manual work off your team’s desk.',
+      'I automate data entry, lead follow-up, invoices and reporting with n8n, Zapier, Make and AI. Built by a former accountant with an MBA. Free 30-minute call.',
     images: ['/images/og-image-v2.jpg']
   }
 }
