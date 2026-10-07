@@ -15,6 +15,11 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from
  * Nothing here knows about any particular workflow. Order comes from each
  * element's horizontal position, so a new canvas animates correctly the moment
  * its SVG lands in /public, as long as it keeps the same three strokes.
+ *
+ * A canvas can also set its own pace: `data-t` (0 to 1) on an element places
+ * it in the run directly, for drawings that do not read left to right, such as
+ * a process map that wraps onto a second row and lights up its numbered step
+ * cards underneath; `data-span` on the <svg> sets the run's length in seconds.
  */
 
 const EDGE = '#6366f1'
@@ -63,6 +68,10 @@ function prepare(markup: string, suffix: string, label: string) {
  * and its dot grid, and the header text is furniture, so none of those move.
  */
 function choreograph(svg: SVGSVGElement) {
+  const span = svg.getAttribute('data-span')
+
+  if (span) svg.closest<HTMLElement>('.work-canvas')?.style.setProperty('--wc-span', `${span}s`)
+
   const drawn = [...svg.children].filter(el => el.tagName.toLowerCase() !== 'defs').slice(2)
 
   const stage = drawn.filter(
@@ -73,7 +82,7 @@ function choreograph(svg: SVGSVGElement) {
 
   const lefts = stage.map(el => el.getBBox().x)
   const first = Math.min(...lefts)
-  const span = Math.max(1, Math.max(...lefts) - first)
+  const range = Math.max(1, Math.max(...lefts) - first)
 
   stage.forEach((el, index) => {
     const tag = el.tagName.toLowerCase()
@@ -85,7 +94,9 @@ function choreograph(svg: SVGSVGElement) {
     // A normalised length lets one dash rule draw every edge, whatever its size.
     if (role === 'edge') el.setAttribute('pathLength', '1')
 
-    el.style.setProperty('--t', ((lefts[index] - first) / span).toFixed(3))
+    const placed = el.getAttribute('data-t')
+
+    el.style.setProperty('--t', placed ?? ((lefts[index] - first) / range).toFixed(3))
   })
 }
 

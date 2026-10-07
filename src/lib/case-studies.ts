@@ -64,6 +64,12 @@ export type CaseStudyMetadata = {
   /** Names `workflowImage` when it is not the platform canvas, e.g. "Process map". */
   canvasLabel?: string
 
+  /**
+   * A canvas drawn light, like a process map, keeps its own colours instead
+   * of taking the dark editor look. The SVG carries `data-light` to match.
+   */
+  canvasTheme?: 'light'
+
   /** One-line trigger-to-outcome summary. */
   logicSummary?: string
   keyOutcome?: { value: string; label: string }

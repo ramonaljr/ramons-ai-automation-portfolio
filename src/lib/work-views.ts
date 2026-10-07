@@ -39,6 +39,9 @@ export type WorkView = {
   label: string
   src: string
   alt: string
+
+  /** A canvas drawn light, whose thumbnail should not be inverted. */
+  light?: boolean
 }
 
 /**
@@ -65,6 +68,7 @@ export function workViews(cs: CaseStudyMetadata): WorkView[] {
       ? {
           key: cs.workflowImage.endsWith('.svg') ? 'canvas' : 'map',
           label: cs.canvasLabel ?? `${platform} canvas`,
+          light: cs.canvasTheme === 'light',
           src: cs.workflowImage,
           alt: `${platform} workflow canvas for ${name}`
         }

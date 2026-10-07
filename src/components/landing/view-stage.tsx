@@ -101,6 +101,7 @@ export function ViewStage({
               type='button'
               className='view-tab'
               data-view={item.key}
+              data-light={item.light || undefined}
               aria-pressed={itemIndex === index}
               aria-label={`Show ${item.label}`}
               onClick={event => choose(event, itemIndex)}

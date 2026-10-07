@@ -3264,7 +3264,7 @@ body::after {
 }
 
 .work-canvas-art,
-.work-canvas-art svg {
+.work-canvas-art > svg {
   display: block;
   width: 100%;
   height: 100%;
@@ -3276,22 +3276,22 @@ body::after {
   object-fit: contain;
 }
 
-.work-canvas svg > rect:first-of-type {
+.work-canvas-art > svg:not([data-light]) > rect:first-of-type {
   fill: var(--wc-ground);
 }
 
-.work-canvas svg pattern circle {
+.work-canvas-art > svg:not([data-light]) pattern circle {
   fill: var(--wc-ink);
   fill-opacity: 0.07;
 }
 
-.work-canvas svg g[filter] > rect {
+.work-canvas-art > svg:not([data-light]) g[filter] > rect {
   fill: var(--wc-node);
   stroke: var(--wc-ink);
   stroke-opacity: 0.12;
 }
 
-.work-canvas svg text {
+.work-canvas-art > svg:not([data-light]) text {
   fill: var(--wc-ink);
 }
 
@@ -3300,6 +3300,18 @@ body::after {
 .work-canvas svg [data-wc='edge'] {
   stroke: color-mix(in oklch, var(--work-tone, var(--accent)) 62%, white);
   stroke-opacity: 0.9;
+}
+
+/* A light canvas (a process map) keeps its own colours: only the ground and
+   the status chip follow it, and edges take the project's tone as drawn. */
+.work-canvas:has(svg[data-light]) {
+  --wc-ground: #f5f5f8;
+  --wc-ink: oklch(0.25 0.02 60);
+}
+
+.work-canvas svg[data-light] [data-wc='edge'] {
+  stroke: var(--work-tone, var(--accent));
+  stroke-opacity: 0.75;
 }
 
 /* Resting before its first run: empty ground, nothing drawn yet. */
@@ -3451,6 +3463,10 @@ body::after {
    rather than a pale ground under it. */
 .work-card-frame[data-view='canvas'] {
   background: oklch(0.205 0.012 55);
+}
+
+.work-card-frame[data-view='canvas']:has(svg[data-light]) {
+  background: #f5f5f8;
 }
 
 /* Thumbnails of the canvas match the dark canvas they switch to. Inverting
@@ -6043,6 +6059,10 @@ div#experience.about-journey {
   background: oklch(0.205 0.012 55);
 }
 
+.work-dialog-frame:has(.view-stage-layer[style*='z-index: 2'] .work-canvas svg[data-light]) {
+  background: #f5f5f8;
+}
+
 .view-tabs {
   position: absolute;
   left: 50%;
@@ -6080,7 +6100,7 @@ div#experience.about-journey {
 
 /* Canvas thumbnails match the dark canvas they switch to: inverting flips the
    ground, and the half-turn brings the node colours back to their hues. */
-.view-tab[data-view='canvas'] img {
+.view-tab[data-view='canvas']:not([data-light]) img {
   filter: invert(0.9) hue-rotate(180deg) saturate(1.25);
 }
 
