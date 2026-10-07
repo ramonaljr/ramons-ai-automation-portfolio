@@ -62,44 +62,44 @@ export const SERVICES: Service[] = [
     title: 'n8n AI Agents & Workflow Automation',
     short: 'Workflow Automation',
     duration: '1 to 3 weeks',
-    tools: ['n8n (Cloud & Self-Hosted)', 'Webhooks', 'Triggers', 'Error Handling'],
+    tools: ['n8n (cloud or your own server)', 'Instant triggers', 'Scheduled runs', 'Error alerts'],
     description:
-      'Production-grade n8n automations and autonomous AI agents that run around the clock, connect your apps, and carry multi-step workflows through without anyone driving them.',
+      'Reliable n8n automations and AI assistants that run around the clock, connect your apps, and carry multi-step work through without anyone pushing it along.',
     detail:
-      'n8n is where most of my production work lives. It handles the cases Zapier cannot: branching logic that depends on the data, custom code inside a step, self-hosting when the data cannot leave your infrastructure, and unlimited steps without per-task billing. I build the workflow, run it against your real edge cases, wire up error branches and alerting, and hand it over documented so your team can extend it.',
+      'n8n is where most of my work is built. It handles what simpler tools like Zapier cannot: decisions that depend on the data, custom steps, running on your own server when data must not leave your business, and unlimited steps without paying per task. I build the workflow, test it against the unusual cases your business really sees, add error handling and alerts, and hand it over documented so your team can extend it.',
     includes: [
-      'Workflow architecture and node design',
-      'Cloud or self-hosted deployment',
-      'AI agent steps with tool calling',
-      'Try/catch error branches on every path',
-      'Failure alerting to Slack, email or Telegram',
-      'Credential and environment setup'
+      'Workflow design, step by step',
+      'Set up in n8n cloud or on your own server',
+      'AI steps that can use your other tools',
+      'A backup plan for every step that can fail',
+      'Failure alerts to Slack, email or Telegram',
+      'Secure setup of logins and settings'
     ],
     deliverables: [
       {
         title: 'The workflow',
-        desc: 'Built, tested against your real data, and running in your own n8n instance — not mine.'
+        desc: 'Built, tested with your real data, and running in your own n8n account — not mine.'
       },
       {
-        title: 'Exported JSON',
-        desc: 'The full workflow export, so you are never locked to me or to a single instance.'
+        title: 'Backup copy',
+        desc: 'A full export of the workflow, so you are never tied to me or to one account.'
       },
       {
-        title: 'Runbook',
-        desc: 'What each branch does, what the failure modes are, and how to recover from each one.'
+        title: 'Instruction guide',
+        desc: 'What each part does, what can go wrong, and how to recover from each problem.'
       },
       {
         title: 'Handover walkthrough',
-        desc: 'A recorded session covering how to operate, monitor and extend the workflow.'
+        desc: 'A recorded session showing how to run, check and extend the workflow.'
       }
     ],
     qualities: [
-      'Error handling designed before the happy path',
-      'Deterministic logic kept out of the LLM',
-      'Self-hosting supported end to end',
-      'No per-task billing surprises',
-      'Documented for the person who inherits it',
-      'Tested against malformed real-world inputs'
+      'Plans for errors before anything else',
+      'Fixed rules, not AI, for anything that must be exact',
+      'Can run entirely on your own server',
+      'No surprise per-task charges',
+      'Documented for whoever takes it over',
+      'Tested with messy real-world data'
     ]
   },
   {
@@ -107,138 +107,144 @@ export const SERVICES: Service[] = [
     title: 'End-to-End Business Process Automation',
     short: 'Process Automation',
     duration: '2 to 4 weeks',
-    tools: ['CRMs', 'Onboarding', 'Invoicing & AP/AR', 'Approval Flows'],
+    tools: ['CRMs', 'Onboarding', 'Invoices & payments', 'Approvals'],
     description:
-      'The repetitive bottlenecks come out of your business end to end — lead management, client onboarding, automated reporting, data validation, and multi-department approval flows.',
+      'The repetitive bottlenecks come out of your business from start to finish — lead management, client onboarding, automatic reports, data checks and approvals across departments.',
     detail:
-      'Most manual work is not one task, it is a chain of them: a form arrives, someone checks it, someone else approves it, a record gets created in three systems, a folder gets made, an email goes out. I map that whole chain first — including the exceptions everyone handles from memory — then automate it end to end. Ten years in finance operations means I understand approval thresholds, segregation of duties and audit trails before I touch a node.',
+      'Most manual work is not one task, it is a chain of them: a form arrives, someone checks it, someone else approves it, a record gets created in three systems, a folder gets made, an email goes out. I map that whole chain first — including the unusual cases everyone handles from memory — then automate it from start to finish. Ten years in finance operations means I understand approval limits, keeping duties separate so no one person controls a payment, and keeping a record of every step, before I build anything.',
     includes: [
-      'Process and SOP mapping workshops',
-      'Exception and edge-case cataloguing',
-      'Multi-department approval routing',
-      'Automated document and folder provisioning',
-      'Data validation between systems of record',
-      'Human-in-the-loop gates on high-value steps'
+      'Workshops to map how the work is done today',
+      'A list of every unusual case and exception',
+      'Approvals routed across departments',
+      'Documents and folders created automatically',
+      'Data checked between your systems',
+      'A person signs off on high-value steps'
     ],
     deliverables: [
       {
         title: 'Process map',
-        desc: 'The current state documented, including the exceptions that only live in people heads.'
+        desc: 'How the work runs today, written down, including the exceptions that only live in people\u2019s heads.'
       },
-      { title: 'Automated pipeline', desc: 'The chain running end to end, with approvals routed to the right people.' },
       {
-        title: 'Audit trail',
-        desc: 'Every run logged, so finance and compliance can reconstruct what happened and when.'
+        title: 'Automated process',
+        desc: 'The chain running from start to finish, with approvals sent to the right people.'
       },
-      { title: 'Exception queue', desc: 'A place for the cases the automation should not decide alone, with alerting.' }
+      {
+        title: 'Activity record',
+        desc: 'Every run is recorded, so finance and compliance can see what happened and when.'
+      },
+      { title: 'Review list', desc: 'A place for the cases the automation should not decide alone, with alerts.' }
     ],
     qualities: [
       'Accounting and approval rules mapped first',
-      'Segregation of duties respected',
-      'Every run leaves an audit trail',
-      'Exceptions surfaced, never silently dropped',
-      'Built to survive staff turnover',
-      'Rollback path for every automated write'
+      'No one person controls a payment alone',
+      'Every run leaves a record',
+      'Unusual cases flagged, never silently dropped',
+      'Keeps working when staff change',
+      'Every automatic change can be undone'
     ]
   },
   {
     slug: 'llm-rag-integrations',
-    title: 'Claude, OpenAI & LLM Integrations (RAG)',
+    title: 'Claude & OpenAI for Documents and Company Knowledge',
     short: 'AI Document Answers',
     duration: '1 to 3 weeks',
-    tools: ['Claude', 'OpenAI', 'Prompt Engineering', 'RAG'],
+    tools: ['Claude', 'OpenAI', 'Prompt writing', 'Document search'],
     description:
-      'Frontier LLM intelligence inside your daily operations: incoming email classified, structured data pulled out of messy documents and PDFs, and a secure internal knowledge base your team can question.',
+      'Leading AI models inside your daily operations: incoming email sorted, details pulled out of messy documents and PDFs, and a secure company knowledge base your team can ask questions.',
     detail:
-      'LLMs are excellent at reading messy input and terrible at arithmetic you depend on. I use them for exactly the first job: pulling structured data out of PDFs, scanned invoices, emails and contracts, and answering questions over your own documents with citations. Numbers, balances and routing decisions stay in deterministic code. Every extraction enforces a JSON schema and carries a confidence score, so low-confidence cases go to a human instead of into your ledger.',
+      'AI models are excellent at reading messy information and unreliable at maths you depend on. I use them for the first job: pulling the details out of PDFs, scanned invoices, emails and contracts, and answering questions from your own documents with links to the source. Numbers, balances and routing decisions stay in fixed rules. Every extraction must fit a set format and comes with a confidence score, so anything uncertain goes to a person instead of into your books.',
     includes: [
-      'Document extraction with enforced JSON schemas',
-      'Vector indexing for retrieval over your own docs',
-      'Cited answers, so responses are checkable',
-      'Confidence scoring and low-confidence routing',
-      'Prompt chains version-controlled, not ad hoc',
-      'Model choice matched to cost and accuracy needs'
+      'Details pulled from documents into a fixed format',
+      'Your documents indexed so they can be searched by meaning',
+      'Answers with links to the source, so they can be checked',
+      'Confidence scores, with unsure cases sent to a person',
+      'AI instructions saved and versioned, not improvised',
+      'AI model chosen to balance cost and accuracy'
     ],
     deliverables: [
       {
-        title: 'Extraction pipeline',
-        desc: 'Documents in, validated structured data out, with confidence attached to every field.'
+        title: 'Document reader',
+        desc: 'Documents in, checked and organised data out, with a confidence score on every field.'
       },
-      { title: 'Knowledge base', desc: 'Your documentation indexed and queryable, with citations back to the source.' },
-      { title: 'Prompt library', desc: 'The prompts and schemas as versioned artefacts you can review and change.' },
+      { title: 'Knowledge base', desc: 'Your documents indexed and searchable, with links back to the source.' },
       {
-        title: 'Evaluation set',
-        desc: 'A held-out set of real documents used to measure accuracy before and after changes.'
+        title: 'AI instruction library',
+        desc: 'The AI instructions and formats, saved as versions you can review and change.'
+      },
+      {
+        title: 'Accuracy test set',
+        desc: 'A set of real documents kept aside to measure accuracy before and after any change.'
       }
     ],
     qualities: [
-      'Schema-enforced output, never free text into a database',
-      'Confidence thresholds tuned to your risk appetite',
-      'Citations on every retrieved answer',
-      'Deterministic math kept out of the model',
-      'Costs measured per document, not guessed',
-      'Fallbacks for low-resolution and handwritten inputs'
+      'AI output always fits a set format before it is saved',
+      'Confidence limits set to how much risk you accept',
+      'A source link on every answer',
+      'Calculations done by fixed rules, not the AI',
+      'Cost measured per document, not guessed',
+      'Backup handling for blurry and handwritten documents'
     ]
   },
   {
     slug: 'saas-api-integrations',
-    title: 'Cross-Platform SaaS & API Integrations',
+    title: 'App Integrations: Your Tools Kept in Sync',
     short: 'App Integrations',
     duration: '1 to 2 weeks',
-    tools: ['Google Workspace', 'Airtable', 'Notion', 'Slack & Telegram', 'REST APIs'],
+    tools: ['Google Workspace', 'Airtable', 'Notion', 'Slack & Telegram', 'Custom app connections'],
     description:
-      'Your scattered tools behave as one real-time system — clean data moving automatically between spreadsheets, databases, and the channels your team actually works in.',
+      'Your scattered tools work as one live system — clean data moving automatically between spreadsheets, databases, and the channels your team actually uses.',
     detail:
-      'Data drifts the moment it lives in two places. I connect your tools so one system is authoritative and the rest follow it, rather than letting three spreadsheets disagree by Friday. That means idempotent writes so retries do not duplicate records, keyed matching so the same customer is the same customer everywhere, and reconciliation jobs that catch drift the real-time path missed.',
+      'Data falls out of step the moment it lives in two places. I connect your tools so one system holds the master copy and the rest follow it, instead of three spreadsheets disagreeing by Friday. That means retries that never create duplicate records, matching on a unique ID so the same customer is the same customer everywhere, and a scheduled check that catches anything the live sync missed.',
     includes: [
-      'One authoritative source of truth per entity',
-      'Idempotent writes that survive retries',
-      'Keyed matching to prevent duplicate records',
-      'Rate limit handling with backoff',
-      'Nightly reconciliation and drift reporting',
-      'Webhook and polling triggers as appropriate'
+      'One master record for each customer, order or item',
+      'Safe retries that never create duplicates',
+      'Matching that keeps one record per customer',
+      'App usage limits handled by slowing down and retrying',
+      'A nightly check for records that fall out of step',
+      'Instant or scheduled updates, whichever fits'
     ],
     deliverables: [
       {
-        title: 'Integration map',
-        desc: 'Which system owns which field, and which direction each piece of data flows.'
+        title: 'Connection map',
+        desc: 'Which system owns which piece of information, and which way it flows.'
       },
-      { title: 'Sync pipelines', desc: 'Running connections between your tools, with retry and backoff handled.' },
+      { title: 'Live connections', desc: 'Running connections between your tools, with retries handled.' },
       {
-        title: 'Reconciliation job',
-        desc: 'A scheduled audit that reports drift rather than letting it accumulate silently.'
+        title: 'Nightly check',
+        desc: 'A scheduled check that reports differences instead of letting them build up unnoticed.'
       },
       {
-        title: 'Schema documentation',
-        desc: 'Field mappings written down, so the next change does not start from scratch.'
+        title: 'Field guide',
+        desc: 'Which field matches which in each app, written down so the next change does not start from scratch.'
       }
     ],
     qualities: [
-      'One system of record, never three',
+      'One master record, never three',
       'Retries cannot create duplicates',
-      'API rate limits handled, not hoped around',
-      'Drift detected by a scheduled audit',
-      'Field mappings documented, not tribal',
-      'Works with REST APIs when no connector exists'
+      'App usage limits handled, not hoped around',
+      'Differences caught by a scheduled check',
+      'Field matches written down, not kept in someone\u2019s head',
+      'Works even when no ready-made connector exists'
     ]
   },
   {
     slug: 'ai-voice-agents',
-    title: 'Autonomous AI Voice & Customer Agents',
+    title: 'AI Phone Receptionists & Customer Chat',
     short: 'AI Phone Receptionist',
     duration: '2 to 3 weeks',
     tools: ['VAPI', 'Retell AI', 'ElevenLabs', 'Cal.com', 'WhatsApp & Twilio'],
     description:
-      'Human-sounding AI voice receptionists and chatbots that answer customer questions, qualify inbound prospects, and book confirmed calendar appointments around the clock.',
+      'Natural-sounding AI phone receptionists and chatbots that answer customer questions, screen new enquiries, and book confirmed appointments around the clock.',
     detail:
-      'A voice agent is judged on latency and on knowing when to stop. I build receptionists that answer in under a second, follow a defined qualification script, check real calendar availability, and book a confirmed slot — then hand off to a human the moment the conversation leaves the script. Every call is transcribed and logged, so you can review what the agent actually said rather than trusting that it behaved.',
+      'A voice agent is judged on how fast it replies and on knowing when to stop. I build receptionists that answer in under a second, follow a set list of screening questions, check real calendar availability, and book a confirmed time — then hand over to a person the moment the conversation goes beyond the script. Every call is transcribed and saved, so you can check what the agent actually said rather than trusting that it behaved.',
     includes: [
-      'Low-latency voice pipeline configuration',
-      'Qualification script and conversation design',
+      'Fast-response voice setup',
+      'Screening questions and conversation design',
       'Live calendar availability and booking',
-      'Human handoff on out-of-scope requests',
-      'Call transcription and logging',
-      'SMS or WhatsApp follow-up after the call'
+      'Hand-off to a person for anything off script',
+      'Every call transcribed and saved',
+      'Text or WhatsApp follow-up after the call'
     ],
     deliverables: [
       {
@@ -247,18 +253,18 @@ export const SERVICES: Service[] = [
       },
       {
         title: 'Conversation design',
-        desc: 'The script, the branches, and the explicit points where it hands off to a person.'
+        desc: 'The script, the branches, and the exact points where it hands off to a person.'
       },
-      { title: 'Call log', desc: 'Every call transcribed and stored, so you can audit what was actually said.' },
-      { title: 'Escalation rules', desc: 'Defined conditions under which the agent stops and a human takes over.' }
+      { title: 'Call log', desc: 'Every call transcribed and stored, so you can check what was actually said.' },
+      { title: 'Hand-off rules', desc: 'Defined situations where the agent stops and a person takes over.' }
     ],
     qualities: [
-      'Sub-second response latency targeted',
+      'Replies in under a second',
       'Knows the limits of its own script',
-      'Books only into genuinely free slots',
+      'Books only into genuinely free times',
       'Every call transcribed and reviewable',
-      'Explicit human handoff, not a dead end',
-      'Tested against interruptions and accents'
+      'A clear hand-off to a person, not a dead end',
+      'Tested with interruptions and accents'
     ]
   }
 ]

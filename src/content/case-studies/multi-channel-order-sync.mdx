@@ -1,7 +1,7 @@
 ---
 slug: 'multi-channel-order-sync'
 title: 'Orders and Stock Kept in Sync Across Every Sales Channel'
-description: 'Built a Make scenario that consolidates orders from three sales channels, reconciles stock across warehouses, and flags oversells before they ship — processing 4,000+ orders a week.'
+description: 'Brings orders from three sales channels together, keeps one stock count across warehouses and flags overselling before anything ships, handling 4,000+ orders a week. Built in Make.'
 organisation: 'E-commerce Operations'
 role: 'AI Automation Specialist'
 duration: '3 Weeks'
@@ -21,16 +21,16 @@ categories: ['Operations', 'Commerce']
 speed: '4,000+/wk'
 speedKind: 'throughput'
 workflowImage: '/images/workflows/multi-channel-order-sync.svg'
-logicSummary: 'Three channel triggers → normalise → iterate line items → transactional stock decrement → write-back.'
+logicSummary: 'New order on any channel → put into one format → each item handled in turn → stock count updated → every store updated.'
 keyOutcome:
   value: '0'
   label: 'Stock Mismatches'
 integrations: ['Make', 'Shopify', 'Amazon', 'PostgreSQL', 'Slack']
-problem: 'Three sales channels each kept their own stock count, reconciled by CSV export the next morning. Oversells were discovered only when a warehouse pick failed, and staff lost around 15 hours a week to manual reconciliation.'
-solution: 'Built Make scenarios that normalise orders from Shopify, Amazon and a wholesale portal into one schema, explode them into line items with an Iterator, and decrement a single authoritative PostgreSQL stock table transactionally.'
+problem: 'Three sales channels each kept their own stock count, matched up from spreadsheet exports the next morning. Overselling was only discovered when the warehouse could not find the item, and staff lost around 15 hours a week fixing counts by hand.'
+solution: 'Built Make workflows that put orders from Shopify, Amazon and a wholesale portal into one format, handle each item on the order in turn, and update a single master stock count in a PostgreSQL database one sale at a time, so two sales can never claim the same item.'
 stepCount: 4
-impactHighlight: 'One authoritative stock figure across three channels, continuously.'
-impactHighlightDesc: 'Oversells are caught at order ingestion rather than at the shelf, and reconciliation stops being a daily manual job.'
+impactHighlight: 'One true stock figure across three channels, all the time.'
+impactHighlightDesc: 'Overselling is caught when the order comes in rather than at the shelf, and matching up stock stops being a daily manual job.'
 roi:
   - value: '0'
     label: 'Stock Mismatches'
@@ -38,13 +38,13 @@ roi:
     label: 'Saved Weekly'
   - value: '4,000+'
     label: 'Orders / Week'
-failsafeHeadline: 'Replayable by Design'
-failsafeDesc: 'Every normalised order is retained in staging, so a bad run is recovered by replaying a window rather than rebuilding state.'
+failsafeHeadline: 'Easy to Re-run'
+failsafeDesc: 'Every order is kept in a holding area, so if a run goes wrong it can simply be run again for that period instead of being fixed by hand.'
 failsafes:
-  - title: '1. Transactional Decrement'
-    desc: 'Two channels selling the last unit cannot both succeed; the loser routes to exceptions.'
-  - title: '2. Nightly Three-Way Audit'
-    desc: 'A scheduled reconciliation reports drift the real-time path missed.'
+  - title: '1. Last Item Protection'
+    desc: 'Two channels selling the last unit cannot both succeed; the second goes to a person to sort out.'
+  - title: '2. Nightly Stock Check'
+    desc: 'Each night all three channels are compared, and any difference the live sync missed is reported.'
 ---
 
 {/*

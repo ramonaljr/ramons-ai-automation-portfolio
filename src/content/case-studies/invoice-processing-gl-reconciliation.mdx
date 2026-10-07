@@ -1,7 +1,7 @@
 ---
 slug: 'invoice-processing-gl-reconciliation'
 title: 'Invoices Read, Checked and Prepared for Your Books'
-description: 'Architected an autonomous invoice extraction and accounting reconciliation workflow in n8n with Claude, eliminating 25+ hours of manual AP data entry per week.'
+description: 'Reads incoming invoices with Claude, checks them against purchase orders and prepares accounting entries in QuickBooks, removing 25+ hours a week of manual typing. Built in n8n.'
 organisation: 'Financial Operations'
 role: 'AI Automation Specialist'
 duration: '3 Weeks'
@@ -21,30 +21,30 @@ categories: ['AI Agents', 'Finance Ops']
 featured: true
 speed: '< 30 SEC'
 workflowImage: '/images/workflows/invoice-processing-gl-reconciliation.svg'
-logicSummary: 'Email/Drive intake → Claude vision extraction → PO + tax validation → GL draft to QuickBooks.'
+logicSummary: 'Invoice arrives by email or Drive → Claude reads it → checked against the purchase order and tax rules → draft entry in QuickBooks.'
 keyOutcome:
   value: '92%'
   label: 'Less Processing Time'
 integrations: ['n8n', 'Claude', 'QuickBooks', 'Google Drive']
-problem: 'AP staff spent over 25 hours a week cross-referencing 200+ vendor invoices per week against purchase orders, calculating withholding tax, and typing GL entries by hand — causing errors and delayed month-end closes.'
-solution: 'Built a self-hosted n8n pipeline that ingests invoices from Gmail and Drive, extracts line items with Claude vision under an enforced JSON schema, validates against active POs, and pushes draft GL entries to QuickBooks with human review on variances.'
+problem: 'The accounts payable team spent over 25 hours a week checking 200+ supplier invoices against purchase orders, calculating withholding tax and typing accounting entries by hand, which caused errors and delayed the month-end accounts.'
+solution: 'Built an n8n workflow, on a server the business controls, that collects invoices from Gmail and Drive, has Claude read every line into a fixed format, checks them against open purchase orders and creates draft entries in QuickBooks. Anything that does not match goes to a person.'
 stepCount: 4
 impactHighlight: 'Cuts invoice processing from 25 hours a week to under 2.'
-impactHighlightDesc: 'Every invoice is extracted, validated against the ledger and drafted to GL within 30 seconds of arriving.'
+impactHighlightDesc: 'Every invoice is read, checked and drafted into the books within 30 seconds of arriving.'
 roi:
   - value: '92%'
     label: 'Less Processing Time'
   - value: '< 30 SEC'
     label: 'Per Invoice'
   - value: '0'
-    label: 'Entry Discrepancies'
-failsafeHeadline: 'Human-in-the-Loop on Every Variance'
-failsafeDesc: 'Nothing above threshold posts without a person approving it. Confidence scoring routes anything uncertain to review.'
+    label: 'Entry Errors'
+failsafeHeadline: 'A Person Approves Anything That Does Not Match'
+failsafeDesc: 'Nothing over the limit is posted without a person approving it. Anything the AI is unsure about goes to review.'
 failsafes:
-  - title: '1. Variance Gate'
-    desc: 'Anything over 2% or $1,000 stops for human approval before it reaches the ledger.'
-  - title: '2. Confidence Fallback'
-    desc: 'Low-resolution scans and handwritten vouchers divert to a manual queue instead of guessing.'
+  - title: '1. Mismatch Check'
+    desc: 'Any difference over 2% or $1,000 stops for approval before it reaches the books.'
+  - title: '2. Unclear Documents'
+    desc: 'Blurry scans and handwritten receipts go to a person instead of being guessed at.'
 ---
 
 ## Problem

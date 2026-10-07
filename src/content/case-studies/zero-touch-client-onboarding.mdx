@@ -1,7 +1,7 @@
 ---
 slug: 'zero-touch-client-onboarding'
 title: 'New Client Onboarding That Sets Itself Up'
-description: 'Automated the end-to-end client intake lifecycle connecting form triggers, dynamic agreement generation, Google Workspace folder provisioning, and CRM syncing in n8n.'
+description: 'When a new client fills in a form, their agreement, Google Drive folders, CRM record and team alert are all created automatically. Built in n8n.'
 organisation: 'Operations Automation'
 role: 'AI Automation Specialist'
 duration: '2 Weeks'
@@ -20,16 +20,16 @@ platform: 'n8n'
 categories: ['CRM & Leads', 'Operations']
 speed: '< 60 SEC'
 workflowImage: '/images/workflows/zero-touch-client-onboarding.svg'
-logicSummary: 'Form trigger → agreement generation → Drive provisioning → CRM sync → Telegram alert.'
+logicSummary: 'Form submitted → agreement drafted → Drive folders created → CRM record saved → Telegram alert.'
 keyOutcome:
   value: '0'
   label: 'Manual Handoffs'
 integrations: ['n8n', 'Google Workspace', 'Airtable', 'Telegram']
-problem: 'Client intake required someone to manually generate an agreement, create a Drive folder structure, copy details into the CRM, and notify the team — a chain that took hours and dropped steps under load.'
-solution: 'Automated the full intake lifecycle in n8n: a form submission generates a dynamic agreement, provisions the Google Workspace folder tree, writes the CRM record, and posts a briefed alert to Telegram.'
+problem: 'Bringing on a client meant someone had to write an agreement, create Drive folders, copy details into the CRM and tell the team, which took hours and missed steps when things got busy.'
+solution: 'Automated the whole sign-up in n8n: one form submission drafts the agreement, creates the Google Drive folders, saves the CRM record and posts a summary to Telegram.'
 stepCount: 4
-impactHighlight: 'Client intake completes end to end without a human touching it.'
-impactHighlightDesc: 'From form submission to provisioned folders, signed agreement and CRM record in under a minute.'
+impactHighlight: 'New clients are set up from start to finish without anyone lifting a finger.'
+impactHighlightDesc: 'From form to folders, signed agreement and CRM record in under a minute.'
 roi:
   - value: '0'
     label: 'Manual Handoffs'
@@ -37,13 +37,13 @@ roi:
     label: 'Intake to Ready'
   - value: '100%'
     label: 'Logged in CRM'
-failsafeHeadline: 'Idempotent Provisioning'
-failsafeDesc: 'Re-submissions and retries match on a stable key, so a client never ends up with duplicate folders or records.'
+failsafeHeadline: 'Never Creates Duplicates'
+failsafeDesc: 'If a client submits twice or a step is retried, the system recognises them by email address, so there are never duplicate folders or records.'
 failsafes:
-  - title: '1. Keyed Matching'
-    desc: 'Records are upserted on email, so retries update rather than duplicate.'
-  - title: '2. Partial-Failure Alert'
-    desc: 'If any step fails mid-chain the team is notified with exactly which step stopped.'
+  - title: '1. Matched by Email'
+    desc: 'Records are matched on email address, so a retry updates the record instead of copying it.'
+  - title: '2. Alert If a Step Fails'
+    desc: 'If any step fails partway, the team is told exactly which one stopped.'
 ---
 
 ## Problem

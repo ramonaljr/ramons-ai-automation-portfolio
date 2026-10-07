@@ -1,7 +1,7 @@
 ---
 slug: 'ai-voice-receptionist'
 title: 'AI Phone Receptionist That Answers Calls and Books Appointments'
-description: 'Engineered an ultra-low latency AI voice receptionist using VAPI, ElevenLabs, and n8n connected to Cal.com to handle inbound calls and book appointments 24/7.'
+description: 'An AI phone receptionist that answers calls in under a second, day or night, and books appointments straight into the calendar. Built with VAPI, ElevenLabs, n8n and Cal.com.'
 organisation: 'Voice AI & Inbound Sales'
 role: 'AI Voice Specialist'
 duration: '2 Weeks'
@@ -20,30 +20,30 @@ platform: 'n8n'
 categories: ['AI Agents', 'Voice']
 speed: '< 1 SEC'
 workflowImage: '/images/workflows/ai-voice-receptionist.svg'
-logicSummary: 'Inbound call → speech to text → qualification agent → live calendar check → confirmed booking.'
+logicSummary: 'Call comes in → speech turned into text → AI asks the screening questions → checks the calendar → books a confirmed time.'
 keyOutcome:
   value: '24/7'
   label: 'Call Coverage'
 integrations: ['VAPI', 'ElevenLabs', 'n8n', 'Cal.com', 'Twilio']
-problem: 'Inbound calls outside office hours went to voicemail and were rarely returned, so qualified prospects were lost simply because nobody picked up.'
-solution: 'Built an ultra-low-latency voice receptionist using VAPI and ElevenLabs, orchestrated in n8n, that qualifies the caller against a defined script, checks live Cal.com availability and books a confirmed slot.'
+problem: 'Calls outside office hours went to voicemail and were rarely returned, so good prospects were lost simply because nobody picked up.'
+solution: 'Built an AI phone receptionist with VAPI and ElevenLabs, run by n8n, that asks each caller a set of screening questions, checks real availability in Cal.com and books a confirmed time.'
 stepCount: 4
-impactHighlight: 'Answers every inbound call and books straight into a live calendar.'
-impactHighlightDesc: 'Sub-second response, real availability checks, and an explicit handoff to a human the moment the call leaves the script.'
+impactHighlight: 'Answers every call and books straight into a live calendar.'
+impactHighlightDesc: 'Replies in under a second, only offers times that are really free, and hands the call to a person the moment it goes beyond the script.'
 roi:
   - value: '24/7'
     label: 'Call Coverage'
   - value: '< 1 SEC'
-    label: 'Response Latency'
+    label: 'Response Time'
   - value: '100%'
     label: 'Calls Transcribed'
 failsafeHeadline: 'Knows When to Stop'
-failsafeDesc: 'The agent hands off to a person rather than improvising once a request falls outside its script.'
+failsafeDesc: 'The agent hands the call to a person rather than improvising once a request goes beyond its script.'
 failsafes:
-  - title: '1. Scope Handoff'
-    desc: 'Out-of-scope requests transfer to a human instead of being answered speculatively.'
-  - title: '2. Booking Verification'
-    desc: 'Slots are confirmed against live calendar state, so double-booking cannot occur.'
+  - title: '1. Hands Off When Unsure'
+    desc: 'Questions outside its script are passed to a person instead of guessed at.'
+  - title: '2. No Double Bookings'
+    desc: 'Every time is checked against the live calendar before it is confirmed.'
 ---
 
 ## Problem

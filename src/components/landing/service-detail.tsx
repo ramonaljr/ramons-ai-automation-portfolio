@@ -96,7 +96,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
               className='text-ink mt-16 text-2xl font-light tracking-tight lg:text-3xl'
               style={{ fontFamily: DISPLAY_FONT }}
             >
-              What the engagement covers
+              What is included
             </h2>
             <ul className='mt-6 grid gap-x-8 gap-y-3.5 sm:grid-cols-2'>
               {service.includes.map(it => (
@@ -159,8 +159,8 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                 Think this is what you need?
               </h2>
               <p className='text-ink-2 mt-3 max-w-lg text-[14px] leading-relaxed'>
-                Tell me the process and the systems involved. I will confirm whether this is the right fit and quote a
-                fixed scope.
+                Tell me the process and the systems involved. I will confirm whether this is the right fit and give you
+                a fixed price.
               </p>
               <div className='mt-7 flex flex-wrap items-center gap-3'>
                 <a

@@ -4,9 +4,9 @@ export const SERVICE_OPTIONS = [
   'Workflow Audit (30 min, free)',
   'n8n AI Agents & Workflow Automation',
   'End-to-End Business Process Automation',
-  'Claude, OpenAI & LLM Integrations (RAG)',
-  'Cross-Platform SaaS & API Integrations',
-  'Autonomous AI Voice & Customer Agents',
+  'Claude & OpenAI for Documents and Company Knowledge',
+  'App Integrations: Your Tools Kept in Sync',
+  'AI Phone Receptionists & Customer Chat',
   'Something else'
 ] as const
 

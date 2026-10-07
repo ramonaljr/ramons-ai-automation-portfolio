@@ -1,7 +1,7 @@
 ---
 slug: 'rag-knowledge-base'
 title: 'An Assistant That Answers From Your Company Documents'
-description: 'Engineered a semantic Retrieval-Augmented Generation (RAG) pipeline in n8n with Pinecone and Claude to index company documentation and deliver instant cited answers.'
+description: 'An assistant that reads your company documents and answers staff questions instantly, with a link to the source. Built with n8n, Pinecone and Claude.'
 organisation: 'Knowledge & Operations'
 role: 'AI Automation Specialist'
 duration: '2 Weeks'
@@ -20,30 +20,30 @@ platform: 'n8n'
 categories: ['AI Agents', 'Knowledge']
 speed: '< 4 SEC'
 workflowImage: '/images/workflows/rag-knowledge-base.svg'
-logicSummary: 'Drive watcher → chunk + embed → Pinecone upsert → query with citations via Telegram.'
+logicSummary: 'New file in Drive → split into sections and indexed → stored in Pinecone → questions asked in Telegram get answers with sources.'
 keyOutcome:
   value: '100%'
   label: 'Answers With Sources'
 integrations: ['n8n', 'Claude', 'Pinecone', 'Supabase', 'Telegram']
-problem: 'Company documentation was spread across Drive folders and nobody could find authoritative answers, so the same questions were re-asked and re-answered by whoever happened to know.'
-solution: 'Engineered a semantic RAG pipeline in n8n that watches Drive, chunks and embeds new documents into Pinecone, and answers questions in Telegram with citations linking back to the source document.'
+problem: 'Company documents were spread across Drive folders and nobody could find reliable answers, so the same questions were asked and answered again by whoever happened to know.'
+solution: 'Built an n8n workflow that watches Google Drive, splits each new document into sections and indexes them in Pinecone so they can be searched by meaning, then answers questions in Telegram with links back to the source document.'
 stepCount: 4
-impactHighlight: 'Turns scattered documentation into instant, checkable answers.'
-impactHighlightDesc: 'Every response carries a citation back to the source file, so answers can be verified rather than trusted.'
+impactHighlight: 'Turns scattered documents into instant answers you can check.'
+impactHighlightDesc: 'Every reply links to the file it came from, so answers can be checked rather than taken on trust.'
 roi:
   - value: '100%'
     label: 'Answers With Sources'
   - value: '< 4 SEC'
-    label: 'Query Response'
+    label: 'Answer Time'
   - value: '24/7'
     label: 'Availability'
 failsafeHeadline: 'No Answer Without a Source'
-failsafeDesc: 'Retrieval below the relevance threshold returns an explicit ''not found'' rather than inventing an answer.'
+failsafeDesc: 'If nothing relevant is found, it says so plainly instead of making up an answer.'
 failsafes:
-  - title: '1. Grounding Check'
-    desc: 'Responses must cite retrieved chunks; ungrounded generations are suppressed.'
-  - title: '2. Re-index on Change'
-    desc: 'Document edits trigger re-embedding so stale answers cannot persist.'
+  - title: '1. Sources Required'
+    desc: 'Every reply must point to a document it found; answers without one are never sent.'
+  - title: '2. Updates When Files Change'
+    desc: 'When a document is edited it is indexed again, so answers never go out of date.'
 ---
 
 ## Problem

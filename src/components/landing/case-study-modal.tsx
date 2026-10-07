@@ -271,9 +271,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
 
               {study.solution && (
                 <div className='rounded-2xl border border-[color-mix(in_oklch,var(--accent)_22%,transparent)] bg-[color-mix(in_oklch,var(--accent)_5%,transparent)] p-5 sm:p-6'>
-                  <p className='text-accent font-mono text-xs font-medium tracking-[0.2em] uppercase'>
-                    WHAT I BUILT (THE SOLUTION)
-                  </p>
+                  <p className='text-accent font-mono text-xs font-medium tracking-[0.2em] uppercase'>WHAT I BUILT</p>
                   <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{study.solution}</p>
                 </div>
               )}
@@ -283,9 +281,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           {/* 4. Active Integrations & Tech Stack */}
           {(study.integrations || study.tools) && (
             <div>
-              <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase'>
-                ACTIVE INTEGRATIONS &amp; STACK
-              </p>
+              <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase'>TOOLS USED</p>
               <div className='flex flex-wrap gap-2'>
                 {(study.integrations || study.tools)?.map(tool => (
                   <span
@@ -303,7 +299,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           {study.failsafes && study.failsafes.length > 0 && (
             <div className='border-rule bg-surface-raised rounded-2xl border p-5 shadow-sm sm:p-6'>
               <p className='text-accent mb-2 font-mono text-xs font-medium tracking-[0.2em] uppercase'>
-                SYSTEM RESILIENCE &amp; ERROR HANDLING
+                WHEN SOMETHING GOES WRONG
               </p>
               {study.failsafeDesc && <p className='text-ink-2 mb-4 text-[13.5px]'>{study.failsafeDesc}</p>}
               <div className='border-rule grid gap-3 border-t pt-2 sm:grid-cols-2'>
