@@ -68,7 +68,7 @@ export function workViews(cs: CaseStudyMetadata): WorkView[] {
           label: cs.canvasLabel ?? `${platform} canvas`,
           light: cs.canvasTheme === 'light',
           src: cs.workflowImage,
-          alt: `${platform} workflow canvas for ${name}`
+          alt: `${cs.canvasLabel ?? `${platform} workflow canvas`} for ${name}`
         }
       : null,
     mockup

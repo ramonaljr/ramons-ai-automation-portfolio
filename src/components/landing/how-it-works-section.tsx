@@ -195,6 +195,16 @@ const WIPE: Variants = {
 }
 
 /**
+ * Under reduced motion the illustration simply swaps. MotionConfig's
+ * reducedMotion only stills transforms, and this wipe is clip-path and
+ * opacity, so it is turned off here instead.
+ */
+const SWAP: Variants = {
+  shown: { clipPath: 'none', opacity: 1, transition: { duration: 0 } },
+  hidden: { clipPath: 'none', opacity: 0, transition: { duration: 0 } }
+}
+
+/**
  * A step title whose letters roll: the faint copy lifts out as the inked copy
  * rises in behind it, one letter after another. Screen readers get the plain
  * title from the button; the letters are hidden from them.
@@ -229,8 +239,12 @@ export function HowItWorksSection() {
   // Autoplay runs once through until anyone chooses a step themselves.
   const [autoplay, setAutoplay] = useState(true)
   const [visible, setVisible] = useState(false)
-  const [held, setHeld] = useState(false)
-  const playing = autoplay && !reduced && visible && !held
+
+  // Held while a pointer is over the explorer or keyboard focus is inside it,
+  // so nobody has the step change under them while reading.
+  const [hovered, setHovered] = useState(false)
+  const [focused, setFocused] = useState(false)
+  const playing = autoplay && !reduced && visible && !hovered && !focused
 
   useEffect(() => {
     const root = rootRef.current
@@ -318,8 +332,12 @@ export function HowItWorksSection() {
           <div
             ref={rootRef}
             className='process-explorer'
-            onPointerEnter={() => setHeld(true)}
-            onPointerLeave={() => setHeld(false)}
+            onPointerEnter={() => setHovered(true)}
+            onPointerLeave={() => setHovered(false)}
+            onFocus={() => setFocused(true)}
+            onBlur={event => {
+              if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false)
+            }}
           >
             <div ref={navRef} className='process-explorer-nav' role='tablist' aria-label='Steps'>
               {PHASES.map(phase => (
@@ -387,7 +405,7 @@ export function HowItWorksSection() {
                     key={index}
                     className='process-explorer-visual'
                     initial={false}
-                    variants={WIPE}
+                    variants={reduced ? SWAP : WIPE}
                     animate={index === active ? 'shown' : 'hidden'}
                   >
                     {visual}

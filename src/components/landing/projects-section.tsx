@@ -214,9 +214,9 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
         />
 
         {/* Only the exception is marked. A badge repeated on every card is
-            decoration, not information. */}
+            decoration, not information; sample-client builds say so in the
+            eyebrow below instead. */}
         {cs.sample && !allLabs && <span className='work-card-flag'>Demo project</span>}
-        {cs.sampleClient && <span className='work-card-flag'>Sample client</span>}
 
         <MagnifierLens lensRef={lensRef} artRef={artRef} />
       </motion.div>
@@ -225,6 +225,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
         <p className='work-card-context'>
           <span className='work-card-index'>{String(index + 1).padStart(2, '0')}</span>
           {cs.organisation ?? workLabel(cs)}
+          {cs.sampleClient && <span className='work-card-sample'> · Sample client</span>}
         </p>
 
         {/* The stretched hit area lives on this button, so the whole card
@@ -280,11 +281,9 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   /**
    * Delivered work leads, then complete builds for sample clients, then labs.
    *
-   * `getCaseStudies` orders by `publishedAt`, which put illustrative builds
-   * first simply because they carried the latest dates. Every project is
-   * currently a lab, so this is a no-op today — it earns its place the moment
-   * the first delivered engagement lands. The sort is stable, so within each
-   * group the date order is preserved.
+   * `getCaseStudies` orders by `publishedAt`, which would otherwise interleave
+   * them by date alone. The sort is stable, so within each group the date
+   * order is preserved.
    */
   const shown = useMemo(() => {
     const rank = (cs: CaseStudyMetadata) => (cs.sample ? 2 : cs.sampleClient ? 1 : 0)

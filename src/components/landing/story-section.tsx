@@ -69,16 +69,16 @@ const ACT_WINDOWS: { input: number[]; output: number[] }[] = [
 /** Where along act two each tool switches on. */
 const toolThreshold = (index: number) => 0.4 + index * 0.045
 
-export function StorySection() {
+export function StorySection({ systemCount }: { systemCount: number }) {
   return (
     <section id='story' aria-label='How automation changes the working day' className='story-section'>
-      <PinnedStory />
-      <StackedStory />
+      <PinnedStory systemCount={systemCount} />
+      <StackedStory systemCount={systemCount} />
     </section>
   )
 }
 
-function PinnedStory() {
+function PinnedStory({ systemCount }: { systemCount: number }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] })
 
@@ -154,7 +154,7 @@ function PinnedStory() {
           </motion.div>
 
           {ACTS.map((act, index) => (
-            <ActCopy key={act.tag} act={act} index={index} progress={progress} />
+            <ActCopy key={act.tag} act={act} index={index} progress={progress} systemCount={systemCount} />
           ))}
 
           <div className='story-rail' aria-hidden='true'>
@@ -197,10 +197,12 @@ function ToolNode({ name, progress, threshold }: { name: string; progress: Motio
 function ActCopy({
   act,
   index,
-  progress
+  progress,
+  systemCount
 }: {
   act: (typeof ACTS)[number]
   index: number
+  systemCount: number
   progress: MotionValue<number>
 }) {
   const timing = ACT_WINDOWS[index]
@@ -211,8 +213,8 @@ function ActCopy({
   // meant for the one showing.
   const pointerEvents = useTransform(opacity, latest => (latest > 0.5 ? 'auto' : 'none'))
   const outcome = index === ACTS.length - 1
-  const stat = useTransform(progress, [0.7, 0.86], [0, 25])
-  const statText = useTransform(stat, latest => `${Math.round(latest)}+ hrs`)
+  const stat = useTransform(progress, [0.7, 0.86], [0, systemCount])
+  const statText = useTransform(stat, latest => `${Math.round(latest)} systems`)
 
   return (
     <motion.div className='story-copy' style={{ opacity, y, pointerEvents }}>
@@ -226,7 +228,7 @@ function ActCopy({
         <div className='story-outcome'>
           <p>
             <motion.strong style={{ fontFamily: DISPLAY_FONT }}>{statText}</motion.strong>
-            <span>of manual work back each week</span>
+            <span>built to hand that time back</span>
           </p>
           <a href='#portfolio' className='story-outcome-link'>
             See the systems behind it
@@ -238,7 +240,7 @@ function ActCopy({
 }
 
 /** The same three beats, stacked, for phones and reduced motion. */
-function StackedStory() {
+function StackedStory({ systemCount }: { systemCount: number }) {
   const images = [NIGHT_DESK, NIGHT_DESK, GOLDEN_DESK]
 
   return (
@@ -269,7 +271,8 @@ function StackedStory() {
             {index === 2 && (
               <>
                 <p className='story-panel-stat'>
-                  <strong style={{ fontFamily: DISPLAY_FONT }}>7 systems</strong> built to hand that time back
+                  <strong style={{ fontFamily: DISPLAY_FONT }}>{systemCount} systems</strong> built to hand that time
+                  back
                 </p>
                 <a href='#portfolio' className='story-outcome-link'>
                   See the systems behind it

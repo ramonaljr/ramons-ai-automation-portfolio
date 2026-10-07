@@ -1147,9 +1147,9 @@ body::after {
 }
 
 .saas-section::before {
-  /* Seven chapters: Experience moved into About, Platforms into Services,
-     and Testimonials stays hidden until a real quote is published. */
-  content: counter(koisei-chapter, decimal-leading-zero) ' / 07';
+  /* The total comes from the page (PortfolioSections' CHAPTERS), so it
+     follows the sections that actually render. */
+  content: counter(koisei-chapter, decimal-leading-zero) ' / ' var(--chapter-total, '07');
   position: absolute;
   top: 8.5rem;
   left: clamp(0.6rem, 1.8vw, 1.7rem);
@@ -3695,6 +3695,11 @@ a.work-aux-link:hover {
   font-size: 0.7rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+/* Neutral ink, so it reads as a qualifier on the project, not part of its name. */
+.work-card-sample {
+  color: var(--ink-2);
 }
 
 .work-card-title {

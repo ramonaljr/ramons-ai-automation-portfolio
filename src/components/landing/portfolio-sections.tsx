@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useState, type CSSProperties } from 'react'
 
 import { IntroAnimation } from '@/components/landing/intro-animation'
 import { BlossomStoryBackground } from '@/components/landing/blossom-story-background'
@@ -22,8 +22,18 @@ import { ScrollAtmosphere } from '@/components/landing/scroll-atmosphere'
 import { PAGE } from '@/components/landing/motion'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
+import { TESTIMONIALS } from '@/lib/portfolio'
 
 // ── Page ─────────────────────────────────────────────────────────────────────
+
+/**
+ * The numbered chapters below, for the side counter's "NN / total". Testimonials
+ * only counts once a real quote is published, because until then it renders
+ * nothing. Keep this list in step with the sections in the JSX.
+ */
+const CHAPTERS = ['about', 'portfolio', 'services', 'process', 'testimonials', 'engagement', 'faq', 'contact'].filter(
+  id => id !== 'testimonials' || TESTIMONIALS.some(testimonial => !testimonial.draft)
+)
 
 export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
   const [heroReady, setHeroReady] = useState(false)
@@ -37,12 +47,15 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
       {/* The whole page, hero included, sits in one autumn environment. The
           wrapper is the positioning context; the video and canvases are sticky
           inside it so one viewport of pixels covers the whole scroll range. */}
-      <div className='blossom-story-root relative isolate'>
+      <div
+        className='blossom-story-root relative isolate'
+        style={{ '--chapter-total': `'${String(CHAPTERS.length).padStart(2, '0')}'` } as CSSProperties}
+      >
         <BlossomStoryBackground />
         <ParticleField />
 
         <div className='relative z-10'>
-          <HeroSection ready={heroReady} />
+          <HeroSection ready={heroReady} systemCount={caseStudies.length} />
 
           {/* The three-act story layer starts at About, not the hero: its own
               wrapper keeps "01 / The old way" from opening over the headline. */}
@@ -52,7 +65,7 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
             <div className='relative z-10'>
               {/* The story sits between the promise and the person: what the
                   problem feels like, what the system does, what comes back. */}
-              <StorySection />
+              <StorySection systemCount={caseStudies.length} />
 
               {/* Introduce the person behind the work before the full eight-project
               portfolio. This keeps the biography near the hero without asking

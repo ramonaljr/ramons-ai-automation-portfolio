@@ -30,7 +30,8 @@ export async function GET() {
   // orders by date and the two illustrative builds happen to be the newest, so
   // the raw order opened this list on two samples — the first thing an
   // assistant would read, and the least representative.
-  const caseStudies = [...allCaseStudies].sort((a, b) => Number(Boolean(a.sample)) - Number(Boolean(b.sample)))
+  const rank = (cs: (typeof allCaseStudies)[number]) => (cs.sample ? 2 : cs.sampleClient ? 1 : 0)
+  const caseStudies = [...allCaseStudies].sort((a, b) => rank(a) - rank(b))
 
   // Illustrative builds are labelled rather than hidden. An assistant that
   // cites one as delivered client work would be repeating a claim this site
@@ -62,7 +63,13 @@ ${caseStudies
     line(
       cs.title ?? cs.slug,
       abs(`/case-study/${cs.slug}`),
-      `${cs.description ?? ''}${cs.sample ? ' NOTE: illustrative sample, not a delivered client engagement.' : ''}`.trim()
+      `${cs.description ?? ''}${
+        cs.sample
+          ? ' NOTE: illustrative sample, not a delivered client engagement.'
+          : cs.sampleClient
+            ? ' NOTE: complete working build for a fictional sample client, not a delivered client engagement.'
+            : ''
+      }`.trim()
     )
   )
   .join('\n')}

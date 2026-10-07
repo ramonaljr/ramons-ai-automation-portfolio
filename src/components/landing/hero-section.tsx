@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
-import { HERO_STATS, PROFILE } from '@/lib/portfolio'
+import { heroStats, PROFILE } from '@/lib/portfolio'
 import { CountUp, Cta, usePrefersReducedMotion } from '@/components/landing/motion'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
@@ -30,7 +30,7 @@ const LONGEST_WORK = ROTATING_WORK.reduce((a, b) => (b.length > a.length ? b : a
  * `ready` lets the page gate the reveal on the intro animation finishing,
  * preserving the original choreography. Defaults to self-revealing on mount.
  */
-export function HeroSection({ ready }: { ready?: boolean }) {
+export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCount: number }) {
   const [mounted, setMounted] = useState(false)
   const [wordIndex, setWordIndex] = useState(0)
   const reduced = usePrefersReducedMotion()
@@ -186,7 +186,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
         {/* Three across at every width. Wrapping left the third figure alone
             on its own row on phones. */}
         <div className='border-rule grid grid-cols-3 items-start gap-x-4 border-t pt-8 sm:flex sm:justify-center sm:gap-x-12 lg:gap-x-20'>
-          {HERO_STATS.map(stat => (
+          {heroStats(systemCount).map(stat => (
             <div key={stat.label} className='flex flex-col gap-1.5'>
               <span
                 data-countup

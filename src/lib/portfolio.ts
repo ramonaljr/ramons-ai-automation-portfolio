@@ -26,14 +26,15 @@ export const PROFILE = {
 
 /**
  * Headline figures. Each is traceable to Selected Work, work history or the
- * profile: the seven n8n systems are the seven case studies. No measured
- * time savings are claimed until a client result backs one.
+ * profile. The system count is the number of case studies, passed in by the
+ * page, so it cannot drift from Selected Work. No measured time savings are
+ * claimed until a client result backs one.
  */
-export const HERO_STATS = [
-  { value: '7', label: 'complete n8n systems built, end to end' },
+export const heroStats = (systems: number) => [
+  { value: String(systems), label: 'complete n8n systems built, end to end' },
   { value: '10 yrs', label: 'running business operations' },
   { value: 'MBA', label: 'business thinking behind every build' }
-] as const
+]
 
 // ─── Services ────────────────────────────────────────────────────────────────
 

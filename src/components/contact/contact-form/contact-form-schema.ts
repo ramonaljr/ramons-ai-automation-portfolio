@@ -1,14 +1,13 @@
 import { z } from 'zod'
 
+import { SERVICES } from '@/lib/portfolio'
+
+/** Built from SERVICES, so a renamed service cannot leave the dropdown stale. */
 export const SERVICE_OPTIONS = [
   'Workflow Audit (30 min, free)',
-  'n8n AI Agents & Workflow Automation',
-  'End-to-End Business Process Automation',
-  'Claude & OpenAI for Documents and Company Knowledge',
-  'App Integrations: Your Tools Kept in Sync',
-  'AI Phone Receptionists & Customer Chat',
+  ...SERVICES.map(service => service.title),
   'Something else'
-] as const
+]
 
 export const contactFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters.'),
