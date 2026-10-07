@@ -31,6 +31,12 @@ export type CaseStudyMetadata = {
   /** Illustrative example rather than a delivered engagement. */
   sample?: boolean
 
+  /**
+   * A complete, working build made for a fictional client. The workflow is
+   * real; the company is not, and the card and page say so.
+   */
+  sampleClient?: boolean
+
   /** Loom (or any) walkthrough video. Button is hidden until this is set. */
   videoUrl?: string
 

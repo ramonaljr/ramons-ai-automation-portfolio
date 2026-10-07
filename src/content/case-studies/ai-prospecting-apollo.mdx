@@ -1,0 +1,77 @@
+---
+slug: 'ai-prospecting-apollo'
+title: 'AI Prospecting with Apollo'
+description: 'Finds decision-makers in Apollo, scores them by fixed rules, researches each company website with AI and drafts a first email, then queues everyone in a Google Sheet for the team to approve. Approved prospects land in Pipedrive with the research attached. Nothing is sent automatically.'
+organisation: 'Sales Prospecting'
+role: 'AI Automation Specialist'
+tools: ['n8n', 'Apollo', 'OpenAI', 'Google Sheets', 'Pipedrive', 'Slack']
+publishedAt: '2026-10-07'
+sample: false
+sampleClient: true
+videoUrl: ''
+repoUrl: ''
+
+platform: 'n8n'
+categories: ['Sales', 'AI Agents']
+workflowImage: '/images/workflows/ai-prospecting-apollo-map.svg'
+canvasLabel: 'Process map'
+canvasTheme: 'light'
+logicSummary: 'Request form → Apollo search → skip known prospects → enrich → rule-based score → AI researches the website and drafts an email → review sheet → approved prospects into Pipedrive.'
+keyOutcome:
+  value: '0'
+  label: 'Emails Sent Without Review'
+integrations: ['n8n', 'Apollo', 'Pipedrive', 'Google Sheets', 'Slack', 'OpenAI']
+problem: 'Outbound prospecting meant searching for contacts by hand, checking whether they had been contacted before, reading each company website and writing every first email from scratch. Apollo credits were spent on poor-fit contacts, and the same people were easily contacted twice.'
+solution: 'Built an n8n workflow where the sales team fills in one form. Apollo finds matching decision-makers, anyone already in the prospects sheet is skipped, the best are enriched and scored by fixed rules, AI reads each company website and drafts a grounded first email, and everything waits in a Google Sheet for the team to approve. Every 15 minutes, approved prospects are added to Pipedrive with the research pinned to a new deal.'
+stepCount: 7
+impactHighlight: 'Researched, scored prospects with a draft email ready to approve, from one form.'
+impactHighlightDesc: 'The team only reviews and approves. Searching, de-duplicating, scoring, research and CRM entry happen on their own.'
+roi:
+  - value: '0'
+    label: 'Emails Sent Without Review'
+  - value: '60+'
+    label: 'Score Needed For Review'
+  - value: '15 min'
+    label: 'Approved To Pipedrive'
+failsafeHeadline: 'A Person Approves Every Prospect'
+failsafeDesc: 'Nothing is emailed automatically. Prospects only reach the CRM once the team marks them approved in the sheet.'
+failsafes:
+  - title: '1. Never Contacted Twice'
+    desc: 'Anyone already in the sheet, whatever their status, is skipped before any Apollo credits are used.'
+  - title: '2. Grounded Emails Only'
+    desc: 'The AI may only use facts from the company website: no invented news, prices, savings or guarantees.'
+---
+
+## About this build
+
+Built in n8n for **Harbourline Payroll Services, a fictional sample client**: an outsourced payroll firm prospecting growing SMEs. The workflow itself is real and complete.
+
+## The problem
+
+- **Manual searching.** Finding the right decision-makers meant hours of searching and copying contacts.
+- **Wasted credits.** Contact data was paid for on people who were a poor fit or already contacted.
+- **Generic emails.** Writing a researched, personal first email for every prospect was not realistic.
+- **Messy hand-off.** Promising prospects reached the CRM late, without the research behind them.
+
+## What I built
+
+1. **Find new prospects.** The sales team fills in a form with job titles, locations, company size, industry and the offer. Apollo's people search finds matches without using credits.
+2. **Skip known prospects.** Anyone already in the prospects sheet is skipped, whatever their status, and the rest are ranked by seniority.
+3. **Enrich and score.** Only the top prospects are enriched in Apollo. Each is scored out of 100 by fixed rules (seniority, title match, verified email, company size, industry), with the reasons listed.
+4. **AI research and draft.** The company's own website is read, and AI writes a one-line summary and a short first email using only facts from that website.
+5. **Review queue.** Every prospect is written to a Google Sheet. Those scoring 60+ with a verified email wait for review; Slack gets one digest per run.
+6. **Approved into Pipedrive.** Every 15 minutes, approved prospects are added to Pipedrive. The organisation and person are looked up first, a deal is created, and the research and draft email are pinned to it.
+7. **Error alerts.** If anything fails, Slack hears which step failed, with a link to the run.
+
+## Safeguards
+
+- **Nothing is sent automatically.** The rep reviews and sends from Pipedrive.
+- **Rules, not AI, decide the score,** so every score can be explained.
+- **No duplicates** in the sheet or the CRM.
+- **Grounded AI drafts:** no invented facts, prices or guarantees, and a flag when the website gave nothing useful.
+
+## Outcomes
+
+- One form produces a ranked, researched list of new prospects with draft emails.
+- Apollo credits go to the best-fit people first.
+- Approved prospects reach Pipedrive with everything the rep needs to send.

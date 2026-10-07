@@ -1,0 +1,77 @@
+---
+slug: 'ai-invoice-processing-approval'
+title: 'AI Invoice Processing & Approval'
+description: 'Reads invoices from Gmail, skips duplicates, has AI pull out the details, checks them against purchase orders and delivery records, gets approval in Slack and adds the bill to QuickBooks. Built for construction, including progress payments, retention and lien waivers.'
+organisation: 'Construction Finance'
+role: 'AI Automation Specialist'
+tools: ['n8n', 'Gmail', 'OpenAI', 'Airtable', 'Slack', 'QuickBooks', 'Google Sheets']
+publishedAt: '2026-09-20'
+sample: false
+sampleClient: true
+videoUrl: ''
+repoUrl: ''
+
+platform: 'n8n'
+categories: ['Finance', 'AI Agents']
+workflowImage: '/images/workflows/ai-invoice-processing-approval-map.svg'
+canvasLabel: 'Process map'
+canvasTheme: 'light'
+logicSummary: 'Invoice email → PDF text → duplicate check → AI reads the invoice → checked against PO and delivery record → approval in Slack → bill added to QuickBooks → logged.'
+keyOutcome:
+  value: '3-way'
+  label: 'Invoice, PO & Delivery Match'
+integrations: ['n8n', 'QuickBooks', 'Gmail', 'Airtable', 'Slack', 'OpenAI']
+problem: 'Construction invoices arrived by email and were checked by hand against purchase orders, delivery records and contract values. Progress payments made it easy to pay for the same work twice, pay in full when retention should be held back, or pay without a signed lien waiver.'
+solution: 'Built an n8n workflow that picks up invoice emails every 5 minutes, skips duplicates, has AI extract every billing figure, and checks them with fixed rules against the purchase order and delivery record in Airtable. Clean invoices go to the budget owner and invoices with issues to accounts payable, both in Slack. Approved bills are added to QuickBooks at the amount to pay after retention, and every outcome is logged.'
+stepCount: 7
+impactHighlight: 'Every invoice checked against the PO and delivery record before anyone approves it.'
+impactHighlightDesc: 'Approvers see the issues already flagged, and only approved bills reach QuickBooks.'
+roi:
+  - value: '3-way'
+    label: 'Invoice, PO & Delivery Match'
+  - value: '2'
+    label: 'Duplicate Checks'
+  - value: '100%'
+    label: 'Invoices Logged'
+failsafeHeadline: 'Nothing Posts Without Approval'
+failsafeDesc: 'Every bill is approved by a person in Slack before it reaches QuickBooks, and anything uncertain is checked first.'
+failsafes:
+  - title: '1. AI Confidence Check'
+    desc: 'If the AI is less than 80% sure it read the invoice correctly, a person confirms the details before anything else happens.'
+  - title: '2. Construction Rules'
+    desc: 'Progress payments must add up, stay within the contract value, hold back retention and include a lien waiver.'
+---
+
+## About this build
+
+Built in n8n for **Braewick Construction Group, a fictional sample client**. The workflow itself is real and complete.
+
+## The problem
+
+- **Manual matching.** Each invoice was compared by hand with the purchase order and delivery record.
+- **Duplicate payments.** The same invoice re-sent in a new email could be paid twice.
+- **Progress payment risk.** Paying more than the contract value, skipping retention or paying without a lien waiver.
+- **Slow approvals** and no single record of what was posted, rejected or held.
+
+## What I built
+
+1. **Receive the invoice.** Every 5 minutes, Gmail is checked for unread emails with a PDF. Scanned images with no readable text go to the team instead of the AI.
+2. **Skip duplicates.** Each email and file is checked against the invoice log before any AI cost, and again by vendor and invoice number after reading.
+3. **AI reads the invoice.** Vendor, PO and job numbers, cost code, invoice type, billing to date, amounts already approved, retention and lien waiver, never invented.
+4. **Compare with records.** If the AI is unsure, a person checks the details in Slack. The invoice is then compared with the purchase order and delivery record in Airtable.
+5. **Approval in Slack.** Invoices with issues go to accounts payable; clean ones to the budget owner. The workflow waits up to 2 days for an answer.
+6. **Add to QuickBooks and log.** The vendor is found in QuickBooks, the bill is added at the amount to pay after retention, and every outcome is logged. The email is marked as read.
+7. **Error alerts.** Failures go to Slack and an error log, with the invoice flagged for manual entry.
+
+## Safeguards
+
+- **Two duplicate checks,** before and after the AI reads the invoice.
+- **Fixed rules check the numbers:** amounts within 2% of the PO and delivery record, billing that adds up, retention held, lien waiver attached.
+- **A person approves every bill** before it reaches QuickBooks.
+- **Missing vendors are never guessed:** the bill is held and the team alerted.
+
+## Outcomes
+
+- Every invoice is matched against its PO and delivery record automatically.
+- Approvers see the issues already flagged and decide in Slack.
+- QuickBooks only receives approved bills, at the right amount, with a full log behind them.

@@ -1,0 +1,80 @@
+---
+slug: 'solar-lead-scoring-follow-up'
+title: 'Lead Scoring & Follow-Up'
+description: 'Website leads get a reply in under a second, then AI reads the enquiry, fixed rules score it, the right sales rep is assigned and alerted, and the lead gets a personal reply. If nobody follows up within 15 minutes, the sales manager takes it.'
+organisation: 'Commercial Solar Sales'
+role: 'AI Automation Specialist'
+tools: ['n8n', 'OpenAI', 'Airtable', 'Gmail', 'Slack', 'Google Sheets']
+publishedAt: '2026-09-20'
+sample: false
+sampleClient: true
+videoUrl: ''
+repoUrl: ''
+
+platform: 'n8n'
+categories: ['Sales', 'AI Agents']
+speed: '< 1 SEC'
+workflowImage: '/images/workflows/solar-lead-scoring-follow-up-map.svg'
+canvasLabel: 'Process map'
+canvasTheme: 'light'
+logicSummary: 'Website form → instant reply → check for existing lead → AI reads the enquiry → rule-based score → assign rep → personal reply → Slack alert → manager steps in after 15 minutes.'
+keyOutcome:
+  value: '15 min'
+  label: 'Follow-Up Deadline'
+integrations: ['n8n', 'Airtable', 'Gmail', 'Slack', 'OpenAI']
+problem: 'Website enquiries landed in an inbox and waited. Good leads went cold before anyone called, reps were assigned unevenly, existing customers and repeat enquiries were treated as new, and nobody noticed when a lead was never followed up.'
+solution: 'Built an n8n workflow that replies to the website form in under a second, checks Airtable for existing customers and repeat enquiries, has AI read the message, scores the lead by fixed rules, assigns the next rep for that lead type, sends a personal reply and alerts the rep in Slack. A check every 5 minutes hands any lead not followed up within 15 minutes to the sales manager.'
+stepCount: 9
+impactHighlight: 'Every good lead has a rep on it within 15 minutes, or the manager knows.'
+impactHighlightDesc: 'The visitor hears back instantly, the rep gets the score and site details, and no lead quietly slips away.'
+roi:
+  - value: '< 1 sec'
+    label: 'Reply To The Form'
+  - value: '15 min'
+    label: 'Follow-Up Deadline'
+  - value: '100'
+    label: 'Point Rule-Based Score'
+failsafeHeadline: 'No Lead Slips Through'
+failsafeDesc: 'Leads without a rep, or not followed up in 15 minutes, are reassigned to the sales manager and logged.'
+failsafes:
+  - title: '1. Rules Set The Score'
+    desc: 'AI only reads the message. Fixed rules add up the score, so every lead lists exactly why it scored what it did.'
+  - title: '2. Safe Replies'
+    desc: 'The AI reply never mentions prices, savings or system sizes, and a standard reply is sent if the AI fails.'
+---
+
+## About this build
+
+Built in n8n for **Voltara Commercial Solar, a fictional sample client** installing rooftop solar for businesses. The workflow itself is real and complete.
+
+## The problem
+
+- **Slow first response.** Enquiries waited in an inbox while interest cooled.
+- **Uneven assignment.** Some reps were overloaded while others had nothing.
+- **No context.** Reps called without knowing the building, roof or electricity use.
+- **Leads forgotten.** Nobody noticed when a lead was never called back.
+
+## What I built
+
+1. **Receive and reply fast.** The website form sends the lead in; name and email are checked, and the visitor gets a "received" reply in under a second.
+2. **Check if we know them.** Airtable is searched for existing customers and repeat enquiries from the last 24 hours.
+3. **AI reads the message.** What they want, how urgent, budget hints, and any building, roof, ownership or electricity details they state. It never guesses.
+4. **Score and sort by rules.** Points for electricity use, ownership, roof type and age, urgency and more, with the reasons listed. Large, small and existing customers get a rep; low-priority and duplicates are logged.
+5. **Assign and save.** The rep for that lead type assigned least recently gets it, and the lead is saved with a 15-minute deadline.
+6. **Reply and alert.** AI writes a short reply in the lead's own terms, sent from Gmail; the rep is tagged in Slack with the score and site details.
+7. **Low-priority and logging.** Every lead, including invalid forms, goes to the lead log.
+8. **15-minute follow-up check.** Every 5 minutes, leads with no rep or no follow-up are reassigned to the sales manager.
+9. **Error alerts.** Failures go to Slack and an error log.
+
+## Safeguards
+
+- **AI never sets the score;** fixed rules do, so scores can be explained and changed without rewriting prompts.
+- **No promises in replies:** no prices, savings, payback periods or system sizes before a site visit.
+- **Duplicates are only logged:** no second email or Slack alert.
+- **The manager is the backstop** for any lead not followed up.
+
+## Outcomes
+
+- Every enquiry gets an instant reply and a personal follow-up email.
+- Reps receive scored, explained leads in rotation.
+- No lead goes more than 15 minutes without someone responsible for it.

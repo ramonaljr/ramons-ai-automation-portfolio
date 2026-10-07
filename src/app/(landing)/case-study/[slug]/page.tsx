@@ -213,6 +213,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
               <Chip key={c}>{c}</Chip>
             ))}
             {metadata.sample && <Chip tone='warn'>SAMPLE</Chip>}
+            {metadata.sampleClient && <Chip tone='warn'>SAMPLE CLIENT</Chip>}
           </div>
 
           <h1

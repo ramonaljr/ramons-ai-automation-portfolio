@@ -6,12 +6,11 @@ import type { CaseStudyMetadata } from '@/lib/case-studies'
  * copies of this map would drift the first time a project is added.
  */
 export const WORK_SCENES: Record<string, string> = {
-  'ai-voice-receptionist': '/images/landing/work-scenes/ai-voice-receptionist.webp',
-  'invoice-processing-gl-reconciliation': '/images/landing/work-scenes/invoice-processing-gl-reconciliation.webp',
-  'lead-routing-and-crm-enrichment': '/images/landing/work-scenes/lead-routing-and-crm-enrichment.webp',
-  'multi-channel-order-sync': '/images/landing/work-scenes/multi-channel-order-sync.webp',
-  'rag-knowledge-base': '/images/landing/work-scenes/rag-knowledge-base.webp',
-  'zero-touch-client-onboarding': '/images/landing/work-scenes/zero-touch-client-onboarding.webp'
+  'ai-appointment-setter': '/images/landing/work-scenes/ai-voice-receptionist.webp',
+  'ai-prospecting-apollo': '/images/landing/work-scenes/rag-knowledge-base.webp',
+  'ai-invoice-processing-approval': '/images/landing/work-scenes/invoice-processing-gl-reconciliation.webp',
+  'solar-lead-scoring-follow-up': '/images/landing/work-scenes/lead-routing-and-crm-enrichment.webp',
+  'hotel-employee-onboarding': '/images/landing/work-scenes/zero-touch-client-onboarding.webp'
 }
 
 /**
@@ -24,14 +23,13 @@ export const WORK_SCENES: Record<string, string> = {
  * sRGB gamut.
  */
 export const WORK_TONES: Record<string, string> = {
-  'ai-voice-receptionist': 'oklch(0.571 0.13 326)',
-  'invoice-processing-gl-reconciliation': 'oklch(0.572 0.14 24)',
-  'lead-routing-and-crm-enrichment': 'oklch(0.562 0.12 68)',
-  'multi-channel-order-sync': 'oklch(0.542 0.11 158)',
-  'rag-knowledge-base': 'oklch(0.562 0.13 274)',
-  'zero-touch-client-onboarding': 'oklch(0.538 0.095 218)',
   'hr-evaluation-assistant': 'oklch(0.55 0.12 300)',
-  'ai-appointment-setter': 'oklch(0.54 0.1 190)'
+  'ai-appointment-setter': 'oklch(0.571 0.13 326)',
+  'ai-prospecting-apollo': 'oklch(0.562 0.13 274)',
+  'ai-invoice-processing-approval': 'oklch(0.572 0.14 24)',
+  'solar-lead-scoring-follow-up': 'oklch(0.562 0.12 68)',
+  'hotel-employee-onboarding': 'oklch(0.538 0.095 218)',
+  'ai-unpaid-invoice-reminders': 'oklch(0.542 0.11 158)'
 }
 
 export type WorkView = {

@@ -23,29 +23,29 @@ import { WORK_TONES, workViews } from '@/lib/work-views'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 
 const WORK_LABELS: Record<string, string> = {
-  'ai-voice-receptionist': '24/7 call answering',
-  'invoice-processing-gl-reconciliation': 'Invoice processing',
-  'lead-routing-and-crm-enrichment': 'Lead capture & follow-up',
-  'multi-channel-order-sync': 'Orders & inventory',
-  'rag-knowledge-base': 'Company knowledge search',
-  'zero-touch-client-onboarding': 'Client onboarding',
   'hr-evaluation-assistant': 'Applicant screening',
-  'ai-appointment-setter': 'Appointment booking'
+  'ai-appointment-setter': 'Appointment booking',
+  'ai-prospecting-apollo': 'Sales prospecting',
+  'ai-invoice-processing-approval': 'Invoice approval',
+  'solar-lead-scoring-follow-up': 'Lead follow-up',
+  'hotel-employee-onboarding': 'Employee onboarding',
+  'ai-unpaid-invoice-reminders': 'Payment reminders'
 }
 
 const WORK_USE_CASES: Record<string, string> = {
-  'ai-voice-receptionist': 'Answer incoming calls, qualify callers and book confirmed appointments at any hour.',
-  'invoice-processing-gl-reconciliation':
-    'Read incoming invoices, check them against purchase orders and prepare entries for approval.',
-  'lead-routing-and-crm-enrichment':
-    'Capture every new lead, add the missing details, assign the right owner and alert sales immediately.',
-  'multi-channel-order-sync': 'Keep orders and stock aligned across Shopify, Amazon and wholesale channels.',
-  'rag-knowledge-base': 'Turn company files into a searchable assistant that answers with links to the source.',
-  'zero-touch-client-onboarding':
-    'Create agreements, folders, CRM records and team alerts as soon as a client submits a form.',
   'hr-evaluation-assistant':
     'Screen every applicant against the job, send tailored questions and invites, and book interviews automatically.',
-  'ai-appointment-setter': 'Let callers book, move or cancel appointments with an AI voice agent, at any hour.'
+  'ai-appointment-setter': 'Let callers book, move or cancel appointments with an AI voice agent, at any hour.',
+  'ai-prospecting-apollo':
+    'Find, score and research new prospects, with a draft first email ready for the team to approve.',
+  'ai-invoice-processing-approval':
+    'Check every invoice against its PO and delivery record, approve it in Slack and post it to QuickBooks.',
+  'solar-lead-scoring-follow-up':
+    'Reply to every enquiry instantly, score it, assign a rep and escalate if nobody follows up in 15 minutes.',
+  'hotel-employee-onboarding':
+    'Set up each new hire from one form, then follow up tasks, documents and check-ins for 30 days.',
+  'ai-unpaid-invoice-reminders':
+    'Chase unpaid invoices by policy, read every reply, and stop all reminders the moment a customer disputes.'
 }
 
 const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
@@ -216,6 +216,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
         {/* Only the exception is marked. A badge repeated on every card is
             decoration, not information. */}
         {cs.sample && !allLabs && <span className='work-card-flag'>Demo project</span>}
+        {cs.sampleClient && <span className='work-card-flag'>Sample client</span>}
 
         <MagnifierLens lensRef={lensRef} artRef={artRef} />
       </motion.div>
@@ -277,7 +278,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   const [views, setViews] = useState<Record<string, number>>({})
 
   /**
-   * Delivered work leads; labs sort to the back.
+   * Delivered work leads, then complete builds for sample clients, then labs.
    *
    * `getCaseStudies` orders by `publishedAt`, which put illustrative builds
    * first simply because they carried the latest dates. Every project is
@@ -285,10 +286,11 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
    * the first delivered engagement lands. The sort is stable, so within each
    * group the date order is preserved.
    */
-  const shown = useMemo(
-    () => [...caseStudies].sort((a, b) => Number(Boolean(a.sample)) - Number(Boolean(b.sample))),
-    [caseStudies]
-  )
+  const shown = useMemo(() => {
+    const rank = (cs: CaseStudyMetadata) => (cs.sample ? 2 : cs.sampleClient ? 1 : 0)
+
+    return [...caseStudies].sort((a, b) => rank(a) - rank(b))
+  }, [caseStudies])
 
   // No platform filter: with one project on Make and one on Zapier, two of
   // the three buttons filtered down to a single card. It can come back once

@@ -142,7 +142,7 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
             {/* One label, not a claim and its own contradiction: this said
                 "CASE STUDY" while a SAMPLE badge sat three chips along. */}
             <span className='text-ink-3 font-mono text-xs tracking-[0.2em] uppercase'>
-              {study.sample ? 'Demo project' : 'Case study'}
+              {study.sample ? 'Demo project' : study.sampleClient ? 'Sample client build' : 'Case study'}
             </span>
             {study.platform && (
               <span className='border-rule-strong bg-ink/4 text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-xs'>

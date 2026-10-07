@@ -1,0 +1,79 @@
+---
+slug: 'ai-unpaid-invoice-reminders'
+title: 'AI Unpaid Invoice Reminders'
+description: 'Every morning, checks Xero, Pipedrive and the collections database for unpaid invoices and sends reminders by set rules. AI writes the emails and reads customer replies; a dispute stops all reminders until a person resolves it.'
+organisation: 'Staffing & Collections'
+role: 'AI Automation Specialist'
+tools: ['n8n', 'Xero', 'Pipedrive', 'PostgreSQL', 'OpenAI', 'Gmail', 'Slack', 'Airtable']
+publishedAt: '2026-09-20'
+sample: false
+sampleClient: true
+videoUrl: ''
+repoUrl: ''
+
+platform: 'n8n'
+categories: ['Finance', 'AI Agents']
+workflowImage: '/images/workflows/ai-unpaid-invoice-reminders-map.svg'
+canvasLabel: 'Process map'
+canvasTheme: 'light'
+logicSummary: 'Daily check → unpaid invoices from Xero → customer context and reminder history → policy rules decide who to remind → AI writes the email → sent and recorded → replies read by AI → dispute stops reminders.'
+keyOutcome:
+  value: '0'
+  label: 'Reminders During A Dispute'
+integrations: ['n8n', 'Xero', 'Pipedrive', 'PostgreSQL', 'Gmail', 'Slack', 'Airtable', 'OpenAI']
+problem: 'Chasing unpaid invoices was manual and inconsistent. Reminders went out too often or not at all, customers who had disputed an invoice or promised a date kept getting chased, and replies sat unread while the next reminder went out.'
+solution: 'Built an n8n workflow that runs every morning. It pulls unpaid invoices from Xero, client context from Pipedrive and reminder history from Postgres, and fixed policy rules decide who gets reminded and how firmly. AI writes each email within the approved policy. Customer replies are read by AI and routed: a dispute stops all reminders until a person clears it, and promises, payments, copy requests and wrong contacts each set the next step.'
+stepCount: 9
+impactHighlight: 'Every overdue invoice followed up by policy, and every reply acted on.'
+impactHighlightDesc: 'The team only steps in for disputes, questions and final notices to important clients.'
+roi:
+  - value: '0'
+    label: 'Reminders During A Dispute'
+  - value: '1'
+    label: 'Row Per Invoice, Enforced'
+  - value: '7'
+    label: 'Reply Types Understood'
+failsafeHeadline: 'A Dispute Stops Everything'
+failsafeDesc: 'A disputed invoice gets no more reminders until a person clears it. No timer, no automatic restart.'
+failsafes:
+  - title: '1. Rules Decide, Not AI'
+    desc: 'Who is reminded, when and how firmly follows company policy. AI only writes the wording within those rules.'
+  - title: '2. No Double Sends'
+    desc: 'The database allows one row per invoice, so a reminder can never go out twice, even if the workflow runs twice.'
+---
+
+## About this build
+
+Built in n8n for **TalentBridge Staffing, a fictional sample client**. The workflow itself is real and complete.
+
+## The problem
+
+- **Inconsistent chasing.** Some invoices got daily reminders, others none.
+- **Wrong reminders.** Customers who disputed an invoice, promised a date or had already paid kept being chased.
+- **Unread replies.** Replies sat in an inbox while the next reminder went out.
+- **Surprised account managers** when a harsh final notice reached a key client.
+
+## What I built
+
+1. **Data from three places.** Xero for unpaid invoices, Pipedrive for the client relationship and Postgres for reminder history, loaded once per run.
+2. **Policy rules decide.** Which invoices get a reminder, and how firm, follows company policy, never AI. Disputed invoices, wrong contacts and promised dates are skipped.
+3. **AI writes the email** within the approved policy: firmer the later it is, with no invented fees, accusations or legal threats. The subject line is built by rules.
+4. **Send and record.** Each reminder is recorded in Postgres, where one row per invoice is enforced.
+5. **Final notices.** At 30+ days late, the account owner is told in Slack and given a Pipedrive task first.
+6. **AI reads replies** and pulls out promised dates, invoice numbers, dispute reasons or new contacts.
+7. **Disputes stop reminders** until a person clears them, with a Pipedrive task, Slack alert and saved emails.
+8. **Every other reply sets the next date:** promised payments, "already paid" checks in Xero, invoice copies, wrong contacts and questions.
+9. **Error alerts.** Failures go to Slack and an error log; tomorrow's run picks up without double-sending.
+
+## Safeguards
+
+- **A dispute stops all reminders** until a person resolves it.
+- **No double sends,** enforced by the database itself.
+- **Fixed rules** for timing and tone; AI only writes the words.
+- **Account owners are warned** before any final notice.
+
+## Outcomes
+
+- Every overdue invoice is followed up consistently, by policy.
+- Every customer reply is read and acted on the same day.
+- The team only handles disputes, questions and key-client final notices.
