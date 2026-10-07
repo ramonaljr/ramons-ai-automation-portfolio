@@ -103,10 +103,15 @@ function Testimonials({ shown, placeholderOnly }: { shown: typeof TESTIMONIALS; 
   )
 }
 
+/**
+ * Hidden until at least one approved quote exists: drafts never render, so
+ * the page shows no testimonials section rather than a labelled preview.
+ * Publishing a quote in TESTIMONIALS brings the section back.
+ */
 export function TestimonialsSection() {
   const published = TESTIMONIALS.filter(testimonial => !testimonial.draft)
-  const placeholderOnly = published.length === 0
-  const shown = placeholderOnly ? TESTIMONIALS : published
 
-  return <Testimonials shown={shown} placeholderOnly={placeholderOnly} />
+  if (published.length === 0) return null
+
+  return <Testimonials shown={published} placeholderOnly={false} />
 }

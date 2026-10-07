@@ -1147,8 +1147,9 @@ body::after {
 }
 
 .saas-section::before {
-  /* Eight chapters: Experience moved into About, Platforms into Services. */
-  content: counter(koisei-chapter, decimal-leading-zero) ' / 08';
+  /* Seven chapters: Experience moved into About, Platforms into Services,
+     and Testimonials stays hidden until a real quote is published. */
+  content: counter(koisei-chapter, decimal-leading-zero) ' / 07';
   position: absolute;
   top: 8.5rem;
   left: clamp(0.6rem, 1.8vw, 1.7rem);
