@@ -40,6 +40,13 @@ export type WorkView = {
 
   /** A canvas drawn light, whose thumbnail should not be inverted. */
   light?: boolean
+
+  /**
+   * What the card shows in place of `src`. A full process map scaled to a
+   * 410px card set its labels at about 3px; the card file keeps one row per
+   * stage with its name and apps, and the dialog still opens the full map.
+   */
+  cardSrc?: string
 }
 
 /**
@@ -68,6 +75,7 @@ export function workViews(cs: CaseStudyMetadata): WorkView[] {
           label: cs.canvasLabel ?? `${platform} canvas`,
           light: cs.canvasTheme === 'light',
           src: cs.workflowImage,
+          cardSrc: cs.workflowImage.endsWith('-map.svg') ? cs.workflowImage.replace(/-map\.svg$/, '-card.svg') : undefined,
           alt: `${cs.canvasLabel ?? `${platform} workflow canvas`} for ${name}`
         }
       : null,

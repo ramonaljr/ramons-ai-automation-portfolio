@@ -1,0 +1,50 @@
+# Checks the live booking calendar every hour, from outside both Vercel and n8n.
+#
+# The calendar, contact form and chat all run through n8n. When its Google
+# Calendar login expired and its webhook key was deleted, everything failed
+# for days and nothing said so: n8n cannot report on itself when n8n is what
+# broke. This calls the same endpoint a visitor's browser does, so it fails
+# for any break along the way (Vercel, the webhook key, n8n, Google) and
+# GitHub emails the repository owner when a scheduled run fails.
+#
+# The site address can be overridden with a repository variable named
+# SITE_URL (Settings → Secrets and variables → Actions → Variables), e.g. once
+# the custom domain is live.
+
+name: Booking uptime
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  calendar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Calendar returns times
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://ramons-ai-automation-portfolio.vercel.app' }}
+        run: |
+          # Tomorrow in Manila: always inside the bookable window, and a
+          # weekend still answers ok with every slot closed.
+          date=$(TZ=Asia/Manila date -d tomorrow +%F)
+          url="${SITE_URL%/}/api/availability?date=$date"
+
+          # Three tries, 20s apart, so one cold start or slow reply does not
+          # page anyone; a real outage fails all three.
+          for attempt in 1 2 3; do
+            [ "$attempt" = 1 ] || sleep 20
+            code=$(curl -sS --max-time 30 -o body.json -w '%{http_code}' "$url") || code=000
+            echo "Attempt $attempt: HTTP $code from $url"
+            cat body.json 2>/dev/null; echo
+            if [ "$code" = 200 ] && jq -e '.ok == true and (.slots | type == "array")' body.json >/dev/null 2>&1; then
+              exit 0
+            fi
+          done
+
+          echo "::error::The booking calendar is down (last HTTP $code). Check the n8n workflow 'Portfolio — Appointment Booking' and its Google Calendar and webhook key credentials."
+          exit 1

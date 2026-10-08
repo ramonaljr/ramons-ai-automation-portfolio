@@ -133,15 +133,20 @@ function TestVisual() {
   )
 }
 
+/**
+ * What the retainer watches, drawn without a figure. It used to read "99.9%
+ * successful runs · 14 days monitored", which looked like a measured result
+ * and was not one. The line is illustration; the words are the service.
+ */
 export function LaunchVisual() {
   return (
     <div className='process-monitor' aria-hidden='true'>
       <div className='process-monitor-status'>
-        <i /> LIVE <span>· 14 days monitored</span>
+        <i /> LIVE <span>· monitored</span>
       </div>
       <div className='process-monitor-metric'>
-        <strong>99.9%</strong>
-        <span>successful runs</span>
+        <strong>Alerts on</strong>
+        <span>a failed run reaches me first</span>
       </div>
       <svg viewBox='0 0 520 150' preserveAspectRatio='none'>
         <path

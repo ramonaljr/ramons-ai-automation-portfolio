@@ -566,13 +566,27 @@ export function ContactSection() {
                 })
               )}
             </div>
+            {/* On a failed load this points to email, not "send a message
+                below": the form goes through the same service that just
+                failed. Email does not. */}
             <p className='text-ink-3 mt-3 min-h-[1.25rem] text-[13px]' aria-live='polite'>
               {!picked
                 ? ''
                 : loadingSlots
                   ? 'Checking my calendar…'
                   : slotsError
-                    ? "Could not load times just now — send a message below and I'll confirm by email."
+                    ? (
+                        <>
+                          Could not load times just now. Email{' '}
+                          <a
+                            href={`mailto:${PROFILE.email}?subject=${encodeURIComponent('Free 30-minute call')}`}
+                            className='text-ink underline underline-offset-2'
+                          >
+                            {PROFILE.email}
+                          </a>{' '}
+                          and I&apos;ll reply with times.
+                        </>
+                      )
                     : slots && slots.every(s => !s.available)
                       ? 'Nothing free that day. Try another date.'
                       : !time

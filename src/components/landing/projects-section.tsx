@@ -193,7 +193,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
           renderView={item =>
             item.key === 'canvas' ? (
               <WorkCanvas
-                src={item.src}
+                src={item.cardSrc ?? item.src}
                 label={item.alt}
                 idSuffix={`${cs.slug}-card`}
                 run={seen ? replays + 1 : 0}
@@ -241,7 +241,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
           <p className='work-card-outcome'>
             <OutcomeFigure value={outcome.value} reduced={reduced} />
             <span>{outcome.label}</span>
-            <em>{cs.sample ? 'target outcome' : 'real build'}</em>
+            <em>{cs.sample ? 'target outcome' : cs.sampleClient ? 'by design' : 'real build'}</em>
           </p>
         )}
 

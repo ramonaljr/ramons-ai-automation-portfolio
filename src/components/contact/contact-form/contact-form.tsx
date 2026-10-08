@@ -20,7 +20,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGr
 
 // Util Imports
 import { formatSlotLocal, isManilaClock, slotInstant } from '@/lib/booking-policy'
+import { PROFILE } from '@/lib/portfolio'
 import { cn } from '@/lib/utils'
+
+/**
+ * Every failure toast offers email, the one route to Ramon that does not run
+ * through n8n, so a visitor is never told to retry a form that cannot work.
+ */
+const EMAIL_FALLBACK = {
+  duration: 12_000,
+  action: {
+    label: 'Email me',
+    onClick: () => {
+      window.location.href = `mailto:${PROFILE.email}`
+    }
+  }
+}
 
 type ContactFormProps = {
   className?: string
@@ -156,11 +171,12 @@ const ContactForm = ({ className }: ContactFormProps) => {
 
       toast.error(
         res.status === 503
-          ? 'Cannot reach the booking service right now. Please email me directly.'
-          : 'Something went wrong sending that. Please try again, or email me directly.'
+          ? `Cannot reach the booking service right now. Please email me at ${PROFILE.email}.`
+          : `Something went wrong sending that. Please try again, or email me at ${PROFILE.email}.`,
+        EMAIL_FALLBACK
       )
     } catch {
-      toast.error('Network error. Please try again, or email me directly.')
+      toast.error(`Network error. Please try again, or email me at ${PROFILE.email}.`, EMAIL_FALLBACK)
     } finally {
       setPending(false)
     }
