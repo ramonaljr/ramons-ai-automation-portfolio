@@ -80,7 +80,7 @@ ${posts.map(p => line(p.title ?? p.slug, abs(`/blog/${p.slug}`), p.description))
 
 ## Working together
 
-${ENGAGEMENTS.map(e => `- **${e.name}** (${e.duration}, ${e.price} ${e.priceNote}): ${e.summary} Includes ${e.includes.join('; ')}.`).join('\n')}
+${ENGAGEMENTS.map(e => `- **${e.name}** (${e.duration}; ${e.pricing.toLowerCase()}, ${e.pricingNote}): ${e.summary} Includes ${e.includes.join('; ')}.`).join('\n')}
 
 Published prices are starting points. The final quote depends on the systems involved and the volume, and is fixed before any build starts.
 

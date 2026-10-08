@@ -16,7 +16,7 @@ const VISUALS: ReactNode[] = [<AuditVisual key='audit' />, <BuildVisual key='bui
  *
  * Audit, build and retainer are the order most clients take them in, so they
  * read left to right as numbered steps on a line that draws in as the section
- * arrives. Each step carries its How it works illustration, a starting price
+ * arrives. Each step carries its How it works illustration, how it is priced
  * and what the client leaves with; the build is the dark card, the one the
  * page leads towards.
  */
@@ -63,8 +63,8 @@ export function EngagementSection() {
                   </h3>
 
                   <p className='engagement-price'>
-                    <strong style={{ fontFamily: DISPLAY_FONT }}>{tier.price}</strong>
-                    <span>{tier.priceNote}</span>
+                    <strong style={{ fontFamily: DISPLAY_FONT }}>{tier.pricing}</strong>
+                    <span>{tier.pricingNote}</span>
                   </p>
 
                   <p className='engagement-for'>{tier.forWhen}</p>

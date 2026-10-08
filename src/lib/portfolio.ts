@@ -664,9 +664,10 @@ export const TENURES: Tenure[] = EXPERIENCE.reduce<Tenure[]>((groups, role) => {
  * Engagement tiers.
  *
  * `forWhen` names the state the reader is in, not what they get — that is
- * `summary`'s job. Prices are published as starting points (`price`,
- * `priceNote`); llms.txt states the same figures, and the chatbot's n8n
- * prompt, which lives outside this repo, needs to agree with them.
+ * `summary`'s job. No figures are published: `pricing` says how each tier
+ * is charged and `pricingNote` where the number is agreed. The chatbot's n8n
+ * prompt, which lives outside this repo, follows the same rule and points
+ * price questions to the free call.
  */
 export const ENGAGEMENTS = [
   {
@@ -682,12 +683,8 @@ export const ENGAGEMENTS = [
     ],
     cta: 'Book the audit',
     href: '#contact',
-
-    // Sample prices, set from 2026 market rates for freelance n8n / Make /
-    // Zapier work (single builds $400-1,200, multi-workflow systems
-    // $1,500-4,500, retainers $1,200-3,800/mo). Replace with real ones.
-    price: '$750',
-    priceNote: 'fixed fee',
+    pricing: 'Fixed fee',
+    pricingNote: 'quoted on the free call',
     outcome: 'A prioritised plan and which tool to build it on.',
     start: true
   },
@@ -704,8 +701,8 @@ export const ENGAGEMENTS = [
     ],
     cta: 'Request a quote',
     featured: true,
-    price: 'From $1,800',
-    priceNote: 'per workflow, fixed quote',
+    pricing: 'Fixed quote',
+    pricingNote: 'per workflow, agreed before work starts',
     outcome: 'A tested workflow running in your accounts, documented.'
   },
   {
@@ -720,8 +717,8 @@ export const ENGAGEMENTS = [
       'Faster replies when you need me'
     ],
     cta: 'Request a quote',
-    price: 'From $1,200',
-    priceNote: 'per month',
+    pricing: 'Flat monthly fee',
+    pricingNote: 'scope agreed up front',
     outcome: 'Workflows that keep working as your tools change.'
   }
 ]
