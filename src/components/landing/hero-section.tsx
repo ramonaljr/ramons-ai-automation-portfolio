@@ -48,7 +48,7 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
 
     const interval = window.setInterval(() => {
       setWordIndex(current => (current + 1) % ROTATING_WORK.length)
-    }, 2800)
+    }, 3200)
 
     return () => window.clearInterval(interval)
   }, [reduced])
@@ -108,13 +108,18 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
               aria-hidden='true'
             >
               <span className='invisible block'>{LONGEST_WORK}</span>
-              <AnimatePresence initial={false} mode='wait'>
+              {/* The words cross over each other rather than taking turns. With
+                  `mode='wait'` the old word left before the new one arrived,
+                  so for over a second of every cycle the headline read "Let
+                  automation handle" with nothing after it. The first word is
+                  on screen from the first frame (`initial={false}`). */}
+              <AnimatePresence initial={false}>
                 <motion.span
                   key={ROTATING_WORK[wordIndex]}
-                  initial={reduced ? false : { opacity: 0, y: '42%', filter: 'blur(14px)' }}
-                  animate={{ opacity: 1, y: '0%', filter: 'blur(0px)' }}
-                  exit={reduced ? undefined : { opacity: 0, y: '-35%', filter: 'blur(12px)' }}
-                  transition={{ duration: reduced ? 0 : 0.62, ease: [0.16, 1, 0.3, 1] }}
+                  initial={reduced ? false : { opacity: 0, y: '38%' }}
+                  animate={{ opacity: 1, y: '0%' }}
+                  exit={reduced ? undefined : { opacity: 0, y: '-38%' }}
+                  transition={{ duration: reduced ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
                   className='hero-outcome absolute inset-x-0 top-0 block'
                 >
                   {ROTATING_WORK[wordIndex]}
@@ -131,8 +136,9 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            I connect the tools you already use so work moves on its own, from following up leads to invoices and
-            month-end accounts. Built by a former accountant and payables supervisor with an MBA.
+            For finance and operations teams: I connect the tools you already use so work moves on its own, from
+            following up leads to invoices and month-end accounts. Built by a former accountant and payables
+            supervisor with an MBA.
           </p>
 
           <div

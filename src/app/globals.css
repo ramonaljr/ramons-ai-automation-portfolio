@@ -3622,8 +3622,8 @@ a.work-aux-link:hover {
    only states it needs. */
 .work-card:hover,
 .work-card:focus-within {
-  border-color: color-mix(in oklch, var(--work-tone) 55%, var(--rule));
-  box-shadow: 0 0 0 1px color-mix(in oklch, var(--work-tone) 30%, transparent);
+  border-color: color-mix(in oklch, var(--accent) 45%, var(--rule));
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--accent) 22%, transparent);
 }
 
 .work-card-frame {
@@ -3664,8 +3664,8 @@ a.work-aux-link:hover {
   right: 0.8rem;
   padding: 0.22rem 0.55rem;
   border-radius: 0.4rem;
-  background: color-mix(in oklch, var(--work-tone) 16%, var(--ground));
-  color: color-mix(in oklch, var(--work-tone) 78%, var(--ink));
+  background: color-mix(in oklch, var(--accent) 12%, var(--ground));
+  color: color-mix(in oklch, var(--accent) 78%, var(--ink));
   text-transform: uppercase;
 }
 
@@ -3687,7 +3687,7 @@ a.work-aux-link:hover {
 }
 
 .work-card-context {
-  color: color-mix(in oklch, var(--work-tone) 80%, var(--ink));
+  color: color-mix(in oklch, var(--accent) 80%, var(--ink));
   font-family: var(--font-mono), monospace;
   font-size: 0.7rem;
   letter-spacing: 0.12em;
@@ -3727,7 +3727,7 @@ a.work-aux-link:hover {
 }
 
 .work-card-select:focus-visible {
-  outline: 2px solid var(--work-tone);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -3739,7 +3739,10 @@ a.work-aux-link:hover {
 }
 
 .work-card-outcome strong {
-  color: var(--work-tone);
+  /* One accent for every card's figure. Each project's own tone stays in its
+     picture, where it tells the projects apart without turning the grid into
+     a palette. */
+  color: var(--accent);
   font-size: 1.6rem;
   font-weight: 400;
   line-height: 1;
@@ -5183,7 +5186,7 @@ a.work-aux-link:hover {
   margin-inline: auto;
   border: 1px solid oklch(1 0 0 / 0.35);
   border-radius: 2rem;
-  background: oklch(0.2 0.025 45);
+  background: oklch(0.22 0.04 40);
   box-shadow: 0 50px 120px -60px oklch(0.25 0.06 45 / 0.8);
   color: var(--story-cream);
 }
@@ -5204,9 +5207,13 @@ a.work-aux-link:hover {
 .story-shade {
   position: absolute;
   inset: 0;
+  /* Shaded in warm espresso with a terracotta glow from the lamp side, so
+     the dark scenes read as the same autumn palette as the page around them
+     rather than a separate, near-black film. */
   background:
-    linear-gradient(90deg, oklch(0.16 0.025 45 / 0.9) 0%, oklch(0.16 0.025 45 / 0.55) 42%, transparent 70%),
-    linear-gradient(0deg, oklch(0.16 0.025 45 / 0.7) 0%, transparent 35%);
+    radial-gradient(ellipse at 88% 12%, oklch(0.64 0.13 45 / 0.2), transparent 55%),
+    linear-gradient(90deg, oklch(0.19 0.045 38 / 0.9) 0%, oklch(0.19 0.045 38 / 0.55) 42%, transparent 70%),
+    linear-gradient(0deg, oklch(0.19 0.045 38 / 0.7) 0%, transparent 35%);
 }
 
 .story-copy {
@@ -5443,7 +5450,9 @@ a.work-aux-link:hover {
 .story-panel-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, oklch(0.16 0.025 45 / 0.92) 0%, oklch(0.16 0.025 45 / 0.6) 55%, oklch(0.16 0.025 45 / 0.25));
+  background:
+    radial-gradient(ellipse at 90% 8%, oklch(0.64 0.13 45 / 0.18), transparent 60%),
+    linear-gradient(0deg, oklch(0.19 0.045 38 / 0.92) 0%, oklch(0.19 0.045 38 / 0.6) 55%, oklch(0.19 0.045 38 / 0.25));
 }
 
 .story-panel-copy {
@@ -6518,14 +6527,17 @@ div#experience.about-journey {
   color: oklch(0.82 0.12 60);
 }
 
+/* One primary button colour on the page: espresso on light ground, and its
+   inverse (cream, espresso text) on this dark card, as the story's outcome
+   link does. Red is kept for small accents only. */
 .engagement-step[data-featured] .engagement-cta {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: oklch(0.98 0.01 80);
+  border-color: oklch(0.96 0.012 80);
+  background: oklch(0.96 0.012 80);
+  color: var(--ink);
 }
 
 .engagement-step[data-featured] .engagement-cta:hover {
-  background: color-mix(in oklch, var(--accent) 85%, black);
+  background: oklch(0.9 0.016 80);
 }
 
 .engagement-reassure {
@@ -6915,4 +6927,14 @@ div#experience.about-journey {
   .footer-clock i {
     animation: none;
   }
+}
+
+/* Tool logos rest in ink and take their brand colour on hover. */
+.tool-mark {
+  background-color: var(--ink-3);
+  transition: background-color 0.3s ease;
+}
+
+.tool-pill:hover .tool-mark {
+  background-color: var(--tool-color);
 }

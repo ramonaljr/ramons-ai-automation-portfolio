@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
 import { READABLE } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
@@ -11,14 +11,18 @@ import { TOOLS_ROW_1, TOOLS_ROW_2 } from '@/lib/portfolio'
  * Logos are monochrome simple-icons SVGs. Painting them through a CSS mask
  * lets a single file carry any brand colour, which an <img> cannot do.
  * Tools with no logo file fall back to a monogram badge.
+ *
+ * At rest every mark is painted in ink, so twenty brand colours do not
+ * compete with the page's one accent; a pill takes its brand colour on hover
+ * (`.tool-pill` / `.tool-mark` in globals.css).
  */
 function ToolMark({ tool }: { tool: Tool }) {
   if (!tool.slug) {
     return (
       <span
         aria-hidden='true'
-        className='text-ground flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[12px] font-semibold'
-        style={{ backgroundColor: tool.color }}
+        className='tool-mark text-ground flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[12px] font-semibold'
+        style={{ '--tool-color': tool.color } as CSSProperties}
       >
         {tool.name.charAt(0)}
       </span>
@@ -30,9 +34,9 @@ function ToolMark({ tool }: { tool: Tool }) {
   return (
     <span
       aria-hidden='true'
-      className='h-[22px] w-[22px] shrink-0'
+      className='tool-mark h-[22px] w-[22px] shrink-0'
       style={{
-        backgroundColor: tool.color,
+        '--tool-color': tool.color,
         WebkitMaskImage: url,
         maskImage: url,
         WebkitMaskSize: 'contain',
@@ -41,14 +45,14 @@ function ToolMark({ tool }: { tool: Tool }) {
         maskRepeat: 'no-repeat',
         WebkitMaskPosition: 'center',
         maskPosition: 'center'
-      }}
+      } as CSSProperties}
     />
   )
 }
 
 function Pill({ tool }: { tool: Tool }) {
   return (
-    <span className='border-rule bg-surface hover:bg-surface-raised hover:border-rule-strong flex shrink-0 items-center gap-2.5 rounded-full border px-5 py-3 transition-colors duration-300'>
+    <span className='tool-pill border-rule bg-surface hover:bg-surface-raised hover:border-rule-strong flex shrink-0 items-center gap-2.5 rounded-full border px-5 py-3 transition-colors duration-300'>
       <ToolMark tool={tool} />
       <span className='text-ink-2 text-[14px] whitespace-nowrap'>{tool.name}</span>
     </span>
