@@ -124,13 +124,13 @@
      three names for one colour. Warm-tinted (hue 70) so text belongs to the
      cream ground rather than sitting on it as neutral grey. */
   --ink: oklch(0.225 0.025 52);
-  --ink-2: oklch(0.39 0.028 55);
-  --ink-3: oklch(0.52 0.03 58);
-  --ink-4: oklch(0.65 0.027 60);
+  --ink-2: oklch(0.35 0.028 55);
+  --ink-3: oklch(0.46 0.03 58);
+  --ink-4: oklch(0.6 0.027 60);
   --rule: oklch(0.27 0.03 55 / 0.11);
   --rule-strong: oklch(0.27 0.04 55 / 0.22);
   --ground: oklch(0.957 0.018 82);
-  --surface: oklch(1 0 0 / 0.68);
+  --surface: oklch(1 0 0 / 0.84);
   --surface-raised: oklch(1 0 0 / 0.94);
   --ring-contrast: oklch(0.51 0.16 32);
   --hero-word-edge: oklch(0.48 0.14 27);
@@ -1036,8 +1036,7 @@ body::after {
 
 .koisei-nav .font-pixel,
 .koisei-nav a {
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
 }
 
 /**
@@ -2014,10 +2013,8 @@ body::after {
 .experience-tenure-company {
   margin: 0;
   color: var(--ink);
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
 .experience-tenure-span {
@@ -2101,7 +2098,7 @@ body::after {
   margin: 0.5rem 0 0;
   max-width: 62ch;
   color: var(--ink-2);
-  font-size: 0.85rem;
+  font-size: 0.9375rem;
   line-height: 1.62;
 }
 
@@ -3614,7 +3611,7 @@ a.work-aux-link:hover {
   overflow: hidden;
   border: 1px solid var(--rule);
   border-radius: 1.1rem;
-  background: color-mix(in oklch, var(--ground) 82%, transparent);
+  background: color-mix(in oklch, var(--ground) 93%, transparent);
   backdrop-filter: blur(8px);
   transition:
     border-color 0.35s ease,
@@ -3749,8 +3746,8 @@ a.work-aux-link:hover {
 }
 
 .work-card-outcome span {
-  color: color-mix(in oklch, var(--ink) 70%, transparent);
-  font-size: 0.78rem;
+  color: var(--ink-2);
+  font-size: 0.82rem;
 }
 
 .work-card-outcome em {
@@ -3763,8 +3760,8 @@ a.work-aux-link:hover {
 }
 
 .work-card-summary {
-  color: color-mix(in oklch, var(--ink) 66%, transparent);
-  font-size: 0.85rem;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
   line-height: 1.55;
 }
 
@@ -3772,10 +3769,8 @@ a.work-aux-link:hover {
   margin-top: auto;
   padding-top: 0.6rem;
   border-top: 1px solid var(--rule);
-  color: color-mix(in oklch, var(--ink) 45%, transparent);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  font-size: 0.8125rem;
 }
 
 /* The change plays rather than simply appearing: THEN settles, the hinge
@@ -4367,7 +4362,7 @@ a.work-aux-link:hover {
   overflow: hidden;
   border: 1px solid color-mix(in oklch, var(--ink) 9%, transparent);
   border-radius: 1rem;
-  background: color-mix(in oklch, var(--ground) 88%, transparent);
+  background: color-mix(in oklch, var(--ground) 95%, transparent);
   box-shadow: 0 10px 30px -26px oklch(0.2 0.03 45 / 0.45);
   transition: border-color 240ms ease, background-color 240ms ease;
 }
@@ -5893,7 +5888,6 @@ div#experience.about-journey {
 .about-how-label,
 .story-copy-tag,
 .work-card-context,
-.work-card-stack,
 .work-card-outcome em {
   font-size: 0.75rem;
 }
@@ -6370,9 +6364,8 @@ div#experience.about-journey {
 .engagement-duration {
   color: var(--ink-2);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
 }
 
 .engagement-name {
@@ -6505,7 +6498,7 @@ div#experience.about-journey {
 }
 
 .engagement-step[data-featured] :is(.engagement-duration, .engagement-price span, .engagement-includes li) {
-  color: oklch(0.96 0.012 80 / 0.72);
+  color: oklch(0.96 0.012 80 / 0.84);
 }
 
 .engagement-step[data-featured] .engagement-price {

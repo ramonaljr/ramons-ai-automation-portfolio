@@ -18,7 +18,7 @@ import { PROFILE } from '@/lib/portfolio'
 
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
-export const alt = 'Article by Ramon A. Vallejera, Jr.'
+export const alt = `Article by ${PROFILE.name}`
 
 export async function generateStaticParams() {
   const posts = await getPosts()

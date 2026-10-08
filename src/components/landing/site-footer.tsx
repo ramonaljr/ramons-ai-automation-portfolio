@@ -138,7 +138,7 @@ export function SiteFooter() {
           </nav>
 
           <div className='footer-identity'>
-            <p className='font-pixel text-ink-2 text-xs tracking-[0.25em]'>{PROFILE.shortName.toUpperCase()}</p>
+            <p className='font-pixel text-ink-2 text-xs tracking-[0.25em]'>{PROFILE.name.toUpperCase()}</p>
             <p className='text-ink-2 mt-2 text-[14px]'>
               {PROFILE.title} · {PROFILE.location}
             </p>

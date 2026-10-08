@@ -40,7 +40,7 @@ export async function GET() {
 
   const body = `# ${PROFILE.name} — ${PROFILE.title}
 
-> Independent AI automation specialist based in the Philippines. Builds production workflow automation on n8n, Zapier, Make and GoHighLevel — AI agents, LLM and RAG integrations, and multi-system pipelines that remove manual work from business operations.
+> Independent AI automation engineer for finance & operations teams, based in the Philippines. Builds production workflow automation on n8n, Zapier, Make and GoHighLevel — AI agents, LLM and RAG integrations, and multi-system pipelines that remove manual work from business operations.
 
 Ten years running finance and business operations — accounts payable, reconciliation and month-end close — before automating them, plus an MBA. That background is the differentiator: approval rules, segregation of duties and audit trails are mapped before anything is built.
 

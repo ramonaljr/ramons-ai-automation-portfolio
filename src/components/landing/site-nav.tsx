@@ -7,6 +7,8 @@ import { motion, useScroll, useSpring } from 'motion/react'
 
 import { BrandMark } from '@/components/landing/brand-mark'
 
+import { PROFILE } from '@/lib/portfolio'
+
 /**
  * The floating glass nav bar. Shared by the landing page and every page that
  * adopts its design, so the section links have to resolve from anywhere: on the
@@ -150,7 +152,7 @@ export function SiteNav() {
           <a
             href={onLanding ? '#top' : '/'}
             className='nav-brand font-pixel text-ink inline-flex items-center gap-2.5 text-xs tracking-[0.25em] transition-opacity hover:opacity-70'
-            aria-label='Ramon — back to top'
+            aria-label={`${PROFILE.name} — back to top`}
           >
             <span
               className='nav-brand-mark relative block shrink-0'
@@ -159,7 +161,7 @@ export function SiteNav() {
             >
               <BrandMark className='block h-full w-full overflow-visible' />
             </span>
-            <span>RAMON</span>
+            <span>{PROFILE.name.toUpperCase()}</span>
           </a>
 
           {/* Desktop links */}

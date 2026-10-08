@@ -65,14 +65,15 @@ const satoshi = localFont({
 export const metadata: Metadata = {
   title: {
     template: '%s - Ramon Vallejera Jr.',
-    default: 'AI Automation Specialist | n8n, Zapier & Make — Ramon Vallejera'
+    default: 'AI Automation Engineer | n8n, Zapier & Make — Ramon Vallejera Jr.'
   },
   description:
-    'I automate data entry, lead follow-up, invoices and reporting with n8n, Zapier, Make and AI. Built by a former accountant with an MBA. Free 30-minute call.',
+    'AI automation for finance & operations teams, built by a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier, Make and AI. Free 30-minute call.',
   robots: 'index,follow',
 
   // Search engines ignore this list; it stays for the few tools that read it.
   keywords: [
+    'AI Automation Engineer',
     'AI Automation Specialist',
     'n8n developer',
     'Zapier expert',
@@ -135,20 +136,20 @@ export const metadata: Metadata = {
   openGraph: {
     title: {
       template: '%s - Ramon Vallejera Jr.',
-      default: 'AI Automation Specialist | n8n, Zapier & Make — Ramon Vallejera'
+      default: 'AI Automation Engineer | n8n, Zapier & Make — Ramon Vallejera Jr.'
     },
     description:
-      'I automate data entry, lead follow-up, invoices and reporting with n8n, Zapier, Make and AI. Built by a former accountant with an MBA. Free 30-minute call.',
+      'AI automation for finance & operations teams, built by a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier, Make and AI. Free 30-minute call.',
     type: 'website',
-    siteName: 'Ramon A. Vallejera, Jr.',
+    siteName: 'Ramon Vallejera Jr.',
     url: SITE_URL,
     images: [
       {
-        url: '/images/og-image-v2.jpg',
+        url: '/images/og-image-v3.jpg',
         type: 'image/jpeg',
         width: 1200,
         height: 630,
-        alt: 'Ramon A. Vallejera, Jr. — Automation that gives your team time back'
+        alt: 'Ramon Vallejera Jr. — Better systems. More human work.'
       }
     ]
   },
@@ -156,11 +157,11 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: {
       template: '%s - Ramon Vallejera Jr.',
-      default: 'AI Automation Specialist | n8n, Zapier & Make — Ramon Vallejera'
+      default: 'AI Automation Engineer | n8n, Zapier & Make — Ramon Vallejera Jr.'
     },
     description:
-      'I automate data entry, lead follow-up, invoices and reporting with n8n, Zapier, Make and AI. Built by a former accountant with an MBA. Free 30-minute call.',
-    images: ['/images/og-image-v2.jpg']
+      'AI automation for finance & operations teams, built by a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier, Make and AI. Free 30-minute call.',
+    images: ['/images/og-image-v3.jpg']
   }
 }
 

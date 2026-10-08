@@ -8,9 +8,13 @@
  */
 
 export const PROFILE = {
-  name: 'Ramon A. Vallejera, Jr.',
+  // One public name and one title, everywhere. The full legal name is kept for
+  // structured data, so the CV and LinkedIn still match this site.
+  name: 'Ramon Vallejera Jr.',
+  legalName: 'Ramon A. Vallejera, Jr.',
   shortName: 'Ramon',
-  title: 'AI Automation Specialist',
+  title: 'AI Automation Engineer',
+  audience: 'finance & operations teams',
   credential: 'MBA',
   location: 'Philippines',
   email: 'ramonvallejerajr@gmail.com',

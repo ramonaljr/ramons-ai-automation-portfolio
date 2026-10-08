@@ -54,9 +54,8 @@ export function IntroSection() {
 
   const reveal = (delay: number) => ({
     opacity: inView ? 1 : 0,
-    filter: inView ? 'blur(0px)' : 'blur(14px)',
-    transform: inView ? 'translateY(0px)' : 'translateY(20px)',
-    transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms, filter 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
+    transform: inView ? 'translateY(0px)' : 'translateY(16px)',
+    transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
   })
 
   return (
@@ -80,7 +79,7 @@ export function IntroSection() {
         <div className='saas-about-panel grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-20'>
           {/* ── Left: the introduction ──────────────────────────────────── */}
           <div className={READABLE}>
-            <div style={introStep(inView, reducedMotion, { delay: 120, y: 40, blur: 14, duration: 1.15 })}>
+            <div style={introStep(inView, reducedMotion, { delay: 60, y: 16, duration: 0.7 })}>
               <h2
                 className='text-ink text-[clamp(2.25rem,5vw,4rem)] leading-[1.02] font-light tracking-tight'
                 style={{ fontFamily: DISPLAY_FONT }}
@@ -88,11 +87,11 @@ export function IntroSection() {
                 <GreetingWord className='text-ink-3' />
                 <span className='text-ink-3'>, I&apos;m</span>
                 <br />
-                Ramon A. Vallejera, Jr.
+                {PROFILE.name}
               </h2>
               <p className='text-ink-2 mt-4 text-xl font-light sm:text-2xl' style={{ fontFamily: DISPLAY_FONT }}>
-                AI Automation Specialist
-                <span className='text-ink-3'> · MBA</span>
+                {PROFILE.title}
+                <span className='text-ink-3'> for {PROFILE.audience}</span>
               </p>
             </div>
 
@@ -213,8 +212,8 @@ export function IntroSection() {
             </div>
 
             <div className='relative'>
-              {/* The warm office portrait; the hero carries the one facing the
-                  camera, and the same photo twice would read as filler. */}
+              {/* The casual, smiling portrait; the hero carries the office one,
+                  and the same photo twice would read as filler. */}
               <div
                 className='saas-portrait-frame about-film-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border'
                 data-visible={inView}
@@ -224,10 +223,10 @@ export function IntroSection() {
                   <span>BUSINESS × AUTOMATION</span>
                 </div>
                 <img
-                  src='/images/landing/ramon-portrait-autumn.webp'
-                  alt='Ramon A. Vallejera, Jr.'
-                  width={1120}
-                  height={1400}
+                  src='/images/landing/ramon-portrait-casual.webp'
+                  alt={PROFILE.name}
+                  width={880}
+                  height={1100}
                   loading='lazy'
                   className='h-auto w-full object-cover'
                 />

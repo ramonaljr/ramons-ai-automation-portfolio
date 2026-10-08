@@ -7,17 +7,14 @@ import { DISPLAY_FONT, READABLE, useInView, usePrefersReducedMotion } from '@/co
 /**
  * The entrance every section heading shares.
  *
- * `rise` is 22px over 0.7s, which is right for a card in a grid of twelve but
- * disappears on a single heading — by the time the eye reaches it the movement
- * is over. This is deliberately slower and travels further, and it staggers
- * three parts rather than moving one block, so the cascade is legible:
+ *   tag      0ms    fade + 12px
+ *   heading  80ms   fade + 16px
+ *   blurb    180ms  fade + 12px
  *
- *   tag      0ms    fade + 16px
- *   heading  200ms  blur 14px to sharp + 40px
- *   blurb    420ms  fade + 20px
- *
- * Total is about 1.5s. That is long for UI and correct for a section opener,
- * which the reader arrives at rather than clicks.
+ * The heading used to arrive from a 14px blur over 1.15s, 200ms late. At a
+ * normal scroll speed the line that names the section was the last thing on
+ * screen to become readable. It is now sharp from its first frame and settles
+ * in well under a second, so motion never stands between a reader and a word.
  */
 
 const EASE = 'cubic-bezier(0.16,1,0.3,1)'
@@ -25,7 +22,7 @@ const EASE = 'cubic-bezier(0.16,1,0.3,1)'
 export function introStep(
   inView: boolean,
   reduced: boolean,
-  { delay, y, blur = 0, duration }: { delay: number; y: number; blur?: number; duration: number }
+  { delay, y, duration }: { delay: number; y: number; duration: number }
 ): CSSProperties {
   if (reduced) {
     // Opacity alone carries no vestibular risk, so the content still arrives.
@@ -38,10 +35,7 @@ export function introStep(
   return {
     opacity: inView ? 1 : 0,
     transform: inView ? 'translateY(0)' : `translateY(${y}px)`,
-    filter: blur ? (inView ? 'blur(0px)' : `blur(${blur}px)`) : undefined,
-    transition:
-      `opacity ${duration}s ${EASE} ${delay}ms, transform ${duration}s ${EASE} ${delay}ms` +
-      (blur ? `, filter ${duration}s ${EASE} ${delay}ms` : ''),
+    transition: `opacity ${duration}s ${EASE} ${delay}ms, transform ${duration}s ${EASE} ${delay}ms`,
     willChange: inView ? undefined : 'opacity, transform'
   }
 }
@@ -86,7 +80,7 @@ export function SectionIntro({
           element changed costume from section to section while the hero used a
           third style. The rule is the shared signal — it also gives the eye a
           consistent left anchor as the page scrolls. */}
-      <div style={introStep(inView, reduced, { delay: 0, y: 16, duration: 0.8 })}>
+      <div style={introStep(inView, reduced, { delay: 0, y: 12, duration: 0.6 })}>
         <p className={`flex items-center gap-3 ${centred ? 'justify-center' : ''}`}>
           <span className='saas-eyebrow-mark' aria-hidden='true'>
             <span />
@@ -100,7 +94,7 @@ export function SectionIntro({
           className={`${titleClassName} text-ink leading-[1.05] font-light tracking-tight`}
           style={{
             fontFamily: DISPLAY_FONT,
-            ...introStep(inView, reduced, { delay: 200, y: 40, blur: 14, duration: 1.15 })
+            ...introStep(inView, reduced, { delay: 80, y: 16, duration: 0.7 })
           }}
         >
           {title}
@@ -110,7 +104,7 @@ export function SectionIntro({
       {blurb && (
         <p
           className={`text-lead text-ink-2 mt-5 ${centred ? 'mx-auto' : ''} max-w-[54ch]`}
-          style={introStep(inView, reduced, { delay: 420, y: 20, duration: 0.9 })}
+          style={introStep(inView, reduced, { delay: 180, y: 12, duration: 0.7 })}
         >
           {blurb}
         </p>

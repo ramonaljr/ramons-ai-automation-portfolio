@@ -85,9 +85,13 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
           >
             <span className='inline-flex items-center gap-3'>
               <span className='bg-ink/25 h-px w-8' />
-              {/* Positioning in order of breadth: what I do for anyone, the
-                  field I know from the inside, then the credential. */}
-              <span className='eyebrow'>AI automation · Accounting &amp; finance · MBA</span>
+              {/* The brand line. It closes the page in the footer too, so a
+                  visitor meets the same promise first and last. The
+                  credentials it replaced are in the byline and portrait card. */}
+              <span className='eyebrow'>
+                Better systems. <br className='sm:hidden' />
+                More human work.
+              </span>
             </span>
           </div>
 
@@ -144,20 +148,21 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
         </div>
 
         {/* People hire people: a face above the fold does trust work before a
-            word is read, and this one looks at the visitor. Warm-graded to the
-            autumn palette; the office portrait carries About. */}
+            word is read. The office portrait is the strongest photo on the site
+            and already graded to the autumn palette, so it leads; the casual,
+            smiling one carries About, where the tone is personal. */}
         <figure className='hero-portrait hidden lg:block' data-visible={isVisible}>
           <div className='hero-portrait-frame'>
             {/* The card only shows at 1024px and up, but a hidden <img> still
                 downloads. Below that the source is a 1px placeholder, so
-                phones skip 118 KB they would never see. */}
+                phones skip 120 KB they would never see. */}
             <picture>
               <source media='(max-width: 1023px)' srcSet='data:image/gif;base64,R0lGODlhAQABAAAAACw=' />
               <img
-                src='/images/landing/ramon-portrait-casual.webp'
+                src='/images/landing/ramon-portrait-autumn.webp'
                 alt={PROFILE.name}
-                width={880}
-                height={1100}
+                width={1120}
+                height={1400}
                 fetchPriority='high'
                 className='hero-portrait-image'
               />
@@ -171,7 +176,7 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
 
           <figcaption className='hero-portrait-caption'>
             <strong style={{ fontFamily: DISPLAY_FONT }}>{PROFILE.name}</strong>
-            <span>Automation specialist · former accountant · MBA</span>
+            <span>{PROFILE.title} · former accountant · MBA</span>
           </figcaption>
         </figure>
       </div>
@@ -195,7 +200,7 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
               >
                 <CountUp start={isVisible}>{stat.value}</CountUp>
               </span>
-              <span className='text-meta text-ink-3 max-w-[18ch]'>{stat.label}</span>
+              <span className='text-ink-2 max-w-[20ch] text-sm leading-snug'>{stat.label}</span>
             </div>
           ))}
         </div>

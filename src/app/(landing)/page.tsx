@@ -31,7 +31,7 @@ const jsonLd = {
       '@type': 'Person',
       '@id': `${SITE_URL}#person`,
       name: PROFILE.name,
-      alternateName: PROFILE.shortName,
+      alternateName: [PROFILE.legalName, PROFILE.shortName],
       jobTitle: PROFILE.title,
       email: `mailto:${PROFILE.email}`,
       url: SITE_URL,
