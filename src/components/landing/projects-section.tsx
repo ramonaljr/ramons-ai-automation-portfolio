@@ -139,12 +139,12 @@ type WorkCardProps = {
 }
 
 function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpen }: WorkCardProps) {
-  // The card's own sighting, separate from the grid's: the canvas should run
-  // when this card is actually on screen, not when the first row arrives.
+  // Hovers only count once the card has actually been on screen.
   const { ref, inView: seen } = useInView<HTMLLIElement>(0.3)
 
-  // Each hover plays the run again. Starts at 0 and is offset below, so the
-  // first positive value the canvas sees is the entrance run.
+  // The picture rests finished and each hover plays the run. It used to start
+  // empty and draw itself in once scrolled to, which took about three seconds;
+  // anyone scrolling at a normal pace saw a row of blank white boxes.
   const [replays, setReplays] = useState(0)
   const { frameRef, lensRef, artRef, move: moveLens, hide: hideLens } = useMagnifier()
 
@@ -182,7 +182,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
         data-view={view?.key}
         initial={{ clipPath: 'inset(100% 0% 0% 0%)' }}
         animate={dealt ? { clipPath: 'inset(0% 0% 0% 0%)' } : { clipPath: 'inset(100% 0% 0% 0%)' }}
-        transition={reduced ? { duration: 0 } : { duration: 0.9, delay: delay + 0.18, ease: [0.76, 0, 0.24, 1] }}
+        transition={reduced ? { duration: 0 } : { duration: 0.5, delay: delay + 0.08, ease: [0.76, 0, 0.24, 1] }}
       >
         <ViewStage
           views={gallery}
@@ -196,9 +196,9 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
                 src={item.cardSrc ?? item.src}
                 label={item.alt}
                 idSuffix={`${cs.slug}-card`}
-                run={seen ? replays + 1 : 0}
+                run={replays}
                 reduced={reduced}
-                lead={delay + 0.55}
+                rest='static'
               />
             ) : (
               <img

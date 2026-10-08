@@ -90,6 +90,35 @@ const P = {
 /** Dispatch on `window` to open the chat from anywhere on the page. */
 export const OPEN_CHAT_EVENT = 'portfolio:open-chat'
 
+/**
+ * Whether the assistant answered its health check. `null` until it has, so
+ * nothing is hidden on a guess. Module state plus an event rather than a
+ * context provider: the widget mounts once at the layout level and the FAQ's
+ * "Ask the assistant" box is the only other reader.
+ */
+const CHAT_STATUS_EVENT = 'portfolio:chat-status'
+let chatAvailable: boolean | null = null
+
+function publishAvailability(value: boolean) {
+  chatAvailable = value
+  window.dispatchEvent(new Event(CHAT_STATUS_EVENT))
+}
+
+export function useChatAvailable() {
+  const [available, setAvailable] = useState<boolean | null>(chatAvailable)
+
+  useEffect(() => {
+    const sync = () => setAvailable(chatAvailable)
+
+    sync()
+    window.addEventListener(CHAT_STATUS_EVENT, sync)
+
+    return () => window.removeEventListener(CHAT_STATUS_EVENT, sync)
+  }, [])
+
+  return available
+}
+
 export function ChatWidget() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([{ id: 0, role: 'bot', text: GREETING }])
@@ -101,6 +130,12 @@ export function ChatWidget() {
   // cannot claim to be connected to a backend that is down.
   const [status, setStatus] = useState<'idle' | 'ok' | 'down'>('idle')
 
+  const available = useChatAvailable()
+
+  // Phones: the launcher steps aside while the page moves, so it never sits on
+  // top of the text being read, and returns once scrolling stops.
+  const [scrolling, setScrolling] = useState(false)
+
   const listRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const nextId = useRef(1)
@@ -109,6 +144,39 @@ export function ChatWidget() {
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, pending])
+
+  // One health check per visit, after the page has settled. A failed check
+  // hides the launcher: a chat that can only say it is unavailable is worse
+  // than none, and the page's email links still work.
+  useEffect(() => {
+    if (chatAvailable !== null) return
+
+    const timer = window.setTimeout(() => {
+      fetch('/api/chat')
+        .then(r => r.json())
+        .then((d: { ok?: boolean }) => publishAvailability(d?.ok === true))
+        .catch(() => publishAvailability(false))
+    }, 2000)
+
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    let timer = 0
+
+    const onScroll = () => {
+      setScrolling(true)
+      window.clearTimeout(timer)
+      timer = window.setTimeout(() => setScrolling(false), 700)
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.clearTimeout(timer)
+    }
+  }, [])
 
   // Other parts of the page (the FAQ's "Ask the assistant") open the chat by
   // event rather than by prop, so the widget stays self-contained.
@@ -166,17 +234,22 @@ export function ChatWidget() {
 
   return (
     <>
-      {/* Launcher */}
-      <button
-        type='button'
-        onClick={() => setOpen(o => !o)}
-        aria-expanded={open}
-        aria-controls='chat-panel'
-        aria-label={open ? 'Close chat' : "Chat with Ramon's assistant"}
-        className='bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 w-12 items-center justify-center rounded-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:scale-105 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:w-14'
-      >
-        <Ico d={open ? P.close : P.chat} size={22} />
-      </button>
+      {/* Launcher. Gone when the health check failed, unless a chat is
+          already open and needs its close button. */}
+      {(available !== false || open) && (
+        <button
+          type='button'
+          onClick={() => setOpen(o => !o)}
+          aria-expanded={open}
+          aria-controls='chat-panel'
+          aria-label={open ? 'Close chat' : "Chat with Ramon's assistant"}
+          className={`bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 w-12 items-center justify-center rounded-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-[transform,opacity] duration-300 hover:scale-105 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:w-14 ${
+            scrolling && !open ? 'max-sm:pointer-events-none max-sm:translate-y-20 max-sm:opacity-0' : ''
+          }`}
+        >
+          <Ico d={open ? P.close : P.chat} size={22} />
+        </button>
+      )}
 
       {/* Panel */}
       <div

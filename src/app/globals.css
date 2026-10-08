@@ -6734,7 +6734,7 @@ div#experience.about-journey {
   font-weight: 500;
 }
 
-.faq-ask button {
+.faq-ask :is(button, a) {
   flex-shrink: 0;
   padding: 0.65rem 1.1rem;
   border-radius: 999px;
@@ -6745,7 +6745,7 @@ div#experience.about-journey {
   transition: background 0.3s ease;
 }
 
-.faq-ask button:hover {
+.faq-ask :is(button, a):hover {
   background: color-mix(in oklch, var(--ink) 85%, var(--accent));
 }
 

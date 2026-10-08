@@ -284,7 +284,7 @@ export function ContactSection() {
   return (
     <section
       id='contact'
-      className='contact-scene saas-section border-rule relative border-t px-6 py-20 md:px-12 md:py-32 lg:px-20'
+      className='contact-scene saas-section border-rule relative border-t px-6 py-16 md:px-12 md:py-24 lg:px-20'
     >
       <div className={CONTAINER}>
         <SectionIntro
@@ -298,7 +298,7 @@ export function ContactSection() {
           {[
             ['Pick a time', 'Any open weekday slot below.'],
             ['30-minute call', 'Walk me through the process that eats your week.'],
-            ['Written plan in 48 hours', 'What to automate, on which platform, and what it costs.']
+            ['Summary and quote in 48 hours', 'Whether it is worth automating, on which platform, and a fixed quote, or the audit first if it needs mapping.']
           ].map(([title, copy], index) => (
             <li key={title}>
               <span>{String(index + 1).padStart(2, '0')}</span>

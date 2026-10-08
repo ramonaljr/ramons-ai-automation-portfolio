@@ -106,7 +106,8 @@ export function WorkCanvas({
   idSuffix,
   run,
   reduced,
-  lead = 0
+  lead = 0,
+  rest = 'idle'
 }: {
   src: string
   label: string
@@ -120,6 +121,12 @@ export function WorkCanvas({
 
   /** Seconds before the first run starts, so it can follow an entrance. Replays start at once. */
   lead?: number
+
+  /**
+   * What `run` 0 shows: 'idle' holds the canvas empty until the first run,
+   * 'static' shows the finished drawing and only plays when asked.
+   */
+  rest?: 'idle' | 'static'
 }) {
   const hostRef = useRef<HTMLDivElement>(null)
   const artRef = useRef<HTMLDivElement>(null)
@@ -184,7 +191,7 @@ export function WorkCanvas({
     }
 
     if (run === 0) {
-      host.dataset.run = 'idle'
+      host.dataset.run = rest
 
       return
     }
@@ -196,9 +203,13 @@ export function WorkCanvas({
     host.dataset.run = 'idle'
     void host.offsetWidth
     host.dataset.run = 'go'
-  }, [run, markup, reduced, lead])
+  }, [run, markup, reduced, lead, rest])
 
-  const nodeCount = markup ? (markup.match(/<g filter=/g) ?? []).length : 0
+  // A summary drawing shows fewer tiles than the build has nodes, so it can
+  // carry the real count on its root as `data-nodes`.
+  const nodeCount = markup
+    ? Number(markup.match(/<svg[^>]*\sdata-nodes="(\d+)"/)?.[1] ?? 0) || (markup.match(/<g filter=/g) ?? []).length
+    : 0
 
   if (markup === '') {
     return <img src={src} alt={label} className='work-canvas-fallback' />

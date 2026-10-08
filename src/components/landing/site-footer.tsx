@@ -150,10 +150,11 @@ export function SiteFooter() {
         {/* ink-2, not ink-3: the lighter tone was unreadable on the footer's
             darkened ground. The name already ends in a full stop ("Jr."), so
             one is only added when it does not. */}
-        <div className='border-rule text-meta text-ink-2 mt-10 flex flex-wrap items-center justify-between gap-4 border-t pt-6'>
+        {/* Right padding keeps "Back to top" clear of the fixed chat button. */}
+        <div className='border-rule text-meta text-ink-2 mt-10 flex flex-wrap items-center justify-between gap-4 border-t pt-6 pr-16 sm:pr-20'>
           <p>
-            © {new Date().getFullYear()} {PROFILE.name.endsWith('.') ? PROFILE.name : `${PROFILE.name}.`} Built and
-            maintained in-house.
+            © {new Date().getFullYear()} {PROFILE.name.endsWith('.') ? PROFILE.name : `${PROFILE.name}.`} Designed and
+            built by me, running on Next.js and n8n.
           </p>
           <a href={onLanding ? '#top' : '/#top'} className='text-ink-2 hover:text-ink group inline-flex items-center gap-2 transition-colors'>
             Back to top

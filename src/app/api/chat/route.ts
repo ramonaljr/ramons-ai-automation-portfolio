@@ -5,6 +5,36 @@ import { CHAT_TIMEOUT_MS, callN8n } from '@/lib/n8n'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
+/**
+ * Whether the assistant can answer at all, so the page can hide it instead of
+ * offering a chat that only says it is unavailable.
+ *
+ * Sends the workflow an empty message: a healthy instance takes its
+ * no-message branch and answers 400 `empty_message` without calling the
+ * model, so the probe costs one cheap execution and no tokens. Anything else
+ * (a rejected webhook key, an inactive workflow, n8n down) reads as down.
+ * Cached at the edge for a minute so a busy page does not multiply it.
+ */
+export async function GET() {
+  let ok = false
+
+  try {
+    const { status, body } = await callN8n('portfolio-chat', {
+      method: 'POST',
+      body: { message: '', sessionId: 'health' }
+    })
+
+    ok = status === 400 && (body as { error?: string } | null)?.error === 'empty_message'
+  } catch {
+    ok = false
+  }
+
+  return NextResponse.json(
+    { ok },
+    { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } }
+  )
+}
+
 export async function POST(req: Request) {
   let payload: { message?: unknown; sessionId?: unknown }
 

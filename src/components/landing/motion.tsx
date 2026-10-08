@@ -40,13 +40,17 @@ const GUTTER = 'px-6 md:px-12 lg:px-20'
  * Phones take roughly two thirds of each measure: the desktop values left
  * 250–320px of empty scroll between sections on a 390px-wide screen.
  *
+ * Tightened again once every section had its own heading cascade: the gap
+ * between two sections ran 270–430px on desktop and 250–370px on a phone,
+ * a half to a full screen of nothing but the backdrop. Now about 200 / 130.
+ *
  * The asymmetry is intentional: bottom padding runs slightly heavier than top
  * because a heading sits optically higher in its own space than a block of
  * cards does, so equal padding reads as bottom-light.
  */
-export const SECTION = `saas-section pt-20 pb-24 md:pt-28 md:pb-32 ${GUTTER} border-t border-rule`
+export const SECTION = `saas-section pt-14 pb-16 md:pt-20 md:pb-24 ${GUTTER} border-t border-rule`
 
-export const SECTION_ANCHOR = `saas-section pt-24 pb-28 md:pt-36 md:pb-44 ${GUTTER}`
+export const SECTION_ANCHOR = `saas-section pt-16 pb-20 md:pt-24 md:pb-28 ${GUTTER}`
 
 export const SECTION_CONT = `saas-section pt-6 pb-20 md:pb-28 ${GUTTER}`
 

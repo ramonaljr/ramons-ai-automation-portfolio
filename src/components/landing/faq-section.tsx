@@ -3,9 +3,9 @@
 import { useState } from 'react'
 
 import { CONTAINER, Cta, SECTION_ANCHOR } from '@/components/landing/motion'
-import { OPEN_CHAT_EVENT } from '@/components/landing/chat-widget'
+import { OPEN_CHAT_EVENT, useChatAvailable } from '@/components/landing/chat-widget'
 import { SectionIntro } from '@/components/landing/section-intro'
-import { FAQS } from '@/lib/portfolio'
+import { FAQS, PROFILE } from '@/lib/portfolio'
 
 /** Line icons, one per question, so a scanning reader finds theirs by shape. */
 const FAQ_ICONS: Record<string, string> = {
@@ -19,6 +19,7 @@ const FAQ_ICONS: Record<string, string> = {
 
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState(0)
+  const chatAvailable = useChatAvailable()
 
   return (
     <section id='faq' className={`${SECTION_ANCHOR} faq-reference-section`}>
@@ -89,15 +90,27 @@ export function FaqSection() {
               )
             })}
 
-            <div className='faq-ask'>
-              <p>
-                <strong>Still have a question?</strong> The assistant can walk you through the services and how a
-                project runs.
-              </p>
-              <button type='button' onClick={() => window.dispatchEvent(new Event(OPEN_CHAT_EVENT))}>
-                Ask the assistant
-              </button>
-            </div>
+            {/* Points to email while the assistant is unreachable, rather than
+                opening a chat that can only say so. */}
+            {chatAvailable === false ? (
+              <div className='faq-ask'>
+                <p>
+                  <strong>Still have a question?</strong> Email me and I&apos;ll answer it directly, usually within one
+                  business day.
+                </p>
+                <a href={`mailto:${PROFILE.email}`}>Email me</a>
+              </div>
+            ) : (
+              <div className='faq-ask'>
+                <p>
+                  <strong>Still have a question?</strong> The assistant can walk you through the services and how a
+                  project runs.
+                </p>
+                <button type='button' onClick={() => window.dispatchEvent(new Event(OPEN_CHAT_EVENT))}>
+                  Ask the assistant
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
