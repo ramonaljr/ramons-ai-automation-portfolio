@@ -17,6 +17,7 @@ import { ContactSection } from '@/components/landing/contact-section'
 import { TestimonialsSection } from '@/components/landing/testimonials-section'
 import { FaqSection } from '@/components/landing/faq-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
+import { MobileBookCta } from '@/components/landing/mobile-book-cta'
 import { ParticleField } from '@/components/landing/particle-field'
 import { ScrollAtmosphere } from '@/components/landing/scroll-atmosphere'
 import { PAGE } from '@/components/landing/motion'
@@ -87,6 +88,7 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
         </div>
       </div>
 
+      <MobileBookCta />
       <ChatWidget />
     </div>
   )
