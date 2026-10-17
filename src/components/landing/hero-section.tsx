@@ -103,8 +103,12 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
             style={{ fontFamily: DISPLAY_FONT }}
           >
             <span className='block'>Let automation handle</span>
+            {/* At leading 0.88 the line box ends ~0.03em below the baseline,
+                but g/y/p descend ~0.18em, so `overflow-hidden` cut their tails
+                off. The padding widens the clip downward and the matching
+                negative margin keeps the layout where it was. */}
             <span
-              className='hero-word-shell hero-rotating-line relative block overflow-hidden italic'
+              className='hero-word-shell hero-rotating-line relative -mb-[0.22em] block overflow-hidden pb-[0.22em] italic'
               aria-hidden='true'
             >
               <span className='invisible block'>{LONGEST_WORK}</span>
