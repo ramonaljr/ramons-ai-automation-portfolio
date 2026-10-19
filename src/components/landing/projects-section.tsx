@@ -19,7 +19,7 @@ import { CaseStudyModal } from '@/components/landing/case-study-modal'
 import { WorkCanvas } from '@/components/landing/work-canvas'
 import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 import { ViewStage } from '@/components/landing/view-stage'
-import { WORK_TONES, workViews } from '@/lib/work-views'
+import { filmOf, WORK_TONES, workViews } from '@/lib/work-views'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 
 const WORK_LABELS: Record<string, string> = {
@@ -136,9 +136,12 @@ type WorkCardProps = {
   viewIndex: number
   onView: (index: number) => void
   onOpen: () => void
+
+  /** Opens the dialog with the project's film playing. */
+  onWatch: () => void
 }
 
-function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpen }: WorkCardProps) {
+function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpen, onWatch }: WorkCardProps) {
   // Hovers only count once the card has actually been on screen.
   const { ref, inView: seen } = useInView<HTMLLIElement>(0.3)
 
@@ -249,11 +252,15 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
 
         <p className='work-card-stack'>{[tags.platform, ...tags.tools.slice(0, 2)].filter(Boolean).join(' · ')}</p>
 
-        {/* Above the card's stretched hit area, like the thumbnails, so a
-            walkthrough opens instead of the dialog. Inert until the
-            frontmatter carries a URL. */}
+        {/* Above the card's stretched hit area, like the thumbnails. A film
+            hosted here opens the dialog already playing it; any other
+            walkthrough is a link. Inert until the frontmatter carries a URL. */}
         <div className='work-card-links'>
-          <WorkLink href={linkOf(cs.videoUrl)} label='Walkthrough' icon={<VideoIcon size={12} />} />
+          {filmOf(cs) ? (
+            <WorkLink label='Walkthrough' icon={<VideoIcon size={12} />} onClick={onWatch} />
+          ) : (
+            <WorkLink href={linkOf(cs.videoUrl)} label='Walkthrough' icon={<VideoIcon size={12} />} />
+          )}
           <WorkLink href={linkOf(cs.repoUrl)} label='GitHub' icon={<GitHubIcon size={12} />} />
           {/* Opens the dialog, which is where the case study is read. Going
               straight to /case-study from here would duplicate the dialog's
@@ -269,7 +276,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
   const { ref, inView } = useInView<HTMLUListElement>(0.06)
   const reduced = usePrefersReducedMotion()
-  const [selectedStudy, setSelectedStudy] = useState<CaseStudyMetadata | null>(null)
+  const [selected, setSelected] = useState<{ study: CaseStudyMetadata; film: boolean } | null>(null)
 
   /**
    * Which thumbnail each card is showing. One record rather than six pieces of
@@ -338,13 +345,21 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
               allLabs={allLabs}
               viewIndex={views[cs.slug] ?? 0}
               onView={itemIndex => setViews(current => ({ ...current, [cs.slug]: itemIndex }))}
-              onOpen={() => setSelectedStudy(cs)}
+              onOpen={() => setSelected({ study: cs, film: false })}
+              onWatch={() => setSelected({ study: cs, film: true })}
             />
           ))}
         </ul>
       </div>
 
-      <CaseStudyModal study={selectedStudy} onClose={() => setSelectedStudy(null)} />
+      {/* Keyed by project and entry point, so each open starts on the right
+          view without carrying the last one's choice over. */}
+      <CaseStudyModal
+        key={selected ? `${selected.study.slug}:${selected.film ? 'film' : 'work'}` : 'closed'}
+        study={selected?.study ?? null}
+        startOnFilm={selected?.film}
+        onClose={() => setSelected(null)}
+      />
     </section>
   )
 }

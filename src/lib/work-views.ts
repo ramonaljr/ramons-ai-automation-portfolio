@@ -75,7 +75,9 @@ export function workViews(cs: CaseStudyMetadata): WorkView[] {
           label: cs.canvasLabel ?? `${platform} canvas`,
           light: cs.canvasTheme === 'light',
           src: cs.workflowImage,
-          cardSrc: cs.workflowImage.endsWith('-map.svg') ? cs.workflowImage.replace(/-map\.svg$/, '-card.svg') : undefined,
+          cardSrc: cs.workflowImage.endsWith('-map.svg')
+            ? cs.workflowImage.replace(/-map\.svg$/, '-card.svg')
+            : undefined,
           alt: `${cs.canvasLabel ?? `${platform} workflow canvas`} for ${name}`
         }
       : null,
@@ -91,4 +93,14 @@ export function workViews(cs: CaseStudyMetadata): WorkView[] {
   ]
 
   return candidates.filter((view): view is WorkView => view !== null)
+}
+
+/**
+ * The project's film when it is hosted here, so it can play in place. A Loom
+ * or other outside link is not a film in this sense and stays a plain link.
+ */
+export const filmOf = (cs: CaseStudyMetadata) => {
+  const url = cs.videoUrl?.trim()
+
+  return url && url.endsWith('.mp4') ? url : null
 }

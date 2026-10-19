@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom'
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 import { usePrefersReducedMotion } from '@/components/landing/motion'
-import { WORK_TONES, workViews } from '@/lib/work-views'
+import { filmOf, WORK_TONES, workViews } from '@/lib/work-views'
 import { WorkCanvas } from '@/components/landing/work-canvas'
 import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 import { ViewStage } from '@/components/landing/view-stage'
@@ -17,8 +17,25 @@ const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 /** Everything inside the dialog a keyboard can land on, in document order. */
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
 
-export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | null; onClose: () => void }) {
+export function CaseStudyModal({
+  study,
+  startOnFilm = false,
+  onClose
+}: {
+  study: CaseStudyMetadata | null
+
+  /** Opened from a card's Walkthrough: lead with the film rather than the canvas. */
+  startOnFilm?: boolean
+  onClose: () => void
+}) {
   const panelRef = useRef<HTMLDivElement>(null)
+  const bodyRef = useRef<HTMLDivElement>(null)
+
+  /**
+   * Film or workflow in the top frame. The parent keys the dialog by project
+   * and entry point, so this starts fresh on every open.
+   */
+  const [showFilm, setShowFilm] = useState(startOnFilm)
   const reduced = usePrefersReducedMotion()
   const { frameRef, lensRef, artRef, move: moveLens, hide: hideLens } = useMagnifier()
 
@@ -108,6 +125,20 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
 
   const views = workViews(study)
   const view = views[Math.min(viewIndex, views.length - 1)]
+  const film = filmOf(study)
+  const filmOn = Boolean(film && showFilm)
+
+  // Scroll on the next frame: the film replacing the canvas changes the
+  // layout, and a scroll started before that commit is cancelled by it.
+  const watch = () => {
+    setShowFilm(true)
+    requestAnimationFrame(() => bodyRef.current?.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }))
+  }
+
+  const toggle = (on: boolean) =>
+    `inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 font-mono text-xs tracking-wide transition-colors ${
+      on ? 'border-ink bg-ink text-ground' : 'border-rule text-ink-2 hover:border-rule-strong hover:text-ink'
+    }`
 
   /**
    * Portalled to `document.body` rather than rendered in place.
@@ -188,59 +219,108 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
         </div>
 
         {/* ── Scrollable Body Content ──────────────────────────────────────── */}
-        <div className='flex-1 space-y-8 overflow-y-auto bg-[#FAF9F6] px-6 py-6 sm:px-8 sm:py-8'>
-          {/* 1. Workflow Canvas Frame */}
-          {view && (
-            <div className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'>
-              <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-xs tracking-wide uppercase'>
-                <span>{view.label}</span>
-                {/* Stage count describes the canvas, so it goes when the canvas does. */}
-                {view.key === 'canvas' && study.stepCount && <span>{study.stepCount} STAGES</span>}
+        <div ref={bodyRef} className='flex-1 space-y-8 overflow-y-auto bg-[#FAF9F6] px-6 py-6 sm:px-8 sm:py-8'>
+          {/* The film and the workflow share the top frame; the toggle only
+              appears when there is a film to switch to. Grouped so the
+              toggle sits close to the frame it controls. */}
+          <div className='space-y-3'>
+            {film && (
+              <div className='flex flex-wrap gap-2' role='group' aria-label='Show the film or the workflow'>
+                <button
+                  type='button'
+                  aria-pressed={filmOn}
+                  className={toggle(filmOn)}
+                  onClick={() => setShowFilm(true)}
+                >
+                  <VideoIcon size={12} />
+                  Film
+                </button>
+                <button
+                  type='button'
+                  aria-pressed={!filmOn}
+                  className={toggle(!filmOn)}
+                  onClick={() => setShowFilm(false)}
+                >
+                  Workflow
+                </button>
               </div>
+            )}
 
-              {/* The canvas runs here too, dark like the card that opened it,
-                  so the dialog never shows less than the card did. */}
-              {/* One frame for every view, so the magnifying lens measures
-                  whichever one is showing. */}
-              <div
-                ref={frameRef}
-                className='work-magnify work-dialog-frame relative overflow-hidden rounded-xl'
-                onPointerMove={moveLens}
-                onPointerLeave={hideLens}
-              >
-                <ViewStage
-                  views={views}
-                  index={viewIndex}
-                  onSelect={index => setPicked({ slug: study.slug, index })}
-                  reduced={reduced}
-                  label={study.title ?? study.slug}
-                  renderView={item =>
-                    item.key === 'canvas' ? (
-                      <WorkCanvas
-                        src={item.src}
-                        label={item.alt}
-                        idSuffix={`${study.slug}-dialog`}
-                        run={1}
-                        reduced={reduced}
-                        lead={0.2}
-                      />
-                    ) : (
-                      <img src={item.src} alt={item.alt} className='work-card-image' />
-                    )
-                  }
-                />
-
-                <MagnifierLens lensRef={lensRef} artRef={artRef} />
-              </div>
-
-              {study.logicSummary && (
-                <div className='border-rule text-ink-2 mt-3 flex items-center gap-2 border-t pt-3 font-mono text-[12px]'>
-                  <span className='text-ink-4'>FLOW:</span>
-                  <span className='truncate'>{study.logicSummary}</span>
+            {/* 1a. The film. Only rendered once someone has asked for it, so
+              autoplay always follows a click and never starts on its own. */}
+            {filmOn && film && (
+              <div className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'>
+                <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-xs tracking-wide uppercase'>
+                  <span>Animated explainer</span>
+                  <span className='hidden sm:inline'>Words on screen, music only</span>
                 </div>
-              )}
-            </div>
-          )}
+                <video
+                  key={film}
+                  src={film}
+                  poster={study.videoPoster}
+                  controls
+                  autoPlay
+                  playsInline
+                  preload='metadata'
+                  aria-label={`Animated explainer film: ${study.title ?? study.slug}`}
+                  className='aspect-video w-full rounded-xl bg-[#F1E9D8]'
+                />
+              </div>
+            )}
+
+            {/* 1b. Workflow Canvas Frame */}
+            {!filmOn && view && (
+              <div className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'>
+                <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-xs tracking-wide uppercase'>
+                  <span>{view.label}</span>
+                  {/* Stage count describes the canvas, so it goes when the canvas does. */}
+                  {view.key === 'canvas' && study.stepCount && <span>{study.stepCount} STAGES</span>}
+                </div>
+
+                {/* The canvas runs here too, dark like the card that opened it,
+                  so the dialog never shows less than the card did. */}
+                {/* One frame for every view, so the magnifying lens measures
+                  whichever one is showing. */}
+                <div
+                  ref={frameRef}
+                  className='work-magnify work-dialog-frame relative overflow-hidden rounded-xl'
+                  onPointerMove={moveLens}
+                  onPointerLeave={hideLens}
+                >
+                  <ViewStage
+                    views={views}
+                    index={viewIndex}
+                    onSelect={index => setPicked({ slug: study.slug, index })}
+                    reduced={reduced}
+                    label={study.title ?? study.slug}
+                    renderView={item =>
+                      item.key === 'canvas' ? (
+                        <WorkCanvas
+                          src={item.src}
+                          label={item.alt}
+                          idSuffix={`${study.slug}-dialog`}
+                          run={1}
+                          reduced={reduced}
+                          lead={0.2}
+                        />
+                      ) : (
+                        <img src={item.src} alt={item.alt} className='work-card-image' />
+                      )
+                    }
+                  />
+
+                  <MagnifierLens lensRef={lensRef} artRef={artRef} />
+                </div>
+
+                {study.logicSummary && (
+                  <div className='border-rule text-ink-2 mt-3 flex items-center gap-2 border-t pt-3 font-mono text-[12px]'>
+                    <span className='text-ink-4'>FLOW:</span>
+                    <span className='truncate'>{study.logicSummary}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* 2. ROI & Key Metrics */}
           {study.roi && study.roi.length > 0 && (
@@ -319,9 +399,14 @@ export function CaseStudyModal({ study, onClose }: { study: CaseStudyMetadata | 
           {/* These pointed somewhere plausible when empty — "Walkthrough" led
               to the case-study page and "Source" to a GitHub profile rather
               than a repo, so both promised something that did not exist. They
-              now sit inert until the frontmatter carries a real URL. */}
+              now sit inert until the frontmatter carries a real URL. A film
+              hosted here plays in the dialog instead of opening a tab. */}
           <div className='flex flex-wrap items-center gap-2'>
-            <WorkLink href={linkOf(study.videoUrl)} label='Walkthrough' icon={<VideoIcon size={13} />} />
+            {film ? (
+              <WorkLink label='Walkthrough' icon={<VideoIcon size={13} />} onClick={watch} />
+            ) : (
+              <WorkLink href={linkOf(study.videoUrl)} label='Walkthrough' icon={<VideoIcon size={13} />} />
+            )}
             <WorkLink href={linkOf(study.repoUrl)} label='Source' icon={<GitHubIcon size={13} />} />
           </div>
 

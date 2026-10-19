@@ -15,6 +15,7 @@ import { ReadingRail } from '@/components/shared/prose/reading-rail'
 import { getCaseStudyBySlug, getCaseStudies, type CaseStudyMetadata } from '@/lib/case-studies'
 import { extractHeadings } from '@/lib/extract-headings'
 import { abs } from '@/lib/site'
+import { filmOf } from '@/lib/work-views'
 
 export async function generateStaticParams() {
   const caseStudies = await getCaseStudies()
@@ -163,7 +164,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
   const leadImage = metadata.heroImage ?? metadata.image
 
   // A film hosted here plays on the page; a Loom or other link stays a button.
-  const film = metadata.videoUrl?.trim().endsWith('.mp4') ? metadata.videoUrl.trim() : null
+  const film = filmOf(metadata)
 
   const facts = [
     { label: 'Organisation', value: metadata.organisation },
