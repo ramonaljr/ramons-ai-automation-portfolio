@@ -162,6 +162,9 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
   // produced. `image` is the fallback for entries with no mock-up drawn yet.
   const leadImage = metadata.heroImage ?? metadata.image
 
+  // A film hosted here plays on the page; a Loom or other link stays a button.
+  const film = metadata.videoUrl?.trim().endsWith('.mp4') ? metadata.videoUrl.trim() : null
+
   const facts = [
     { label: 'Organisation', value: metadata.organisation },
     { label: 'Role', value: metadata.role },
@@ -282,6 +285,42 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
           field only ever sits behind white cards; behind body copy it competes
           with the text, so it picks up again below the article. */}
       <>
+        {/* The whole build as a short animated explainer, before the detail.
+            It has no narration: every line is on screen, so it needs no
+            caption track. Nothing downloads until the reader presses play. */}
+        {film && (
+          <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
+            <div className={CONTAINER}>
+              <p className='text-ink-3 font-mono text-[12px] tracking-[0.28em]'>THE FILM</p>
+              <p
+                className='text-ink mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
+                style={{ fontFamily: DISPLAY_FONT }}
+              >
+                How this build works, in a short animated explainer.
+              </p>
+
+              <Reveal className='mt-10' threshold={0.05}>
+                <figure>
+                  <div className='border-rule bg-surface-raised rounded-2xl border p-3'>
+                    <video
+                      src={film}
+                      poster={metadata.videoPoster}
+                      controls
+                      playsInline
+                      preload='none'
+                      aria-label={`Animated explainer film: ${metadata.title}`}
+                      className='aspect-video w-full rounded-xl bg-[#F1E9D8]'
+                    />
+                  </div>
+                  <figcaption className='text-ink-3 mt-3 font-mono text-[11px] tracking-[0.18em]'>
+                    ANIMATED EXPLAINER · WORDS ON SCREEN, MUSIC ONLY
+                  </figcaption>
+                </figure>
+              </Reveal>
+            </div>
+          </section>
+        )}
+
         {/* The mechanism behind the mock-up above */}
         {metadata.workflowImage && (
           <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>

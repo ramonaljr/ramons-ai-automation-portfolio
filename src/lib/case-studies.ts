@@ -37,8 +37,14 @@ export type CaseStudyMetadata = {
    */
   sampleClient?: boolean
 
-  /** Loom (or any) walkthrough video. Button is hidden until this is set. */
+  /**
+   * Loom (or any) walkthrough video. Button is hidden until this is set. A
+   * self-hosted `.mp4` also plays in place on the case study page.
+   */
   videoUrl?: string
+
+  /** First frame shown before a self-hosted `videoUrl` plays. */
+  videoPoster?: string
 
   /** Public repo for the workflow/export. Button is hidden until this is set. */
   repoUrl?: string
