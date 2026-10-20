@@ -411,7 +411,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
                   </div>
                 )}
                 {metadata.solution && (
-                  <div className='rounded-2xl border border-[color-mix(in_oklab,var(--accent)_22%,transparent)] bg-[color-mix(in_oklab,var(--accent)_5%,transparent)] p-8'>
+                  <div className='bg-surface rounded-2xl border border-[color-mix(in_oklab,var(--accent)_22%,transparent)] p-8'>
                     <p className='eyebrow text-accent'>WHAT I BUILT</p>
                     <p className='text-ink-2 mt-4 text-[15px] leading-relaxed'>{metadata.solution}</p>
                   </div>
