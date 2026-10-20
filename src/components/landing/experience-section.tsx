@@ -21,18 +21,11 @@ const TENURE_OFFSETS = TENURES.reduce<number[]>(
   [0]
 )
 
-const ROLE_COUNT = TENURE_OFFSETS[TENURE_OFFSETS.length - 1]
-
-/** Every role in reading order, for the counter in the left panel. */
-const ROLES = TENURES.flatMap(tenure => tenure.roles)
-
 /** A role is "in focus" once its top passes this line of the viewport. */
 const FOCUS_LINE = 0.5
 
 /** …and starts its entrance once its top passes this one. */
 const REVEAL_LINE = 0.9
-
-const pad = (value: number) => String(value).padStart(2, '0')
 
 /**
  * How the work is run, stated once. Every line repeats a commitment made
@@ -113,21 +106,12 @@ export function ExperienceJourney() {
         <div className='experience-layout'>
           <div className='experience-intro'>
             <SectionIntro
-              tag='THE PATH HERE'
               title='Four roles. One habit: map the work first.'
               blurb='Each role handed me a process to run by hand: invoices and supplier payments, project cost records, month-end accounts, then forecasting. That is why the workflows I build match how a business actually runs, rather than how a process diagram says it should.'
               margin=''
               titleClassName='mt-5 text-[clamp(1.9rem,3.2vw,3.4rem)]'
             />
 
-            {/* Follows the roles on the right. Decorative: the roles
-                themselves are the readable record. */}
-            <p className='experience-counter' aria-hidden='true'>
-              <span className='experience-counter-index'>
-                {pad(active + 1)} <i>/ {pad(ROLE_COUNT)}</i>
-              </span>
-              <span className='experience-counter-role'>{ROLES[active]?.role}</span>
-            </p>
 
             <div className='about-how'>
               <p className='about-how-label'>HOW I WORK</p>
@@ -143,9 +127,6 @@ export function ExperienceJourney() {
           </div>
 
           <div ref={ref} className='experience-history relative'>
-            <p className='experience-history-label'>
-              ROLE HISTORY <span>01 — {String(ROLE_COUNT).padStart(2, '0')}</span>
-            </p>
 
             <div ref={tenuresRef} className='experience-tenures' data-tracking={!reduced || undefined}>
               <span className='experience-rail' aria-hidden='true'>
@@ -237,7 +218,7 @@ export function ExperienceJourney() {
                     'opacity .9s cubic-bezier(0.16,1,0.3,1) 200ms, transform .9s cubic-bezier(0.16,1,0.3,1) 200ms'
                 }}
               >
-                Every system on this page began as something on that list. <a href='#portfolio'>See what they became</a>
+                Every system on this page began as something on that list. <a href='#portfolio'>See examples</a>
               </p>
             </div>
           </div>

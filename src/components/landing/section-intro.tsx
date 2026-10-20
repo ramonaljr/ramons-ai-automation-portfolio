@@ -49,7 +49,10 @@ export function SectionIntro({
   margin = 'mb-16',
   titleClassName = 'mt-6 text-[clamp(2rem,4vw,3.25rem)]'
 }: {
-  tag: string
+
+  /** The small label above the heading. Optional and rationed: the page keeps
+   *  about one per three sections, so most sections let the heading stand alone. */
+  tag?: string
 
   /** Omit where the section's heading lives elsewhere — About puts its
    *  name in the left column, so the intro carries only the tag. */
@@ -80,18 +83,20 @@ export function SectionIntro({
           element changed costume from section to section while the hero used a
           third style. The rule is the shared signal — it also gives the eye a
           consistent left anchor as the page scrolls. */}
-      <div style={introStep(inView, reduced, { delay: 0, y: 12, duration: 0.6 })}>
-        <p className={`flex items-center gap-3 ${centred ? 'justify-center' : ''}`}>
-          <span className='saas-eyebrow-mark' aria-hidden='true'>
-            <span />
-          </span>
-          <span className='eyebrow'>{tag}</span>
-        </p>
-      </div>
+      {tag && (
+        <div style={introStep(inView, reduced, { delay: 0, y: 12, duration: 0.6 })}>
+          <p className={`flex items-center gap-3 ${centred ? 'justify-center' : ''}`}>
+            <span className='saas-eyebrow-mark' aria-hidden='true'>
+              <span />
+            </span>
+            <span className='eyebrow'>{tag}</span>
+          </p>
+        </div>
+      )}
 
       {title != null && (
         <h2
-          className={`${titleClassName} text-ink leading-[1.05] font-light tracking-tight`}
+          className={`${tag ? titleClassName : titleClassName.replace(/(^|\s)mt-\S+/g, '')} text-ink leading-[1.05] font-light tracking-tight`}
           style={{
             fontFamily: DISPLAY_FONT,
             ...introStep(inView, reduced, { delay: 80, y: 16, duration: 0.7 })

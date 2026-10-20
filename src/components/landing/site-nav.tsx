@@ -152,7 +152,7 @@ export function SiteNav() {
           <a
             href={onLanding ? '#top' : '/'}
             className='nav-brand font-pixel text-ink inline-flex items-center gap-2.5 text-xs tracking-[0.25em] transition-opacity hover:opacity-70'
-            aria-label={`${PROFILE.name} — back to top`}
+            aria-label={`${PROFILE.name}, back to top`}
           >
             <span
               className='nav-brand-mark relative block shrink-0'

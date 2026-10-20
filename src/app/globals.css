@@ -47,9 +47,9 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
   --shadow-realistic:
-    0px 2px 2px oklch(0.28 0.014 70 / 0.03), 0px 6px 5px oklch(0.28 0.014 70 / 0.04),
-    0px 13px 11px oklch(0.28 0.014 70 / 0.05), 0px 24px 19px oklch(0.28 0.014 70 / 0.06),
-    0px 60px 35px -10px oklch(0.28 0.014 70 / 0.09);
+    0px 2px 2px oklch(0.28 0.008 255 / 0.03), 0px 6px 5px oklch(0.28 0.008 255 / 0.04),
+    0px 13px 11px oklch(0.28 0.008 255 / 0.05), 0px 24px 19px oklch(0.28 0.008 255 / 0.06),
+    0px 60px 35px -10px oklch(0.28 0.008 255 / 0.09);
 
   /* ── Art-direction system ──────────────────────────────────────────────
      Registered here so components use `text-ink-2` / `border-rule` instead of
@@ -84,7 +84,9 @@
 }
 
 :root {
-  --font-editorial: var(--font-faustina), 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  /* Headlines: Satoshi, the same sans as the body. The Faustina serif was
+     retired in the Taste-skill pass (2026-10-20), with the warm cream palette. */
+  --font-editorial: var(--font-satoshi), system-ui, -apple-system, 'Segoe UI', sans-serif;
   --radius: 0.625rem;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -115,21 +117,20 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --background: oklch(0.966 0.014 82);
-  --background-darker: oklch(0.928 0.02 78);
-  --foreground: oklch(0.25 0.025 55);
+  --background: oklch(0.966 0.005 250);
+  --background-darker: oklch(0.928 0.008 250);
+  --foreground: oklch(0.25 0.018 255);
   --fade-circle-width: 70%;
 
-  /* Ink: four steps, each a real perceptual jump. The old 68/70/72 trio was
-     three names for one colour. Warm-tinted (hue 70) so text belongs to the
-     cream ground rather than sitting on it as neutral grey. */
-  --ink: oklch(0.225 0.025 52);
-  --ink-2: oklch(0.35 0.028 55);
-  --ink-3: oklch(0.46 0.03 58);
-  --ink-4: oklch(0.6 0.027 60);
-  --rule: oklch(0.27 0.03 55 / 0.11);
-  --rule-strong: oklch(0.27 0.04 55 / 0.22);
-  --ground: oklch(0.957 0.018 82);
+  /* Ink: four steps, each a real perceptual jump. Slate-tinted (hue 255) to
+     match the cool ground; the terracotta accent is the one warm colour. */
+  --ink: oklch(0.225 0.018 255);
+  --ink-2: oklch(0.35 0.017 255);
+  --ink-3: oklch(0.47 0.016 255);
+  --ink-4: oklch(0.6 0.014 255);
+  --rule: oklch(0.27 0.02 255 / 0.11);
+  --rule-strong: oklch(0.27 0.025 255 / 0.22);
+  --ground: oklch(0.962 0.005 250);
   --surface: oklch(1 0 0 / 0.84);
   --surface-raised: oklch(1 0 0 / 0.94);
   --ring-contrast: oklch(0.51 0.16 32);
@@ -638,9 +639,9 @@ li {
    black tints, which reads as several inconsistent light sources. */
 .lift {
   box-shadow:
-    0 1px 1px oklch(0.28 0.014 70 / 0.04),
-    0 4px 8px -2px oklch(0.28 0.014 70 / 0.05),
-    0 16px 32px -12px oklch(0.28 0.014 70 / 0.1);
+    0 1px 1px oklch(0.28 0.008 255 / 0.04),
+    0 4px 8px -2px oklch(0.28 0.008 255 / 0.05),
+    0 16px 32px -12px oklch(0.28 0.008 255 / 0.1);
 }
 
 .lift-hover {
@@ -653,9 +654,9 @@ li {
 .lift-hover:hover {
   transform: translateY(-3px);
   box-shadow:
-    0 2px 3px oklch(0.28 0.014 70 / 0.05),
-    0 10px 20px -4px oklch(0.28 0.014 70 / 0.07),
-    0 28px 52px -16px oklch(0.28 0.014 70 / 0.14);
+    0 2px 3px oklch(0.28 0.008 255 / 0.05),
+    0 10px 20px -4px oklch(0.28 0.008 255 / 0.07),
+    0 28px 52px -16px oklch(0.28 0.008 255 / 0.14);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1017,7 +1018,6 @@ li {
    The reference contributes cinematic pacing, a warm paper ground, hairline
    typography and chapter markers. The subject remains workflow automation. */
 .koisei-page {
-  counter-reset: koisei-chapter;
   background: var(--ground);
 }
 
@@ -1141,25 +1141,6 @@ body::after {
   box-shadow: none;
 }
 
-.saas-section {
-  counter-increment: koisei-chapter;
-}
-
-.saas-section::before {
-  /* The total comes from the page (PortfolioSections' CHAPTERS), so it
-     follows the sections that actually render. */
-  content: counter(koisei-chapter, decimal-leading-zero) ' / ' var(--chapter-total, '07');
-  position: absolute;
-  top: 8.5rem;
-  left: clamp(0.6rem, 1.8vw, 1.7rem);
-  color: var(--ink-3);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.625rem;
-  letter-spacing: 0.16em;
-  writing-mode: vertical-rl;
-  z-index: 2;
-}
-
 .saas-section::after {
   opacity: 0.32;
   background:
@@ -1191,7 +1172,7 @@ body::after {
 #testimonials,
 #faq,
 #contact {
-  background-color: oklch(0.944 0.018 82);
+  background-color: oklch(0.944 0.011 255);
 }
 
 .saas-section-intro h1,
@@ -1307,7 +1288,7 @@ body::after {
 }
 
 .saas-closing-cta {
-  background: linear-gradient(180deg, oklch(0.95 0.018 82), oklch(0.91 0.035 62));
+  background: linear-gradient(180deg, oklch(0.95 0.011 255), oklch(0.91 0.018 255));
 }
 
 .saas-footer {
@@ -1473,14 +1454,14 @@ body::after {
 }
 
 .dark .scroll-orbit {
-  border-color: oklch(0.84 0.035 55 / 0.085);
+  border-color: oklch(0.84 0.018 255 / 0.085);
   background:
-    radial-gradient(circle at 50% 50%, transparent 58%, oklch(0.75 0.045 55 / 0.035) 59%, transparent 70%),
-    conic-gradient(from 30deg, transparent, oklch(0.72 0.06 55 / 0.055), transparent 38%);
+    radial-gradient(circle at 50% 50%, transparent 58%, oklch(0.75 0.018 255 / 0.035) 59%, transparent 70%),
+    conic-gradient(from 30deg, transparent, oklch(0.72 0.018 255 / 0.055), transparent 38%);
 }
 
 .dark .scroll-light-beam {
-  background: linear-gradient(90deg, transparent, oklch(0.76 0.045 55 / 0.045), transparent);
+  background: linear-gradient(90deg, transparent, oklch(0.76 0.018 255 / 0.045), transparent);
 }
 
 .closing-art {
@@ -1553,7 +1534,7 @@ body::after {
 #contact {
   background:
     radial-gradient(circle at 88% 16%, color-mix(in oklab, var(--accent) 5%, transparent), transparent 22rem),
-    oklch(0.973 0.009 55 / 0.66);
+    oklch(0.973 0.005 255 / 0.66);
 }
 
 .saas-section-intro .eyebrow {
@@ -1568,8 +1549,8 @@ body::after {
   padding: clamp(1.5rem, 4vw, 3.5rem);
   /* Warm paper, not white: a stark white card was the one surface on the
      page that did not belong to the autumn scene. */
-  background: linear-gradient(135deg, oklch(0.975 0.014 80 / 0.92), oklch(0.955 0.022 72 / 0.86));
-  box-shadow: 0 28px 80px -48px oklch(0.38 0.035 55 / 0.34);
+  background: linear-gradient(135deg, oklch(0.975 0.008 255 / 0.92), oklch(0.955 0.013 255 / 0.86));
+  box-shadow: 0 28px 80px -48px oklch(0.38 0.018 255 / 0.34);
   overflow: hidden;
 }
 
@@ -1598,8 +1579,8 @@ body::after {
 .saas-portrait-frame {
   position: relative;
   box-shadow:
-    0 1px 2px oklch(0.25 0.05 55 / 0.04),
-    0 24px 54px -28px oklch(0.35 0.035 55 / 0.3);
+    0 1px 2px oklch(0.25 0.018 255 / 0.04),
+    0 24px 54px -28px oklch(0.35 0.018 255 / 0.3);
 }
 
 .saas-project-browser {
@@ -1607,7 +1588,7 @@ body::after {
   border-radius: 1.5rem;
   padding: clamp(1rem, 2.5vw, 2rem);
   background: oklch(1 0 0 / 0.78);
-  box-shadow: 0 30px 80px -52px oklch(0.35 0.035 55 / 0.38);
+  box-shadow: 0 30px 80px -52px oklch(0.35 0.018 255 / 0.38);
   backdrop-filter: blur(16px);
 }
 
@@ -1642,8 +1623,8 @@ body::after {
 .saas-contact-card {
   border-color: color-mix(in oklch, var(--accent) 12%, var(--rule));
   box-shadow:
-    0 1px 2px oklch(0.25 0.05 55 / 0.035),
-    0 18px 44px -34px oklch(0.35 0.035 55 / 0.28);
+    0 1px 2px oklch(0.25 0.018 255 / 0.035),
+    0 18px 44px -34px oklch(0.35 0.018 255 / 0.28);
   backdrop-filter: blur(14px);
 }
 
@@ -1653,8 +1634,8 @@ body::after {
 #engagement .kinetic-card:hover {
   border-color: color-mix(in oklab, var(--accent) 34%, transparent);
   box-shadow:
-    0 2px 4px oklch(0.25 0.05 55 / 0.04),
-    0 28px 58px -34px oklch(0.35 0.035 55 / 0.32);
+    0 2px 4px oklch(0.25 0.018 255 / 0.04),
+    0 28px 58px -34px oklch(0.35 0.018 255 / 0.32);
 }
 
 #services .service-icon-square {
@@ -1683,7 +1664,7 @@ body::after {
 #principles [data-active='true'] {
   border-radius: 0 1rem 1rem 0;
   background: linear-gradient(90deg, color-mix(in oklch, var(--accent) 7%, white), oklch(1 0 0 / 0.6)) !important;
-  box-shadow: 0 18px 42px -34px oklch(0.35 0.035 55 / 0.35);
+  box-shadow: 0 18px 42px -34px oklch(0.35 0.018 255 / 0.35);
 }
 
 #stack .group {
@@ -1693,7 +1674,7 @@ body::after {
 #stack .group span.rounded-full {
   border-color: color-mix(in oklch, var(--accent) 13%, var(--rule));
   background: oklch(1 0 0 / 0.78);
-  box-shadow: 0 12px 26px -22px oklch(0.35 0.035 55 / 0.32);
+  box-shadow: 0 12px 26px -22px oklch(0.35 0.018 255 / 0.32);
 }
 
 .saas-contact-card {
@@ -1714,13 +1695,13 @@ body::after {
 }
 
 .saas-closing-cta {
-  background: linear-gradient(180deg, oklch(0.985 0.008 55 / 0.78), oklch(0.96 0.025 55 / 0.82));
+  background: linear-gradient(180deg, oklch(0.985 0.005 255 / 0.78), oklch(0.96 0.015 255 / 0.82));
 }
 
 .saas-footer {
   background:
     radial-gradient(circle at 50% 0%, color-mix(in oklab, var(--accent) 9%, transparent), transparent 34rem),
-    linear-gradient(180deg, oklch(0.97 0.016 55 / 0.8), oklch(0.985 0.006 55 / 0.84));
+    linear-gradient(180deg, oklch(0.97 0.01 255 / 0.8), oklch(0.985 0.006 55 / 0.84));
 }
 
 .saas-footer .footer-word {
@@ -1756,7 +1737,7 @@ body::after {
 .footer-scene.saas-footer {
   background:
     radial-gradient(circle at 50% 0%, color-mix(in oklab, var(--accent) 11%, transparent), transparent 34rem),
-    linear-gradient(180deg, oklch(0.97 0.016 55 / 0.66), oklch(0.985 0.006 55 / 0.72));
+    linear-gradient(180deg, oklch(0.97 0.01 255 / 0.66), oklch(0.985 0.006 55 / 0.72));
 }
 
 .footer-word {
@@ -1884,15 +1865,15 @@ body::after {
 
 .dark .service-icon-square {
   border-color: oklch(1 0 0 / 0.16);
-  background: linear-gradient(145deg, oklch(0.28 0.008 55 / 0.94), oklch(0.215 0.006 55 / 0.98));
+  background: linear-gradient(145deg, oklch(0.28 0.005 255 / 0.94), oklch(0.215 0.006 55 / 0.98));
   box-shadow:
     inset 0 1px 0 oklch(1 0 0 / 0.12),
     inset 0 -1px 0 oklch(0 0 0 / 0.3),
-    0 8px 24px -15px oklch(0.82 0.035 55 / 0.42);
+    0 8px 24px -15px oklch(0.82 0.018 255 / 0.42);
 }
 
 .dark .service-icon-glyph canvas {
-  filter: drop-shadow(0 0 5px oklch(0.92 0.03 55 / 0.38));
+  filter: drop-shadow(0 0 5px oklch(0.92 0.018 255 / 0.38));
 }
 
 .group:hover .service-icon-glyph {
@@ -1908,11 +1889,11 @@ body::after {
 
 .dark .group:hover .service-icon-square {
   border-color: oklch(1 0 0 / 0.34);
-  background: linear-gradient(145deg, oklch(0.32 0.01 55 / 0.96), oklch(0.24 0.008 55 / 0.98));
+  background: linear-gradient(145deg, oklch(0.32 0.006 255 / 0.96), oklch(0.24 0.005 255 / 0.98));
   box-shadow:
     inset 0 1px 0 oklch(1 0 0 / 0.18),
     inset 0 0 20px oklch(1 0 0 / 0.045),
-    0 10px 28px -14px oklch(0.88 0.025 55 / 0.5);
+    0 10px 28px -14px oklch(0.88 0.015 255 / 0.5);
 }
 
 @keyframes service-icon-drift {
@@ -2350,7 +2331,7 @@ body::after {
     radial-gradient(circle at 50% 65%, color-mix(in oklab, var(--accent) 11%, transparent), transparent 58%),
     linear-gradient(color-mix(in oklab, var(--ink) 4%, transparent) 1px, transparent 1px),
     linear-gradient(90deg, color-mix(in oklab, var(--ink) 4%, transparent) 1px, transparent 1px),
-    oklch(0.975 0.012 78 / 0.72);
+    oklch(0.975 0.007 255 / 0.72);
   background-size: auto, 28px 28px, 28px 28px, auto;
 }
 
@@ -2713,7 +2694,7 @@ body::after {
   border-radius: 2rem;
   background:
     radial-gradient(circle at 74% 22%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 34%),
-    oklch(0.985 0.009 78 / 0.86);
+    oklch(0.985 0.005 255 / 0.86);
   box-shadow: 0 34px 90px -60px oklch(0.36 0.12 35 / 0.42);
   backdrop-filter: blur(18px);
 }
@@ -3247,9 +3228,9 @@ body::after {
    The SVGs keep their own colours as presentation attributes, which any CSS
    rule outranks, so the re-theme needs no edits to the files themselves. */
 .work-canvas {
-  --wc-ground: oklch(0.205 0.012 55);
-  --wc-node: oklch(0.265 0.012 55);
-  --wc-ink: oklch(0.95 0.012 75);
+  --wc-ground: oklch(0.205 0.007 255);
+  --wc-node: oklch(0.265 0.007 255);
+  --wc-ink: oklch(0.95 0.007 255);
   --wc-span: 1.35s;
   --wc-lead: 0s;
 
@@ -3303,7 +3284,7 @@ body::after {
    the status chip follow it, and edges take the project's tone as drawn. */
 .work-canvas:has(svg[data-light]) {
   --wc-ground: #f5f5f8;
-  --wc-ink: oklch(0.25 0.02 60);
+  --wc-ink: oklch(0.25 0.012 255);
 }
 
 .work-canvas svg[data-light] [data-wc='edge'] {
@@ -3459,7 +3440,7 @@ body::after {
 /* The card frame goes dark with its canvas, so the wipe reveals the editor
    rather than a pale ground under it. */
 .work-card-frame[data-view='canvas'] {
-  background: oklch(0.205 0.012 55);
+  background: oklch(0.205 0.007 255);
 }
 
 .work-card-frame[data-view='canvas']:has(svg[data-light]) {
@@ -3811,30 +3792,6 @@ a.work-aux-link:hover {
     color-mix(in oklab, var(--ground) 68%, transparent) !important;
 }
 
-.about-cinema-word {
-  position: absolute;
-  top: 10%;
-  right: -0.04em;
-  z-index: 0;
-  color: color-mix(in oklab, var(--ink) 2.8%, transparent);
-  font-family: var(--font-editorial), Georgia, serif;
-  font-size: clamp(8rem, 20vw, 22rem);
-  font-weight: 300;
-  letter-spacing: -0.08em;
-  line-height: 0.8;
-  writing-mode: vertical-rl;
-}
-
-.about-cinema-line {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  z-index: 0;
-  width: 1px;
-  background: linear-gradient(transparent, color-mix(in oklab, var(--accent) 14%, transparent), transparent);
-}
-
 .about-cinema .saas-about-panel {
   position: relative;
   border-top-color: color-mix(in oklch, var(--accent) 22%, var(--rule));
@@ -3881,23 +3838,6 @@ a.work-aux-link:hover {
 .about-film-frame[data-visible='true'] img {
   filter: saturate(0.9) contrast(1.02);
   transform: scale(1);
-}
-
-.about-film-meta {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 3;
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem 1.1rem;
-  /* Over the dark office photo, so light type with a soft shadow. */
-  color: oklch(0.97 0.012 80 / 0.9);
-  text-shadow: 0 1px 8px oklch(0.2 0.03 45 / 0.6);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
 }
 
 .about-film-scan {
@@ -3995,14 +3935,10 @@ a.work-aux-link:hover {
 }
 
 @media (max-width: 1023px) {
-  .about-cinema-line { left: 72%; }
   .about-cinema-visual { max-width: 34rem; margin-inline: auto; }
 }
 
 @media (max-width: 639px) {
-  .about-cinema-word { right: -0.18em; opacity: 0.7; }
-  .about-cinema-line { left: 82%; }
-  .about-film-meta { padding: 0.8rem; font-size: 0.65rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4018,11 +3954,13 @@ a.work-aux-link:hover {
 }
 
 /* ── Continuous autumn environment: Selected Work → Footer ────────────── */
+/* Slate ground since the Taste-skill pass; a faint terracotta glow is all
+   that is left of the old orange grade, so the autumn leaves still belong. */
 .blossom-story-root {
   background:
-    radial-gradient(circle at 72% 34%, oklch(0.73 0.095 55 / 0.64), transparent 38rem),
-    radial-gradient(circle at 18% 68%, oklch(0.91 0.026 78 / 0.82), transparent 46rem),
-    oklch(0.81 0.052 68);
+    radial-gradient(circle at 72% 34%, oklch(0.8 0.05 42 / 0.22), transparent 38rem),
+    radial-gradient(circle at 18% 68%, oklch(0.91 0.016 255 / 0.82), transparent 46rem),
+    oklch(0.81 0.018 255);
 }
 
 .blossom-story-background {
@@ -4033,22 +3971,22 @@ a.work-aux-link:hover {
 .blossom-story-video {
   object-position: 68% 52%;
   mix-blend-mode: screen;
-  filter: sepia(1) hue-rotate(-14deg) saturate(1.08) contrast(1.16) brightness(0.84);
+  filter: grayscale(1) contrast(1.06) brightness(0.92);
   will-change: transform;
 }
 
 .blossom-story-tone {
   background:
-    linear-gradient(118deg, oklch(0.34 0.04 42 / 0.22), transparent 38% 66%, oklch(0.6 0.14 45 / 0.34)),
-    oklch(0.7 0.13 57 / 0.46);
+    linear-gradient(118deg, oklch(0.34 0.018 255 / 0.22), transparent 38% 66%, oklch(0.6 0.1 40 / 0.16)),
+    oklch(0.72 0.02 250 / 0.38);
   mix-blend-mode: color;
 }
 
 .blossom-story-glow {
   background:
-    radial-gradient(circle at 74% 42%, oklch(0.74 0.14 55 / 0.2), transparent 29%),
-    radial-gradient(circle at 62% 78%, oklch(0.58 0.105 35 / 0.13), transparent 34%),
-    linear-gradient(112deg, transparent 22%, oklch(0.9 0.055 76 / 0.12) 48%, transparent 69%);
+    radial-gradient(circle at 74% 42%, oklch(0.74 0.08 45 / 0.1), transparent 29%),
+    radial-gradient(circle at 62% 78%, oklch(0.58 0.08 35 / 0.08), transparent 34%),
+    linear-gradient(112deg, transparent 22%, oklch(0.9 0.018 255 / 0.12) 48%, transparent 69%);
   mix-blend-mode: multiply;
   will-change: transform;
 }
@@ -4068,7 +4006,7 @@ a.work-aux-link:hover {
   z-index: 4;
   object-position: center;
   opacity: 0.62;
-  filter: saturate(0.82) contrast(1.04) drop-shadow(0 18px 28px oklch(0.22 0.035 42 / 0.22));
+  filter: saturate(0.82) contrast(1.04) drop-shadow(0 18px 28px oklch(0.22 0.018 255 / 0.22));
   transform-origin: center;
   will-change: transform;
 }
@@ -4109,15 +4047,15 @@ a.work-aux-link:hover {
 }
 
 .blossom-story-background[data-mood='golden'] .blossom-story-video {
-  filter: sepia(1) hue-rotate(-10deg) saturate(1.3) contrast(1.1) brightness(0.96);
+  filter: grayscale(0.55) sepia(0.25) contrast(1.06) brightness(0.96);
 }
 
 .blossom-story-background[data-mood='golden'] .blossom-story-foreground {
-  filter: saturate(1) contrast(1.04) drop-shadow(0 18px 28px oklch(0.22 0.035 42 / 0.22));
+  filter: saturate(1) contrast(1.04) drop-shadow(0 18px 28px oklch(0.22 0.018 255 / 0.22));
 }
 
 .blossom-story-background[data-mood='muted'] .blossom-story-video {
-  filter: sepia(0.5) saturate(0.3) contrast(1.04) brightness(0.9);
+  filter: grayscale(1) contrast(1.04) brightness(0.9);
 }
 
 .blossom-story-background[data-mood='muted'] .blossom-story-tone {
@@ -4126,7 +4064,7 @@ a.work-aux-link:hover {
 
 .blossom-story-background[data-mood='muted'] .blossom-story-foreground {
   opacity: 0.42;
-  filter: saturate(0.3) contrast(1) drop-shadow(0 18px 28px oklch(0.22 0.035 42 / 0.16));
+  filter: saturate(0.3) contrast(1) drop-shadow(0 18px 28px oklch(0.22 0.018 255 / 0.16));
 }
 
 .blossom-story-background[data-mood='dusk'] .blossom-story-video {
@@ -4134,7 +4072,7 @@ a.work-aux-link:hover {
 }
 
 .blossom-story-background[data-mood='dusk'] .blossom-story-foreground {
-  filter: saturate(0.9) brightness(0.8) contrast(1.06) drop-shadow(0 18px 28px oklch(0.22 0.035 42 / 0.28));
+  filter: saturate(0.9) brightness(0.8) contrast(1.06) drop-shadow(0 18px 28px oklch(0.22 0.018 255 / 0.28));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4159,7 +4097,7 @@ a.work-aux-link:hover {
 
 .blossom-story-root #portfolio,
 .blossom-story-root #about {
-  background: oklch(0.94 0.024 76 / 0.4) !important;
+  background: oklch(0.94 0.014 255 / 0.4) !important;
 }
 
 .blossom-story-root #services,
@@ -4172,13 +4110,13 @@ a.work-aux-link:hover {
 .blossom-story-root #stack {
   background:
     radial-gradient(circle at 88% 16%, oklch(0.62 0.09 45 / 0.055), transparent 22rem),
-    oklch(0.945 0.022 76 / 0.68) !important;
+    oklch(0.945 0.013 255 / 0.68) !important;
 }
 
 .blossom-story-root #process {
   background:
     radial-gradient(circle at 86% 14%, oklch(0.67 0.1 48 / 0.05), transparent 24rem),
-    linear-gradient(180deg, oklch(0.96 0.016 78 / 0.48), oklch(0.95 0.02 76 / 0.36)) !important;
+    linear-gradient(180deg, oklch(0.96 0.01 255 / 0.48), oklch(0.95 0.012 255 / 0.36)) !important;
 }
 
 .blossom-story-root #engagement,
@@ -4186,7 +4124,7 @@ a.work-aux-link:hover {
 .blossom-story-root #contact {
   background:
     radial-gradient(circle at 82% 12%, oklch(0.68 0.11 52 / 0.09), transparent 25rem),
-    oklch(0.93 0.028 70 / 0.5) !important;
+    oklch(0.93 0.017 255 / 0.5) !important;
 }
 
 .platform-tools-rail {
@@ -4205,8 +4143,8 @@ a.work-aux-link:hover {
   border-radius: 2rem;
   background:
     radial-gradient(circle at 72% 28%, oklch(0.45 0.08 52 / 0.28), transparent 30rem),
-    oklch(0.2 0.022 46 / 0.96);
-  box-shadow: 0 32px 80px -48px oklch(0.18 0.035 42 / 0.72);
+    oklch(0.2 0.013 255 / 0.96);
+  box-shadow: 0 32px 80px -48px oklch(0.18 0.018 255 / 0.72);
   transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
 }
 
@@ -4215,10 +4153,10 @@ a.work-aux-link:hover {
   flex: 0 0 clamp(5.75rem, 14vw, 10.5rem);
   min-width: 0;
   overflow: hidden;
-  border: 1px solid oklch(0.88 0.025 70 / 0.12);
+  border: 1px solid oklch(0.88 0.015 255 / 0.12);
   border-radius: 1.45rem;
-  background: oklch(0.235 0.022 46 / 0.82);
-  color: oklch(0.94 0.025 74);
+  background: oklch(0.235 0.013 255 / 0.82);
+  color: oklch(0.94 0.015 255);
   text-align: left;
   transition:
     flex 700ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -4236,7 +4174,7 @@ a.work-aux-link:hover {
   flex: 1 1 34rem;
   background:
     radial-gradient(circle at 82% 14%, oklch(0.67 0.13 53 / 0.38), transparent 20rem),
-    linear-gradient(145deg, oklch(0.29 0.038 43), oklch(0.225 0.022 46));
+    linear-gradient(145deg, oklch(0.29 0.018 255), oklch(0.225 0.013 255));
   border-color: oklch(0.76 0.09 58 / 0.42);
 }
 
@@ -4244,7 +4182,7 @@ a.work-aux-link:hover {
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
-  color: oklch(0.88 0.035 70 / 0.5);
+  color: oklch(0.88 0.018 255 / 0.5);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.7rem;
   letter-spacing: 0.14em;
@@ -4262,7 +4200,7 @@ a.work-aux-link:hover {
 }
 
 .testimonial-accordion-closed span {
-  color: oklch(0.83 0.04 64 / 0.48);
+  color: oklch(0.83 0.018 255 / 0.48);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.66rem;
   letter-spacing: 0.2em;
@@ -4319,7 +4257,7 @@ a.work-aux-link:hover {
 .testimonial-accordion-quote {
   display: block;
   max-width: 31ch;
-  color: oklch(0.95 0.022 75);
+  color: oklch(0.95 0.013 255);
   font-family: var(--font-editorial), Georgia, serif;
   font-size: clamp(1.55rem, 2.5vw, 2.45rem);
   line-height: 1.08;
@@ -4331,7 +4269,7 @@ a.work-aux-link:hover {
   gap: 0.25rem;
   margin-top: auto;
   padding-top: 2rem;
-  border-top: 1px solid oklch(0.92 0.02 72 / 0.14);
+  border-top: 1px solid oklch(0.92 0.012 255 / 0.14);
 }
 
 .testimonial-accordion-meta strong {
@@ -4340,7 +4278,7 @@ a.work-aux-link:hover {
 }
 
 .testimonial-accordion-meta span {
-  color: oklch(0.86 0.025 68 / 0.58);
+  color: oklch(0.86 0.015 255 / 0.58);
   font-size: 0.75rem;
 }
 
@@ -4352,7 +4290,7 @@ a.work-aux-link:hover {
   border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
   border-radius: 2rem;
   background: color-mix(in oklab, var(--surface) 88%, transparent);
-  box-shadow: 0 30px 80px -58px oklch(0.26 0.035 45 / 0.55);
+  box-shadow: 0 30px 80px -58px oklch(0.26 0.018 255 / 0.55);
   backdrop-filter: blur(16px);
 }
 
@@ -4367,7 +4305,7 @@ a.work-aux-link:hover {
   border: 1px solid color-mix(in oklab, var(--ink) 9%, transparent);
   border-radius: 1rem;
   background: color-mix(in oklab, var(--ground) 95%, transparent);
-  box-shadow: 0 10px 30px -26px oklch(0.2 0.03 45 / 0.45);
+  box-shadow: 0 10px 30px -26px oklch(0.2 0.018 255 / 0.45);
   transition: border-color 240ms ease, background-color 240ms ease;
 }
 
@@ -4496,13 +4434,13 @@ a.work-aux-link:hover {
 }
 
 .blossom-story-root .saas-closing-cta {
-  background: linear-gradient(180deg, color-mix(in oklab, var(--ground) 56%, transparent), color-mix(in oklab, oklch(0.78 0.035 60) 72%, transparent));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--ground) 56%, transparent), color-mix(in oklab, oklch(0.78 0.018 255) 72%, transparent));
 }
 
 .blossom-story-root .footer-scene.saas-footer {
   background:
     radial-gradient(circle at 65% 0%, oklch(0.68 0.12 48 / 0.13), transparent 34rem),
-    linear-gradient(180deg, color-mix(in oklab, var(--ground) 64%, transparent), color-mix(in oklab, oklch(0.5 0.035 48) 88%, transparent));
+    linear-gradient(180deg, color-mix(in oklab, var(--ground) 64%, transparent), color-mix(in oklab, oklch(0.5 0.018 255) 88%, transparent));
 }
 
 @media (max-width: 767px) {
@@ -4523,208 +4461,13 @@ a.work-aux-link:hover {
     transform: none !important;
   }
 }
-/* ── Lower-page scroll story: input → route → outcome ─────────────────── */
-.story-atmosphere {
-  opacity: 0.72;
-  isolation: isolate;
-}
-
-.story-atmosphere::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--accent) 5%, transparent), transparent 48%);
-}
-
-.story-spine {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-  background: linear-gradient(transparent, color-mix(in oklab, var(--accent) 20%, transparent) 15% 85%, transparent);
-}
-
-.story-signal {
-  position: absolute;
-  top: 0;
-  left: -0.28rem;
-  width: 0.6rem;
-  height: 0.6rem;
-  border: 1px solid color-mix(in oklch, var(--accent) 65%, white);
-  border-radius: 50%;
-  background: var(--ground);
-  box-shadow: 0 0 24px color-mix(in oklab, var(--accent) 65%, transparent);
-}
-
-.story-fragment {
-  position: absolute;
-  min-width: 6.5rem;
-  padding: 0.8rem 1rem;
-  border: 1px solid color-mix(in oklab, var(--ink) 9%, transparent);
-  color: color-mix(in oklab, var(--ink) 19%, transparent);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-align: center;
-  background: color-mix(in oklab, var(--ground) 28%, transparent);
-}
-
-.story-fragment::after {
-  content: '';
-  position: absolute;
-  width: 6rem;
-  height: 1px;
-  background: color-mix(in oklab, var(--ink) 7%, transparent);
-}
-
-.story-fragment-a {
-  top: 28%;
-  left: 8%;
-  transform: rotate(-7deg);
-}
-.story-fragment-a::after {
-  top: 150%;
-  left: 86%;
-  transform: rotate(28deg);
-}
-.story-fragment-b {
-  top: 62%;
-  left: 23%;
-  transform: rotate(4deg);
-}
-.story-fragment-b::after {
-  right: 90%;
-  bottom: 140%;
-  transform: rotate(-34deg);
-}
-.story-fragment-c {
-  top: 35%;
-  right: 12%;
-  transform: rotate(7deg);
-}
-.story-fragment-c::after {
-  top: 160%;
-  right: 82%;
-  transform: rotate(-20deg);
-}
-.story-fragment-d {
-  right: 24%;
-  bottom: 18%;
-  transform: rotate(-4deg);
-}
-
-.story-route {
-  position: absolute;
-  left: 50%;
-  width: min(34vw, 31rem);
-  height: 24vh;
-  border-color: color-mix(in oklab, var(--accent) 18%, transparent);
-  border-style: solid;
-}
-
-.story-route-a {
-  top: 10%;
-  border-width: 1px 0 0 1px;
-  border-radius: 2rem 0 0;
-  transform: translateX(-100%);
-}
-.story-route-b {
-  right: 50%;
-  bottom: 9%;
-  left: auto;
-  border-width: 0 1px 1px 0;
-  border-radius: 0 0 2rem;
-  transform: translateX(100%);
-}
-
-.story-route i {
-  position: absolute;
-  width: 0.42rem;
-  height: 0.42rem;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 14px color-mix(in oklab, var(--accent) 52%, transparent);
-}
-
-.story-route-a i:nth-child(1) {
-  top: -0.23rem;
-  left: 12%;
-}
-.story-route-a i:nth-child(2) {
-  top: -0.23rem;
-  left: 58%;
-}
-.story-route-a i:nth-child(3) {
-  bottom: 16%;
-  left: -0.23rem;
-}
-.story-route-b i:nth-child(1) {
-  right: -0.23rem;
-  bottom: 28%;
-}
-.story-route-b i:nth-child(2) {
-  right: 32%;
-  bottom: -0.23rem;
-}
-
-.story-outcome-ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  aspect-ratio: 1;
-  border: 1px solid color-mix(in oklab, var(--accent) 16%, transparent);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.story-outcome-ring-a {
-  width: min(62vw, 48rem);
-}
-.story-outcome-ring-b {
-  width: min(42vw, 32rem);
-  border-style: dashed;
-  animation: work-orbit 42s linear infinite;
-}
-
-@media (max-width: 767px) {
-  .story-atmosphere {
-    opacity: 0.5;
-  }
-  .story-fragment-b {
-    left: 8%;
-  }
-  .story-fragment-c {
-    right: 4%;
-  }
-  .story-route {
-    width: 42vw;
-  }
-  .story-outcome-ring-a {
-    width: 90vw;
-  }
-  .story-outcome-ring-b {
-    width: 66vw;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .story-chapter-input,
-  .story-chapter-route {
-    display: none;
-  }
-  .story-chapter-outcome {
-    opacity: 0.46;
-  }
-}
-
 /* ── Services: image accordion ───────────────────────────────────────────
    One panel open, the rest folded to a spine. `data-open` drives everything,
    so the component only tracks an index. Desktop folds sideways; phones fold
    downwards, since five spines across 360px would leave no room to read. */
 .service-accordion {
   --service-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --service-cream: oklch(0.97 0.012 80);
+  --service-cream: oklch(0.97 0.007 255);
 
   display: flex;
   gap: 0.75rem;
@@ -4739,8 +4482,8 @@ a.work-aux-link:hover {
   overflow: hidden;
   border: 1px solid var(--rule);
   border-radius: 1.25rem;
-  background: oklch(0.24 0.03 50);
-  box-shadow: 0 24px 60px -40px oklch(0.25 0.05 45 / 0.55);
+  background: oklch(0.24 0.018 255);
+  box-shadow: 0 24px 60px -40px oklch(0.25 0.018 255 / 0.55);
   transition:
     flex 0.8s var(--service-ease),
     border-color 0.4s ease;
@@ -4773,8 +4516,8 @@ a.work-aux-link:hover {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to top, oklch(0.18 0.03 45 / 0.94) 0%, oklch(0.18 0.03 45 / 0.62) 38%, transparent 72%),
-    linear-gradient(to right, oklch(0.18 0.03 45 / 0.35), transparent 60%);
+    linear-gradient(to top, oklch(0.18 0.018 255 / 0.94) 0%, oklch(0.18 0.018 255 / 0.62) 38%, transparent 72%),
+    linear-gradient(to right, oklch(0.18 0.018 255 / 0.35), transparent 60%);
 }
 
 /* The toggle covers the whole panel so a tap anywhere opens it. */
@@ -5005,8 +4748,8 @@ a.work-aux-link:hover {
   background: linear-gradient(
     180deg,
     transparent 0,
-    oklch(0.945 0.022 76 / 0.5) 60vh,
-    oklch(0.945 0.022 76 / 0.5) 100%
+    oklch(0.945 0.013 255 / 0.5) 60vh,
+    oklch(0.945 0.013 255 / 0.5) 100%
   );
 }
 
@@ -5024,7 +4767,7 @@ a.work-aux-link:hover {
   background: linear-gradient(
     180deg,
     transparent,
-    color-mix(in oklab, oklch(0.8 0.035 62) 62%, transparent) 70%
+    color-mix(in oklab, oklch(0.8 0.018 255) 62%, transparent) 70%
   );
 }
 
@@ -5047,10 +4790,10 @@ a.work-aux-link:hover {
   aspect-ratio: 4 / 5;
   border: 1px solid oklch(1 0 0 / 0.45);
   border-radius: 1.75rem;
-  background: oklch(0.3 0.03 50);
+  background: oklch(0.3 0.018 255);
   box-shadow:
-    0 40px 90px -44px oklch(0.28 0.06 45 / 0.7),
-    0 12px 30px -18px oklch(0.28 0.06 45 / 0.4);
+    0 40px 90px -44px oklch(0.28 0.018 255 / 0.7),
+    0 12px 30px -18px oklch(0.28 0.018 255 / 0.4);
   clip-path: inset(100% 0 0 0 round 1.75rem);
   transition: clip-path 1.2s var(--hero-portrait-ease) 0.35s;
 }
@@ -5072,70 +4815,6 @@ a.work-aux-link:hover {
   transform: scale(1);
 }
 
-.hero-portrait-caption {
-  position: absolute;
-  inset: auto 0 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  padding: 4.5rem 1.5rem 1.4rem;
-  border-radius: 0 0 1.75rem 1.75rem;
-  background: linear-gradient(to top, oklch(0.18 0.03 45 / 0.88), oklch(0.18 0.03 45 / 0.5) 55%, transparent);
-  color: oklch(0.97 0.012 80);
-  opacity: 0;
-  transform: translateY(0.75rem);
-  transition:
-    opacity 0.8s ease 1.2s,
-    transform 0.8s var(--hero-portrait-ease) 1.2s;
-}
-
-.hero-portrait-caption strong {
-  font-size: 1.3rem;
-  font-weight: 400;
-  line-height: 1.15;
-}
-
-.hero-portrait-caption span {
-  font-size: 0.8125rem;
-  line-height: 1.45;
-  color: oklch(0.97 0.012 80 / 0.82);
-}
-
-.hero-portrait-chip {
-  position: absolute;
-  top: 1.1rem;
-  left: 1.1rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.8rem;
-  border: 1px solid oklch(1 0 0 / 0.5);
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--ground) 82%, transparent);
-  backdrop-filter: blur(6px);
-  color: var(--ink-2);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  opacity: 0;
-  transition: opacity 0.8s ease 1.4s;
-}
-
-.hero-portrait-chip i {
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 50%;
-  background: oklch(0.7 0.16 150);
-  box-shadow: 0 0 0 0.25rem oklch(0.7 0.16 150 / 0.2);
-}
-
-.hero-portrait[data-visible='true'] .hero-portrait-caption,
-.hero-portrait[data-visible='true'] .hero-portrait-chip {
-  opacity: 1;
-  transform: none;
-}
-
 .hero-byline-avatar {
   width: 2.75rem;
   height: 2.75rem;
@@ -5144,14 +4823,12 @@ a.work-aux-link:hover {
   border-radius: 50%;
   object-fit: cover;
   object-position: 50% 15%;
-  box-shadow: 0 6px 16px -8px oklch(0.28 0.06 45 / 0.6);
+  box-shadow: 0 6px 16px -8px oklch(0.28 0.018 255 / 0.6);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-portrait-frame,
-  .hero-portrait-image,
-  .hero-portrait-caption,
-  .hero-portrait-chip {
+  .hero-portrait-image {
     transition: none;
   }
 }
@@ -5160,7 +4837,7 @@ a.work-aux-link:hover {
    A three-screen pinned scene on desktop; three stacked panels on phones and
    for reduced motion. Exactly one of the two is displayed at a time. */
 .story-section {
-  --story-cream: oklch(0.97 0.012 80);
+  --story-cream: oklch(0.97 0.007 255);
   --story-ease: cubic-bezier(0.16, 1, 0.3, 1);
 
   position: relative;
@@ -5187,8 +4864,8 @@ a.work-aux-link:hover {
   margin-inline: auto;
   border: 1px solid oklch(1 0 0 / 0.35);
   border-radius: 2rem;
-  background: oklch(0.22 0.04 40);
-  box-shadow: 0 50px 120px -60px oklch(0.25 0.06 45 / 0.8);
+  background: oklch(0.22 0.018 255);
+  box-shadow: 0 50px 120px -60px oklch(0.25 0.018 255 / 0.8);
   color: var(--story-cream);
 }
 
@@ -5213,8 +4890,8 @@ a.work-aux-link:hover {
      rather than a separate, near-black film. */
   background:
     radial-gradient(ellipse at 88% 12%, oklch(0.64 0.13 45 / 0.2), transparent 55%),
-    linear-gradient(90deg, oklch(0.19 0.045 38 / 0.9) 0%, oklch(0.19 0.045 38 / 0.55) 42%, transparent 70%),
-    linear-gradient(0deg, oklch(0.19 0.045 38 / 0.7) 0%, transparent 35%);
+    linear-gradient(90deg, oklch(0.19 0.018 255 / 0.9) 0%, oklch(0.19 0.018 255 / 0.55) 42%, transparent 70%),
+    linear-gradient(0deg, oklch(0.19 0.018 255 / 0.7) 0%, transparent 35%);
 }
 
 .story-copy {
@@ -5283,7 +4960,7 @@ a.work-aux-link:hover {
   padding: 0.75rem 1.25rem;
   border-radius: 999px;
   background: var(--story-cream);
-  color: oklch(0.22 0.03 45);
+  color: oklch(0.22 0.018 255);
   font-size: 0.875rem;
   transition: transform 0.3s var(--story-ease), background 0.3s ease;
 }
@@ -5314,7 +4991,7 @@ a.work-aux-link:hover {
   padding: 0.75rem 1.1rem;
   border: 1px solid oklch(1 0 0 / 0.14);
   border-radius: 1rem;
-  background: oklch(0.16 0.02 45 / 0.62);
+  background: oklch(0.16 0.012 255 / 0.62);
   backdrop-filter: blur(8px);
 }
 
@@ -5380,7 +5057,7 @@ a.work-aux-link:hover {
   height: 1.2rem;
   border: 2px solid oklch(0.8 0.13 65);
   border-radius: 50%;
-  background: oklch(0.2 0.025 45);
+  background: oklch(0.2 0.015 255);
 }
 
 .story-rail {
@@ -5428,7 +5105,7 @@ a.work-aux-link:hover {
   min-height: 30rem;
   border: 1px solid oklch(1 0 0 / 0.35);
   border-radius: 1.5rem;
-  background: oklch(0.2 0.025 45);
+  background: oklch(0.2 0.015 255);
   color: var(--story-cream);
 }
 
@@ -5453,7 +5130,7 @@ a.work-aux-link:hover {
   inset: 0;
   background:
     radial-gradient(ellipse at 90% 8%, oklch(0.64 0.13 45 / 0.18), transparent 60%),
-    linear-gradient(0deg, oklch(0.19 0.045 38 / 0.92) 0%, oklch(0.19 0.045 38 / 0.6) 55%, oklch(0.19 0.045 38 / 0.25));
+    linear-gradient(0deg, oklch(0.19 0.018 255 / 0.92) 0%, oklch(0.19 0.018 255 / 0.6) 55%, oklch(0.19 0.018 255 / 0.25));
 }
 
 .story-panel-copy {
@@ -5920,10 +5597,6 @@ div#experience.about-journey {
   color: var(--ink-2);
 }
 
-.hero-portrait-chip {
-  font-size: 0.6875rem;
-}
-
 /* The accent-tinted rings behind the About panel's corner read as a pink
    haze on the warm paper, not as a shape. */
 .saas-about-panel::after {
@@ -5950,7 +5623,7 @@ div#experience.about-journey {
   background: var(--ground);
   box-shadow:
     0 0 0 1px color-mix(in oklab, var(--work-tone, var(--accent)) 45%, transparent),
-    0 18px 40px -12px oklch(0.2 0.03 45 / 0.55),
+    0 18px 40px -12px oklch(0.2 0.018 255 / 0.55),
     inset 0 0 18px oklch(0 0 0 / 0.18);
   pointer-events: none;
   opacity: 0;
@@ -5967,7 +5640,7 @@ div#experience.about-journey {
 }
 
 .work-lens[data-dark='true'] {
-  background: oklch(0.205 0.012 55);
+  background: oklch(0.205 0.007 255);
 }
 
 /* Centres the clone the way the dialog's frame centres a letterboxed image;
@@ -6075,7 +5748,7 @@ div#experience.about-journey {
 }
 
 .work-dialog-frame:has(.view-stage-layer[style*='z-index: 2'] .work-canvas) {
-  background: oklch(0.205 0.012 55);
+  background: oklch(0.205 0.007 255);
 }
 
 .work-dialog-frame:has(.view-stage-layer[style*='z-index: 2'] .work-canvas svg[data-light]) {
@@ -6091,7 +5764,7 @@ div#experience.about-journey {
   gap: 0.55rem;
   padding: 0.35rem;
   border-radius: 999px;
-  background: oklch(0.18 0.02 45 / 0.35);
+  background: oklch(0.18 0.012 255 / 0.35);
   backdrop-filter: blur(6px);
   transform: translateX(-50%);
 }
@@ -6343,7 +6016,7 @@ div#experience.about-journey {
   border: 1px solid var(--rule);
   border-radius: 1.5rem;
   background: color-mix(in oklab, var(--ground) 82%, transparent);
-  box-shadow: 0 24px 60px -44px oklch(0.3 0.04 45 / 0.45);
+  box-shadow: 0 24px 60px -44px oklch(0.3 0.018 255 / 0.45);
   transition:
     transform 0.4s var(--path-ease),
     box-shadow 0.4s ease;
@@ -6351,7 +6024,7 @@ div#experience.about-journey {
 
 .engagement-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 30px 70px -40px oklch(0.3 0.04 45 / 0.5);
+  box-shadow: 0 30px 70px -40px oklch(0.3 0.018 255 / 0.5);
 }
 
 /* The illustration sits in a fixed window, scaled down from its How it
@@ -6502,23 +6175,23 @@ div#experience.about-journey {
 
 /* The build: the dark card the path leads towards. */
 .engagement-step[data-featured] .engagement-card {
-  border-color: oklch(0.3 0.03 45);
-  background: oklch(0.21 0.022 45);
-  color: oklch(0.96 0.012 80);
-  box-shadow: 0 40px 90px -46px oklch(0.2 0.05 45 / 0.8);
+  border-color: oklch(0.3 0.018 255);
+  background: oklch(0.21 0.013 255);
+  color: oklch(0.96 0.007 255);
+  box-shadow: 0 40px 90px -46px oklch(0.2 0.018 255 / 0.8);
 }
 
 .engagement-step[data-featured] .engagement-visual {
   border-bottom-color: oklch(1 0 0 / 0.1);
-  background: oklch(0.25 0.022 45);
+  background: oklch(0.25 0.013 255);
 }
 
 .engagement-step[data-featured] :is(.engagement-name, .engagement-price strong, .engagement-for, .engagement-outcome) {
-  color: oklch(0.96 0.012 80);
+  color: oklch(0.96 0.007 255);
 }
 
 .engagement-step[data-featured] :is(.engagement-duration, .engagement-price span, .engagement-includes li) {
-  color: oklch(0.96 0.012 80 / 0.84);
+  color: oklch(0.96 0.007 255 / 0.84);
 }
 
 .engagement-step[data-featured] .engagement-price {
@@ -6542,13 +6215,13 @@ div#experience.about-journey {
    inverse (cream, espresso text) on this dark card, as the story's outcome
    link does. Red is kept for small accents only. */
 .engagement-step[data-featured] .engagement-cta {
-  border-color: oklch(0.96 0.012 80);
-  background: oklch(0.96 0.012 80);
+  border-color: oklch(0.96 0.007 255);
+  background: oklch(0.96 0.007 255);
   color: var(--ink);
 }
 
 .engagement-step[data-featured] .engagement-cta:hover {
-  background: oklch(0.9 0.016 80);
+  background: oklch(0.9 0.01 255);
 }
 
 .engagement-reassure {

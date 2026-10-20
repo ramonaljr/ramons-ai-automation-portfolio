@@ -2,35 +2,15 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+import { ArrowRight, Clock, User } from 'lucide-react'
+
 import type { PostMetadata } from '@/lib/posts'
 import { SectionIntro } from '@/components/landing/section-intro'
 
+import { ICON_STROKE } from '@/components/landing/motion'
+
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto'
-
-function Ico({ d, size = 13 }: { d: string; size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='1.8'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-      aria-hidden='true'
-    >
-      <path d={d} />
-    </svg>
-  )
-}
-
-const P = {
-  user: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z',
-  clock: 'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2',
-  arrow: 'M4 12h14M13 6l6 6-6 6'
-}
 
 function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
@@ -88,7 +68,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
             className='border-rule text-ink-2 hover:border-rule-strong hover:bg-ink/3 hover:text-ink inline-flex shrink-0 items-center gap-2 rounded-full border px-5 py-2.5 text-[13px] tracking-wide transition-all'
           >
             All articles
-            <Ico d={P.arrow} />
+            <ArrowRight size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
           </a>
         </div>
 
@@ -120,12 +100,12 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
               <div className='flex flex-1 flex-col p-6'>
                 <div className='text-ink-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px]'>
                   <span className='inline-flex items-center gap-1.5'>
-                    <Ico d={P.user} size={12} />
+                    <User size={12} strokeWidth={ICON_STROKE} aria-hidden='true' />
                     Ramon
                   </span>
                   {post.readingTime && (
                     <span className='inline-flex items-center gap-1.5'>
-                      <Ico d={P.clock} size={12} />
+                      <Clock size={12} strokeWidth={ICON_STROKE} aria-hidden='true' />
                       {post.readingTime}
                     </span>
                   )}
@@ -161,7 +141,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
                     className='text-ink-2 hover:text-ink inline-flex items-center gap-2 font-mono text-[13px] tracking-wide transition-colors'
                   >
                     Read article
-                    <Ico d={P.arrow} />
+                    <ArrowRight size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
                   </a>
                 </div>
               </div>

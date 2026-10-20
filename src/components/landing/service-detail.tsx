@@ -1,41 +1,17 @@
 'use client'
 
+import { ArrowUpRight, Check } from 'lucide-react'
+
 import { SiteNav } from '@/components/landing/site-nav'
 import { PixelIcon } from '@/components/landing/pixel-icon'
 
 import type { Service } from '@/lib/portfolio'
 import { PROFILE } from '@/lib/portfolio'
 
+import { ICON_STROKE } from '@/components/landing/motion'
+
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto'
-
-function ArrowIcon() {
-  return (
-    <svg width='13' height='13' viewBox='0 0 14 14' fill='none' aria-hidden='true'>
-      <path
-        d='M3 11L11 3M11 3H5M11 3V9'
-        stroke='currentColor'
-        strokeWidth='1.6'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-      />
-    </svg>
-  )
-}
-
-function CheckIcon() {
-  return (
-    <svg width='14' height='14' viewBox='0 0 14 14' fill='none' aria-hidden='true' className='mt-[3px] shrink-0'>
-      <path
-        d='M2.5 7.5L5.5 10.5L11.5 3.5'
-        stroke='currentColor'
-        strokeWidth='1.8'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-      />
-    </svg>
-  )
-}
 
 export function ServiceDetail({ service, others }: { service: Service; others: Service[] }) {
   return (
@@ -102,7 +78,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
               {service.includes.map(it => (
                 <li key={it} className='text-ink-2 flex items-start gap-2.5 text-[14px] leading-snug'>
                   <span className='text-ink-2'>
-                    <CheckIcon />
+                    <Check size={14} strokeWidth={ICON_STROKE} aria-hidden='true' className='mt-[3px] shrink-0' />
                   </span>
                   {it}
                 </li>
@@ -124,7 +100,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                 >
                   <div className='flex items-start gap-2.5'>
                     <span className='text-ink-2'>
-                      <CheckIcon />
+                      <Check size={14} strokeWidth={ICON_STROKE} aria-hidden='true' className='mt-[3px] shrink-0' />
                     </span>
                     <div>
                       <h3 className='text-ink text-[15px] font-medium'>{d.title}</h3>
@@ -146,7 +122,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
               {service.qualities.map(q => (
                 <li key={q} className='text-ink-2 flex items-start gap-2.5 text-[14px] leading-snug'>
                   <span className='text-ink-2'>
-                    <CheckIcon />
+                    <Check size={14} strokeWidth={ICON_STROKE} aria-hidden='true' className='mt-[3px] shrink-0' />
                   </span>
                   {q}
                 </li>
@@ -169,7 +145,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                 >
                   Request a quote
                   <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
-                    <ArrowIcon />
+                    <ArrowUpRight size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
                   </span>
                 </a>
                 <a
@@ -212,7 +188,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                     >
                       <span className='text-ink-2 group-hover:text-ink text-[14px] transition-colors'>{o.short}</span>
                       <span className='bg-ink text-ground flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-0.5'>
-                        <ArrowIcon />
+                        <ArrowUpRight size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
                       </span>
                     </a>
                   </li>
@@ -230,14 +206,14 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                 <span className='text-ink-2 font-mono text-[12px] tracking-widest'>AVAILABLE</span>
               </div>
               <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>
-                {PROFILE.name} — {PROFILE.title}, {PROFILE.location}.
+                {PROFILE.name}, {PROFILE.title}, {PROFILE.location}.
               </p>
               <a
                 href='/#portfolio'
                 className='text-ink-2 hover:text-ink mt-4 inline-flex items-center gap-2 text-[13px] transition-colors'
               >
-                See the work
-                <ArrowIcon />
+                See examples
+                <ArrowUpRight size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
               </a>
             </div>
           </aside>

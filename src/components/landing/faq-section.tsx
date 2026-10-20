@@ -2,19 +2,23 @@
 
 import { useState } from 'react'
 
+import { Bell, Clock, Handshake, KeyRound, Lock, Wrench, type LucideIcon } from 'lucide-react'
+
 import { CONTAINER, Cta, SECTION_ANCHOR } from '@/components/landing/motion'
 import { OPEN_CHAT_EVENT, useChatAvailable } from '@/components/landing/chat-widget'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { FAQS, PROFILE } from '@/lib/portfolio'
 
+import { ICON_STROKE } from '@/components/landing/motion'
+
 /** Line icons, one per question, so a scanning reader finds theirs by shape. */
-const FAQ_ICONS: Record<string, string> = {
-  lock: 'M7 11V8a5 5 0 0110 0v3M6 11h12a1 1 0 011 1v8a1 1 0 01-1 1H6a1 1 0 01-1-1v-8a1 1 0 011-1z',
-  key: 'M15 7a4 4 0 11-3.9 4.9L4 19v2h3v-2h2v-2h2l1.1-1.1A4 4 0 0115 7zM16 9h.01',
-  handshake: 'M3 12l4-4 5 3 3-2 6 5M7 8l-4 4 5 5 2-1 2 2 2-1 2 1 4-4',
-  bell: 'M6 16V11a6 6 0 1112 0v5l2 2H4l2-2zM10 20a2 2 0 004 0',
-  tools: 'M14 6a4 4 0 00-5 5l-6 6 3 3 6-6a4 4 0 005-5l-3 3-3-3 3-3z',
-  clock: 'M12 7v5l3 2M12 21a9 9 0 110-18 9 9 0 010 18z'
+const FAQ_ICONS: Record<string, LucideIcon> = {
+  lock: Lock,
+  key: KeyRound,
+  handshake: Handshake,
+  bell: Bell,
+  tools: Wrench,
+  clock: Clock
 }
 
 export function FaqSection() {
@@ -27,14 +31,13 @@ export function FaqSection() {
         <div className='faq-reference-shell'>
           <div className='faq-reference-intro'>
             <SectionIntro
-              tag='BEFORE WE START'
               margin=''
               title='Questions.'
               titleClassName='mt-6 text-[clamp(3.5rem,7vw,7rem)] leading-[0.9]'
               blurb='Clear answers about access, ownership, reliability and what happens after handover.'
             />
             <Cta href='#contact' className='mt-8 self-start'>
-              Ask about your workflow
+              Book a free call
             </Cta>
           </div>
 
@@ -58,20 +61,18 @@ export function FaqSection() {
                     onClick={() => setOpenIndex(current => (current === index ? -1 : index))}
                   >
                     <span className='faq-question-label'>
-                      <svg
-                        className='faq-question-icon'
-                        width='18'
-                        height='18'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                        strokeWidth='1.6'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        aria-hidden='true'
-                      >
-                        <path d={FAQ_ICONS[item.icon]} />
-                      </svg>
+                      {(() => {
+                        const QuestionIcon = FAQ_ICONS[item.icon]
+
+                        return (
+                          <QuestionIcon
+                            className='faq-question-icon'
+                            size={18}
+                            strokeWidth={ICON_STROKE}
+                            aria-hidden='true'
+                          />
+                        )
+                      })()}
                       {item.question}
                     </span>
                     <span className='faq-reference-toggle' aria-hidden='true'>

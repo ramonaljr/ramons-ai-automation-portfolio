@@ -35,17 +35,17 @@ const TOOLS = ['Gmail', 'n8n', 'Claude', 'QuickBooks', 'Slack'] as const
 
 const ACTS = [
   {
-    tag: '01 · The problem',
+    tag: 'The problem',
     title: 'It’s 9:14 PM. The work is still waiting.',
     copy: 'Invoices to key in, leads to call back, a report due in the morning. The business grew; the admin grew faster.'
   },
   {
-    tag: '02 · The system',
+    tag: 'The system',
     title: 'Then the work starts moving on its own.',
     copy: 'Email, AI, accounting and team chat connected into one workflow. Every step checked, every unusual case handed to a person.'
   },
   {
-    tag: '03 · The outcome',
+    tag: 'The outcome',
     title: 'Home by five.',
     copy: 'The same work still gets done, without the late nights. That is the job: time back for the people running the business.'
   }
@@ -244,7 +244,7 @@ function ActCopy({
             <span>built to hand that time back</span>
           </p>
           <a href='#portfolio' className='story-outcome-link'>
-            See the systems behind it
+            See examples
           </a>
         </div>
       )}
@@ -288,7 +288,7 @@ function StackedStory({ systemCount }: { systemCount: number }) {
                   back
                 </p>
                 <a href='#portfolio' className='story-outcome-link'>
-                  See the systems behind it
+                  See examples
                 </a>
               </>
             )}

@@ -3,6 +3,10 @@
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react'
 
 import { motion, useScroll, useTransform } from 'motion/react'
+import { ArrowRight as LucideArrowRight, ArrowUpRight } from 'lucide-react'
+
+/** One stroke weight for every icon on the landing page (all from lucide-react). */
+export const ICON_STROKE = 1.75
 
 /**
  * Design tokens and the reveal primitive shared by every surface that has to
@@ -260,36 +264,12 @@ export function ParallaxLayer({
 
 /** Outbound arrow used on every landing call to action. */
 export function ArrowIcon() {
-  return (
-    <svg width='13' height='13' viewBox='0 0 14 14' fill='none' aria-hidden='true'>
-      <path
-        d='M3 11L11 3M11 3H5M11 3V9'
-        stroke='currentColor'
-        strokeWidth='1.6'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-      />
-    </svg>
-  )
+  return <ArrowUpRight size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
 }
 
 /** Rightward arrow used on inline "keep reading" links. */
 export function ArrowRight({ size = 13 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='1.8'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-      aria-hidden='true'
-    >
-      <path d='M4 12h14M13 6l6 6-6 6' />
-    </svg>
-  )
+  return <LucideArrowRight size={size} strokeWidth={ICON_STROKE} aria-hidden='true' />
 }
 
 /* ───────────────────────────────────────────────────────────────────────────

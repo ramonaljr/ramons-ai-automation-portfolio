@@ -28,18 +28,6 @@ export const PROFILE = {
   cv: '/ramon-vallejera-cv.pdf'
 } as const
 
-/**
- * Headline figures. Each is traceable to Selected Work, work history or the
- * profile. The system count is the number of case studies, passed in by the
- * page, so it cannot drift from Selected Work. No measured time savings are
- * claimed until a client result backs one.
- */
-export const heroStats = (systems: number) => [
-  { value: String(systems), label: 'complete n8n systems built, end to end' },
-  { value: '10 yrs', label: 'running business operations' },
-  { value: 'MBA', label: 'business thinking behind every build' }
-]
-
 // ─── Services ────────────────────────────────────────────────────────────────
 
 export type Service = {
@@ -87,7 +75,7 @@ export const SERVICES: Service[] = [
     deliverables: [
       {
         title: 'The workflow',
-        desc: 'Built, tested with your real data, and running in your own n8n account — not mine.'
+        desc: 'Built, tested with your real data, and running in your own n8n account, not mine.'
       },
       {
         title: 'Backup copy',
@@ -118,9 +106,9 @@ export const SERVICES: Service[] = [
     duration: '2 to 4 weeks',
     tools: ['CRMs', 'Onboarding', 'Invoices & payments', 'Approvals'],
     description:
-      'The repetitive bottlenecks come out of your business from start to finish — lead management, client onboarding, automatic reports, data checks and approvals across departments.',
+      'The repetitive bottlenecks come out of your business from start to finish: lead management, client onboarding, automatic reports, data checks and approvals across departments.',
     detail:
-      'Most manual work is not one task, it is a chain of them: a form arrives, someone checks it, someone else approves it, a record gets created in three systems, a folder gets made, an email goes out. I map that whole chain first — including the unusual cases everyone handles from memory — then automate it from start to finish. Ten years in finance operations means I understand approval limits, keeping duties separate so no one person controls a payment, and keeping a record of every step, before I build anything.',
+      'Most manual work is not one task, it is a chain of them: a form arrives, someone checks it, someone else approves it, a record gets created in three systems, a folder gets made, an email goes out. I map that whole chain first, including the unusual cases everyone handles from memory, then automate it from start to finish. Ten years in finance operations means I understand approval limits, keeping duties separate so no one person controls a payment, and keeping a record of every step, before I build anything.',
     includes: [
       'Workshops to map how the work is done today',
       'A list of every unusual case and exception',
@@ -202,7 +190,7 @@ export const SERVICES: Service[] = [
     duration: '1 to 2 weeks',
     tools: ['Google Workspace', 'Airtable', 'Notion', 'Slack & Telegram', 'Custom app connections'],
     description:
-      'Your scattered tools work as one live system — clean data moving automatically between spreadsheets, databases, and the channels your team actually uses.',
+      'Your scattered tools work as one live system: clean data moving automatically between spreadsheets, databases, and the channels your team actually uses.',
     detail:
       'Data falls out of step the moment it lives in two places. I connect your tools so one system holds the master copy and the rest follow it, instead of three spreadsheets disagreeing by Friday. That means retries that never create duplicate records, matching on a unique ID so the same customer is the same customer everywhere, and a scheduled check that catches anything the live sync missed.',
     includes: [
@@ -246,7 +234,7 @@ export const SERVICES: Service[] = [
     description:
       'Natural-sounding AI phone receptionists and chatbots that answer customer questions, screen new enquiries, and book confirmed appointments around the clock.',
     detail:
-      'A voice agent is judged on how fast it replies and on knowing when to stop. I build receptionists that answer in under a second, follow a set list of screening questions, check real calendar availability, and book a confirmed time — then hand over to a person the moment the conversation goes beyond the script. Every call is transcribed and saved, so you can check what the agent actually said rather than trusting that it behaved.',
+      'A voice agent is judged on how fast it replies and on knowing when to stop. I build receptionists that answer in under a second, follow a set list of screening questions, check real calendar availability, and book a confirmed time, then hand over to a person the moment the conversation goes beyond the script. Every call is transcribed and saved, so you can check what the agent actually said rather than trusting that it behaved.',
     includes: [
       'Fast-response voice setup',
       'Screening questions and conversation design',
@@ -595,30 +583,30 @@ export const EXPERIENCE: Role[] = [
     company: 'My Mountain Mover',
     role: 'Financial Analyst',
     short: 'Financial analysis',
-    period: '2022 — Present',
+    period: '2022 - Present',
     arrangement: 'US Remote',
     stack: ['Claude', 'Valuation Models', 'Financial Analysis', 'Forecasting', 'Excel'],
     achievement: 'Build company valuation models and forecasts for US stock portfolios',
     description:
-      'Claude and AI tooling carry the research, market-data analysis and structured reporting around that work — the habit of handing repeatable analysis to a machine started here.'
+      'Claude and AI tooling carry the research, market-data analysis and structured reporting around that work. The habit of handing repeatable analysis to a machine started here.'
   },
   {
     index: '02',
     company: 'Johndorf Ventures Corporation',
     role: 'Branch Accountant',
     short: 'Branch accounting',
-    period: '2020 — 2021',
+    period: '2020 - 2021',
     stack: ['Team Leadership', 'Payables & Receivables', 'Account Reconciliation', 'SAP', 'Process Mapping'],
     achievement: 'Led a 10-person accounting team closing the books every month and year',
     description:
-      'Ran and documented the month-end close, account checks and approvals for supplier bills, customer payments and payouts — the same step-by-step mapping that automation depends on.'
+      'Ran and documented the month-end close, account checks and approvals for supplier bills, customer payments and payouts: the same step-by-step mapping that automation depends on.'
   },
   {
     index: '03',
     company: 'Johndorf Ventures Corporation',
     role: 'Project Cost Accountant',
     short: 'Project costing',
-    period: '2016 — 2020',
+    period: '2016 - 2020',
     stack: ['Cost Accounting', 'Budget vs Actual', 'QuickBooks', 'Workbooks'],
     achievement: 'Checked multi-million project costs against the books, with automated reports',
     description:
@@ -629,11 +617,11 @@ export const EXPERIENCE: Role[] = [
     company: 'Johndorf Ventures Corporation',
     role: 'Accounts Payable Supervisor & Tax Compliance Analyst',
     short: 'Payables & tax',
-    period: '2015 — 2018',
+    period: '2015 - 2018',
     stack: ['Tax Compliance', 'Invoicing', 'Supplier Reconciliation', 'Payment Approvals'],
     achievement: 'Ran supplier invoices from receipt to payment and kept every tax filing on time',
     description:
-      'Oversaw invoice processing, overdue supplier balances and payment approvals, and managed the tax filing calendar — high-volume, rule-based work that is ideal for automation.'
+      'Oversaw invoice processing, overdue supplier balances and payment approvals, and managed the tax filing calendar: high-volume, rule-based work that is ideal for automation.'
   }
 ]
 
@@ -644,8 +632,8 @@ export const EXPERIENCE: Role[] = [
  * The span is derived from the group's outermost dates rather than stored, so
  * it cannot drift out of sync with the roles it summarises.
  */
-const periodStart = (period: string) => period.split('—')[0]?.trim() ?? period
-const periodEnd = (period: string) => period.split('—').at(-1)?.trim() ?? period
+const periodStart = (period: string) => period.split(' - ')[0]?.trim() ?? period
+const periodEnd = (period: string) => period.split(' - ').at(-1)?.trim() ?? period
 
 export const TENURES: Tenure[] = EXPERIENCE.reduce<Tenure[]>((groups, role) => {
   const current = groups.at(-1)
@@ -660,7 +648,7 @@ export const TENURES: Tenure[] = EXPERIENCE.reduce<Tenure[]>((groups, role) => {
   // through the first role's end.
   const group = groups.at(-1)!
 
-  group.span = `${periodStart(group.roles.at(-1)!.period)} — ${periodEnd(group.roles[0].period)}`
+  group.span = `${periodStart(group.roles.at(-1)!.period)} - ${periodEnd(group.roles[0].period)}`
 
   return groups
 }, [])

@@ -179,8 +179,6 @@ const PHASES = (['Audit', 'Build', 'Retainer'] as const).map((name, index) => ({
   steps: PROCESS.flatMap((step, stepIndex) => (step.phase === name ? [stepIndex] : []))
 }))
 
-const TOTAL = String(PROCESS.length).padStart(2, '0')
-
 /**
  * The chosen illustration wipes down from its top edge. The one it replaces
  * fades out first rather than wiping away under it: the stage is see-through
@@ -326,7 +324,6 @@ export function HowItWorksSection() {
     <section id='process' className={SECTION}>
       <div className={CONTAINER}>
         <SectionIntro
-          tag='HOW IT WORKS'
           title='A clear path from problem to reliable system.'
           blurb='You will always know what is happening, what comes next and what I need from you.'
           margin='mb-12 lg:mb-16'
@@ -420,10 +417,7 @@ export function HowItWorksSection() {
 
               <div key={active} className='process-explorer-detail'>
                 <p className='process-explorer-kicker'>
-                  {step.step} / {TOTAL}{' '}
-                  <span>
-                    · {step.phase} · {step.timing}
-                  </span>
+                  {step.phase} <span>· {step.timing}</span>
                 </p>
                 <p className='process-explorer-summary' style={{ fontFamily: DISPLAY_FONT }}>
                   {step.summary}

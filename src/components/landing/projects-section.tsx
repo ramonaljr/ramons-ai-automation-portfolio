@@ -250,7 +250,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
 
         <p className='work-card-summary'>{WORK_USE_CASES[cs.slug] ?? cs.description}</p>
 
-        <p className='work-card-stack'>{[tags.platform, ...tags.tools.slice(0, 2)].filter(Boolean).join(' · ')}</p>
+        <p className='work-card-stack'>{[tags.platform, ...tags.tools.slice(0, 2)].filter(Boolean).join(', ')}</p>
 
         {/* Above the card's stretched hit area, like the thumbnails. A film
             hosted here opens the dialog already playing it; any other

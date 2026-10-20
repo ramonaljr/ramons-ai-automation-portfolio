@@ -19,7 +19,6 @@ function Testimonials({ shown }: { shown: typeof TESTIMONIALS }) {
     <section id='testimonials' className={SECTION}>
       <div className={CONTAINER}>
         <SectionIntro
-          tag='IN THEIR WORDS'
           title='What it was like to work together.'
           blurb='From the people who had to run the thing after handover.'
         />

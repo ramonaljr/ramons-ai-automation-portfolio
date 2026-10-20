@@ -4,10 +4,12 @@ import { useEffect, useRef, useState } from 'react'
 
 import { motion, useScroll, useTransform } from 'motion/react'
 
+import { Download } from 'lucide-react'
+
 import { GreetingWord } from '@/components/landing/greeting-word'
-import { READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
+import { ICON_STROKE, READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
 import { EXPERIENCE, PROFILE } from '@/lib/portfolio'
-import { SectionIntro, introStep } from '@/components/landing/section-intro'
+import { introStep } from '@/components/landing/section-intro'
 import { ExperienceJourney } from '@/components/landing/experience-section'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
@@ -20,7 +22,7 @@ const CAREER_START = 2015
  * full history below so the two cannot disagree.
  */
 const CAREER = [...EXPERIENCE].reverse().map(role => ({
-  year: role.period.split('—')[0].trim(),
+  year: role.period.split(' - ')[0].trim(),
   label: role.short
 }))
 
@@ -77,7 +79,10 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
   })
 
   const proof = [
-    { value: `${Math.floor((new Date().getFullYear() - CAREER_START) / 5) * 5}+ yrs`, label: 'in finance & accounting' },
+    {
+      value: `${Math.floor((new Date().getFullYear() - CAREER_START) / 5) * 5}+ yrs`,
+      label: 'in finance & accounting'
+    },
     { value: PROFILE.credential, label: 'business strategy' },
     { value: String(systemCount), label: 'systems built' }
   ]
@@ -87,14 +92,7 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
       id='about'
       className='about-cinema saas-section border-rule relative overflow-clip border-t px-6 py-16 md:px-12 md:py-24 lg:px-20'
     >
-      <div className='about-cinema-word' aria-hidden='true'>
-        OPERATOR
-      </div>
-      <div className='about-cinema-line' aria-hidden='true' />
-
       <div ref={ref} className='relative z-2 mx-auto max-w-[1240px]'>
-        <SectionIntro tag='ABOUT' margin='mb-16' />
-
         {/* Three areas rather than two columns, so phones can put the face
             straight after the name: heading, then portrait and proof, then the
             story. On wide screens the portrait column spans both left rows. */}
@@ -129,10 +127,6 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
               className='saas-portrait-frame about-film-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border'
               data-visible={inView}
             >
-              <div className='about-film-meta' aria-hidden='true'>
-                <span>RA · 01</span>
-                <span>BUSINESS × AUTOMATION</span>
-              </div>
               <img
                 src='/images/landing/ramon-portrait-casual.webp'
                 alt={PROFILE.name}
@@ -159,7 +153,7 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
             </dl>
 
             <div className='border-rule bg-surface mt-5 rounded-xl border px-5 py-4' style={reveal(260)}>
-              <p className='text-ink-2 font-mono text-[11px] tracking-[0.14em]'>CAREER SO FAR</p>
+              <p className='text-ink text-sm font-medium'>Career so far</p>
               <ol className='about-career mt-3'>
                 {CAREER.map(step => (
                   <li key={step.year}>
@@ -185,8 +179,8 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
                 I spent a decade inside the work I now automate.
               </p>
               <p className='text-ink-2 text-base leading-[1.7]'>
-                Supplier invoices and tax filings, project cost checks, a 10-person month-end close, then forecasting:
-                I did that work by hand for over ten years. It taught me where work really slows down, and which checks
+                Supplier invoices and tax filings, project cost checks, a 10-person month-end close, then forecasting: I
+                did that work by hand for over ten years. It taught me where work really slows down, and which checks
                 cannot be skipped.
               </p>
               <p className='text-ink-2 text-base leading-[1.7]'>
@@ -224,19 +218,7 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
                 download
                 className='border-rule-strong text-ink-2 hover:border-rule-strong hover:bg-ink/3 hover:text-ink inline-flex items-center gap-2 rounded-full border px-5 py-3 text-[13px] tracking-wide transition-all'
               >
-                <svg
-                  width='14'
-                  height='14'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='1.8'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  aria-hidden='true'
-                >
-                  <path d='M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2' />
-                </svg>
+                <Download size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 DOWNLOAD CV
               </a>
 

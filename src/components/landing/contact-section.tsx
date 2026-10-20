@@ -2,10 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Mail, MapPin } from 'lucide-react'
+
 import { formatSlotLocal, isManilaClock, manilaDateKey, MAX_BOOKING_DAYS, slotInstant } from '@/lib/booking-policy'
 
 import { PROFILE } from '@/lib/portfolio'
 import { SectionIntro } from '@/components/landing/section-intro'
+
+import { ICON_STROKE } from '@/components/landing/motion'
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto'
@@ -39,33 +43,6 @@ const MONTHS = [
   'November',
   'December'
 ]
-
-function Icon({ d }: { d: string }) {
-  return (
-    <svg
-      width='16'
-      height='16'
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='1.7'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-      aria-hidden='true'
-    >
-      <path d={d} />
-    </svg>
-  )
-}
-
-const PATHS = {
-  mail: 'M3 7l9 6 9-6M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z',
-  pin: 'M12 21s7-5.686 7-11a7 7 0 10-14 0c0 5.314 7 11 7 11zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
-  cal: 'M8 3v3M16 3v3M4 8h16M5 5h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z',
-  chevL: 'M15 18l-6-6 6-6',
-  chevR: 'M9 6l6 6-6 6',
-  arrow: 'M4 12h14M13 6l6 6-6 6'
-}
 
 function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
@@ -288,7 +265,6 @@ export function ContactSection() {
     >
       <div className={CONTAINER}>
         <SectionIntro
-          tag='CONTACT'
           title={<>Book a free 30-minute call.</>}
           blurb='No charge, no deck. Bring the process that eats your week and I will tell you whether it is worth automating, and on which platform.'
         />
@@ -298,7 +274,10 @@ export function ContactSection() {
           {[
             ['Pick a time', 'Any open weekday slot below.'],
             ['30-minute call', 'Walk me through the process that eats your week.'],
-            ['Summary and quote in 48 hours', 'Whether it is worth automating, on which platform, and a fixed quote, or the audit first if it needs mapping.']
+            [
+              'Summary and quote in 48 hours',
+              'Whether it is worth automating, on which platform, and a fixed quote, or the audit first if it needs mapping.'
+            ]
           ].map(([title, copy], index) => (
             <li key={title}>
               <span>{String(index + 1).padStart(2, '0')}</span>
@@ -327,7 +306,7 @@ export function ContactSection() {
               {zone ? '(your time)' : '(Manila time)'}
             </>
           ) : (
-            <>Calls run Monday to Friday, 9:00–11:00 and 13:00–17:00 Manila time.</>
+            <>Calls run Monday to Friday, 9:00-11:00 and 13:00-17:00 Manila time.</>
           )}
         </p>
 
@@ -354,7 +333,7 @@ export function ContactSection() {
             <div className='mt-9 grid gap-x-6 gap-y-7 sm:grid-cols-2'>
               <div className='flex gap-3'>
                 <span className='text-ink-2 mt-0.5'>
-                  <Icon d={PATHS.mail} />
+                  <Mail size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 </span>
                 <div className='min-w-0'>
                   <p className='eyebrow'>EMAIL</p>
@@ -369,7 +348,7 @@ export function ContactSection() {
 
               <div className='flex gap-3'>
                 <span className='text-ink-2 mt-0.5'>
-                  <Icon d={PATHS.pin} />
+                  <MapPin size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 </span>
                 <div>
                   <p className='eyebrow'>LOCATION</p>
@@ -380,7 +359,7 @@ export function ContactSection() {
 
               <div className='flex gap-3'>
                 <span className='text-ink-2 mt-0.5'>
-                  <Icon d={PATHS.cal} />
+                  <CalendarDays size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 </span>
                 <div>
                   <p className='eyebrow'>AVAILABILITY</p>
@@ -390,7 +369,7 @@ export function ContactSection() {
 
               <div className='flex gap-3'>
                 <span className='text-ink-2 mt-0.5'>
-                  <Icon d={PATHS.arrow} />
+                  <ArrowRight size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 </span>
                 <div>
                   <p className='eyebrow'>RESPONSE</p>
@@ -437,7 +416,7 @@ export function ContactSection() {
                 </p>
               </div>
               <span className='border-rule text-ink-2 hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border sm:flex'>
-                <Icon d={PATHS.cal} />
+                <CalendarDays size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
               </span>
             </div>
 
@@ -451,7 +430,7 @@ export function ContactSection() {
                   aria-label='Previous month'
                   className='border-rule text-ink-2 hover:text-ink hover:border-rule-strong flex h-8 w-8 items-center justify-center rounded-lg border transition-all disabled:pointer-events-none disabled:opacity-30'
                 >
-                  <Icon d={PATHS.chevL} />
+                  <ChevronLeft size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 </button>
                 <p className='text-ink text-[15px]' style={{ fontFamily: DISPLAY_FONT }}>
                   {cursor ? `${MONTHS[cursor.m]} ${cursor.y}` : ' '}
@@ -463,7 +442,7 @@ export function ContactSection() {
                   aria-label='Next month'
                   className='border-rule text-ink-2 hover:text-ink hover:border-rule-strong flex h-8 w-8 items-center justify-center rounded-lg border transition-all disabled:pointer-events-none disabled:opacity-30'
                 >
-                  <Icon d={PATHS.chevR} />
+                  <ChevronRight size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 </button>
               </div>
 
@@ -550,7 +529,7 @@ export function ContactSection() {
                       type='button'
                       disabled={!s.available}
                       aria-pressed={time === s.time}
-                      aria-label={`${localTime(picked, s.time)}${zone ? ` your time (${s.time} Manila)` : ''}${s.available ? '' : ' — unavailable'}`}
+                      aria-label={`${localTime(picked, s.time)}${zone ? ` your time (${s.time} Manila)` : ''}${s.available ? '' : ', unavailable'}`}
                       onClick={() => setTime(s.time)}
                       className={`rounded-lg border px-4 py-2.5 text-[14px] tabular-nums transition-all ${
                         time === s.time
@@ -570,28 +549,28 @@ export function ContactSection() {
                 below": the form goes through the same service that just
                 failed. Email does not. */}
             <p className='text-ink-3 mt-3 min-h-[1.25rem] text-[13px]' aria-live='polite'>
-              {!picked
-                ? ''
-                : loadingSlots
-                  ? 'Checking my calendar…'
-                  : slotsError
-                    ? (
-                        <>
-                          Could not load times just now. Email{' '}
-                          <a
-                            href={`mailto:${PROFILE.email}?subject=${encodeURIComponent('Free 30-minute call')}`}
-                            className='text-ink underline underline-offset-2'
-                          >
-                            {PROFILE.email}
-                          </a>{' '}
-                          and I&apos;ll reply with times.
-                        </>
-                      )
-                    : slots && slots.every(s => !s.available)
-                      ? 'Nothing free that day. Try another date.'
-                      : !time
-                        ? 'Now pick a time.'
-                        : 'Confirm on the next step.'}
+              {!picked ? (
+                ''
+              ) : loadingSlots ? (
+                'Checking my calendar…'
+              ) : slotsError ? (
+                <>
+                  Could not load times just now. Email{' '}
+                  <a
+                    href={`mailto:${PROFILE.email}?subject=${encodeURIComponent('Free 30-minute call')}`}
+                    className='text-ink underline underline-offset-2'
+                  >
+                    {PROFILE.email}
+                  </a>{' '}
+                  and I&apos;ll reply with times.
+                </>
+              ) : slots && slots.every(s => !s.available) ? (
+                'Nothing free that day. Try another date.'
+              ) : !time ? (
+                'Now pick a time.'
+              ) : (
+                'Confirm on the next step.'
+              )}
             </p>
 
             <a
@@ -601,7 +580,7 @@ export function ContactSection() {
                 ready ? 'bg-ink text-ground hover:bg-ink/90' : 'bg-ink/5 text-ink-2 pointer-events-none'
               }`}
             >
-              <Icon d={PATHS.cal} />
+              <CalendarDays size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
               {ready ? `Continue with ${slotLabel}` : 'Select a date and time'}
             </a>
           </div>

@@ -87,7 +87,6 @@ export function ServicesSection() {
     <section id='services' className={SECTION}>
       <div className={CONTAINER}>
         <SectionIntro
-          tag='SERVICES'
           title={
             <>
               What comes off
@@ -95,7 +94,7 @@ export function ServicesSection() {
               your team&rsquo;s desk.
             </>
           }
-          blurb='Five practical ways to remove repetitive work — from intake and follow-up to approvals, reporting and customer response. Every build is documented so your team can run it without me.'
+          blurb='Five practical ways to remove repetitive work: from intake and follow-up to approvals, reporting and customer response. Every build is documented so your team can run it without me.'
         />
 
         <ul ref={ref} className='service-accordion' style={rise(inView)}>

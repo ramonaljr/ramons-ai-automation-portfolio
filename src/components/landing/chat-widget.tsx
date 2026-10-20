@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+import { MessageCircle, Send, X } from 'lucide-react'
+
 import { PROFILE } from '@/lib/portfolio'
+
+import { ICON_STROKE } from '@/components/landing/motion'
 
 const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
@@ -13,7 +17,7 @@ type Message = { id: number; role: 'user' | 'bot'; text: string }
 const SUGGESTIONS = ['What can you automate for me?', 'Which platform should I use?', 'How much does a build cost?']
 
 const GREETING =
-  "Hi — I'm Ramon's assistant. Ask me about automation, the platforms I build on, or how an engagement works."
+  "Hi, I'm Ramon's assistant. Ask me about automation, the platforms I build on, or how an engagement works."
 
 /**
  * Conversation key for the agent's memory window.
@@ -61,30 +65,6 @@ async function sendMessage(message: string): Promise<string> {
   if (!res.ok || !data?.reply) throw new Error(`chat failed: ${res.status}`)
 
   return data.reply
-}
-
-function Ico({ d, size = 16 }: { d: string; size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='1.8'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-      aria-hidden='true'
-    >
-      <path d={d} />
-    </svg>
-  )
-}
-
-const P = {
-  chat: 'M21 11.5a8.4 8.4 0 01-9 8.4 9.9 9.9 0 01-3.9-.8L3 21l1.9-4.9A8.4 8.4 0 0121 11.5z',
-  close: 'M18 6L6 18M6 6l12 12',
-  send: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z'
 }
 
 /** Dispatch on `window` to open the chat from anywhere on the page. */
@@ -248,7 +228,11 @@ export function ChatWidget() {
           scrolling && !open ? 'max-sm:pointer-events-none max-sm:translate-y-20 max-sm:opacity-0' : ''
         }`}
       >
-        <Ico d={open ? P.close : P.chat} size={22} />
+        {open ? (
+          <X size={22} strokeWidth={ICON_STROKE} aria-hidden='true' />
+        ) : (
+          <MessageCircle size={22} strokeWidth={ICON_STROKE} aria-hidden='true' />
+        )}
       </button>
 
       {/* Panel */}
@@ -287,7 +271,7 @@ export function ChatWidget() {
             aria-label='Close chat'
             className='border-rule text-ink-2 hover:border-rule-strong hover:text-ink flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all'
           >
-            <Ico d={P.close} size={14} />
+            <X size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
           </button>
         </div>
 
@@ -391,7 +375,7 @@ export function ChatWidget() {
             aria-label='Send message'
             className='bg-ink text-ground hover:bg-ink/90 flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-opacity disabled:opacity-30'
           >
-            <Ico d={P.send} size={15} />
+            <Send size={15} strokeWidth={ICON_STROKE} aria-hidden='true' />
           </button>
         </form>
       </div>

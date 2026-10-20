@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
-import { heroStats, PROFILE } from '@/lib/portfolio'
-import { CountUp, Cta, usePrefersReducedMotion } from '@/components/landing/motion'
+import { PROFILE } from '@/lib/portfolio'
+import { Cta, usePrefersReducedMotion } from '@/components/landing/motion'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 
@@ -30,7 +30,7 @@ const LONGEST_WORK = ROTATING_WORK.reduce((a, b) => (b.length > a.length ? b : a
  * `ready` lets the page gate the reveal on the intro animation finishing,
  * preserving the original choreography. Defaults to self-revealing on mount.
  */
-export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCount: number }) {
+export function HeroSection({ ready }: { ready?: boolean }) {
   const [mounted, setMounted] = useState(false)
   const [wordIndex, setWordIndex] = useState(0)
   const reduced = usePrefersReducedMotion()
@@ -97,7 +97,7 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
 
           <h1
             aria-label='Let automation handle data entry, new leads, follow-ups, and reporting.'
-            className={`hero-reveal display-xl text-ink text-left text-[clamp(3rem,6.4vw,7rem)] leading-[0.88] font-light transition-all duration-1000 ${
+            className={`hero-reveal display-xl text-ink text-left text-[clamp(2.6rem,4.6vw,5rem)] leading-[0.92] font-light transition-all duration-1000 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
             style={{ fontFamily: DISPLAY_FONT }}
@@ -108,7 +108,7 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
                 off. The padding widens the clip downward and the matching
                 negative margin keeps the layout where it was. */}
             <span
-              className='hero-word-shell hero-rotating-line relative -mb-[0.22em] block overflow-hidden pb-[0.22em] italic'
+              className='hero-word-shell hero-rotating-line relative -mb-[0.22em] block overflow-hidden pb-[0.22em]'
               aria-hidden='true'
             >
               <span className='invisible block'>{LONGEST_WORK}</span>
@@ -140,9 +140,8 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            For finance and operations teams: I connect the tools you already use so work moves on its own, from
-            following up leads to invoices and month-end accounts. Built by a former accountant and payables
-            supervisor with an MBA.
+            For finance and operations teams: I connect your tools so work moves on its own. Built by a former
+            accountant.
           </p>
 
           <div
@@ -150,7 +149,7 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            <Cta href='#contact'>Find what to automate</Cta>
+            <Cta href='#contact'>Book a free call</Cta>
             <Cta href='#portfolio' tone='secondary'>
               See examples
             </Cta>
@@ -178,43 +177,9 @@ export function HeroSection({ ready, systemCount }: { ready?: boolean; systemCou
               />
             </picture>
           </div>
-
-          <span className='hero-portrait-chip'>
-            <i aria-hidden='true' />
-            Available for new projects
-          </span>
-
-          <figcaption className='hero-portrait-caption'>
-            <strong style={{ fontFamily: DISPLAY_FONT }}>{PROFILE.name}</strong>
-            <span>{PROFILE.title} · former accountant · MBA</span>
-          </figcaption>
         </figure>
       </div>
 
-      {/* Stats. Previously `absolute bottom-12`, which on a short viewport put
-          them straight through the headline. In flow, the hero simply grows. */}
-      <div
-        className={`hero-reveal relative z-30 mx-auto w-full max-w-390 px-6 pb-14 transition-all delay-500 duration-700 md:px-12 lg:px-20 2xl:max-w-440 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        {/* Three across at every width. Wrapping left the third figure alone
-            on its own row on phones. */}
-        <div className='border-rule grid grid-cols-3 items-start gap-x-4 border-t pt-8 sm:flex sm:justify-center sm:gap-x-12 lg:gap-x-20'>
-          {heroStats(systemCount).map(stat => (
-            <div key={stat.label} className='flex flex-col gap-1.5'>
-              <span
-                data-countup
-                className='display-md text-ink text-2xl font-light sm:text-3xl lg:text-[2.5rem]'
-                style={{ fontFamily: DISPLAY_FONT }}
-              >
-                <CountUp start={isVisible}>{stat.value}</CountUp>
-              </span>
-              <span className='text-ink-2 max-w-[20ch] text-sm leading-snug'>{stat.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
     </section>
   )
 }
