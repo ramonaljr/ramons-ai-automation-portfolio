@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Calendar returns times
         env:
-          SITE_URL: ${{ vars.SITE_URL || 'https://ramons-ai-automation-portfolio.vercel.app' }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://ramonvallejera.com' }}
         run: |
           # Tomorrow in Manila: always inside the bookable window, and a
           # weekend still answers ok with every slot closed.

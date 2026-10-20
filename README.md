@@ -75,8 +75,10 @@ Hosted on Vercel, deployed from `main`.
   branches do not consume a build. The repo shipped with
   `"deploymentEnabled": false`, which silently ignored every push — if
   deployments stop firing, check that flag first.
-- **`NEXT_PUBLIC_APP_URL`** must be set in Vercel (Production). Everything
-  that emits an absolute URL — canonicals, Open Graph, sitemap, robots,
-  JSON-LD — reads it through `src/lib/site.ts`. It is inlined at build time,
-  so changing it requires a fresh build, not just a redeploy.
-- When a custom domain is added, update that variable and nothing else.
+- The production domain is **ramonvallejera.com**. Everything that emits an
+  absolute URL — canonicals, Open Graph, sitemap, robots, JSON-LD — reads it
+  through `src/lib/site.ts`, whose fallback is that domain. Set
+  **`NEXT_PUBLIC_APP_URL`** only to override it for a preview or staging
+  deploy; it is inlined at build time, so changing it needs a fresh build.
+- If the domain ever changes, update the fallback in `src/lib/site.ts` and the
+  `SITE_URL` default in `.github/workflows/booking-uptime.yml`.

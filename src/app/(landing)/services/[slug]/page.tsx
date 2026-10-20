@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { ServiceDetail } from '@/components/landing/service-detail'
 
 import { SERVICES } from '@/lib/portfolio'
+import { abs } from '@/lib/site'
 
 export async function generateStaticParams() {
   return SERVICES.map(s => ({ slug: s.slug }))
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: service.title,
     description: service.description,
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_APP_URL}/services/${service.slug}`
+      canonical: abs(`/services/${service.slug}`)
     }
   }
 }
