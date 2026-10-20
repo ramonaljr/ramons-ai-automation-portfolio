@@ -126,10 +126,13 @@ const components: MDXRemoteProps['components'] = {
     </pre>
   ),
 
+  // Satoshi has no italic, so <em> would be a browser-slanted fake. Weight carries the stress instead.
+  em: ({ children }) => <em className='text-ink font-medium not-italic'>{children}</em>,
+
   img: MdxImage,
 
   blockquote: ({ children }) => (
-    <blockquote className='border-rule-strong text-ink-3 [&_p]:text-ink-3 mt-10 border-l pl-6 text-[17px] leading-relaxed font-light italic [&_p]:mt-0 [&_p]:text-[17px] [&_p]:leading-relaxed'>
+    <blockquote className='border-rule-strong text-ink-3 [&_p]:text-ink-3 mt-10 border-l pl-6 text-[17px] leading-relaxed font-light [&_p]:mt-0 [&_p]:text-[17px] [&_p]:leading-relaxed'>
       {children}
     </blockquote>
   )

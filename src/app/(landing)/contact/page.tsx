@@ -159,9 +159,8 @@ const ContactUsPage = async () => {
               <div className={CONTAINER}>
                 <div className='mb-14 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between'>
                   <div>
-                    <p className='text-ink-3 font-mono text-[12px] tracking-[0.28em]'>RECENT WORK</p>
                     <h2
-                      className='text-ink mt-4 text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] font-light tracking-tight'
+                      className='text-ink text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] font-light tracking-tight'
                       style={{ fontFamily: DISPLAY_FONT }}
                     >
                       What this looks like
@@ -246,8 +245,6 @@ const ContactUsPage = async () => {
                       href={`/services/${s.slug}`}
                       className='group border-rule hover:bg-ink/2 flex flex-col gap-4 border-b py-8 transition-colors sm:flex-row sm:items-center sm:gap-10'
                     >
-                      <span className='text-meta text-ink-3 font-mono sm:w-12'>{String(i + 1).padStart(2, '0')}</span>
-
                       <div className='flex-1'>
                         <h3
                           className='text-ink text-[20px] leading-snug font-light tracking-tight'

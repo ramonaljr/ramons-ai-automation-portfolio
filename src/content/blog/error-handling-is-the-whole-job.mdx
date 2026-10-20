@@ -15,19 +15,19 @@ needsReview: true
 
 ## The failure mode nobody plans for
 
-An automation that crashes is easy. You get an alert, you open the execution, you fix the node, everyone moves on. A crash is a gift — it is the system telling you precisely where it stopped.
+An automation that crashes is easy. You get an alert, you open the execution, you fix the node, everyone moves on. A crash is a gift: it is the system telling you precisely where it stopped.
 
 The dangerous one is the automation that keeps running while doing the wrong thing.
 
 A field goes missing upstream. Your workflow writes `undefined` into a ledger for three weeks. The runs are all green. The dashboard says 100% success. Nobody notices until reconciliation, and by then you are not fixing a bug, you are unpicking a month of bad data across three systems.
 
-Every production workflow I build starts from the assumption that this will happen. Not that it might — that it will, and the only question is whether the system notices before a human does.
+Every production workflow I build starts from the assumption that this will happen. Not that it might, but that it will, and the only question is whether the system notices before a human does.
 
 ## "It errored" is the good outcome
 
 This is the reframe that changes how you build.
 
-A workflow has three possible endings: it succeeds correctly, it fails loudly, or it succeeds incorrectly. Most people design for the first and treat the second as the thing to prevent. That is backwards. Loud failure is not the problem — it is the safety mechanism. The thing to prevent is the third ending.
+A workflow has three possible endings: it succeeds correctly, it fails loudly, or it succeeds incorrectly. Most people design for the first and treat the second as the thing to prevent. That is backwards. Loud failure is not the problem: it is the safety mechanism. The thing to prevent is the third ending.
 
 So the design question is never "how do I stop this from erroring". It is: **when this goes wrong, does it stop, or does it keep going?**
 
@@ -41,7 +41,7 @@ The cheapest place to catch a bad record is before it reaches a system of record
 
 **Rule validation** asks whether the request is *allowed*. Not "is this a valid date" but "is this date a Tuesday inside working hours, and is that slot actually free".
 
-The booking workflow behind this site keeps these in two separate nodes on purpose. `Validate Booking` checks only shape. `Judge Slot` checks the rules — and it is the second one that stops somebody POSTing a booking for 03:00 on a Sunday straight to the webhook, bypassing the calendar UI entirely.
+The booking workflow behind this site keeps these in two separate nodes on purpose. `Validate Booking` checks only shape. `Judge Slot` checks the rules, and it is the second one that stops somebody POSTing a booking for 03:00 on a Sunday straight to the webhook, bypassing the calendar UI entirely.
 
 If you only write shape validation, your workflow is protected against typos and completely open to anyone who reads your network tab.
 
@@ -49,11 +49,11 @@ If you only write shape validation, your workflow is protected against typos and
 
 Here is a bug that cost me a day, and it is the best argument for this layer I have.
 
-The site's availability endpoint needs to know which slots are free. The obvious tool is Google Calendar's `freeBusy` query — that is literally what it is for. So the first version used it.
+The site's availability endpoint needs to know which slots are free. The obvious tool is Google Calendar's `freeBusy` query, which is literally what it is for. So the first version used it.
 
 It silently marked every working slot as unavailable, on and off, for reasons that made no sense.
 
-The cause: `freeBusy` cannot distinguish a meeting from an all-day entry. A birthday, a public holiday, an out-of-office marker — each came back as a busy block spanning the entire day. The tell was subtle: the returned `end` was exactly equal to the `timeMax` I had sent, because the all-day block had been clipped to my query window.
+The cause: `freeBusy` cannot distinguish a meeting from an all-day entry. A birthday, a public holiday, an out-of-office marker: each came back as a busy block spanning the entire day. The tell was subtle: the returned `end` was exactly equal to the `timeMax` I had sent, because the all-day block had been clipped to my query window.
 
 Nothing errored. The API returned 200. The workflow ran green. It just quietly told every visitor there was no time available.
 
@@ -75,13 +75,13 @@ The general rule: **prefer the API that returns data you can inspect over the on
 
 A try/catch branch that logs to the execution history is not error handling. Nobody reads execution history. Execution history is where you look *after* somebody tells you there is a problem.
 
-Failures need to land somewhere with a person attached: a Slack channel, a Telegram message, an email that is not from a no-reply address. And the alert has to carry enough to act on without opening n8n — which record, which step, what the payload looked like, and what the workflow did instead.
+Failures need to land somewhere with a person attached: a Slack channel, a Telegram message, an email that is not from a no-reply address. And the alert has to carry enough to act on without opening n8n: which record, which step, what the payload looked like, and what the workflow did instead.
 
 Two details that make the difference between an alert channel people watch and one they mute:
 
 **Alert on the exception, not the run.** If your workflow processes 200 invoices and three fail, send one message listing three failures. Sending 200 messages, 197 of which say "fine", trains everybody to ignore the channel.
 
-**Every path ends in a logged outcome — including the rejections.** This is the one people skip. It is easy to log successes and errors and forget the middle case: the record the workflow deliberately declined to act on. A lead that failed enrichment, an invoice below threshold, a booking outside hours. If a rejection is not written down, it is indistinguishable from a record that never arrived, and "did we get their form?" becomes unanswerable.
+**Every path ends in a logged outcome, including the rejections.** This is the one people skip. It is easy to log successes and errors and forget the middle case: the record the workflow deliberately declined to act on. A lead that failed enrichment, an invoice below threshold, a booking outside hours. If a rejection is not written down, it is indistinguishable from a record that never arrived, and "did we get their form?" becomes unanswerable.
 
 ## Layer 4: make the run replayable
 
@@ -93,7 +93,7 @@ Two properties make that possible:
 
 **Key your writes so a replay updates instead of duplicating.** This is idempotency, and the practical form is: pick a stable identifier from the source system and upsert on it, rather than inserting and hoping.
 
-Choosing that key matters more than it looks. In the booking workflow, Calendly bookings are recorded against the Google Calendar event id, not the Calendly invitee id — because the calendar id is stable across creation *and* cancellation. That means a cancellation updates the row its booking created, rather than adding a second, contradictory row that says the same meeting is both confirmed and cancelled.
+Choosing that key matters more than it looks. In the booking workflow, Calendly bookings are recorded against the Google Calendar event id, not the Calendly invitee id, because the calendar id is stable across creation *and* cancellation. That means a cancellation updates the row its booking created, rather than adding a second, contradictory row that says the same meeting is both confirmed and cancelled.
 
 Get the key wrong and every retry doubles your data. Get it right and a replay is free.
 
@@ -109,7 +109,7 @@ In practice that means thresholds:
 - On document extraction, every field carries a confidence score. Low-resolution scans and handwritten vouchers divert to a manual queue instead of the model guessing.
 - On a voice agent, the moment a caller goes outside the script it hands to a person rather than improvising.
 
-That last one is worth stating plainly, because it is the AI-specific version of this whole article: **an LLM does not have a failure mode where it stops.** It always produces something. Left ungated, "I do not know" comes out as a confident, plausible, wrong answer — which is precisely the silent-success ending you have spent four layers preventing.
+That last one is worth stating plainly, because it is the AI-specific version of this whole article: **an LLM does not have a failure mode where it stops.** It always produces something. Left ungated, "I do not know" comes out as a confident, plausible, wrong answer, which is precisely the silent-success ending you have spent four layers preventing.
 
 So keep deterministic work in deterministic code. Arithmetic, balances, routing rules and thresholds do not go through a model. The model reads messy input and proposes structure; code decides what happens next.
 
@@ -117,7 +117,7 @@ So keep deterministic work in deterministic code. Arithmetic, balances, routing 
 
 These are the ones that survive all the obvious testing.
 
-**Fields that disagree with each other.** I found one in my own booking recorder while writing this. It computed `date` and `time` correctly in Manila time, then recorded a `timezone` field copied straight from the calendar event — which Google had stamped as `America/New_York`. Every value was individually defensible. Read together, the row was twelve hours wrong. Consistency between fields is not something a schema check catches.
+**Fields that disagree with each other.** I found one in my own booking recorder while writing this. It computed `date` and `time` correctly in Manila time, then recorded a `timezone` field copied straight from the calendar event, which Google had stamped as `America/New_York`. Every value was individually defensible. Read together, the row was twelve hours wrong. Consistency between fields is not something a schema check catches.
 
 **Filters that stop matching.** If you match on a provider's email footer or subject format, that filter will one day silently match nothing when they change their template. Match in code and log the skips, so a format change shows up as "47 events skipped" rather than as a trigger that appears to be working and is doing nothing.
 
@@ -131,12 +131,12 @@ I break the workflow on purpose, and I do it in front of the client.
 - A record with the key field missing entirely, and one where it is an empty string
 - The same submission sent twice, three seconds apart
 - The upstream API returning 429, then 500, then a timeout
-- A payload with the right shape and nonsense values — a date in 1970, a negative quantity
+- A payload with the right shape and nonsense values: a date in 1970, a negative quantity
 - Someone POSTing straight to the webhook, skipping the form
 
 For each one, the question is not "did it error". It is: **did it stop, did it say something, and can I tell tomorrow that it happened?**
 
-If any of them produce a silent success, the workflow is not finished. It does not matter how well the happy path runs — the happy path is the part that was never going to be the problem.
+If any of them produce a silent success, the workflow is not finished. It does not matter how well the happy path runs: the happy path is the part that was never going to be the problem.
 
 ## The short version
 

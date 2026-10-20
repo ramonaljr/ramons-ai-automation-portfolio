@@ -86,12 +86,6 @@ const BlogPage = async () => {
             Working notes on n8n, Zapier, Make and GoHighLevel: architecture decisions, failure modes, and what actually
             holds up in production.
           </p>
-
-          {posts.length > 0 && (
-            <p className='border-rule text-ink-3 mt-10 border-t pt-6 font-mono text-[11px] tracking-[0.2em]'>
-              {String(posts.length).padStart(2, '0')} {posts.length === 1 ? 'ARTICLE' : 'ARTICLES'}
-            </p>
-          )}
         </div>
       </header>
 

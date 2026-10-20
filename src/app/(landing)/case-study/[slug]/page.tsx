@@ -290,9 +290,8 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
         {film && (
           <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
             <div className={CONTAINER}>
-              <p className='text-ink-3 font-mono text-[12px] tracking-[0.28em]'>THE FILM</p>
               <p
-                className='text-ink mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
+                className='text-ink max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
                 style={{ fontFamily: DISPLAY_FONT }}
               >
                 How this build works, in a short animated explainer.
@@ -402,8 +401,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
         {(metadata.problem || metadata.solution) && (
           <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
             <div className={CONTAINER}>
-              <p className='text-ink-3 font-mono text-[12px] tracking-[0.28em]'>IN SHORT</p>
-              <div className='mt-10 grid gap-5 md:grid-cols-2'>
+              <div className='grid gap-5 md:grid-cols-2'>
                 {metadata.problem && (
                   <div className='border-rule bg-ink/2.5 rounded-2xl border p-8'>
                     <p className='eyebrow'>THE PROBLEM</p>
@@ -455,11 +453,9 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
         {(metadata.failsafeHeadline || metadata.failsafes) && (
           <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
             <div className={CONTAINER}>
-              <p className='text-ink-3 font-mono text-[12px] tracking-[0.28em]'>WHEN IT BREAKS</p>
-
               {metadata.failsafeHeadline && (
                 <p
-                  className='text-ink mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
+                  className='text-ink max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
                   style={{ fontFamily: DISPLAY_FONT }}
                 >
                   {metadata.failsafeHeadline}
