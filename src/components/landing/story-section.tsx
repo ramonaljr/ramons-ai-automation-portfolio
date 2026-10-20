@@ -66,6 +66,9 @@ const ACT_WINDOWS: { input: number[]; output: number[] }[] = [
   { input: [0, 0.63, 0.71, 1], output: [0, 0, 1, 1] }
 ]
 
+/** Where the outcome's system count runs, inside act three's fade-in (0.63 to 0.71). */
+const OUTCOME_COUNT = [0.6, 0.68] as const
+
 /** Where along act two each tool switches on. */
 const toolThreshold = (index: number) => 0.4 + index * 0.045
 
@@ -213,7 +216,17 @@ function ActCopy({
   // meant for the one showing.
   const pointerEvents = useTransform(opacity, latest => (latest > 0.5 ? 'auto' : 'none'))
   const outcome = index === ACTS.length - 1
-  const stat = useTransform(progress, [0.7, 0.86], [0, systemCount])
+
+  // The count climbs while the outcome fades in, so the number has landed by
+  // the time the act is fully on screen; counting after that left "0 systems"
+  // sitting at full opacity. Before the count starts the act is invisible, so
+  // the real number is shown there for screen readers and the server render.
+  const stat = useTransform(progress, latest =>
+    latest <= OUTCOME_COUNT[0]
+      ? systemCount
+      : systemCount * Math.min(1, (latest - OUTCOME_COUNT[0]) / (OUTCOME_COUNT[1] - OUTCOME_COUNT[0]))
+  )
+
   const statText = useTransform(stat, latest => `${Math.round(latest)} systems`)
 
   return (
