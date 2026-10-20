@@ -56,11 +56,11 @@ Built in n8n for **TalentBridge Staffing, a fictional sample client**. The workf
 
 ## What I built
 
-1. **Data from three places.** Xero for unpaid invoices, Pipedrive for the client relationship and Postgres for reminder history, loaded once per run.
+1. **Data from three places.** Xero for unpaid invoices and each customer's billing email, Pipedrive for the account owner and open deals, and Postgres for reminder history, loaded once per run.
 2. **Policy rules decide.** Which invoices get a reminder, and how firm, follows company policy, never AI. Disputed invoices, wrong contacts and promised dates are skipped.
 3. **AI writes the email** within the approved policy: firmer the later it is, with no invented fees, accusations or legal threats. The subject line is built by rules.
 4. **Send and record.** Each reminder is recorded in Postgres, where one row per invoice is enforced.
-5. **Final notices.** At 30+ days late, the account owner is told in Slack and given a Pipedrive task first.
+5. **One final notice.** At 30+ days late, the account owner is told in Slack and given a Pipedrive task first. Only one final notice goes out; after that the account owner takes over.
 6. **AI reads replies** and pulls out promised dates, invoice numbers, dispute reasons or new contacts.
 7. **Disputes stop reminders** until a person clears them, with a Pipedrive task, Slack alert and saved emails.
 8. **Every other reply sets the next date:** promised payments, "already paid" checks in Xero, invoice copies, wrong contacts and questions.
@@ -71,7 +71,7 @@ Built in n8n for **TalentBridge Staffing, a fictional sample client**. The workf
 - **A dispute stops all reminders** until a person resolves it.
 - **No double sends,** enforced by the database itself.
 - **Fixed rules** for timing and tone; AI only writes the words.
-- **Account owners are warned** before any final notice.
+- **Account owners are warned** before the one final notice, then take over.
 
 ## Outcomes
 
