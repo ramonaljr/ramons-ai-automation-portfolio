@@ -4,5 +4,13 @@
     "deploymentEnabled": {
       "main": true
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "ramons-ai-automation-portfolio.vercel.app" }],
+      "destination": "https://ramonvallejera.com/$1",
+      "permanent": true
+    }
+  ]
 }
