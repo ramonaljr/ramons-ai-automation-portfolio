@@ -6,13 +6,11 @@ import { createPortal } from 'react-dom'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
-import { usePrefersReducedMotion } from '@/components/landing/motion'
+import { DISPLAY_FONT, usePrefersReducedMotion } from '@/components/landing/motion'
 import { filmOf, WORK_TONES, workViews } from '@/lib/work-views'
 import { WorkCanvas } from '@/components/landing/work-canvas'
 import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 import { ViewStage } from '@/components/landing/view-stage'
-
-const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 
 /** Everything inside the dialog a keyboard can land on, in document order. */
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'

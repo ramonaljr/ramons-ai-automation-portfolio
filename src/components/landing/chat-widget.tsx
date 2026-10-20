@@ -6,9 +6,7 @@ import { MessageCircle, Send, X } from 'lucide-react'
 
 import { PROFILE } from '@/lib/portfolio'
 
-import { ICON_STROKE } from '@/components/landing/motion'
-
-const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
+import { DISPLAY_FONT, ICON_STROKE } from '@/components/landing/motion'
 
 type Message = { id: number; role: 'user' | 'bot'; text: string }
 

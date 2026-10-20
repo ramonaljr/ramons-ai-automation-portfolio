@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { Geist_Mono, IBM_Plex_Sans } from 'next/font/google'
+import { Geist_Mono } from 'next/font/google'
 import localFont from 'next/font/local'
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
@@ -22,14 +22,6 @@ import './globals.css'
 // still loads, just after the text a visitor reads first.
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
-  subsets: ['latin'],
-  preload: false
-})
-
-// Landing page display face — used by the hero headline and stat figures.
-const ibmPlexSans = IBM_Plex_Sans({
-  variable: '--font-ibm-plex',
-  weight: ['300', '400', '500', '600'],
   subsets: ['latin'],
   preload: false
 })
@@ -152,12 +144,7 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
     <html
       lang='en'
-      className={cn(
-        geistMono.variable,
-        satoshi.variable,
-        ibmPlexSans.variable,
-        'flex min-h-full w-full scroll-smooth antialiased'
-      )}
+      className={cn(geistMono.variable, satoshi.variable, 'flex min-h-full w-full scroll-smooth antialiased')}
       suppressHydrationWarning
     >
       <body className='flex min-h-full w-full flex-auto flex-col'>

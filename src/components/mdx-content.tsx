@@ -6,8 +6,8 @@ import { DISPLAY_FONT } from '@/components/landing/motion'
 import { generateSlug } from '@/lib/extract-headings'
 
 /**
- * Long-form prose in the landing page's voice: IBM Plex light for headings,
- * ink-on-cream body copy, hairline rules instead of boxes.
+ * Long-form prose in the landing page's voice: Satoshi for headings,
+ * ink-on-slate body copy, hairline rules instead of boxes.
  *
  * The measure is set once by the caller's container rather than per element —
  * that keeps text, images and pull quotes on the same left edge.

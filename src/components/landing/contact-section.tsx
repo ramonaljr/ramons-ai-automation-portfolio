@@ -9,9 +9,8 @@ import { formatSlotLocal, isManilaClock, manilaDateKey, MAX_BOOKING_DAYS, slotIn
 import { PROFILE } from '@/lib/portfolio'
 import { SectionIntro } from '@/components/landing/section-intro'
 
-import { ICON_STROKE } from '@/components/landing/motion'
+import { DISPLAY_FONT, ICON_STROKE } from '@/components/landing/motion'
 
-const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
 const CONTAINER = 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto'
 
 const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']

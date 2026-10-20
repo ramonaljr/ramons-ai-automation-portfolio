@@ -7,7 +7,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 /**
  * Cycling multilingual greeting, carried over from the previous portfolio hero.
  *
- * The non-Latin greetings fall outside IBM Plex Sans, so an explicit CJK and
+ * The non-Latin greetings fall outside Satoshi, so an explicit CJK and
  * Devanagari fallback stack is declared rather than leaving the browser to
  * pick something arbitrary.
  */
@@ -15,8 +15,7 @@ const GREETINGS = ['Hello', 'Kumusta', 'こんにちは', 'नमस्ते', 
 const INTERVAL_MS = 2200
 
 const FALLBACK_STACK = [
-  'var(--font-ibm-plex)',
-  '"IBM Plex Sans"',
+  'var(--font-satoshi)',
   '"Hiragino Sans"',
   '"Noto Sans JP"',
   '"Noto Sans SC"',
