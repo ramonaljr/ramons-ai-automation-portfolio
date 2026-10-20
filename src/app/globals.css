@@ -5585,11 +5585,18 @@ div#experience.about-journey {
 /* ── How it works: step explorer ────────────────────────────────────────
    The chosen step's illustration and detail on the left, the titles grouped
    by engagement on the right. On phones the titles become a row of chips
-   that scrolls sideways above the panel. No card behind it, so the page's
-   falling leaves stay visible. */
+   that scrolls sideways above the panel. It used to sit straight on the
+   page so the falling leaves showed through, but leaves and branches ran
+   behind the step titles and the detail copy; it now sits on the same
+   opaque card as the career history in About. */
 .process-explorer {
   display: grid;
   gap: clamp(1.5rem, 3vw, 2.5rem);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border: 1px solid color-mix(in oklch, var(--accent) 20%, var(--rule));
+  border-radius: 1.25rem;
+  background: color-mix(in oklch, var(--ground) 94%, transparent);
+  backdrop-filter: blur(10px);
 }
 
 .process-explorer-nav {
@@ -5685,7 +5692,10 @@ div#experience.about-journey {
 
 .process-explorer-roll-char > span {
   display: inline-block;
-  color: var(--ink-3);
+  /* The titles not selected. ink-3 read as faded grey over the old
+     background; at 70% they stay readable and the selected title still
+     stands out at full ink. */
+  color: color-mix(in oklch, var(--ink) 70%, var(--ground));
 }
 
 .process-explorer-roll-char > .process-explorer-roll-ink {
@@ -5724,8 +5734,8 @@ div#experience.about-journey {
   height: 15.5rem;
   overflow: hidden;
   border: 1px solid var(--rule);
-  border-radius: 1.25rem;
-  background: color-mix(in oklch, var(--ground) 70%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in oklch, var(--ink) 3%, var(--ground));
 }
 
 .process-explorer-visual {
@@ -5765,7 +5775,7 @@ div#experience.about-journey {
 .process-explorer-desc {
   max-width: 60ch;
   color: var(--ink-2);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.65;
 }
 
@@ -5792,7 +5802,7 @@ div#experience.about-journey {
 
 .process-explorer-terms dd {
   color: var(--ink);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.5;
 }
 
