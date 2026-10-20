@@ -20,7 +20,7 @@ canvasTheme: 'light'
 logicSummary: 'Invoice email → PDF text → duplicate check → AI reads the invoice → checked against PO and delivery record → approval in Slack → bill added to QuickBooks → logged.'
 keyOutcome:
   value: '3-way'
-  label: 'Invoice, PO & Delivery Match'
+  label: 'Invoice, PO & delivery match'
 integrations: ['n8n', 'QuickBooks', 'Gmail', 'Airtable', 'Slack', 'OpenAI']
 problem: 'Construction invoices arrived by email and were checked by hand against purchase orders, delivery records and contract values. Progress payments made it easy to pay for the same work twice, pay in full when retention should be held back, or pay without a signed lien waiver.'
 solution: 'Built an n8n workflow that picks up invoice emails every 5 minutes, skips duplicates, has AI extract every billing figure, and checks them with fixed rules against the purchase order and delivery record in Airtable. Clean invoices go to the budget owner and invoices with issues to accounts payable, both in Slack. Approved bills are added to QuickBooks at the amount to pay after retention, and every outcome is logged.'
@@ -29,17 +29,17 @@ impactHighlight: 'Every invoice checked against the PO and delivery record befor
 impactHighlightDesc: 'Approvers see the issues already flagged, and only approved bills reach QuickBooks.'
 roi:
   - value: '3-way'
-    label: 'Invoice, PO & Delivery Match'
+    label: 'Invoice, PO & delivery match'
   - value: '2'
-    label: 'Duplicate Checks'
+    label: 'Duplicate checks'
   - value: '100%'
-    label: 'Invoices Logged'
-failsafeHeadline: 'Nothing Posts Without Approval'
+    label: 'Invoices logged'
+failsafeHeadline: 'Nothing posts without approval'
 failsafeDesc: 'Every bill is approved by a person in Slack before it reaches QuickBooks, and anything uncertain is checked first.'
 failsafes:
-  - title: 'AI Confidence Check'
+  - title: 'AI confidence check'
     desc: 'If the AI is less than 80% sure it read the invoice correctly, a person confirms the details before anything else happens.'
-  - title: 'Construction Rules'
+  - title: 'Construction rules'
     desc: 'Progress payments must add up, stay within the contract value, hold back retention and include a lien waiver.'
 ---
 

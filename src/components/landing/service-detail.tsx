@@ -58,7 +58,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
                 src={`/images/services/${service.slug}.svg`}
                 alt={`Workflow diagram for ${service.title}`}
                 width={1200}
-                height={760}
+                height={600}
                 className='h-auto w-full'
               />
             </div>

@@ -25,7 +25,7 @@ canvasTheme: 'light'
 logicSummary: 'Application form → CV filed and scored against the role → shortlist or decline → role-specific questions → personal invite → interview booked → screening questions for the interviewer.'
 keyOutcome:
   value: '5'
-  label: 'Hiring Stages Automated'
+  label: 'Hiring stages automated'
 integrations: ['n8n', 'Airtable', 'Gmail', 'Google Drive', 'Google Calendar', 'Groq', 'OpenAI']
 problem: 'Every application meant opening a CV, comparing it with the job post and deciding by hand. Good applicants waited days for a reply, shortlisted ones got generic emails, interviews took rounds of back-and-forth to schedule, and interviewers walked in without questions prepared for the person in front of them.'
 solution: 'Built an n8n workflow with five AI steps. The application form saves the CV to Google Drive and the applicant to Airtable, AI reads the CV against the matching job posting and shortlists or declines, shortlisted applicants answer questions written for that role, AI writes a personal interview invite sent from Gmail, books the interview in Google Calendar, and prepares screening questions for the interviewer.'
@@ -34,17 +34,17 @@ impactHighlight: 'From application to booked interview without anyone reading a 
 impactHighlightDesc: 'Every applicant is screened against the role the moment they apply, and the hiring team sees every decision in Airtable.'
 roi:
   - value: '5'
-    label: 'Hiring Stages Automated'
+    label: 'Hiring stages automated'
   - value: '100%'
-    label: 'Applicants Screened & Recorded'
+    label: 'Applicants screened & recorded'
   - value: '0'
-    label: 'Invites Written by Hand'
-failsafeHeadline: 'Every Decision Is on Record'
+    label: 'Invites written by hand'
+failsafeHeadline: 'Every decision is on record'
 failsafeDesc: 'Shortlisted and declined applicants are both written to Airtable, so the team can review any decision the AI made.'
 failsafes:
-  - title: 'Judged Against the Real Job'
+  - title: 'Judged against the real job'
     desc: 'The AI scores each CV against the job posting stored in Airtable, not a generic idea of a good candidate.'
-  - title: 'Fixed-Format Answers'
+  - title: 'Fixed-format answers'
     desc: 'Every AI step must return its answer in a set format, so a vague or broken reply cannot slip into the records or an email.'
 ---
 

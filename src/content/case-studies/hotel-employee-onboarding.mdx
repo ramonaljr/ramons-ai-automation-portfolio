@@ -20,7 +20,7 @@ canvasTheme: 'light'
 logicSummary: 'New hire form → onboarding plan for the role → folder, record, orientation, IT request and welcome email → tasks and documents tracked → daily reminders and check-ins to day 30 → policy assistant for the HR team.'
 keyOutcome:
   value: '30'
-  label: 'Days Followed Up'
+  label: 'Days followed up'
 integrations: ['n8n', 'Airtable', 'Google Drive', 'Google Calendar', 'Gmail', 'Slack', 'OpenAI']
 problem: 'Every new hire meant the same setup by hand: folders, records, orientation, access requests and welcome emails. Documents were chased one email at a time, key cards and system access were forgotten, and the same policy questions reached HR again and again.'
 solution: 'Built an n8n workflow where HR fills in one form. It builds the onboarding plan for that role, sets up the Drive folder, employee record, orientation and IT request, sends the welcome email, and records every task and document in Airtable. A daily check sends milestone check-ins and document reminders up to day 30, chases IT for access and key cards, and closes onboarding when everything is done. The HR team gets a chat assistant that answers policy questions using only company policy.'
@@ -29,17 +29,17 @@ impactHighlight: 'A new hire is fully set up from one form, and followed up for 
 impactHighlightDesc: 'HR fills in one form; the tasks, reminders and check-ins take care of themselves, and policy answers are one question away.'
 roi:
   - value: '30'
-    label: 'Days Followed Up'
+    label: 'Days followed up'
   - value: '5'
-    label: 'Check-In Milestones'
+    label: 'Check-in milestones'
   - value: '1'
-    label: 'Email A Day, At Most'
-failsafeHeadline: 'Nothing Half Set Up'
+    label: 'Email a day, at most'
+failsafeHeadline: 'Nothing half set up'
 failsafeDesc: 'If key details are missing from the form, onboarding stops and HR is alerted, so nobody starts half set up.'
 failsafes:
-  - title: 'Tracked, Not Emailed'
+  - title: 'Tracked, not emailed'
     desc: 'Every task and document is its own Airtable row with an owner and status, so nothing relies on someone remembering.'
-  - title: 'Answers From Policy Only'
+  - title: 'Answers from policy only'
     desc: 'The HR assistant never answers from general knowledge. If the policy does not cover it, it says so instead of guessing.'
 ---
 

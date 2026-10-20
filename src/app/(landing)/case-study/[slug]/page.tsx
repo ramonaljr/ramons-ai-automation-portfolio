@@ -231,7 +231,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
 
           {/* Facts strip */}
           {facts.length > 0 && (
-            <dl className='border-rule mt-14 grid grid-cols-2 gap-y-8 border-t pt-8 sm:grid-cols-4'>
+            <dl className='border-rule mt-14 grid grid-cols-2 gap-x-6 gap-y-8 border-t pt-8 sm:grid-cols-4'>
               {facts.map(fact => (
                 <div key={fact.label}>
                   <dt className='text-ink-3 font-mono text-[11px] tracking-[0.2em]'>{fact.label.toUpperCase()}</dt>

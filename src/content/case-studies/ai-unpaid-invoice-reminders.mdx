@@ -20,7 +20,7 @@ canvasTheme: 'light'
 logicSummary: 'Daily check → unpaid invoices from Xero → customer context and reminder history → policy rules decide who to remind → AI writes the email → sent and recorded → replies read by AI → dispute stops reminders.'
 keyOutcome:
   value: '0'
-  label: 'Reminders During A Dispute'
+  label: 'Reminders during a dispute'
 integrations: ['n8n', 'Xero', 'Pipedrive', 'PostgreSQL', 'Gmail', 'Slack', 'Airtable', 'OpenAI']
 problem: 'Chasing unpaid invoices was manual and inconsistent. Reminders went out too often or not at all, customers who had disputed an invoice or promised a date kept getting chased, and replies sat unread while the next reminder went out.'
 solution: 'Built an n8n workflow that runs every morning. It pulls unpaid invoices from Xero, client context from Pipedrive and reminder history from Postgres, and fixed policy rules decide who gets reminded and how firmly. AI writes each email within the approved policy. Customer replies are read by AI and routed: a dispute stops all reminders until a person clears it, and promises, payments, copy requests and wrong contacts each set the next step.'
@@ -29,17 +29,17 @@ impactHighlight: 'Every overdue invoice followed up by policy, and every reply a
 impactHighlightDesc: 'The team only steps in for disputes, questions and final notices to important clients.'
 roi:
   - value: '0'
-    label: 'Reminders During A Dispute'
+    label: 'Reminders during a dispute'
   - value: '1'
-    label: 'Row Per Invoice, Enforced'
+    label: 'Row per invoice, enforced'
   - value: '7'
-    label: 'Reply Types Understood'
-failsafeHeadline: 'A Dispute Stops Everything'
+    label: 'Reply types understood'
+failsafeHeadline: 'A dispute stops everything'
 failsafeDesc: 'A disputed invoice gets no more reminders until a person clears it. No timer, no automatic restart.'
 failsafes:
-  - title: 'Rules Decide, Not AI'
+  - title: 'Rules decide, not AI'
     desc: 'Who is reminded, when and how firmly follows company policy. AI only writes the wording within those rules.'
-  - title: 'No Double Sends'
+  - title: 'No double sends'
     desc: 'The database allows one row per invoice, so a reminder can never go out twice, even if the workflow runs twice.'
 ---
 

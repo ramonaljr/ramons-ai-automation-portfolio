@@ -20,7 +20,7 @@ canvasTheme: 'light'
 logicSummary: 'Request form → Apollo search → skip known prospects → enrich → rule-based score → AI researches the website and drafts an email → review sheet → approved prospects into Pipedrive.'
 keyOutcome:
   value: '0'
-  label: 'Emails Sent Without Review'
+  label: 'Emails sent without review'
 integrations: ['n8n', 'Apollo', 'Pipedrive', 'Google Sheets', 'Slack', 'OpenAI']
 problem: 'Outbound prospecting meant searching for contacts by hand, checking whether they had been contacted before, reading each company website and writing every first email from scratch. Apollo credits were spent on poor-fit contacts, and the same people were easily contacted twice.'
 solution: 'Built an n8n workflow where the sales team fills in one form. Apollo finds matching decision-makers, anyone already in the prospects sheet is skipped, the best are enriched and scored by fixed rules, AI reads each company website and drafts a grounded first email, and everything waits in a Google Sheet for the team to approve. Every 15 minutes, approved prospects are added to Pipedrive with the research pinned to a new deal.'
@@ -29,17 +29,17 @@ impactHighlight: 'Researched, scored prospects with a draft email ready to appro
 impactHighlightDesc: 'The team only reviews and approves. Searching, de-duplicating, scoring, research and CRM entry happen on their own.'
 roi:
   - value: '0'
-    label: 'Emails Sent Without Review'
+    label: 'Emails sent without review'
   - value: '60+'
-    label: 'Score Needed For Review'
+    label: 'Score needed for review'
   - value: '15 min'
-    label: 'Approved To Pipedrive'
-failsafeHeadline: 'A Person Approves Every Prospect'
+    label: 'Approved to Pipedrive'
+failsafeHeadline: 'A person approves every prospect'
 failsafeDesc: 'Nothing is emailed automatically. Prospects only reach the CRM once the team marks them approved in the sheet.'
 failsafes:
-  - title: 'Never Contacted Twice'
+  - title: 'Never contacted twice'
     desc: 'Anyone already in the sheet, whatever their status, is skipped before any Apollo credits are used.'
-  - title: 'Grounded Emails Only'
+  - title: 'Grounded emails only'
     desc: 'The AI may only use facts from the company website: no invented news, prices, savings or guarantees.'
 ---
 

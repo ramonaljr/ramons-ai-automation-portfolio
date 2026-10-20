@@ -21,7 +21,7 @@ canvasTheme: 'light'
 logicSummary: 'Website form → instant reply → check for existing lead → AI reads the enquiry → rule-based score → assign rep → personal reply → Slack alert → manager steps in after 15 working minutes.'
 keyOutcome:
   value: '15 min'
-  label: 'Follow-Up Deadline'
+  label: 'Follow-up deadline'
 integrations: ['n8n', 'Airtable', 'Gmail', 'Slack', 'OpenAI']
 problem: 'Website enquiries landed in an inbox and waited. Good leads went cold before anyone called, reps were assigned unevenly, existing customers and repeat enquiries were treated as new, and nobody noticed when a lead was never followed up.'
 solution: 'Built an n8n workflow that replies to the website form in under a second, checks Airtable for existing customers and repeat enquiries, has AI read the message, scores the lead by fixed rules, assigns the next rep for that lead type, sends a personal reply and alerts the rep in Slack. A check every 5 minutes hands any lead not followed up within 15 working minutes to the sales manager. Leads that arrive overnight or at the weekend are due at 08:15 the next working morning.'
@@ -30,17 +30,17 @@ impactHighlight: 'Every good lead has a rep on it within 15 working minutes, or 
 impactHighlightDesc: 'The visitor hears back instantly, the rep gets the score and site details, and no lead quietly slips away.'
 roi:
   - value: '< 1 sec'
-    label: 'Reply To The Form'
+    label: 'Reply to the form'
   - value: '15 min'
-    label: 'Follow-Up Deadline'
+    label: 'Follow-up deadline'
   - value: '100'
-    label: 'Point Rule-Based Score'
-failsafeHeadline: 'No Lead Slips Through'
+    label: 'Point rule-based score'
+failsafeHeadline: 'No lead slips through'
 failsafeDesc: 'Leads without a rep, or not followed up in 15 working minutes, are reassigned to the sales manager and logged.'
 failsafes:
-  - title: 'Rules Set The Score'
+  - title: 'Rules set the score'
     desc: 'AI only reads the message. Fixed rules add up the score, so every lead lists exactly why it scored what it did.'
-  - title: 'Safe Replies'
+  - title: 'Safe replies'
     desc: 'The AI reply never mentions prices, savings or system sizes, and a standard reply is sent if the AI fails.'
 ---
 
