@@ -14,137 +14,137 @@ coverImage: '/images/blog/rag-that-cites-its-sources.jpg'
 needsReview: true
 ---
 
-**The short answer:** a RAG knowledge base earns trust by being checkable, not by being clever. Every answer cites the document and section it came from, the pipeline refuses to answer when retrieval finds nothing good, documents are chunked on their own structure, search combines keywords with vectors, and the index is rebuilt when a source changes. The goal is never to be confidently wrong.
+**The short answer:** a RAG knowledge base earns trust by being checkable, not clever. (RAG, short for retrieval-augmented generation, means the assistant looks up the right passages in your own documents first, then writes an answer from them.) Every answer shows which document and section it came from, the system refuses to answer when it finds nothing good, documents are split along their own structure, search combines exact words with meaning, and the library updates whenever a source changes. The goal is never to be confidently wrong.
 
 ## Why most internal chatbots get abandoned
 
 They get built. They demo well. Six weeks later nobody is using them.
 
-The reason is almost always the same, and it is not model quality. Somebody asked it something that mattered, got a confident answer, acted on it, and found out later it was invented. They told two colleagues. After that, nobody trusts it, and a tool nobody trusts is worse than no tool: it is dead weight that somebody is still paying for.
+The reason is almost always the same, and it is not the quality of the AI model. Somebody asked it something that mattered, got a confident answer, acted on it, and found out later it was invented. They told two colleagues. After that, nobody trusts it, and a tool nobody trusts is worse than no tool: it is dead weight that somebody is still paying for.
 
-The asymmetry is brutal. A hundred correct answers build trust slowly. One confident wrong answer on something consequential destroys it immediately, because the failure was invisible at the moment it mattered. There was no error message. It just sounded right.
+The imbalance is brutal. A hundred correct answers build trust slowly. One confident wrong answer on something that matters destroys it immediately, because the mistake was invisible at the moment it happened.
 
 So the design goal for an internal knowledge base is not "answer as many questions as possible". It is **never be confidently wrong**, and everything below follows from accepting that trade.
 
 ## Citations change what the tool is
 
-When every answer carries a link back to the document and the section it came from, the assistant stops being an oracle and becomes a very fast index.
+When every answer links back to the document and the section it came from, the assistant stops being an oracle and becomes a very fast search of your own files.
 
-That is a much easier thing to trust, and a far more honest description of what retrieval actually does. It also changes the user's behaviour in exactly the right way: on anything important, they click through. The citation is not decoration, it is the mechanism that lets a person verify in four seconds instead of fifteen minutes.
+That is much easier to trust, and a more honest description of what the tool does. It also changes how people behave, in exactly the right way: on anything important, they click through and check.
 
-Practically this means two constraints in the pipeline:
+In practice that means two rules:
 
-- The generation step may only answer from retrieved chunks. Not "prefer" them. Only.
-- The response format requires a source for each claim, and an answer that cannot produce one does not get returned.
+- The assistant may only answer from the passages it found. Not "prefer" them. Only.
+- Every claim needs a source, and an answer that cannot point to one does not get shown.
 
-A cited answer that turns out to be wrong is a *recoverable* failure: the person opens the source, sees the mismatch, and reports a stale document. An uncited wrong answer is unrecoverable, because nobody knows it happened.
+A cited answer that turns out to be wrong is a *recoverable* mistake: the person opens the source, sees the mismatch, and reports an out-of-date document. An uncited wrong answer is unrecoverable, because nobody can tell where it came from.
 
-## Enforce the refusal in the pipeline, not the prompt
+## Build the "I don't know" into the system, not the instructions
 
-The most important behaviour is what happens when retrieval finds nothing good.
+The most important behaviour is what happens when the search finds nothing good.
 
-The correct answer is: **return nothing.** "I could not find this in the indexed documents" is a genuinely useful response. It tells the person to go ask a human, which is what they would have done anyway, and it costs them four seconds instead of an afternoon spent acting on an invention.
+The right answer is to **say nothing.** "I could not find this in the indexed documents" is a useful reply. It tells the person to ask a human, which is what they would have done anyway, and it costs them ten seconds, not a wrong decision.
 
-The mistake is asking the model to do this. Prompts like "only answer if you are confident, otherwise say you do not know" work most of the time, which is the worst possible property for a safety mechanism. A model asked to be helpful will fill silence with something plausible, and it will do so most reliably on the obscure questions where retrieval failed, precisely the ones where being wrong is most likely.
+The mistake is asking the AI model to do this. Instructions like "only answer if you are confident, otherwise say you do not know" work most of the time, which is the worst possible quality for a safety feature. A model that wants to be helpful will fill a silence with something plausible, and it will do it on the obscure questions where the search failed, which are exactly the ones where being wrong is most likely.
 
-So the threshold belongs in the pipeline. Score the retrieved chunks. If the best match is below the bar, the generation step never runs. The model is not asked to decline; it is not invoked.
+So the limit belongs in the system itself. Score what the search found. If the best match is below the bar, the AI is never asked to write an answer at all. It is not told to decline. It is simply not called.
 
-This is the same principle as keeping arithmetic out of an LLM. **An LLM has no failure mode where it stops.** It always produces output. If you need a stop, you have to build one around it.
+This is the same idea as keeping arithmetic out of an AI model. **An AI model never decides to stop.** It always produces output. If you need it to stop, you have to build the stop around it.
 
-## Chunking is most of your quality
+## Splitting documents is most of your quality
 
-Model choice gets the attention. Chunking decides the outcome.
+The choice of AI model gets the attention. How you split your documents decides the outcome.
 
-Split too small and you retrieve a fragment with no context: a sentence saying "this does not apply to contractors" with nothing indicating what "this" was. Split too large and the embedding averages several topics into a vector that matches nothing well.
+The system does not read whole documents. It cuts them into pieces (often called chunks) and searches those. Cut too small and you find a fragment with no context: a sentence saying "this does not apply to contractors" with nothing to show what "this" was. Cut too large and one piece covers several topics, so it matches nothing well.
 
-What works better than tuning a character count:
+What works better than tuning a number of characters:
 
-- **Split on document structure**, not fixed length. Headings, sections, list boundaries. A chunk that maps to a section is a chunk that answers a question.
-- **Carry a little overlap** so a claim spanning a boundary survives in one piece.
-- **Attach metadata to every chunk**: document title, section heading, last-modified date, source URL. This is not optional bookkeeping; it is what makes a citation possible at all. A chunk without provenance can be retrieved but never cited, which means it can never be trusted.
+- **Split along the document's own structure**, not at a fixed length. Headings, sections, list boundaries. A piece that matches a section is a piece that answers a question.
+- **Overlap the pieces slightly** so a point that crosses a boundary survives in one piece.
+- **Label every piece**: document title, section heading, last-edited date and source link. This is not optional bookkeeping. It is what makes a citation possible at all. A piece with no label can be found but never cited, which means it can never be trusted.
 
-## Pure vector search fails on the terms people actually search
+## Search by meaning fails on the words people actually type
 
-Semantic search is excellent at "what is our policy on late invoices" and surprisingly bad at `INV-2024-0847`.
+Search by meaning (the technical name is vector search) is excellent at "what is our policy on late invoices?" and surprisingly bad at `INV-2024-0847`.
 
-Exact identifiers (invoice numbers, SKUs, error codes, client names, statute references) are precisely where embeddings degrade, because the whole point of an embedding is to collapse surface form into meaning, and an identifier has no meaning to collapse. It is surface form all the way down.
+Exact references such as invoice numbers, product codes, error codes, client names and legal references are exactly where meaning-based search struggles, because its whole point is to look past the exact wording to the idea behind it, and a reference number has no idea behind it. It is exact wording and nothing else.
 
-Hybrid retrieval fixes this: run keyword search and vector search, and merge. Keyword catches the exact token, vector catches the paraphrase, and the union is what people actually ask for. In an operations knowledge base, where half the questions contain a reference number, this is not a refinement: it is the difference between a system that works and one that mysteriously fails on the most specific queries.
+Hybrid search fixes this: run an exact-word search and a meaning search together, and combine the results. The exact-word search catches the precise reference, the meaning search catches the paraphrase, and together they cover what people really ask. In an operations knowledge base, where half the questions contain a reference number, this is not a refinement. It is the difference between a system that works and one that fails on the questions people care most about.
 
-## An index built once is wrong within a month
+## A library built once is wrong within a month
 
-Documents change. Policies get revised. Prices move. Somebody edits the onboarding SOP and does not tell anyone.
+Documents change. Policies get revised. Prices move. Somebody edits the onboarding guide and does not tell anyone.
 
-If the index is a one-time job, you eventually get the worst outcome available: **a confident, correctly cited answer pointing at a version that no longer exists.** Now the citation is actively working against you, because it is lending authority to something stale.
+If the library is built once, you eventually get the worst outcome available: **a confident, correctly cited answer pointing at a version that no longer exists.** Now the citation works against you, because it lends authority to something out of date.
 
-So the watcher on the source folder matters more than the model choice. When a document changes, its chunks are re-embedded and, critically, **the old chunks are deleted.** Re-embedding without deleting leaves both versions in the index competing for the same query, and which one wins is essentially random.
+So the watcher on the source folder matters more than the choice of AI model. When a document changes, its pieces are rebuilt and, critically, **the old pieces are deleted.** Rebuilding without deleting leaves both versions competing to answer the same question, and which one wins is close to random.
 
 Two details worth building in from the start:
 
-- **Stamp each chunk with the source's last-modified date** and surface it in the answer. "From the Onboarding SOP, updated 12 March" lets a person judge for themselves whether that is current.
-- **Handle deletions.** A document removed from the folder must have its chunks removed from the index, or you will be citing a file that no longer exists.
+- **Stamp each piece with the source's last-edited date** and show it in the answer. "From the Onboarding Guide, updated 12 March" lets a person judge for themselves whether it is current.
+- **Handle deletions.** A document removed from the folder must have its pieces removed too, or you will be citing a file that no longer exists.
 
-## Let the assistant call live systems instead of indexing them
+## Let the assistant ask live systems, not read a copy
 
-Not everything belongs in a vector store, and it is worth being deliberate about the line.
+Not everything belongs in the library, and it is worth being deliberate about where the line is.
 
-Anything that changes by the minute (availability, order status, stock levels, ticket state) should be a **tool call**, not a chunk. Indexing live state guarantees the index is wrong, and dressing that wrongness in a citation makes it worse.
+Anything that changes by the minute (availability, order status, stock levels, ticket state) should be **looked up live**, not stored as a piece of text. Storing live information guarantees the library is wrong, and dressing that wrongness in a citation makes it worse.
 
-The assistant on this site works exactly that way. When someone asks what times are free, it does not read a table of bookings. It calls the same availability endpoint the booking calendar calls, through the same authenticated webhook, so the assistant and the calendar are physically incapable of disagreeing. There is one source of truth and two readers of it.
+The assistant on this site works exactly that way. When someone asks what times are free, it does not read a table of bookings. It asks the same availability check the booking calendar uses, through the same protected connection, so the assistant and the calendar cannot disagree. There is one source of truth and two readers of it.
 
-That is the general pattern: **retrieval for what is written down, tools for what is currently true.**
+That is the general pattern: **search for what is written down, ask a live system for what is true right now.**
 
-One implementation detail that bites people: the conversation's session identifier has to be stable per browser session and unique between visitors. Get that wrong and everyone shares one memory buffer, which is both a privacy problem and a very confusing bug to diagnose.
+One detail that catches people: each visitor's conversation needs its own ID that stays the same during their visit and is different from everyone else's. Get that wrong and every visitor shares one memory, which is both a privacy problem and a very confusing bug to track down.
 
 ## The part that is not about AI at all
 
 Most of the work in a knowledge base that works is deciding what goes into it.
 
-Indexing everything produces a system that retrieves plausible-looking noise. Every superseded draft, every meeting note, every half-finished proposal becomes a candidate answer with equal standing to the actual policy.
+Putting everything in produces a system that finds plausible-looking noise. Every old draft, every meeting note and every half-finished proposal becomes a candidate answer with the same standing as the real policy.
 
-Scope it to the documents that answer real, repeated questions. The way to find those is not to guess: it is to look at what people actually ask each other in Slack, and index the answers to that. Old drafts, personal notes and anything superseded should be out, or clearly marked so retrieval can filter them.
+Choose the documents that answer real, repeated questions. The way to find them is not to guess: look at what people actually ask each other in Slack, and add the documents that answer those questions. Old drafts, personal notes and anything replaced should be left out, or clearly marked so the search can filter them.
 
-That is a librarian's job rather than an engineer's, and it is where most of the value comes from. A small, curated, current index beats a large, complete, stale one every time.
+That is a librarian's job, not an engineer's, and it is where most of the value comes from. A small, curated, current library beats a large, complete, out-of-date one every time.
 
 ## How I know it works
 
-Vibes do not survive contact with a real user, so before handover I build an evaluation set: thirty to fifty real questions drawn from what the team actually asks, each with a known correct answer and a known correct source.
+Gut feeling does not survive contact with a real user, so before handover I build a test set: thirty to fifty real questions drawn from what the team actually asks, each with a known correct answer and a known correct source.
 
-That set gets run before and after every change: a new chunking strategy, a different embedding model, a prompt edit. Without it you are making changes and hoping, and RAG systems are particularly good at appearing to improve while quietly getting worse on the long tail.
+That set gets run before and after every change, such as a new way of splitting documents, a different AI model or a rewritten instruction. Without it you are making changes and hoping, and these systems are good at looking like they improved while quietly getting worse on the unusual questions.
 
-Two things I measure beyond accuracy:
+Two things I measure beyond plain accuracy:
 
-- **Refusal rate on out-of-scope questions.** A system that never says "I do not know" is not being confident, it is being wrong on the questions you have not checked. I deliberately include questions the index cannot answer, and the correct result is a refusal.
-- **Citation correctness**, separately from answer correctness. An answer can be right while pointing at the wrong source, and that is a trust bug waiting to happen the first time someone clicks through.
+- **How often it correctly refuses.** A system that never says "I do not know" is not confident. It is wrong on the questions you have not checked. I deliberately include questions the library cannot answer, and the correct result is a refusal.
+- **Whether the source is right**, separately from whether the answer is right. An answer can be correct while pointing at the wrong document, and that is a trust problem waiting to happen the first time someone clicks through.
 
 ## The short version
 
 An internal knowledge base earns its place by being *checkable*, not by being clever.
 
-Cite everything. Enforce the refusal in code rather than asking the model nicely. Chunk on structure and carry provenance. Search hybrid, because people type reference numbers. Re-index on change and delete the old chunks. Call live systems instead of indexing them. Curate hard.
+Cite everything. Build the refusal into the system instead of asking the model nicely. Split documents along their structure and label each piece. Search by exact words and by meaning together, because people type reference numbers. Update the library when a source changes and delete the old pieces. Ask live systems for live facts. Choose what goes in with care.
 
 Do that and you get something people keep using after the novelty wears off, which is the only measure of an internal tool that matters.
 
-The refusal and replay ideas here are the same ones behind [error handling in n8n workflows](/blog/error-handling-is-the-whole-job). If you want a knowledge base or document-reading workflow built and handed over with its evaluation set, see my [Claude and OpenAI document and knowledge-base service](/services/llm-rag-integrations).
+The refusal and replay ideas here are the same ones behind [error handling in n8n workflows](/blog/error-handling-is-the-whole-job). If you want a knowledge base or document-reading workflow built and handed over with its test set, see my [Claude and OpenAI document and knowledge-base service](/services/llm-rag-integrations).
 
 ## Frequently asked questions
 
 ### What is RAG, in plain English?
 
-Retrieval-augmented generation means the assistant looks up the relevant passages in your own documents first, then writes an answer using only what it found. The model supplies the wording; your documents supply the facts. That makes the answer traceable to a source, which a model answering from memory alone cannot offer.
+RAG stands for retrieval-augmented generation. The assistant first looks up the relevant passages in your own documents, then writes an answer using only what it found. The AI model supplies the wording and your documents supply the facts, which makes the answer traceable to a source, something a model answering from memory alone cannot offer.
 
 ### How do you stop a RAG chatbot from making things up?
 
-Do not rely on the prompt. Score the retrieved passages and, if the best one is below a threshold, never call the model at all, returning "I could not find this in the indexed documents" instead. Then require a source for every claim, so an answer that cannot cite anything is not returned.
+Do not rely on the instructions you give the AI. Score the passages the search found and, if the best one is below a set bar, never ask the AI to answer at all. Return "I could not find this in the indexed documents" instead. Then require a source for every claim, so an answer that cannot cite anything is not shown.
 
 ### What is hybrid search in RAG?
 
-Hybrid search runs a keyword search and a vector search and merges the results. Vector search finds paraphrases of a question, and keyword search catches exact identifiers such as invoice numbers, SKUs and error codes, which embeddings handle poorly. Using both covers the way people actually ask.
+Hybrid search runs an exact-word search and a meaning-based search together and combines the results. Meaning-based search finds rephrased versions of a question, and exact-word search catches precise references such as invoice numbers, product codes and error codes, which meaning-based search handles poorly. Using both covers the way people actually ask.
 
 ### How do you test whether a knowledge base works?
 
-Build an evaluation set of thirty to fifty real questions, each with a known correct answer and source, and run it before and after every change. Measure citation correctness separately from answer correctness, and include questions the index cannot answer, where the correct result is a refusal.
+Build a test set of thirty to fifty real questions, each with a known correct answer and source, and run it before and after every change. Check that the source is correct separately from the answer, and include questions the library cannot answer, where the correct result is a refusal.
 
-### How often should a RAG index be updated?
+### How often should a RAG knowledge base be updated?
 
-Whenever a source document changes. Re-embed the changed chunks, delete the old ones so two versions never compete for the same query, and remove the chunks of any deleted file. A one-time index is wrong within a month.
+Whenever a source document changes. Rebuild the changed pieces, delete the old ones so two versions never compete to answer the same question, and remove the pieces of any deleted file. A library built once is wrong within a month.

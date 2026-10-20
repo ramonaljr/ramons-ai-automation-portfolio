@@ -14,7 +14,7 @@ coverImage: '/images/blog/automated-invoice-payment-reminders.jpg'
 needsReview: true
 ---
 
-**The short answer:** automated payment reminders work when fixed policy rules decide who gets chased and how firmly, and AI only writes the wording. Add a database rule that allows one reminder row per invoice, so nothing sends twice. Read customer replies and route them. And make a dispute stop every reminder until a person clears it, with no timer and no automatic restart.
+**The short answer:** automated payment reminders work when fixed company rules decide who gets chased and how firmly, and AI only writes the wording. Add a database rule that allows one reminder record per invoice, so nothing sends twice. Read customer replies and act on them. And make a dispute stop every reminder until a person clears it, with no timer and no automatic restart.
 
 ## What goes wrong with manual chasing
 
@@ -26,17 +26,17 @@ Chasing unpaid invoices by hand is inconsistent. Some invoices get a reminder ev
 - **Replies sit unread** in an inbox while the next reminder goes out.
 - A **harsh final notice** lands on a key client and surprises the account manager.
 
-Every one of those is a failure of context, not effort. The person sending the reminder did not know what the rest of the company knew. So the first job of automation here is to gather that context before anything is sent.
+Every one of those is a failure of information, not effort. The person sending the reminder did not know what the rest of the company knew. So the first job of automation here is to gather that information before anything is sent.
 
 I built a workflow for this: the [AI Unpaid Invoice Reminders](/case-study/ai-unpaid-invoice-reminders) build. It is a complete working workflow for a fictional sample client, TalentBridge Staffing, and not a delivered client engagement. It is the worked example for the rest of this article.
 
-## Gather the context from three places
+## Gather the facts from three places
 
-The workflow runs every morning and loads its data once per run:
+The workflow runs every morning and loads its data once:
 
 - **Xero** for the unpaid invoices and each customer's billing email.
 - **Pipedrive** for the account owner and any open deals.
-- **Postgres** for the reminder history.
+- **Postgres** (a database) for the reminder history.
 
 Reminder history is the one people forget. Without it, the workflow has no memory, so it cannot know that it sent a reminder yesterday or that this customer already received a final notice.
 
@@ -48,15 +48,15 @@ The rules skip disputed invoices, wrong contacts and promised dates. They decide
 
 The AI is told to stay inside the approved policy: firmer the later the invoice is, with no invented fees, no accusations and no legal threats. The subject line is built by rules, not by the model. That restriction is the safety feature. A model that can set its own tone can threaten a customer on your behalf, and you will find out from the customer.
 
-The general lesson is one I keep coming back to in [error handling is the whole job](/blog/error-handling-is-the-whole-job): keep deterministic decisions in deterministic code, and let the model do the part that is genuinely about language.
+The general lesson is one I keep coming back to in [error handling is the whole job](/blog/error-handling-is-the-whole-job): keep the fixed decisions in fixed rules, and let the AI do the part that is really about language.
 
-## One row per invoice, enforced by the database
+## One record per invoice, enforced by the database
 
-A reminder must never go out twice. The cleanest way to guarantee that is to make it impossible rather than unlikely.
+A reminder must never go out twice. The cleanest way to guarantee that is to make it impossible, not just unlikely.
 
-Each reminder is recorded in Postgres, where **one row per invoice is enforced.** If the workflow runs twice, because it was retriggered or because a previous run failed halfway, the database refuses the second write, so the second reminder is never sent.
+Each reminder is recorded in Postgres, where **one record per invoice is enforced.** If the workflow runs twice, because it was started again or because an earlier run failed halfway, the database refuses the second record, so the second reminder is never sent.
 
-That is idempotency done at the right layer. Code that checks "did I already send this?" can have a bug. A constraint in the database cannot be forgotten.
+The technical word for this is idempotency: doing the same thing twice has the same result as doing it once. It works best when the database enforces it. A check in the workflow that asks "did I already send this?" can have a bug. A rule built into the database cannot be forgotten.
 
 ## The final notice is a human decision first
 
@@ -75,7 +75,7 @@ Reminders only matter if replies are read. In this build, AI reads each customer
 - A **question** goes to a person.
 - A **dispute** stops everything.
 
-The system understands seven reply types. The list is not what matters. What matters is that a reply changes what happens next, instead of sitting unread while a timer sends another email.
+The system understands seven kinds of reply. The list is not what matters. What matters is that a reply changes what happens next, instead of sitting unread while a timer sends another email.
 
 ## A dispute stops everything, with no timer
 
@@ -85,7 +85,7 @@ The design question is what should happen if nobody picks it up. Most systems an
 
 ## When something fails
 
-Failures go to Slack and an error log. Because of the one-row-per-invoice rule, tomorrow's run simply picks up where the failed one stopped, without double-sending. A broken run leaves a visible alert and a safe state, and not a customer who got three emails.
+Failures go to Slack and an error log. Because of the one-record-per-invoice rule, tomorrow's run simply picks up where the failed one stopped, without sending twice. A broken run leaves a visible alert and a safe state, not a customer who got three emails.
 
 ## What the team still does
 
@@ -99,7 +99,7 @@ The [AI Unpaid Invoice Reminders case study](/case-study/ai-unpaid-invoice-remin
 
 ### Can AI send payment reminders automatically?
 
-Yes, but the AI should only write the wording. Fixed policy rules should decide which invoices get a reminder, when, and how firm it is, because a model deciding its own timing and tone can chase the wrong customer or threaten one. Rules for the decision and AI for the language is the safe split.
+Yes, but the AI should only write the wording. Fixed company rules should decide which invoices get a reminder, when, and how firm it is, because an AI deciding its own timing and tone can chase the wrong customer or threaten one. Rules for the decisions and AI for the language is the safe split.
 
 ### How do you stop reminders to a customer who disputes an invoice?
 
@@ -107,8 +107,8 @@ Read the customer's replies and classify them. When a reply is a dispute, stop a
 
 ### How do you make sure a payment reminder is never sent twice?
 
-Enforce it in the database. Record each reminder in a table that allows only one row per invoice, so a second write is refused even if the workflow runs twice. A database constraint is more reliable than code that checks whether a reminder was already sent.
+Enforce it in the database. Record each reminder in a table that allows only one record per invoice, so a second record is refused even if the workflow runs twice. A rule built into the database is more reliable than a check that asks whether a reminder was already sent.
 
 ### What is dunning, and is it the same as invoice reminders?
 
-Dunning is the process of following up on overdue payments, typically with a series of reminders that grow firmer over time. Automated invoice reminders are a form of dunning. The risk with a rigid series is that it ignores context such as a dispute or a promised date, which is why the rules need to see the customer's history.
+Dunning is the process of following up on overdue payments, usually with a series of reminders that grow firmer over time. Automated invoice reminders are a form of dunning. The risk with a rigid series is that it ignores things like a dispute or a promised date, which is why the rules need to see the customer's history.
