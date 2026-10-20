@@ -1,9 +1,10 @@
 ---
 slug: 'n8n-zapier-or-make'
 title: 'n8n, Zapier or Make: how I actually choose'
-description: 'There is no best automation platform, only a best fit for your data, your volume, and whoever maintains the thing after I leave. Four criteria in the order they actually decide it, plus where GoHighLevel sits, since it is not competing in the same category.'
+seoTitle: 'n8n vs Zapier vs Make: how to choose between them'
+description: 'n8n, Zapier or Make? Four criteria in the order that decides it: where the data can live, how the bill scales, who maintains it, and what the logic looks like.'
 publishedAt: '2026-08-05'
-updatedAt: '2026-09-06'
+updatedAt: '2026-10-21'
 category: 'Platforms'
 tags: ['n8n', 'Zapier', 'Make', 'GoHighLevel', 'Platform Selection']
 coverImage: '/images/blog/n8n-zapier-or-make.jpg'
@@ -13,6 +14,8 @@ coverImage: '/images/blog/n8n-zapier-or-make.jpg'
 # billing section.
 needsReview: true
 ---
+
+**The short answer:** choose self-hosted n8n when the data cannot leave your infrastructure or the logic is complex or AI-heavy. Choose Zapier when a non-technical team will maintain simple, linear flows. Choose Make for heavy data reshaping at volume. Decide in this order: where the data can live, how the bill scales, who maintains it, then what the logic looks like.
 
 ## The question behind the question
 
@@ -37,8 +40,11 @@ The cost is real and worth naming: you now own a server. Updates, backups, uptim
 I am not going to quote prices here, because they change and a stale number in a blog post is worse than no number. What does not change is the *shape*:
 
 - **Zapier bills per task**: roughly, per action step that runs.
-- **Make bills per operation**: a similar unit, but historically priced far lower per unit.
-- **Self-hosted n8n bills you for a server**: flat, regardless of how many steps run.
+- **Make bills per credit**: a similar unit, which Make used to call an operation and renamed in August 2025. Most actions cost one credit, and AI features can cost more.
+- **n8n Cloud bills per execution**: one workflow run counts once, however many steps it contains.
+- **Self-hosted n8n bills you for a server**: flat, regardless of how many steps run, plus the time you spend looking after it.
+
+The vendors publish the current numbers on their own pricing pages ([Zapier](https://zapier.com/pricing), [Make](https://www.make.com/en/pricing), [n8n](https://n8n.io/pricing/)), and those are the figures to price against.
 
 That difference in shape, not price, is what produces the surprise.
 
@@ -51,8 +57,8 @@ Somewhere in the low thousands of runs a month, that flips, and it flips harder 
 Here is the case that catches everyone. An order comes in with twenty line items, and each line item needs a stock check and a write.
 
 - On **Zapier**, that is roughly twenty tasks. One order.
-- On **Make**, an Iterator explodes the order into twenty bundles, and you pay twenty operations, but operations are cheap enough that this is usually fine.
-- On **self-hosted n8n**, an item list of twenty flows through the same nodes and costs nothing extra. The server does not care.
+- On **Make**, an Iterator explodes the order into twenty bundles, and you pay twenty credits, but credits are cheap enough that this is usually fine.
+- On **n8n**, an item list of twenty flows through the same nodes as one execution. Self-hosted, the server does not care; on Cloud it is still a single run.
 
 Now multiply by four thousand orders a week. This is why "how many runs a month" is the wrong metric and "how many *steps* a month, after fan-out" is the right one. A workflow that looks small at the trigger can be enormous three nodes later.
 
@@ -80,7 +86,7 @@ Only once the first three are settled does the shape of the workflow itself matt
 
 **n8n** is the one that stops being a no-code tool when you need it to. You can drop a Code node into the middle of a workflow and write actual JavaScript against the items. That matters more than it sounds, because real business rules are full of conditions that no visual builder expresses cleanly, and the alternative is a chain of nine IF nodes nobody can read.
 
-It is also where I build anything involving an LLM. AI agent steps with tool calling, RAG pipelines, retries around model calls: this is the area where n8n is not just an option but the default.
+It is also where I build anything involving an LLM. AI agent steps with tool calling, RAG pipelines, retries around model calls: this is the area where n8n is not just an option but the default. My [n8n AI agents and workflow automation service](/services/n8n-ai-agents) and my [Claude and OpenAI document and knowledge-base service](/services/llm-rag-integrations) are both built there.
 
 ## What I actually run
 
@@ -134,3 +140,23 @@ Ask, in this order:
 And before any of it: **is the CRM the product?** If the pipeline, the campaigns and the funnel are the job rather than one system among many, GoHighLevel is the platform and the question above is about what sits behind it.
 
 Most arguments about automation platforms are really arguments about one of those four, conducted without naming which.
+
+Once the platform is chosen, the part that decides whether it survives contact with real data is [error handling](/blog/error-handling-is-the-whole-job). If you would rather have it designed and handed over documented, see [end-to-end business process automation](/services/business-process-automation).
+
+## Frequently asked questions
+
+### Is n8n better than Zapier?
+
+Neither is better in general. n8n is stronger when the data must stay on your own servers, the logic is complex, or the workflow includes AI agents, because you can run it self-hosted and drop code into the middle of a flow. Zapier is stronger when a non-technical team has to maintain simple, linear automations and needs the widest connector library.
+
+### Is Make cheaper than Zapier?
+
+Per unit it has usually been cheaper, but compare on steps after fan-out rather than on runs. A workflow that splits one order into twenty line items multiplies the units on both platforms. Price your real workflow against each vendor's current pricing page rather than a headline number.
+
+### Can Zapier or Make be self-hosted?
+
+No. Both run as cloud services, so your data is processed on their infrastructure under their terms. If data has to stay inside your own boundary, n8n is the one of the three you can self-host.
+
+### When should I use GoHighLevel instead of n8n, Zapier or Make?
+
+When the CRM is the product: the pipeline, funnels, calendars and SMS or email campaigns all live in one place. GoHighLevel is a CRM with a workflow builder, not a general-purpose automation engine. A common pattern is GoHighLevel for the client-facing surface with n8n behind it over the API for branching and integrations.

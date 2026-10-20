@@ -11,6 +11,14 @@ export type Post = {
 export type PostMetadata = {
   slug: string
   title?: string
+
+  /**
+   * Keyword-first title for the <title> tag and nothing else. The visible H1 and
+   * the share card keep `title`, which is written for a reader; this is written
+   * for the query someone typed, with the subject up front so a truncated
+   * result still says what the page is about.
+   */
+  seoTitle?: string
   description?: string
   publishedAt?: string
   readingTime?: string

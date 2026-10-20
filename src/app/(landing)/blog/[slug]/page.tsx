@@ -15,7 +15,7 @@ import { getPostBySlug, getPosts, type PostMetadata } from '@/lib/posts'
 import { extractHeadings } from '@/lib/extract-headings'
 import { abs, SITE_URL } from '@/lib/site'
 import { PROFILE } from '@/lib/portfolio'
-import { blogPostingLd, breadcrumbLd, graph, postUrl } from '@/lib/seo'
+import { blogPostingLd, breadcrumbLd, extractFaq, faqLd, graph, postUrl } from '@/lib/seo'
 
 export async function generateStaticParams() {
   const posts = await getPosts()
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const url = postUrl(m.slug)
 
   return {
-    title: m.title,
+    title: m.seoTitle ?? m.title,
     description: m.description,
     alternates: {
       canonical: url,
@@ -171,6 +171,9 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
 
   const published = formatDate(metadata.publishedAt)
 
+  const updated =
+    metadata.updatedAt && metadata.updatedAt !== metadata.publishedAt ? formatDate(metadata.updatedAt) : null
+
   // One script carrying both nodes: the article itself, and the trail that
   // lets a search result render Home › Blog › title instead of a bare URL.
   const jsonLd = graph(
@@ -179,7 +182,10 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
       { name: 'Home', url: SITE_URL },
       { name: 'Writing', url: abs('/blog') },
       { name: metadata.title ?? metadata.slug, url: postUrl(metadata.slug) }
-    ])
+    ]),
+
+    // Only when the post has a visible FAQ section; built from that text.
+    faqLd(metadata.slug, extractFaq(content))
   )
 
   return (
@@ -231,6 +237,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
                 {PROFILE.name.toUpperCase()}
               </a>
               {published && <time dateTime={metadata.publishedAt}>{published.toUpperCase()}</time>}
+              {updated && <time dateTime={metadata.updatedAt}>UPDATED {updated.toUpperCase()}</time>}
               {metadata.readingTime && <span>{metadata.readingTime.toUpperCase()}</span>}
             </div>
 

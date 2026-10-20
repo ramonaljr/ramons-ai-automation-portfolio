@@ -9,12 +9,11 @@ import { ArrowRight, CONTAINER, DISPLAY_FONT, PAGE, Reveal } from '@/components/
 
 import { getPosts } from '@/lib/posts'
 import { abs, SITE_URL } from '@/lib/site'
-import { blogIndexLd, breadcrumbLd, graph, socialImage } from '@/lib/seo'
+import { BLOG_DESCRIPTION, blogIndexLd, breadcrumbLd, graph, socialImage } from '@/lib/seo'
 
 const INDEX_TITLE = 'Notes on automation'
 
-const INDEX_DESCRIPTION =
-  'Working notes on AI automation: n8n, Zapier, Make and GoHighLevel, LLM and RAG integrations, error handling, and what actually holds up in production.'
+const INDEX_DESCRIPTION = BLOG_DESCRIPTION
 
 export const metadata: Metadata = {
   // "Blog" told a search result nothing. The title template appends the name,

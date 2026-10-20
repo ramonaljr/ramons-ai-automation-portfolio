@@ -1,17 +1,20 @@
 ---
 slug: 'rag-that-cites-its-sources'
 title: 'A knowledge base that cites its sources'
-description: 'An internal assistant that answers confidently and wrongly is worse than a search box, because people act on it. Citations, enforced refusal and an honest index are what make retrieval trustworthy enough to actually get used.'
+seoTitle: 'RAG knowledge base that cites its sources: how to build one'
+description: 'How to build a RAG knowledge base people trust: enforced citations, refusal in the pipeline, structure-aware chunking, hybrid search and re-indexing.'
 publishedAt: '2026-07-28'
-updatedAt: '2026-09-05'
+updatedAt: '2026-10-21'
 category: 'AI Agents'
-tags: ['RAG', 'Claude', 'Pinecone', 'AI Agents']
+tags: ['RAG', 'Knowledge Base', 'Citations', 'AI Agents']
 coverImage: '/images/blog/rag-that-cites-its-sources.jpg'
 # DRAFT — expanded 2026-09-05. Technical claims are accurate, including the
 # chat widget details from this site's own assistant. The voice is not yet
 # yours — read it through before dropping this flag.
 needsReview: true
 ---
+
+**The short answer:** a RAG knowledge base earns trust by being checkable, not by being clever. Every answer cites the document and section it came from, the pipeline refuses to answer when retrieval finds nothing good, documents are chunked on their own structure, search combines keywords with vectors, and the index is rebuilt when a source changes. The goal is never to be confidently wrong.
 
 ## Why most internal chatbots get abandoned
 
@@ -121,3 +124,27 @@ An internal knowledge base earns its place by being *checkable*, not by being cl
 Cite everything. Enforce the refusal in code rather than asking the model nicely. Chunk on structure and carry provenance. Search hybrid, because people type reference numbers. Re-index on change and delete the old chunks. Call live systems instead of indexing them. Curate hard.
 
 Do that and you get something people keep using after the novelty wears off, which is the only measure of an internal tool that matters.
+
+The refusal and replay ideas here are the same ones behind [error handling in n8n workflows](/blog/error-handling-is-the-whole-job). If you want a knowledge base or document-reading workflow built and handed over with its evaluation set, see my [Claude and OpenAI document and knowledge-base service](/services/llm-rag-integrations).
+
+## Frequently asked questions
+
+### What is RAG, in plain English?
+
+Retrieval-augmented generation means the assistant looks up the relevant passages in your own documents first, then writes an answer using only what it found. The model supplies the wording; your documents supply the facts. That makes the answer traceable to a source, which a model answering from memory alone cannot offer.
+
+### How do you stop a RAG chatbot from making things up?
+
+Do not rely on the prompt. Score the retrieved passages and, if the best one is below a threshold, never call the model at all, returning "I could not find this in the indexed documents" instead. Then require a source for every claim, so an answer that cannot cite anything is not returned.
+
+### What is hybrid search in RAG?
+
+Hybrid search runs a keyword search and a vector search and merges the results. Vector search finds paraphrases of a question, and keyword search catches exact identifiers such as invoice numbers, SKUs and error codes, which embeddings handle poorly. Using both covers the way people actually ask.
+
+### How do you test whether a knowledge base works?
+
+Build an evaluation set of thirty to fifty real questions, each with a known correct answer and source, and run it before and after every change. Measure citation correctness separately from answer correctness, and include questions the index cannot answer, where the correct result is a refusal.
+
+### How often should a RAG index be updated?
+
+Whenever a source document changes. Re-embed the changed chunks, delete the old ones so two versions never compete for the same query, and remove the chunks of any deleted file. A one-time index is wrong within a month.
