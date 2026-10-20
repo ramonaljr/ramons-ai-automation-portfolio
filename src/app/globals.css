@@ -1962,6 +1962,15 @@ body::after {
 
 .experience-history {
   min-width: 0;
+  /* The same panel as the intro beside it, but opaque enough that the
+     falling leaves and the About centre line never run behind the text.
+     The extra left padding holds the progress rail inside the card. */
+  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 2.5vw, 2.25rem) clamp(1.75rem, 3vw, 2.75rem)
+    clamp(1.25rem, 3.5vw, 3.25rem);
+  border: 1px solid color-mix(in oklch, var(--accent) 20%, var(--rule));
+  border-radius: 1.25rem;
+  background: color-mix(in oklch, var(--ground) 94%, transparent);
+  backdrop-filter: blur(10px);
 }
 
 .experience-history-label {
@@ -2105,18 +2114,20 @@ body::after {
 .experience-role-stack {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem 0.85rem;
+  gap: 0.4rem;
   margin: 1rem 0 0;
   padding: 0;
   list-style: none;
 }
 
 .experience-role-stack li {
-  position: relative;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--ink) 3%, transparent);
   color: var(--ink-2);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
+  font-size: 0.78rem;
+  line-height: 1.4;
 }
 
 /* Closing line of the section: it is the hinge between the history above and
@@ -2148,17 +2159,6 @@ body::after {
 
 .experience-thesis a:hover {
   background-size: 0% 1px;
-}
-
-.experience-role-stack li + li::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -0.5rem;
-  width: 2px;
-  height: 2px;
-  border-radius: 999px;
-  background: color-mix(in oklch, var(--ink) 30%, transparent);
 }
 
 @media (min-width: 640px) {
@@ -3915,56 +3915,59 @@ a.work-aux-link:hover {
   animation: about-film-scan 2s var(--ease-entrance) 0.45s both;
 }
 
-.about-cinema-timeline {
-  position: absolute;
-  top: 4rem;
-  bottom: 5.5rem;
-  left: -3.1rem;
-  z-index: 4;
-  width: 1px;
+/* The career snapshot under the About portrait: one line per role, the
+   current work in accent. Read from the same data as the full history. */
+.about-career {
+  display: grid;
+  gap: 0.45rem;
 }
 
-.about-timeline-track {
-  position: absolute;
-  inset: 0;
-  width: 1px;
-  background: color-mix(in oklch, var(--ink) 12%, transparent);
+.about-career li {
+  display: grid;
+  grid-template-columns: 3.25rem 1fr;
+  align-items: baseline;
+  gap: 0.75rem;
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.35;
 }
 
-.about-timeline-track i {
-  position: absolute;
-  top: 0;
-  left: -0.32rem;
-  width: 0.7rem;
-  height: 0.7rem;
-  border: 1px solid color-mix(in oklch, var(--accent) 80%, white);
-  border-radius: 50%;
-  background: var(--ground);
-  box-shadow:
-    0 0 0 0.4rem color-mix(in oklch, var(--accent) 8%, transparent),
-    0 0 18px color-mix(in oklch, var(--accent) 32%, transparent);
-}
-
-.about-era {
-  position: absolute;
-  left: -0.15rem;
+.about-career-year {
   color: var(--ink-3);
   font-family: var(--font-mono), monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  white-space: nowrap;
-  writing-mode: vertical-rl;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
 }
 
-.about-era-manual {
-  top: 0;
-  transform: translate(-100%, 0) rotate(180deg);
+.about-career-now,
+.about-career-now .about-career-year {
+  color: color-mix(in oklch, var(--accent) 82%, var(--ink));
 }
 
-.about-era-system {
-  right: auto;
-  bottom: 0;
-  transform: translate(-100%, 0) rotate(180deg);
+.about-career-link {
+  display: inline-block;
+  margin-top: 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-2);
+  font-size: 0.8rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.about-career-link::after {
+  content: ' \2193';
+}
+
+.about-career-link:hover {
+  border-color: var(--rule-strong);
+  color: var(--ink);
+}
+
+.about-status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: oklch(0.68 0.14 150);
+  box-shadow: 0 0 0 0.25rem oklch(0.68 0.14 150 / 0.16);
 }
 
 .about-credential-strip > div {
@@ -3994,13 +3997,11 @@ a.work-aux-link:hover {
 @media (max-width: 1023px) {
   .about-cinema-line { left: 72%; }
   .about-cinema-visual { max-width: 34rem; margin-inline: auto; }
-  .about-cinema-timeline { left: -2rem; }
 }
 
 @media (max-width: 639px) {
   .about-cinema-word { right: -0.18em; opacity: 0.7; }
   .about-cinema-line { left: 82%; }
-  .about-cinema-timeline { display: none; }
   .about-film-meta { padding: 0.8rem; font-size: 0.65rem; }
 }
 
@@ -6638,13 +6639,43 @@ div#experience.about-journey {
     transform-origin: top;
   }
 
-  .experience-tenures[data-tracking] :is(.experience-role-meta, .experience-role-body) {
-    opacity: 0.38;
-    transition: opacity 0.6s ease;
+  /* Focus without fading: every role stays fully readable. The one being
+     read gets a marker on the rail and its title at full ink; the others'
+     titles step back only slightly. (Dimming them to 38% left most of the
+     list as pale grey text at any moment.) */
+  .experience-role {
+    position: relative;
   }
 
-  .experience-tenures[data-tracking] .experience-role[data-active='true'] :is(.experience-role-meta, .experience-role-body) {
+  .experience-tenures[data-tracking] .experience-role-title {
+    color: color-mix(in oklch, var(--ink) 74%, var(--ground));
+    transition: color 0.5s ease;
+  }
+
+  .experience-tenures[data-tracking] .experience-role[data-active='true'] .experience-role-title {
+    color: var(--ink);
+  }
+
+  .experience-tenures[data-tracking] .experience-role::before {
+    content: '';
+    position: absolute;
+    top: 2.05rem;
+    left: calc(-1.75rem - 4px);
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    background: var(--ground);
+    opacity: 0;
+    transform: scale(0.4);
+    transition:
+      opacity 0.4s ease,
+      transform 0.4s var(--ease-entrance);
+  }
+
+  .experience-tenures[data-tracking] .experience-role[data-active='true']::before {
     opacity: 1;
+    transform: scale(1);
   }
 
   .experience-counter {
@@ -6694,7 +6725,8 @@ div#experience.about-journey {
 
 @media (prefers-reduced-motion: reduce) {
   .experience-role,
-  .experience-tenures :is(.experience-role-meta, .experience-role-body) {
+  .experience-role::before,
+  .experience-tenures .experience-role-title {
     transition: none;
   }
 }

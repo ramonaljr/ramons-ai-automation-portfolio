@@ -556,6 +556,9 @@ export type Role = {
   index: string
   company: string
   role: string
+
+  /** The role in two or three words, for the career snapshot beside the About portrait. */
+  short: string
   period: string
 
   /**
@@ -591,6 +594,7 @@ export const EXPERIENCE: Role[] = [
     index: '01',
     company: 'My Mountain Mover',
     role: 'Financial Analyst',
+    short: 'Financial analysis',
     period: '2022 — Present',
     arrangement: 'US Remote',
     stack: ['Claude', 'Valuation Models', 'Financial Analysis', 'Forecasting', 'Excel'],
@@ -602,6 +606,7 @@ export const EXPERIENCE: Role[] = [
     index: '02',
     company: 'Johndorf Ventures Corporation',
     role: 'Branch Accountant',
+    short: 'Branch accounting',
     period: '2020 — 2021',
     stack: ['Team Leadership', 'Payables & Receivables', 'Account Reconciliation', 'SAP', 'Process Mapping'],
     achievement: 'Led a 10-person accounting team closing the books every month and year',
@@ -612,6 +617,7 @@ export const EXPERIENCE: Role[] = [
     index: '03',
     company: 'Johndorf Ventures Corporation',
     role: 'Project Cost Accountant',
+    short: 'Project costing',
     period: '2016 — 2020',
     stack: ['Cost Accounting', 'Budget vs Actual', 'QuickBooks', 'Workbooks'],
     achievement: 'Checked multi-million project costs against the books, with automated reports',
@@ -622,6 +628,7 @@ export const EXPERIENCE: Role[] = [
     index: '04',
     company: 'Johndorf Ventures Corporation',
     role: 'Accounts Payable Supervisor & Tax Compliance Analyst',
+    short: 'Payables & tax',
     period: '2015 — 2018',
     stack: ['Tax Compliance', 'Invoicing', 'Supplier Reconciliation', 'Payment Approvals'],
     achievement: 'Ran supplier invoices from receipt to payment and kept every tax filing on time',

@@ -6,19 +6,38 @@ import { motion, useScroll, useTransform } from 'motion/react'
 
 import { GreetingWord } from '@/components/landing/greeting-word'
 import { READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
-import { PROFILE } from '@/lib/portfolio'
+import { EXPERIENCE, PROFILE } from '@/lib/portfolio'
 import { SectionIntro, introStep } from '@/components/landing/section-intro'
 import { ExperienceJourney } from '@/components/landing/experience-section'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 
-const CONTACT = [
-  { label: 'Email', value: 'ramonvallejerajr@gmail.com', href: 'mailto:ramonvallejerajr@gmail.com' },
-  { label: 'Location', value: 'Philippines — working across time zones', href: null },
-  { label: 'Availability', value: 'Open to new projects', href: null }
-] as const
+/** First year in finance work. Drives the "10+ years" proof and the snapshot. */
+const CAREER_START = 2015
 
-// Matches the Tag used by the other sections on this page.
+/**
+ * The career in one line per role, oldest first, read from the same data as the
+ * full history below so the two cannot disagree.
+ */
+const CAREER = [...EXPERIENCE].reverse().map(role => ({
+  year: role.period.split('—')[0].trim(),
+  label: role.short
+}))
+
+const FOCUS = [
+  {
+    label: 'I build',
+    copy: 'Automated workflows, AI assistants, and connections between the apps your business already uses.'
+  },
+  {
+    label: 'Best fit',
+    copy: 'Teams losing time to repetitive admin, disconnected tools and manual handoffs.'
+  },
+  {
+    label: 'You get',
+    copy: 'A tested system, failure alerts, documentation and a practical handover.'
+  }
+] as const
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null)
@@ -44,13 +63,12 @@ function useInView(threshold = 0.15) {
   return { ref, inView }
 }
 
-export function IntroSection() {
+export function IntroSection({ systemCount }: { systemCount: number }) {
   const { ref, inView } = useInView(0.1)
   const reducedMotion = usePrefersReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const portraitY = useTransform(scrollYProgress, [0, 1], [54, -42])
   const portraitRotate = useTransform(scrollYProgress, [0, 0.5, 1], [-1.8, 0, 1.2])
-  const timelineY = useTransform(scrollYProgress, [0.12, 0.88], ['0%', 'calc(100% - 12px)'])
 
   const reveal = (delay: number) => ({
     opacity: inView ? 1 : 0,
@@ -58,27 +76,31 @@ export function IntroSection() {
     transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
   })
 
+  const proof = [
+    { value: `${Math.floor((new Date().getFullYear() - CAREER_START) / 5) * 5}+ yrs`, label: 'in finance & accounting' },
+    { value: PROFILE.credential, label: 'business strategy' },
+    { value: String(systemCount), label: 'systems built' }
+  ]
+
   return (
     <section
       id='about'
       className='about-cinema saas-section border-rule relative overflow-clip border-t px-6 py-16 md:px-12 md:py-24 lg:px-20'
     >
-      {/* The bio is a two-column block that tops out around 1120px — a wider
-          prose column would overrun a comfortable line length. Centring it
-          keeps the leftover width as balanced margins instead of a single
-          dead strip down the right of wide screens. */}
       <div className='about-cinema-word' aria-hidden='true'>
         OPERATOR
       </div>
       <div className='about-cinema-line' aria-hidden='true' />
 
       <div ref={ref} className='relative z-2 mx-auto max-w-[1240px]'>
-        {/* ── Section header ─────────────────────────────────────────────── */}
         <SectionIntro tag='ABOUT' margin='mb-16' />
 
-        <div className='saas-about-panel grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-20'>
-          {/* ── Left: the introduction ──────────────────────────────────── */}
-          <div className={READABLE}>
+        {/* Three areas rather than two columns, so phones can put the face
+            straight after the name: heading, then portrait and proof, then the
+            story. On wide screens the portrait column spans both left rows. */}
+        <div className='saas-about-panel grid gap-x-20 gap-y-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-y-10'>
+          {/* ── Heading ─────────────────────────────────────────────────── */}
+          <div className={`${READABLE} lg:col-start-1 lg:row-start-1`}>
             <div style={introStep(inView, reducedMotion, { delay: 60, y: 16, duration: 0.7 })}>
               <h2
                 className='text-ink text-[clamp(2.25rem,5vw,4rem)] leading-[1.02] font-light tracking-tight'
@@ -94,73 +116,109 @@ export function IntroSection() {
                 <span className='text-ink-3'> for {PROFILE.audience}</span>
               </p>
             </div>
+          </div>
 
-            <div className='mt-8 max-w-[58ch] space-y-5' style={reveal(140)}>
+          {/* ── Portrait, proof and career snapshot ─────────────────────── */}
+          <motion.div
+            className='about-cinema-visual w-full lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start'
+            style={reducedMotion ? reveal(180) : { ...reveal(180), y: portraitY, rotate: portraitRotate }}
+          >
+            {/* The casual, smiling portrait; the hero carries the office one,
+                and the same photo twice would read as filler. */}
+            <div
+              className='saas-portrait-frame about-film-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border'
+              data-visible={inView}
+            >
+              <div className='about-film-meta' aria-hidden='true'>
+                <span>RA · 01</span>
+                <span>BUSINESS × AUTOMATION</span>
+              </div>
+              <img
+                src='/images/landing/ramon-portrait-casual.webp'
+                alt={PROFILE.name}
+                width={880}
+                height={1100}
+                loading='lazy'
+                className='h-auto w-full object-cover'
+              />
+              <div className='about-film-scan' aria-hidden='true' />
+            </div>
+
+            <dl
+              className='about-credential-strip divide-rule border-rule bg-surface mt-5 grid grid-cols-3 divide-x overflow-hidden rounded-xl border'
+              data-visible={inView}
+            >
+              {proof.map(item => (
+                <div key={item.label} className='flex flex-col-reverse justify-end px-3 py-4 text-center'>
+                  <dt className='text-ink-2 mt-1 text-xs leading-tight'>{item.label}</dt>
+                  <dd className='text-ink text-xl font-light' style={{ fontFamily: DISPLAY_FONT }}>
+                    {item.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            <div className='border-rule bg-surface mt-5 rounded-xl border px-5 py-4' style={reveal(260)}>
+              <p className='text-ink-2 font-mono text-[11px] tracking-[0.14em]'>CAREER SO FAR</p>
+              <ol className='about-career mt-3'>
+                {CAREER.map(step => (
+                  <li key={step.year}>
+                    <span className='about-career-year'>{step.year}</span>
+                    <span>{step.label}</span>
+                  </li>
+                ))}
+                <li className='about-career-now'>
+                  <span className='about-career-year'>Now</span>
+                  <span>Automation systems for {PROFILE.audience}</span>
+                </li>
+              </ol>
+              <a href='#experience' className='about-career-link'>
+                Full career history
+              </a>
+            </div>
+          </motion.div>
+
+          {/* ── The story ───────────────────────────────────────────────── */}
+          <div className={`${READABLE} lg:col-start-1 lg:row-start-2`}>
+            <div className='max-w-[58ch] space-y-5' style={reveal(140)}>
               <p className='about-cinema-lead' style={{ fontFamily: DISPLAY_FONT }}>
                 I spent a decade inside the work I now automate.
               </p>
               <p className='text-ink-2 text-base leading-[1.7]'>
-                I handled invoices, account checks, approvals, reporting and month-end accounts by hand. That experience
-                taught me where work really slows down—and which checks cannot be skipped.
+                Supplier invoices and tax filings, project cost checks, a 10-person month-end close, then forecasting:
+                I did that work by hand for over ten years. It taught me where work really slows down, and which checks
+                cannot be skipped.
               </p>
               <p className='text-ink-2 text-base leading-[1.7]'>
-                Today I connect the tools companies already use so new requests, follow-ups, paperwork and reporting
-                move on their own. Every system includes human review where it matters, failure alerts and a clear
-                handover.
+                Now I connect the tools a business already uses so requests, follow-ups, paperwork and reporting move on
+                their own, with human review where it matters, failure alerts and a clear handover.
               </p>
             </div>
 
-            {/* A compact buyer's summary: enough practical detail to explain
-                the work without repeating the later Services and Experience
-                sections. */}
-            <div className='mt-10 grid gap-3 sm:grid-cols-3' style={reveal(190)}>
-              {[
-                {
-                  label: 'I SPECIALIZE IN',
-                  copy: 'Automated workflows, AI assistants, and connecting the apps your business already uses.'
-                },
-                {
-                  label: 'BEST FIT FOR',
-                  copy: 'Teams losing time to repetitive admin, disconnected tools and manual handoffs.'
-                },
-                {
-                  label: 'YOU RECEIVE',
-                  copy: 'A tested system, failure alerts, documentation and a practical handover.'
-                }
-              ].map(item => (
-                <div key={item.label} className='border-rule bg-surface rounded-xl border p-4'>
-                  <p className='text-ink font-mono text-xs tracking-[0.12em]'>{item.label}</p>
-                  <p className='text-ink-2 mt-2 text-[13px] leading-relaxed'>{item.copy}</p>
+            {/* A compact buyer's summary in one block, not three cards: enough
+                to place the work without repeating Services or Experience. */}
+            <dl className='border-rule bg-surface divide-rule mt-10 divide-y rounded-xl border' style={reveal(190)}>
+              {FOCUS.map(item => (
+                <div key={item.label} className='grid gap-1 px-5 py-4 sm:grid-cols-[7rem_1fr] sm:gap-4'>
+                  <dt className='text-ink font-mono text-xs tracking-[0.12em] uppercase sm:pt-0.5'>{item.label}</dt>
+                  <dd className='text-ink-2 text-sm leading-relaxed'>{item.copy}</dd>
                 </div>
               ))}
-            </div>
+            </dl>
 
-            {/* ── Contact rows ──────────────────────────────────────────── */}
-            <div className='mt-10 space-y-3' style={reveal(220)}>
-              {CONTACT.map(c => (
-                <div key={c.label} className='flex flex-wrap items-baseline gap-x-3 gap-y-1'>
-                  <span className='text-ink-2 w-24 shrink-0 font-mono text-[12px] tracking-widest'>
-                    {c.label.toUpperCase()}
-                  </span>
-                  {c.href ? (
-                    <a
-                      href={c.href}
-                      className='text-ink-2 hover:text-ink border-rule hover:border-rule-strong border-b text-sm transition-colors'
-                    >
-                      {c.value}
-                    </a>
-                  ) : (
-                    <span className='text-ink-2 text-sm'>{c.value}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* ── CV + socials ──────────────────────────────────────────────
-                No "Book a free call" here: it already sits in the nav,
-                the hero, Services, pricing and Contact, and About now leads
+            {/* Status, CV and socials. The email lives in Contact and the
+                footer; no "Book a free call" here either, since About leads
                 into the career history rather than out to a form. */}
-            <div className='mt-10 flex flex-wrap items-center gap-4' style={reveal(300)}>
+            <p className='text-ink-2 mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm' style={reveal(220)}>
+              <span className='about-status-dot' aria-hidden='true' />
+              <span className='text-ink'>Open to new projects</span>
+              <span className='text-ink-3' aria-hidden='true'>
+                ·
+              </span>
+              <span>{PROFILE.location}, working across time zones</span>
+            </p>
+
+            <div className='mt-6 flex flex-wrap items-center gap-4' style={reveal(300)}>
               <a
                 href={PROFILE.cv}
                 download
@@ -182,7 +240,7 @@ export function IntroSection() {
                 DOWNLOAD CV
               </a>
 
-              <div className='flex items-center gap-2'>
+              <div className='flex flex-wrap items-center gap-2'>
                 {PROFILE.socials.map(s => (
                   <a
                     key={s.label}
@@ -197,62 +255,6 @@ export function IntroSection() {
               </div>
             </div>
           </div>
-
-          {/* ── Right: portrait ──────────────────────────────────────────── */}
-          <motion.div
-            className='about-cinema-visual w-full'
-            style={reducedMotion ? reveal(180) : { ...reveal(180), y: portraitY, rotate: portraitRotate }}
-          >
-            <div className='about-cinema-timeline' aria-hidden='true'>
-              <span className='about-era about-era-manual'>2015 · MANUAL OPERATIONS</span>
-              <span className='about-era about-era-system'>2026 · AUTOMATED SYSTEMS</span>
-              <span className='about-timeline-track'>
-                <motion.i style={reducedMotion ? undefined : { y: timelineY }} />
-              </span>
-            </div>
-
-            <div className='relative'>
-              {/* The casual, smiling portrait; the hero carries the office one,
-                  and the same photo twice would read as filler. */}
-              <div
-                className='saas-portrait-frame about-film-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border'
-                data-visible={inView}
-              >
-                <div className='about-film-meta' aria-hidden='true'>
-                  <span>RA · 01</span>
-                  <span>BUSINESS × AUTOMATION</span>
-                </div>
-                <img
-                  src='/images/landing/ramon-portrait-casual.webp'
-                  alt={PROFILE.name}
-                  width={880}
-                  height={1100}
-                  loading='lazy'
-                  className='h-auto w-full object-cover'
-                />
-                <div className='about-film-scan' aria-hidden='true' />
-              </div>
-            </div>
-
-            {/* Credentials strip */}
-            <div
-              className='about-credential-strip divide-rule border-rule bg-surface mt-6 grid grid-cols-3 divide-x overflow-hidden rounded-xl border'
-              data-visible={inView}
-            >
-              {[
-                { value: 'Books', label: 'balanced by hand for a decade' },
-                { value: 'MBA', label: 'business strategy' },
-                { value: 'n8n', label: 'my main automation tool' }
-              ].map(s => (
-                <div key={s.label} className='px-3 py-4 text-center'>
-                  <div className='text-ink text-lg font-light' style={{ fontFamily: DISPLAY_FONT }}>
-                    {s.value}
-                  </div>
-                  <div className='text-ink-2 mt-1 text-xs leading-tight'>{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </div>
 

@@ -70,7 +70,7 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
               {/* Introduce the person behind the work before the full eight-project
               portfolio. This keeps the biography near the hero without asking
               the visitor to scroll through a long project showcase first. */}
-              <IntroSection />
+              <IntroSection systemCount={caseStudies.length} />
               <ProjectsSection caseStudies={caseStudies} />
               <ServicesSection />
               <HowItWorksSection />

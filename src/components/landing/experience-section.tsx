@@ -180,7 +180,8 @@ export function ExperienceJourney() {
                         >
                           <div className='experience-role-meta'>
                             <span className='experience-role-index'>{role.index}</span>
-                            <span className='experience-role-period'>{role.period}</span>
+                            {/* A one-role tenure already shows these dates in its header. */}
+                            {tenure.roles.length > 1 && <span className='experience-role-period'>{role.period}</span>}
                             {role.arrangement && (
                               <span className='experience-role-arrangement'>{role.arrangement}</span>
                             )}
