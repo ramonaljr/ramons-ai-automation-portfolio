@@ -131,6 +131,7 @@ export function ChatWidget() {
   const [status, setStatus] = useState<'idle' | 'ok' | 'down'>('idle')
 
   const available = useChatAvailable()
+  const offline = available === false
 
   // Phones: the launcher steps aside while the page moves, so it never sits on
   // top of the text being read, and returns once scrolling stops.
@@ -234,22 +235,21 @@ export function ChatWidget() {
 
   return (
     <>
-      {/* Launcher. Gone when the health check failed, unless a chat is
-          already open and needs its close button. */}
-      {(available !== false || open) && (
-        <button
-          type='button'
-          onClick={() => setOpen(o => !o)}
-          aria-expanded={open}
-          aria-controls='chat-panel'
-          aria-label={open ? 'Close chat' : "Chat with Ramon's assistant"}
-          className={`bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 w-12 items-center justify-center rounded-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-[transform,opacity] duration-300 hover:scale-105 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:w-14 ${
-            scrolling && !open ? 'max-sm:pointer-events-none max-sm:translate-y-20 max-sm:opacity-0' : ''
-          }`}
-        >
-          <Ico d={open ? P.close : P.chat} size={22} />
-        </button>
-      )}
+      {/* Launcher. Always shown: when the health check fails, the panel offers
+          email and a call instead of a dead chat, rather than the icon simply
+          vanishing (it did, and read as a broken page). */}
+      <button
+        type='button'
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+        aria-controls='chat-panel'
+        aria-label={open ? 'Close chat' : "Chat with Ramon's assistant"}
+        className={`bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 w-12 items-center justify-center rounded-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-[transform,opacity] duration-300 hover:scale-105 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:w-14 ${
+          scrolling && !open ? 'max-sm:pointer-events-none max-sm:translate-y-20 max-sm:opacity-0' : ''
+        }`}
+      >
+        <Ico d={open ? P.close : P.chat} size={22} />
+      </button>
 
       {/* Panel */}
       <div
@@ -269,14 +269,16 @@ export function ChatWidget() {
             <p className='text-ink-2 mt-0.5 flex items-center gap-1.5 text-[12px]'>
               <span
                 className={`h-1.5 w-1.5 rounded-full ${
-                  status === 'ok' ? 'bg-emerald-500' : status === 'down' ? 'bg-amber-500' : 'bg-ink/25'
+                  status === 'ok' ? 'bg-emerald-500' : status === 'down' || offline ? 'bg-amber-500' : 'bg-ink/25'
                 }`}
               />
               {status === 'ok'
                 ? 'Connected'
-                : status === 'down'
-                  ? 'Assistant unavailable'
-                  : 'Usually replies in seconds'}
+                : offline
+                  ? 'Assistant offline'
+                  : status === 'down'
+                    ? 'Assistant unavailable'
+                    : 'Usually replies in seconds'}
             </p>
           </div>
           <button
@@ -289,8 +291,34 @@ export function ChatWidget() {
           </button>
         </div>
 
+        {/* Offline: the health check failed, so offer the two ways that do
+            not depend on the assistant instead of a chat that cannot answer. */}
+        {offline && (
+          <div className='flex flex-1 flex-col justify-center gap-4 px-6 py-8'>
+            <p className='text-ink text-[15px] leading-relaxed'>The assistant is offline right now.</p>
+            <p className='text-ink-2 text-[13.5px] leading-relaxed'>
+              You can still reach me directly by email or by booking a call.
+            </p>
+            <div className='flex flex-col gap-2 pt-1'>
+              <a
+                href={`mailto:${PROFILE.email}`}
+                className='bg-ink text-ground hover:bg-ink/90 rounded-full px-4 py-2.5 text-center text-[13.5px] transition-colors'
+              >
+                Email Ramon
+              </a>
+              <a
+                href='#contact'
+                onClick={() => setOpen(false)}
+                className='border-rule-strong text-ink hover:bg-ink/3 rounded-full border px-4 py-2.5 text-center text-[13.5px] transition-colors'
+              >
+                Book a free call
+              </a>
+            </div>
+          </div>
+        )}
+
         {/* Thread */}
-        <div ref={listRef} className='flex-1 space-y-3 overflow-y-auto px-5 py-5'>
+        <div ref={listRef} className='flex-1 space-y-3 overflow-y-auto px-5 py-5' hidden={offline}>
           {messages.map(m => (
             <div key={m.id} className={m.role === 'user' ? 'flex justify-end' : 'flex justify-start'}>
               <p
@@ -321,7 +349,7 @@ export function ChatWidget() {
         </div>
 
         {/* Suggestions — only while the thread is untouched */}
-        {messages.length === 1 && (
+        {messages.length === 1 && !offline && (
           <div className='flex flex-wrap gap-1.5 px-5 pb-3'>
             {SUGGESTIONS.map(s => (
               <button
@@ -338,6 +366,7 @@ export function ChatWidget() {
 
         {/* Composer */}
         <form
+          hidden={offline}
           onSubmit={e => {
             e.preventDefault()
             submit(draft)
