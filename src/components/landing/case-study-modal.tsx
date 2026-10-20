@@ -350,7 +350,7 @@ export function CaseStudyModal({
               )}
 
               {study.solution && (
-                <div className='rounded-2xl border border-[color-mix(in_oklch,var(--accent)_22%,transparent)] bg-[color-mix(in_oklch,var(--accent)_5%,transparent)] p-5 sm:p-6'>
+                <div className='rounded-2xl border border-[color-mix(in_oklab,var(--accent)_22%,transparent)] bg-[color-mix(in_oklab,var(--accent)_5%,transparent)] p-5 sm:p-6'>
                   <p className='text-accent font-mono text-xs font-medium tracking-[0.2em] uppercase'>WHAT I BUILT</p>
                   <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{study.solution}</p>
                 </div>

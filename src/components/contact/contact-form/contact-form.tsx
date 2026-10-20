@@ -140,8 +140,8 @@ const ContactForm = ({ className }: ContactFormProps) => {
       if (res.ok && data?.ok) {
         toast.success(
           booking
-            ? `Booked for ${slot.time} on ${slot.date}. Check your email for the calendar invite${data.reference ? ` — reference ${data.reference}` : ''}.`
-            : "Message sent — I'll get back to you as soon as possible."
+            ? `Booked for ${slot.time} on ${slot.date}. Check your email for the calendar invite${data.reference ? ` (reference ${data.reference})` : ''}.`
+            : "Message sent. I'll get back to you as soon as possible."
         )
         form.reset()
         setSlot(null)
@@ -267,7 +267,7 @@ const ContactForm = ({ className }: ContactFormProps) => {
           disabled={pending}
           className='group bg-ink text-ground hover:bg-ink/90 inline-flex w-full items-center justify-center gap-3 rounded-full py-2 pr-2 pl-6 text-[13px] tracking-wide transition-colors disabled:opacity-60'
         >
-          {pending ? 'SENDING…' : slot ? 'CONFIRM THIS SLOT' : 'SEND IT OVER'}
+          {pending ? 'Sending…' : slot ? 'Confirm this slot' : 'Send it over'}
           <span className='flex h-9 w-9 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
             <ArrowIcon />
           </span>

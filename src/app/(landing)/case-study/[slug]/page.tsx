@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
 import type { Metadata } from 'next'
 
 // Component Imports
@@ -7,7 +8,7 @@ import { SiteFooter } from '@/components/landing/site-footer'
 import { CtaSection } from '@/components/landing/cta-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
-import { ArrowRight, CONTAINER, DISPLAY_FONT, PAGE, Reveal } from '@/components/landing/motion'
+import { ArrowRight, CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE, Reveal } from '@/components/landing/motion'
 import MDXContent from '@/components/mdx-content'
 import { ReadingRail } from '@/components/shared/prose/reading-rail'
 
@@ -45,17 +46,14 @@ export const dynamicParams = false
 // ── Page furniture ───────────────────────────────────────────────────────────
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
-  <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>
-    <span className='bg-ink/25 h-px w-8' />
-    {children}
-  </span>
+  <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>{children}</span>
 )
 
 const Chip = ({ children, tone = 'quiet' }: { children: React.ReactNode; tone?: 'quiet' | 'solid' | 'warn' }) => {
   const tones = {
     quiet: 'border-rule text-ink-3',
     solid: 'border-rule-strong bg-ink/4 text-ink-2',
-    warn: 'border-[color-mix(in_oklch,var(--accent)_26%,transparent)] bg-[color-mix(in_oklch,var(--accent)_9%,transparent)] text-accent'
+    warn: 'border-[color-mix(in_oklab,var(--accent)_26%,transparent)] bg-[color-mix(in_oklab,var(--accent)_9%,transparent)] text-accent'
   }
 
   return (
@@ -129,7 +127,7 @@ const OtherWork = ({ items }: { items: CaseStudyMetadata[] }) => {
                   <p className='text-ink-3 mt-3 line-clamp-3 text-[13px] leading-relaxed'>{cs.description}</p>
 
                   <span className='text-ink-3 group-hover:text-ink mt-auto inline-flex items-center gap-2 pt-6 font-mono text-[12px] tracking-wide transition-colors'>
-                    READ CASE STUDY
+                    Read case study
                     <ArrowRight />
                   </span>
                 </div>
@@ -206,8 +204,8 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
             href='/#portfolio'
             className='text-ink-3 hover:text-ink inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] transition-colors'
           >
-            <span aria-hidden='true'>←</span>
-            SELECTED WORK
+            <ArrowLeft size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
+            Selected work
           </a>
 
           <div className='mt-12 flex flex-wrap items-center gap-x-5 gap-y-3'>
@@ -413,7 +411,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
                   </div>
                 )}
                 {metadata.solution && (
-                  <div className='rounded-2xl border border-[color-mix(in_oklch,var(--accent)_22%,transparent)] bg-[color-mix(in_oklch,var(--accent)_5%,transparent)] p-8'>
+                  <div className='rounded-2xl border border-[color-mix(in_oklab,var(--accent)_22%,transparent)] bg-[color-mix(in_oklab,var(--accent)_5%,transparent)] p-8'>
                     <p className='eyebrow text-accent'>WHAT I BUILT</p>
                     <p className='text-ink-2 mt-4 text-[15px] leading-relaxed'>{metadata.solution}</p>
                   </div>

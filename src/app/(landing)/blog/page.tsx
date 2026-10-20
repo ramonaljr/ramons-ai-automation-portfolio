@@ -14,7 +14,7 @@ import { blogIndexLd, breadcrumbLd, graph, socialImage } from '@/lib/seo'
 const INDEX_TITLE = 'Notes on automation'
 
 const INDEX_DESCRIPTION =
-  'Working notes on AI automation — n8n, Zapier, Make and GoHighLevel, LLM and RAG integrations, error handling, and what actually holds up in production.'
+  'Working notes on AI automation: n8n, Zapier, Make and GoHighLevel, LLM and RAG integrations, error handling, and what actually holds up in production.'
 
 export const metadata: Metadata = {
   // "Blog" told a search result nothing. The title template appends the name,
@@ -72,7 +72,6 @@ const BlogPage = async () => {
       <header className='px-6 pt-36 pb-20 md:px-12 lg:px-20 lg:pt-44'>
         <div className={CONTAINER}>
           <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>
-            <span className='bg-ink/25 h-px w-8' />
             WRITING
           </span>
 
@@ -84,8 +83,8 @@ const BlogPage = async () => {
           </h1>
 
           <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
-            Working notes on n8n, Zapier, Make and GoHighLevel — architecture decisions, failure modes, and what
-            actually holds up in production.
+            Working notes on n8n, Zapier, Make and GoHighLevel: architecture decisions, failure modes, and what actually
+            holds up in production.
           </p>
 
           {posts.length > 0 && (
@@ -172,7 +171,7 @@ const BlogPage = async () => {
                               href={`/blog/${post.slug}`}
                               className='text-ink-3 hover:text-ink inline-flex items-center gap-2 font-mono text-[12px] tracking-wide transition-colors'
                             >
-                              READ ARTICLE
+                              Read article
                               <ArrowRight />
                             </a>
                             {post.readingTime && (

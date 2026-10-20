@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
 import type { Metadata } from 'next'
 
 import { SiteNav } from '@/components/landing/site-nav'
@@ -6,7 +7,7 @@ import { SiteFooter } from '@/components/landing/site-footer'
 import { CtaSection } from '@/components/landing/cta-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
-import { ArrowRight, CONTAINER, DISPLAY_FONT, PAGE, Reveal } from '@/components/landing/motion'
+import { ArrowRight, CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE, Reveal } from '@/components/landing/motion'
 import MDXContent from '@/components/mdx-content'
 import { ReadingRail } from '@/components/shared/prose/reading-rail'
 
@@ -142,7 +143,7 @@ const MoreWriting = ({ items }: { items: PostMetadata[] }) => {
                 )}
 
                 <span className='text-ink-3 group-hover:text-ink mt-auto inline-flex items-center gap-2 pt-6 font-mono text-[12px] tracking-wide transition-colors'>
-                  READ ARTICLE
+                  Read article
                   <ArrowRight />
                 </span>
               </a>
@@ -194,13 +195,12 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
               href='/blog'
               className='text-ink-3 hover:text-ink inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] transition-colors'
             >
-              <span aria-hidden='true'>←</span>
-              ALL ARTICLES
+              <ArrowLeft size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
+              All articles
             </a>
 
             <div className='mt-12 flex flex-wrap items-center gap-x-5 gap-y-3'>
               <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>
-                <span className='bg-ink/25 h-px w-8' />
                 {metadata.category?.toUpperCase() ?? 'WRITING'}
               </span>
               {metadata.tags?.map(tag => (

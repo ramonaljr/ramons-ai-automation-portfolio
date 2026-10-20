@@ -48,7 +48,7 @@ const satoshi = localFont({
 export const metadata: Metadata = {
   title: {
     template: '%s - Ramon Vallejera Jr.',
-    default: 'AI Automation Engineer | n8n, Zapier & Make — Ramon Vallejera Jr.'
+    default: 'AI Automation Engineer | n8n, Zapier & Make | Ramon Vallejera Jr.'
   },
   description:
     'AI automation for finance & operations teams, built by a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier, Make and AI. Free 30-minute call.',
@@ -119,7 +119,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: {
       template: '%s - Ramon Vallejera Jr.',
-      default: 'AI Automation Engineer | n8n, Zapier & Make — Ramon Vallejera Jr.'
+      default: 'AI Automation Engineer | n8n, Zapier & Make | Ramon Vallejera Jr.'
     },
     description:
       'AI automation for finance & operations teams, built by a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier, Make and AI. Free 30-minute call.',
@@ -132,7 +132,7 @@ export const metadata: Metadata = {
         type: 'image/jpeg',
         width: 1200,
         height: 630,
-        alt: 'Ramon Vallejera Jr. — Better systems. More human work.'
+        alt: 'Ramon Vallejera Jr. | Better systems. More human work.'
       }
     ]
   },
@@ -140,7 +140,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: {
       template: '%s - Ramon Vallejera Jr.',
-      default: 'AI Automation Engineer | n8n, Zapier & Make — Ramon Vallejera Jr.'
+      default: 'AI Automation Engineer | n8n, Zapier & Make | Ramon Vallejera Jr.'
     },
     description:
       'AI automation for finance & operations teams, built by a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier, Make and AI. Free 30-minute call.',

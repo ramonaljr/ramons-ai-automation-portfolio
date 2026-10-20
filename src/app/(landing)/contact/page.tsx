@@ -16,7 +16,7 @@ import { abs, SITE_URL } from '@/lib/site'
 export const metadata: Metadata = {
   title: 'Contact',
   description:
-    'Tell me the process that eats your week — what happens today, who does it, and how often. I will tell you whether it is worth automating and on which platform.',
+    'Tell me the process that eats your week: what happens today, who does it, and how often. I will tell you whether it is worth automating and on which platform.',
   alternates: { canonical: abs('/contact') }
 }
 
@@ -61,7 +61,6 @@ const ContactUsPage = async () => {
       <header className='px-6 pt-36 pb-24 md:px-12 lg:px-20 lg:pt-44'>
         <div className={CONTAINER}>
           <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>
-            <span className='bg-ink/25 h-px w-8' />
             CONTACT
           </span>
 
@@ -73,7 +72,7 @@ const ContactUsPage = async () => {
           </h1>
 
           <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
-            Describe the process as it runs today — what happens, who does it, how often. I will tell you whether it is
+            Describe the process as it runs today: what happens, who does it, how often. I will tell you whether it is
             worth automating, which platform fits, and roughly what it takes.
           </p>
 
@@ -119,9 +118,7 @@ const ContactUsPage = async () => {
                   </div>
                   <div>
                     <dt className='text-ink-3 font-mono text-[11px] tracking-[0.18em]'>FIRST STEP</dt>
-                    <dd className='text-ink-2 mt-1.5 text-[14px]'>
-                      A free 30-minute call — no deck, just your process
-                    </dd>
+                    <dd className='text-ink-2 mt-1.5 text-[14px]'>A free 30-minute call. No deck, just your process</dd>
                   </div>
                 </dl>
 
@@ -221,7 +218,7 @@ const ContactUsPage = async () => {
                           <p className='text-ink-3 mt-3 line-clamp-3 text-[13px] leading-relaxed'>{cs.description}</p>
 
                           <span className='text-ink-3 group-hover:text-ink mt-auto inline-flex items-center gap-2 pt-6 font-mono text-[12px] tracking-wide transition-colors'>
-                            READ CASE STUDY
+                            Read case study
                             <ArrowRight />
                           </span>
                         </div>
