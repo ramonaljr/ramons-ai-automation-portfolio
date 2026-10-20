@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowUpRight, Check } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, Check } from 'lucide-react'
 
 import { SiteNav } from '@/components/landing/site-nav'
 import { PixelIcon } from '@/components/landing/pixel-icon'
@@ -8,14 +8,11 @@ import { PixelIcon } from '@/components/landing/pixel-icon'
 import type { Service } from '@/lib/portfolio'
 import { PROFILE } from '@/lib/portfolio'
 
-import { ICON_STROKE } from '@/components/landing/motion'
-
-const DISPLAY_FONT = 'var(--font-ibm-plex), "IBM Plex Sans", sans-serif'
-const CONTAINER = 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto'
+import { CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE } from '@/components/landing/motion'
 
 export function ServiceDetail({ service, others }: { service: Service; others: Service[] }) {
   return (
-    <div className='bg-ground text-ink min-h-screen font-sans antialiased'>
+    <div className={PAGE}>
       <SiteNav />
 
       {/* ── Header ───────────────────────────────────────────────────────── */}
@@ -25,7 +22,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
             href='/#services'
             className='text-ink-2 hover:text-ink mb-10 inline-flex items-center gap-2 text-[13px] transition-colors'
           >
-            <span aria-hidden='true'>←</span> All services
+            <ArrowLeft size={14} strokeWidth={ICON_STROKE} aria-hidden='true' /> All services
           </a>
 
           <div className='flex items-start gap-5'>
@@ -57,7 +54,6 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
 
             {/* Workflow mockup */}
             <div className='border-rule bg-surface-raised mt-12 overflow-hidden rounded-2xl border'>
-              {}
               <img
                 src={`/images/services/${service.slug}.svg`}
                 alt={`Workflow diagram for ${service.title}`}
