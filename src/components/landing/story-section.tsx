@@ -232,9 +232,12 @@ function ActCopy({
   return (
     <motion.div className='story-copy' style={{ opacity, y, pointerEvents }}>
       <p className='story-copy-tag'>{act.tag}</p>
-      <h2 className='story-copy-title' style={{ fontFamily: DISPLAY_FONT }}>
+      {/* A <p>, not an <h2>: StackedStory below carries the same three
+          headings, and the page was shipping each of them twice. Only one
+          variant is ever on screen, and the stacked one keeps the heading. */}
+      <p className='story-copy-title' style={{ fontFamily: DISPLAY_FONT }}>
         {act.title}
-      </h2>
+      </p>
       <p className='story-copy-body'>{act.copy}</p>
 
       {outcome && (

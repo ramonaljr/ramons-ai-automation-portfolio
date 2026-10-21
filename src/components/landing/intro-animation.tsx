@@ -144,8 +144,10 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
             </span>
           </div>
 
-          {/* Scaled & Refined RAMON title */}
-          <h1
+          {/* Scaled & Refined RAMON title. A <p>, not an <h1>: it is a loading
+              screen, and the page's real H1 is the hero headline. Two H1s, the
+              first one the word "RAMON", gave crawlers a wrong headline. */}
+          <p
             className='text-ink mb-5 text-[clamp(2.5rem,6vw,4.5rem)] leading-none font-light tracking-[0.14em] uppercase'
             style={{
               fontFamily: DISPLAY_FONT,
@@ -153,7 +155,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
             }}
           >
             RAMON
-          </h1>
+          </p>
 
           <div className='intro-loading mb-6' style={getItemStyle(300, 8, 6)}>
             <div className='intro-loading-head'>

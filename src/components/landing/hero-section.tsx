@@ -111,7 +111,7 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               className='hero-word-shell hero-rotating-line relative -mb-[0.22em] block overflow-hidden pb-[0.22em]'
               aria-hidden='true'
             >
-              <span className='invisible block'>{LONGEST_WORK}</span>
+              <span className='hero-sizer invisible block' data-text={LONGEST_WORK} />
               {/* The words cross over each other rather than taking turns. With
                   `mode='wait'` the old word left before the new one arrived,
                   so for over a second of every cycle the headline read "Let

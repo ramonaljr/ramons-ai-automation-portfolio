@@ -5836,6 +5836,12 @@ div#experience.about-journey {
   margin-top: 2.5rem;
 }
 
+/* Reserves the headline's line box without putting a second copy of the
+   longest word into the H1, which crawlers read as "data entry. data entry." */
+.hero-sizer::before {
+  content: attr(data-text);
+}
+
 .service-platforms ul {
   display: grid;
   gap: 0.75rem;

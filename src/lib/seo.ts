@@ -131,6 +131,27 @@ const headline = (title: string) => (title.length <= 110 ? title : `${title.slic
  * injects the correct URL into og:image and twitter:image by itself; nothing
  * here should try to reproduce it.
  */
+/**
+ * Search results cut a description near 155 characters, so a longer one is
+ * shown with a mid-sentence ellipsis chosen by Google. This ends it on the last
+ * whole sentence (or word) that fits. Page copy is untouched; only the
+ * <meta name="description"> is trimmed.
+ */
+export function metaDescription(text: string | undefined, max = 155): string | undefined {
+  if (!text) return undefined
+
+  const clean = text.replace(/\s+/g, ' ').trim()
+
+  if (clean.length <= max) return clean
+
+  const window = clean.slice(0, max)
+  const sentenceEnd = Math.max(window.lastIndexOf('. '), window.lastIndexOf('? '), window.lastIndexOf('! '))
+
+  if (sentenceEnd > max * 0.5) return window.slice(0, sentenceEnd + 1)
+
+  return `${window.slice(0, window.lastIndexOf(' ')).replace(/[,;:]$/, '')}…`
+}
+
 export const socialImage = () => abs('/images/og-image.png')
 
 export function blogPostingLd(post: PostMetadata, body: string) {

@@ -15,6 +15,7 @@ import { ReadingRail } from '@/components/shared/prose/reading-rail'
 // Data Imports
 import { getCaseStudyBySlug, getCaseStudies, type CaseStudyMetadata } from '@/lib/case-studies'
 import { extractHeadings } from '@/lib/extract-headings'
+import { metaDescription } from '@/lib/seo'
 import { abs } from '@/lib/site'
 import { filmOf } from '@/lib/work-views'
 
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   return {
     title: `Case Study: ${metadata.title}`,
-    description: metadata.description,
+    description: metaDescription(metadata.description),
     alternates: { canonical: abs(`/case-study/${metadata.slug}`) }
   }
 }

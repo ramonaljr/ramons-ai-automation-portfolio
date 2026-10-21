@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     default: 'AI Automation Engineer | n8n, Zapier & Make | Ramon Vallejera Jr.'
   },
   description:
-    'AI automation for any team buried in repetitive work, built by a former accountant with an MBA. Invoices, lead follow-ups and reporting on n8n, Zapier, Make and AI. Free 30-minute call.',
+    'AI automation for any team buried in repetitive work, from a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier and Make.',
   robots: 'index,follow',
 
   // Search engines ignore this list; it stays for the few tools that read it.
@@ -114,7 +114,7 @@ export const metadata: Metadata = {
       default: 'AI Automation Engineer | n8n, Zapier & Make | Ramon Vallejera Jr.'
     },
     description:
-      'AI automation for any team buried in repetitive work, built by a former accountant with an MBA. Invoices, lead follow-ups and reporting on n8n, Zapier, Make and AI. Free 30-minute call.',
+      'AI automation for any team buried in repetitive work, from a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier and Make.',
     type: 'website',
     siteName: 'Ramon Vallejera Jr.',
     url: SITE_URL,
@@ -135,7 +135,7 @@ export const metadata: Metadata = {
       default: 'AI Automation Engineer | n8n, Zapier & Make | Ramon Vallejera Jr.'
     },
     description:
-      'AI automation for any team buried in repetitive work, built by a former accountant with an MBA. Invoices, lead follow-ups and reporting on n8n, Zapier, Make and AI. Free 30-minute call.',
+      'AI automation for any team buried in repetitive work, from a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier and Make.',
     images: ['/images/og-image-v3.jpg']
   }
 }

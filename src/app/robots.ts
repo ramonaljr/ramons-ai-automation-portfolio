@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 
-import { abs, SITE_URL } from '@/lib/site'
+import { SITE_URL } from '@/lib/site'
 
 /**
  * AI crawlers, named explicitly.
@@ -39,9 +39,9 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: TRAINING, allow: '/' }
     ],
 
-    // Both maps, deliberately. sitemap.xml lists what exists; llms.txt says
-    // what it means. A crawler that reads only one still gets something.
-    sitemap: [`${SITE_URL}/sitemap.xml`, abs('/llms.txt')],
-    host: SITE_URL
+    // Only the XML sitemap belongs here: `Sitemap:` is defined for sitemap
+    // files, and llms.txt is a plain-text guide that crawlers find at its
+    // well-known path. `Host:` was dropped too, since only Yandex ever read it.
+    sitemap: `${SITE_URL}/sitemap.xml`
   }
 }

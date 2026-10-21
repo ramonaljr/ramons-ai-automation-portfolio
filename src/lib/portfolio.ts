@@ -739,6 +739,18 @@ export const ENGAGEMENTS = [
 export const FAQS = [
   {
     icon: 'handshake',
+    question: 'Which teams do you build automation for?',
+    answer:
+      'Any team losing time to repetitive work. Finance teams get invoice approval and payment reminders, sales teams get lead scoring and follow-up, HR gets applicant screening and onboarding, and operations and support teams get requests, tickets and reporting that move on their own. If the work is repeated and the tools have connections, it can usually be automated.'
+  },
+  {
+    icon: 'clock',
+    question: 'How much does an automation project cost?',
+    answer:
+      'Projects are priced up front, not by the hour. The Automation Audit is a fixed fee quoted on the free call, a build is a fixed quote per workflow agreed before work starts, and the optional monthly retainer is a flat fee with the scope agreed up front. You see the number before anything begins.'
+  },
+  {
+    icon: 'handshake',
     question: 'Is the first call really free, and how is it different from the audit?',
     answer:
       'Yes. The 30-minute call is free: you walk me through the process and I tell you whether it is worth automating, on which platform, and roughly what it would take. The Automation Audit is a separate, paid week of work that maps everything in detail and gives you a prioritised plan. You can skip the audit and go straight to a build.'
@@ -772,6 +784,12 @@ export const FAQS = [
     question: 'Which platform will you build on?',
     answer:
       'Usually n8n: it can run on your own servers for sensitive data, handles processes with many decisions and custom steps, and does not charge per task as volume grows. Zapier suits simple handoffs between familiar apps, especially if your team already uses it. Make fits processes with several routes that move larger amounts of data. GoHighLevel is the choice when your customer list, sales tracking and marketing campaigns are the centre of the work. I recommend one after the audit, based on your tools, volume and who maintains it afterwards.'
+  },
+  {
+    icon: 'handshake',
+    question: 'Where are you based, and can you work in my time zone?',
+    answer:
+      'I am based in the Philippines and work remotely with clients across time zones. You book a call slot from the calendar on this site, and day-to-day updates run in writing on the channel you already use, so nobody has to be awake at the same hour.'
   },
   {
     icon: 'clock',

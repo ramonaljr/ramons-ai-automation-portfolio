@@ -30,7 +30,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const postDate = (p: { publishedAt?: string; updatedAt?: string }) => newest([p.updatedAt, p.publishedAt])
 
   return [
-    { url: abs(''), changeFrequency: 'monthly', priority: 1 },
+    // The homepage links to every post and case study, so it changes when the
+    // newest of them does.
+    {
+      url: abs(''),
+      lastModified: newest([
+        ...posts.flatMap(p => [p.updatedAt, p.publishedAt]),
+        ...caseStudies.map(c => c.publishedAt)
+      ]),
+      changeFrequency: 'monthly',
+      priority: 1
+    },
     { url: abs('/contact'), changeFrequency: 'yearly', priority: 0.8 },
 
     // The index changes whenever its newest post does.
