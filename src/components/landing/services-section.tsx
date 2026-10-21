@@ -5,7 +5,7 @@ import { useState, type PointerEvent } from 'react'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ArrowIcon, CONTAINER, Cta, DISPLAY_FONT, rise, SECTION, useInView } from '@/components/landing/motion'
 
-import { ToolStackSection } from '@/components/landing/tool-stack-section'
+import { ToolMark, ToolStackSection } from '@/components/landing/tool-stack-section'
 
 import { PLATFORMS, SERVICES } from '@/lib/portfolio'
 
@@ -105,12 +105,7 @@ export function ServicesSection() {
             const panelId = `service-panel-${service.slug}`
 
             return (
-              <li
-                key={service.slug}
-                className='service-panel'
-                data-open={isOpen}
-                onPointerEnter={openOnHover(index)}
-              >
+              <li key={service.slug} className='service-panel' data-open={isOpen} onPointerEnter={openOnHover(index)}>
                 <img
                   src={SERVICE_SCENES[service.slug]}
                   alt=''
@@ -181,6 +176,7 @@ export function ServicesSection() {
             {PLATFORMS.map(platform => (
               <li key={platform.name} data-primary={platform.primary || undefined}>
                 <strong style={{ fontFamily: DISPLAY_FONT }}>
+                  <ToolMark tool={platform} size={26} />
                   {platform.name}
                   {platform.primary && <span>Primary</span>}
                 </strong>

@@ -140,8 +140,8 @@ export function HeroSection({ ready }: { ready?: boolean }) {
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            For finance and operations teams: I connect your tools so work moves on its own. Built by a former
-            accountant.
+            For any team buried in repetitive work: I connect your tools and add AI, so the busywork runs on its own.
+            Built by a former accountant.
           </p>
 
           <div
@@ -179,7 +179,6 @@ export function HeroSection({ ready }: { ready?: boolean }) {
           </div>
         </figure>
       </div>
-
     </section>
   )
 }

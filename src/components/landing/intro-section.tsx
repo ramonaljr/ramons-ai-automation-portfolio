@@ -33,7 +33,7 @@ const FOCUS = [
   },
   {
     label: 'Best fit',
-    copy: 'Teams losing time to repetitive admin, disconnected tools and manual handoffs.'
+    copy: 'Any team losing time to repetitive admin, disconnected tools and manual handoffs, in finance, sales, support or operations.'
   },
   {
     label: 'You get',
@@ -181,11 +181,12 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
               <p className='text-ink-2 text-base leading-[1.7]'>
                 Supplier invoices and tax filings, project cost checks, a 10-person month-end close, then forecasting: I
                 did that work by hand for over ten years. It taught me where work really slows down, and which checks
-                cannot be skipped.
+                cannot be skipped. Those habits carry over to the routine work of any team, not only finance.
               </p>
               <p className='text-ink-2 text-base leading-[1.7]'>
-                Now I connect the tools a business already uses so requests, follow-ups, paperwork and reporting move on
-                their own, with human review where it matters, failure alerts and a clear handover.
+                Now I connect the tools a business already uses so requests, lead follow-ups, support tickets, paperwork
+                and reporting move on their own, whether the team sits in finance, sales, support or operations. Human
+                review stays where it matters, with failure alerts and a clear handover.
               </p>
             </div>
 

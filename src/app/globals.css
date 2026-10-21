@@ -5877,6 +5877,10 @@ div#experience.about-journey {
   text-transform: uppercase;
 }
 
+.service-platforms li:hover .tool-mark {
+  background-color: var(--tool-color);
+}
+
 .service-platforms li > span {
   color: var(--ink-2);
   font-size: 0.875rem;

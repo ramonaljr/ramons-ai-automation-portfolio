@@ -14,7 +14,7 @@ export const PROFILE = {
   legalName: 'Ramon A. Vallejera, Jr.',
   shortName: 'Ramon',
   title: 'AI Automation Engineer',
-  audience: 'finance & operations teams',
+  audience: 'teams buried in repetitive work',
   credential: 'MBA',
   location: 'Philippines',
   email: 'ramonvallejerajr@gmail.com',
@@ -270,6 +270,11 @@ export const SERVICES: Service[] = [
 
 export type Platform = {
   name: string
+
+  /** Logo file in public/images/tools and its brand colour, as on `Tool`.
+   *  GoHighLevel has no file there, so it renders as a monogram badge. */
+  slug?: string
+  color: string
   primary?: boolean
   tagline: string
   bestFor: string[]
@@ -279,6 +284,8 @@ export type Platform = {
 export const PLATFORMS: Platform[] = [
   {
     name: 'n8n',
+    slug: 'n8n',
+    color: '#EA4B71',
     primary: true,
     tagline: 'Flexible workflows with full ownership',
     bestFor: [
@@ -291,6 +298,8 @@ export const PLATFORMS: Platform[] = [
   },
   {
     name: 'Zapier',
+    slug: 'zapier',
+    color: '#FF4F00',
     tagline: 'The quickest way to connect familiar business tools',
     bestFor: [
       'Simple, dependable handoffs between apps',
@@ -302,6 +311,8 @@ export const PLATFORMS: Platform[] = [
   },
   {
     name: 'Make',
+    slug: 'make',
+    color: '#6D00CC',
     tagline: 'Visual workflows for larger amounts of information',
     bestFor: [
       'Processes with several routes and conditions',
@@ -313,6 +324,7 @@ export const PLATFORMS: Platform[] = [
   },
   {
     name: 'GoHighLevel',
+    color: '#2F7DF6',
     tagline: 'Customer follow-up, sales tracking and campaigns in one place',
     bestFor: [
       'Capturing and following up with leads',

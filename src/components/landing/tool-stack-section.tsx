@@ -16,13 +16,13 @@ import { TOOLS_ROW_1, TOOLS_ROW_2 } from '@/lib/portfolio'
  * compete with the page's one accent; a pill takes its brand colour on hover
  * (`.tool-pill` / `.tool-mark` in globals.css).
  */
-function ToolMark({ tool }: { tool: Tool }) {
+export function ToolMark({ tool, size = 22 }: { tool: Pick<Tool, 'name' | 'slug' | 'color'>; size?: number }) {
   if (!tool.slug) {
     return (
       <span
         aria-hidden='true'
-        className='tool-mark text-ground flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[12px] font-semibold'
-        style={{ '--tool-color': tool.color } as CSSProperties}
+        className='tool-mark text-ground flex shrink-0 items-center justify-center rounded-full font-semibold'
+        style={{ '--tool-color': tool.color, width: size, height: size, fontSize: size * 0.55 } as CSSProperties}
       >
         {tool.name.charAt(0)}
       </span>
@@ -34,18 +34,22 @@ function ToolMark({ tool }: { tool: Tool }) {
   return (
     <span
       aria-hidden='true'
-      className='tool-mark h-[22px] w-[22px] shrink-0'
-      style={{
-        '--tool-color': tool.color,
-        WebkitMaskImage: url,
-        maskImage: url,
-        WebkitMaskSize: 'contain',
-        maskSize: 'contain',
-        WebkitMaskRepeat: 'no-repeat',
-        maskRepeat: 'no-repeat',
-        WebkitMaskPosition: 'center',
-        maskPosition: 'center'
-      } as CSSProperties}
+      className='tool-mark shrink-0'
+      style={
+        {
+          '--tool-color': tool.color,
+          width: size,
+          height: size,
+          WebkitMaskImage: url,
+          maskImage: url,
+          WebkitMaskSize: 'contain',
+          maskSize: 'contain',
+          WebkitMaskRepeat: 'no-repeat',
+          maskRepeat: 'no-repeat',
+          WebkitMaskPosition: 'center',
+          maskPosition: 'center'
+        } as CSSProperties
+      }
     />
   )
 }
