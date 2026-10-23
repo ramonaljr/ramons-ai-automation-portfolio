@@ -7,6 +7,12 @@
  * invented placeholder copy — if a number appears, it comes from a case study.
  */
 
+/** First year in finance work. Drives every "10+ years" figure on the site. */
+const CAREER_START = 2015
+
+/** Whole years in finance, rounded down to five so the figure never overclaims. */
+export const financeYears = () => Math.floor((new Date().getFullYear() - CAREER_START) / 5) * 5
+
 export const PROFILE = {
   // One public name and one title, everywhere. The full legal name is kept for
   // structured data, so the CV and LinkedIn still match this site.

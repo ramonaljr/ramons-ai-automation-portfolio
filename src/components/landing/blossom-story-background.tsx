@@ -6,24 +6,15 @@ import { motion, useScroll, useTransform } from 'motion/react'
 
 import { usePrefersReducedMotion } from '@/components/landing/motion'
 
-type Mood = 'golden' | 'muted' | 'warm' | 'dusk'
+type Mood = 'golden' | 'calm'
 
 /**
- * The video's grade per section, in DOM order. The story sets the mood:
- * golden for the promise and the close, muted for the years of manual work,
- * dusk for the proof, warm for the explanation in between. Anything above
- * About (the hero) is golden.
+ * The scene per section, in DOM order. The hero and the story own the autumn
+ * scene; from About down it fades to the plain slate ground, so the work,
+ * the offer and the booking form are read against something quiet rather
+ * than competing with a tree for attention. Anything above About is golden.
  */
-const SECTION_MOODS: readonly (readonly [id: string, mood: Mood])[] = [
-  ['about', 'muted'],
-  ['portfolio', 'dusk'],
-  ['services', 'warm'],
-  ['process', 'warm'],
-  ['testimonials', 'golden'],
-  ['engagement', 'golden'],
-  ['faq', 'golden'],
-  ['contact', 'golden']
-]
+const SECTION_MOODS: readonly (readonly [id: string, mood: Mood])[] = [['about', 'calm']]
 
 /** The mood changes when a section crosses the middle of the viewport. */
 const LINE = 0.5
@@ -92,6 +83,10 @@ export function BlossomStoryBackground() {
       }
 
       root.dataset.mood = mood
+
+      // The falling leaves are a sibling layer, so the scene state is also
+      // written where both can see it.
+      root.parentElement?.setAttribute('data-scene', mood)
     }
 
     update()

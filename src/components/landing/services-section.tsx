@@ -126,7 +126,6 @@ export function ServicesSection() {
                     onClick={() => setActive(index)}
                     onFocus={() => setActive(index)}
                   >
-                    <span className='service-panel-index'>{String(index + 1).padStart(2, '0')}</span>
                     <span className='service-panel-spine'>{title}</span>
                   </button>
                 </h3>
@@ -171,7 +170,7 @@ export function ServicesSection() {
             recommended), so it is now one line each under the offer; the
             longer reasoning lives in the FAQ. */}
         <div ref={platformsRef} className='service-platforms' style={rise(platformsInView)}>
-          <p className='eyebrow'>WHERE I BUILD IT</p>
+          <p className='label-quiet'>Where I build it</p>
           <ul>
             {PLATFORMS.map(platform => (
               <li key={platform.name} data-primary={platform.primary || undefined}>

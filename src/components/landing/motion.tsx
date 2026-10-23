@@ -411,10 +411,18 @@ export function Cta({
     <a href={href} className={`${CTA_BASE} ${CTA_TONE[tone]} ${className}`} {...rest}>
       {children}
       {/* The arrow leans into the direction of travel on hover. A 2px nudge is
-          enough to register as intent without becoming a bouncing distraction. */}
-      <span className='transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0'>
-        <ArrowIcon />
-      </span>
+          enough to register as intent without becoming a bouncing distraction.
+          A jump within the page points across (→); only a link that leaves
+          the page points out (↗), so the glyph says where the click goes. */}
+      {href.startsWith('#') ? (
+        <span className='transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0'>
+          <ArrowRight size={14} />
+        </span>
+      ) : (
+        <span className='transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0'>
+          <ArrowIcon />
+        </span>
+      )}
     </a>
   )
 }

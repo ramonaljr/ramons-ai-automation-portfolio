@@ -8,14 +8,11 @@ import { Download } from 'lucide-react'
 
 import { GreetingWord } from '@/components/landing/greeting-word'
 import { ICON_STROKE, READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
-import { EXPERIENCE, PROFILE } from '@/lib/portfolio'
+import { EXPERIENCE, financeYears, PROFILE } from '@/lib/portfolio'
 import { introStep } from '@/components/landing/section-intro'
 import { ExperienceJourney } from '@/components/landing/experience-section'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
-
-/** First year in finance work. Drives the "10+ years" proof and the snapshot. */
-const CAREER_START = 2015
 
 /**
  * The career in one line per role, oldest first, read from the same data as the
@@ -80,7 +77,7 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
 
   const proof = [
     {
-      value: `${Math.floor((new Date().getFullYear() - CAREER_START) / 5) * 5}+ yrs`,
+      value: `${financeYears()}+ yrs`,
       label: 'in finance & accounting'
     },
     { value: PROFILE.credential, label: 'business strategy' },
@@ -195,7 +192,7 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
             <dl className='border-rule bg-surface divide-rule mt-10 divide-y rounded-xl border' style={reveal(190)}>
               {FOCUS.map(item => (
                 <div key={item.label} className='grid gap-1 px-5 py-4 sm:grid-cols-[7rem_1fr] sm:gap-4'>
-                  <dt className='text-ink font-mono text-xs tracking-[0.12em] uppercase sm:pt-0.5'>{item.label}</dt>
+                  <dt className='text-ink text-sm font-medium sm:pt-0.5'>{item.label}</dt>
                   <dd className='text-ink-2 text-sm leading-relaxed'>{item.copy}</dd>
                 </div>
               ))}
@@ -217,10 +214,10 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
               <a
                 href={PROFILE.cv}
                 download
-                className='border-rule-strong text-ink-2 hover:border-rule-strong hover:bg-ink/3 hover:text-ink inline-flex items-center gap-2 rounded-full border px-5 py-3 text-[13px] tracking-wide transition-all'
+                className='border-rule-strong text-ink-2 hover:border-rule-strong hover:bg-ink/3 hover:text-ink inline-flex items-center gap-2 rounded-full border px-5 py-3 text-[13px] transition-all'
               >
                 <Download size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
-                DOWNLOAD CV
+                Download CV
               </a>
 
               <div className='flex flex-wrap items-center gap-2'>

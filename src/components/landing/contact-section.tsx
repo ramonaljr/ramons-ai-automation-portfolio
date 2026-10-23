@@ -335,7 +335,7 @@ export function ContactSection() {
                   <Mail size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 </span>
                 <div className='min-w-0'>
-                  <p className='eyebrow'>EMAIL</p>
+                  <p className='label-quiet'>Email</p>
                   <a
                     href={`mailto:${PROFILE.email}`}
                     className='text-ink-2 hover:text-ink mt-1 block text-[14px] break-all transition-colors'
@@ -350,7 +350,7 @@ export function ContactSection() {
                   <MapPin size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 </span>
                 <div>
-                  <p className='eyebrow'>LOCATION</p>
+                  <p className='label-quiet'>Location</p>
                   <p className='text-ink-2 mt-1 text-[14px]'>{PROFILE.location}</p>
                   <p className='text-ink-2 text-[13px]'>Working across time zones</p>
                 </div>
@@ -361,7 +361,7 @@ export function ContactSection() {
                   <CalendarDays size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 </span>
                 <div>
-                  <p className='eyebrow'>AVAILABILITY</p>
+                  <p className='label-quiet'>Availability</p>
                   <p className='text-ink-2 mt-1 text-[14px]'>Open for new projects &amp; custom builds</p>
                 </div>
               </div>
@@ -371,7 +371,7 @@ export function ContactSection() {
                   <ArrowRight size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
                 </span>
                 <div>
-                  <p className='eyebrow'>RESPONSE</p>
+                  <p className='label-quiet'>Response</p>
                   <p className='text-ink-2 mt-1 text-[14px]'>Usually within one business day</p>
                 </div>
               </div>
@@ -505,7 +505,7 @@ export function ContactSection() {
             </div>
 
             {/* Times */}
-            <p className='eyebrow mt-7'>Available times</p>
+            <p className='label-quiet mt-7'>Available times</p>
             <div className={`mt-3 flex flex-wrap gap-2 ${TIMES_ROW_MIN_H}`}>
               {!picked ? (
                 <p className='text-ink-3 self-center text-[14px]'>Pick a weekday to see what is open.</p>
