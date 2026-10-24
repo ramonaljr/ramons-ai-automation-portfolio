@@ -11,7 +11,7 @@
  * to the browser and undo both properties.
  */
 
-const BASE = (process.env.N8N_BASE_URL ?? 'http://localhost:5678').replace(/\/$/, '')
+const BASE = (process.env.N8N_BASE_URL ?? 'https://n8n-with-ai-assistant-6qpe.srv1975705.hstgr.cloud').replace(/\/$/, '')
 
 /**
  * Shared secret proving a call came from this app rather than the open
