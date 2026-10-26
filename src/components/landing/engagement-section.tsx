@@ -3,7 +3,7 @@
 import type { CSSProperties, ReactNode } from 'react'
 
 import { AuditVisual, BuildVisual, LaunchVisual } from '@/components/landing/how-it-works-section'
-import { ArrowIcon, CONTAINER, DISPLAY_FONT, SECTION_ANCHOR, useInView } from '@/components/landing/motion'
+import { ArrowIcon, ArrowRight, CONTAINER, DISPLAY_FONT, SECTION_ANCHOR, useInView } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
 
 import { ENGAGEMENTS } from '@/lib/portfolio'
@@ -82,7 +82,7 @@ export function EngagementSection() {
 
                   <a href={tier.href ?? '#contact'} className='engagement-cta'>
                     {tier.cta}
-                    <ArrowIcon />
+                    {(tier.href ?? '#contact').startsWith('#') ? <ArrowRight size={14} /> : <ArrowIcon />}
                   </a>
                 </div>
               </article>

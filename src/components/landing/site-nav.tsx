@@ -151,7 +151,7 @@ export function SiteNav() {
         >
           <a
             href={onLanding ? '#top' : '/'}
-            className='nav-brand font-pixel text-ink inline-flex items-center gap-2.5 text-xs tracking-[0.25em] transition-opacity hover:opacity-70'
+            className='nav-brand text-ink inline-flex items-center gap-2.5 text-[0.95rem] font-medium tracking-[-0.01em] transition-opacity hover:opacity-70'
             aria-label={`${PROFILE.name}, back to top`}
           >
             <span
@@ -161,7 +161,7 @@ export function SiteNav() {
             >
               <BrandMark className='block h-full w-full overflow-visible' />
             </span>
-            <span>{PROFILE.name.toUpperCase()}</span>
+            <span>{PROFILE.name}</span>
           </a>
 
           {/* Desktop links */}

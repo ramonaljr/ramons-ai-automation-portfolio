@@ -4054,27 +4054,6 @@ a.work-aux-link:hover {
   filter: saturate(1) contrast(1.04) drop-shadow(0 18px 28px oklch(0.22 0.018 255 / 0.22));
 }
 
-.blossom-story-background[data-mood='muted'] .blossom-story-video {
-  filter: grayscale(1) contrast(1.04) brightness(0.9);
-}
-
-.blossom-story-background[data-mood='muted'] .blossom-story-tone {
-  opacity: 0.25;
-}
-
-.blossom-story-background[data-mood='muted'] .blossom-story-foreground {
-  opacity: 0.42;
-  filter: saturate(0.3) contrast(1) drop-shadow(0 18px 28px oklch(0.22 0.018 255 / 0.16));
-}
-
-.blossom-story-background[data-mood='dusk'] .blossom-story-video {
-  filter: sepia(1) hue-rotate(-20deg) saturate(1.25) contrast(1.2) brightness(0.66);
-}
-
-.blossom-story-background[data-mood='dusk'] .blossom-story-foreground {
-  filter: saturate(0.9) brightness(0.8) contrast(1.06) drop-shadow(0 18px 28px oklch(0.22 0.018 255 / 0.28));
-}
-
 @media (prefers-reduced-motion: reduce) {
   .blossom-story-video,
   .blossom-story-tone,
@@ -4845,8 +4824,9 @@ a.work-aux-link:hover {
 
 .story-track {
   position: relative;
-  /* Nearly five screens for three acts: the story should unfold, not flash. */
-  height: 480vh;
+  /* About three screens for three acts: enough to unfold, short enough that
+     the work is not five screens away. */
+  height: 330vh;
 }
 
 .story-stage {
@@ -6662,4 +6642,260 @@ div#experience.about-journey {
 
 .tool-pill:hover .tool-mark {
   background-color: var(--tool-color);
+}
+
+/* ── Premium pass (2026-10-24) ───────────────────────────────────────────────
+   One block, appended last so it wins on order rather than on `!important`.
+   It confines the autumn scene to the hero and the story, brings the workflow
+   previews into the slate palette, features the first project, and retires
+   the mono caps that had spread from the three rationed eyebrows to about
+   fifteen label styles. */
+
+/* The scene fades out from About down (BlossomStoryBackground writes
+   `data-scene`). Video, tree overlay and falling leaves go together, so what
+   remains is the slate ground and the film grain. */
+.blossom-story-background > div,
+.blossom-story-root .automation-field {
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.blossom-story-root[data-scene='calm'] .blossom-story-background > div,
+.blossom-story-root[data-scene='calm'] .automation-field {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blossom-story-background > div,
+  .blossom-story-root .automation-field {
+    transition: none;
+  }
+}
+
+/* Proof strip: a quiet band between the promise and the story. */
+.proof-strip {
+  position: relative;
+  border-block: 1px solid var(--rule);
+  background: color-mix(in oklab, var(--ground) 82%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.proof-strip-inner {
+  display: grid;
+  gap: 1.5rem;
+  padding-block: 1.6rem;
+}
+
+.proof-strip-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.proof-strip-facts > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.2rem;
+}
+
+.proof-strip-facts dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.35rem, 2vw, 1.85rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.proof-strip-facts dt {
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.proof-strip-platforms {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+}
+
+.proof-strip-platforms p {
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+}
+
+.proof-strip-platforms ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.proof-strip-platforms li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.proof-strip-platforms li:hover .tool-mark {
+  background-color: var(--tool-color);
+}
+
+@media (min-width: 64rem) {
+  .proof-strip-inner {
+    grid-template-columns: minmax(0, 1.4fr) auto;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .proof-strip-platforms {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 30rem) {
+  .proof-strip-facts {
+    gap: 0.75rem;
+  }
+
+  .proof-strip-facts dt {
+    font-size: 0.75rem;
+  }
+}
+
+/* Workflow previews: the stage bands were n8n sticky-note pastels, the
+   loudest colours on the page. One slate family now, alternating in depth,
+   and only the failure branch keeps a hue: terracotta, because it is the one
+   band that means something different. Attribute selectors outrank the SVG
+   presentation attributes, so the files stay untouched. */
+.work-canvas svg[data-light] rect[fill='#FFF5C2' i],
+.work-canvas svg[data-light] rect[fill='#ECECF1' i] {
+  fill: oklch(0.955 0.007 255);
+}
+
+.work-canvas svg[data-light] rect[fill='#DFE5FF' i],
+.work-canvas svg[data-light] rect[fill='#ECE3FF' i] {
+  fill: oklch(0.93 0.013 255);
+}
+
+.work-canvas svg[data-light] rect[fill='#D9F4E4' i] {
+  fill: oklch(0.905 0.017 255);
+}
+
+.work-canvas svg[data-light] rect[fill='#FFE0E0' i] {
+  fill: oklch(0.935 0.032 40);
+}
+
+.work-canvas svg[data-light] text[fill='#33332a' i] {
+  fill: oklch(0.25 0.012 255);
+}
+
+/* Seven projects never fill a three-column grid. The first one takes the
+   full row, which leaves six for two clean rows (three at 2-up). */
+@media (min-width: 48rem) {
+  .work-gallery > .work-card:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 75rem) {
+  .work-gallery > .work-card:first-child {
+    flex-direction: row;
+  }
+
+  .work-gallery > .work-card:first-child .work-card-frame {
+    flex: 0 0 58%;
+  }
+
+  .work-gallery > .work-card:first-child .work-card-body {
+    justify-content: center;
+    gap: 0.8rem;
+    padding: clamp(1.5rem, 2.6vw, 2.75rem);
+  }
+
+  .work-gallery > .work-card:first-child .work-card-title {
+    font-size: clamp(1.45rem, 1.9vw, 2rem);
+    letter-spacing: -0.02em;
+  }
+
+  .work-gallery > .work-card:first-child .work-card-summary {
+    font-size: 1rem;
+  }
+
+  .work-gallery > .work-card:first-child .work-card-stack {
+    margin-top: 0.5rem;
+  }
+}
+
+/* A dashed, disabled "GitHub" on every card read as unfinished. A link with
+   nothing behind it is now simply absent. */
+.work-aux-link[data-empty='true'] {
+  display: none;
+}
+
+/* Labels: the sans, in sentence case. Mono caps stay where they carry meaning
+   (the three eyebrows and the story's act tags) or imitate software (status
+   chips, the terminal, the calendar). */
+.label-quiet {
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  text-transform: none;
+}
+
+.work-card-context,
+.work-card-sample,
+.work-card-outcome em,
+.work-aux-link,
+.process-explorer-phase-label,
+.process-explorer-phase-label *,
+.process-explorer-kicker,
+.process-explorer-kicker *,
+.engagement-step-badge,
+.engagement-outcome span,
+.experience-role-arrangement,
+.story-flow li,
+.story-flow li *,
+.service-platforms strong > span {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.work-card-context {
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.work-card-outcome em {
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+}
+
+.work-card-outcome em::before {
+  content: '· ';
+}
+
+.work-aux-link,
+.process-explorer-phase-label,
+.process-explorer-kicker,
+.engagement-outcome span {
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.engagement-duration {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
 }

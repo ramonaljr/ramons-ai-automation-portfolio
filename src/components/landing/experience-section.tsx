@@ -114,7 +114,7 @@ export function ExperienceJourney() {
 
 
             <div className='about-how'>
-              <p className='about-how-label'>HOW I WORK</p>
+              <p className='about-how-label label-quiet'>How I work</p>
               <ul>
                 {HOW_I_WORK.map(item => (
                   <li key={item.label}>
@@ -160,7 +160,6 @@ export function ExperienceJourney() {
                           data-active={flat === active}
                         >
                           <div className='experience-role-meta'>
-                            <span className='experience-role-index'>{role.index}</span>
                             {/* A one-role tenure already shows these dates in its header. */}
                             {tenure.roles.length > 1 && <span className='experience-role-period'>{role.period}</span>}
                             {role.arrangement && (

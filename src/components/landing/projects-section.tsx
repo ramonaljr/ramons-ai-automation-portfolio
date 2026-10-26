@@ -226,7 +226,6 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
 
       <div className='work-card-body'>
         <p className='work-card-context'>
-          <span className='work-card-index'>{String(index + 1).padStart(2, '0')}</span>
           {cs.organisation ?? workLabel(cs)}
           {cs.sampleClient && <span className='work-card-sample'> · Sample client</span>}
         </p>

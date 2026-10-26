@@ -74,7 +74,7 @@ export function SiteFooter() {
 
       <div className={`${CONTAINER} ${READABLE} relative z-10 flex min-h-[44vh] flex-col justify-end`}>
         <div className='mb-20 max-w-2xl'>
-          <span className='eyebrow'>END OF THE MANUAL LOOP</span>
+          <span className='label-quiet'>End of the manual loop</span>
           {/* The story opens at 9:14 PM with the work still waiting; the page
               closes on the real time where Ramon is. Doubles as the time-zone
               answer for international clients. */}
@@ -94,7 +94,7 @@ export function SiteFooter() {
 
         <div className='footer-columns'>
           <nav aria-label='Explore the page'>
-            <p className='eyebrow'>Explore</p>
+            <p className='label-quiet'>Explore</p>
             <ul>
               {EXPLORE.map(link => (
                 <li key={link.label}>
@@ -105,7 +105,7 @@ export function SiteFooter() {
           </nav>
 
           <nav aria-label='Services'>
-            <p className='eyebrow'>Services</p>
+            <p className='label-quiet'>Services</p>
             <ul>
               {SERVICES.map(service => (
                 <li key={service.slug}>
@@ -116,7 +116,7 @@ export function SiteFooter() {
           </nav>
 
           <nav aria-label='Connect'>
-            <p className='eyebrow'>Connect</p>
+            <p className='label-quiet'>Connect</p>
             <ul>
               <li>
                 <a href={`mailto:${PROFILE.email}`}>Email</a>
@@ -138,7 +138,7 @@ export function SiteFooter() {
           </nav>
 
           <div className='footer-identity'>
-            <p className='font-pixel text-ink-2 text-xs tracking-[0.25em]'>{PROFILE.name.toUpperCase()}</p>
+            <p className='text-ink text-[0.95rem] font-medium tracking-[-0.01em]'>{PROFILE.name}</p>
             <p className='text-ink-2 mt-2 text-[14px]'>
               {PROFILE.title} · {PROFILE.location}
             </p>
