@@ -3294,28 +3294,83 @@ body::after {
 
 /* Resting before its first run: empty ground, nothing drawn yet. */
 .work-canvas[data-run='idle'] svg [data-wc='node'],
+.work-canvas[data-run='idle'] svg [data-wc='step'],
 .work-canvas[data-run='idle'] svg [data-wc='check'] {
   opacity: 0;
 }
 
-.work-canvas[data-run='idle'] svg [data-wc='edge'] {
+.work-canvas[data-run='idle'] svg [data-wc='lane'] {
+  clip-path: inset(0 100% 0 0);
+}
+
+.work-canvas[data-run='idle'] svg [data-wc='edge'],
+.work-canvas[data-run='idle'] svg [data-wc='link'] {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
 }
 
-/* The run. `--t` is each element's position left to right, so the wave moves
-   through the workflow in the order the work does. */
+/* The mapping. `--t` places each element in the order the process is mapped:
+   a stage's lane sweeps in left to right, revealing its label as it goes, then
+   its steps are pinned onto it one by one with the connector drawn up to each. */
+.work-canvas[data-run='go'] svg [data-wc='lane'] {
+  clip-path: inset(0 100% 0 0);
+  animation: wc-lane 0.7s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
+}
+
 .work-canvas[data-run='go'] svg [data-wc='node'] {
   opacity: 0;
   animation: wc-node 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
 }
 
-.work-canvas[data-run='go'] svg [data-wc='edge'] {
+.work-canvas[data-run='go'] svg [data-wc='step'] {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wc-pin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.3s);
+}
+
+/* The tile's outline flashes the project's tone as it is placed, then settles
+   back to its own colour. */
+.work-canvas[data-run='go'] svg [data-wc='step'] > rect,
+.work-canvas[data-run='go'] svg [data-wc='step'] > g[filter] > rect {
+  animation: wc-ring 0.9s ease-out both;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.3s);
+}
+
+.work-canvas[data-run='go'] svg [data-wc='edge'],
+.work-canvas[data-run='go'] svg [data-wc='link'] {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: wc-edge 0.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
-  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.1s);
+  animation: wc-edge 0.45s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
+}
+
+@keyframes wc-lane {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes wc-pin {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes wc-ring {
+  from {
+    stroke: var(--work-tone, var(--accent));
+    stroke-width: 3;
+  }
 }
 
 .work-canvas[data-run='go'] svg [data-wc='check'] {
@@ -3356,8 +3411,8 @@ body::after {
   }
 }
 
-/* Status: RUNNING while the wave crosses, then a count of the nodes that
-   completed. Both sit in one grid cell, so the swap never reflows. */
+/* Status: MAPPING while the map is drawn, then a count of the steps it mapped.
+   Both sit in one grid cell, so the swap never reflows. */
 .work-canvas-status {
   position: absolute;
   bottom: 0.7rem;
@@ -3434,6 +3489,7 @@ body::after {
     animation: none !important;
     opacity: 1 !important;
     stroke-dashoffset: 0 !important;
+    clip-path: none !important;
   }
 }
 
