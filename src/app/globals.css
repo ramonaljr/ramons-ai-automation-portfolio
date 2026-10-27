@@ -4756,8 +4756,6 @@ a.work-aux-link:hover {
    a window into the same world. It wipes open from the base a beat after the
    headline, the same entrance the work cards use. */
 .hero-portrait {
-  --hero-portrait-ease: cubic-bezier(0.16, 1, 0.3, 1);
-
   position: relative;
   flex-shrink: 0;
   width: clamp(17rem, 25vw, 25rem);
@@ -4773,11 +4771,6 @@ a.work-aux-link:hover {
   box-shadow:
     0 40px 90px -44px oklch(0.28 0.018 255 / 0.7),
     0 12px 30px -18px oklch(0.28 0.018 255 / 0.4);
-  clip-path: inset(100% 0 0 0 round 1.75rem);
-  transition: clip-path 1.2s var(--hero-portrait-ease) 0.35s;
-}
-
-.hero-portrait[data-visible='true'] .hero-portrait-frame {
   clip-path: inset(0 0 0 0 round 1.75rem);
 }
 
@@ -4786,12 +4779,6 @@ a.work-aux-link:hover {
   height: 100%;
   object-fit: cover;
   object-position: 50% 20%;
-  transform: scale(1.14);
-  transition: transform 1.8s var(--hero-portrait-ease) 0.35s;
-}
-
-.hero-portrait[data-visible='true'] .hero-portrait-image {
-  transform: scale(1);
 }
 
 .hero-byline-avatar {
@@ -4805,10 +4792,22 @@ a.work-aux-link:hover {
   box-shadow: 0 6px 16px -8px oklch(0.28 0.018 255 / 0.6);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-portrait-frame,
+/* The desktop entrance is a GSAP timeline (hero-section.tsx). These are its
+   starting frames, held in CSS so nothing flashes between first paint and
+   hydration. Reduced motion never matches, so those readers get the resting
+   state above — the portrait open, the copy in place. Opacity starts at 0.01,
+   not 0, for the Largest Contentful Paint reason noted at `hero-reveal`. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .hero-autumn [data-hero] {
+    opacity: 0.01;
+  }
+
+  .hero-portrait-frame {
+    clip-path: inset(100% 0 0 0 round 1.75rem);
+  }
+
   .hero-portrait-image {
-    transition: none;
+    transform: scale(1.14);
   }
 }
 
@@ -5689,9 +5688,11 @@ div#experience.about-journey {
     animation: hero-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  .hero-reveal.delay-200 { animation-delay: 0.15s; }
-  .hero-reveal.delay-300 { animation-delay: 0.25s; }
-  .hero-reveal.delay-500 { animation-delay: 0.4s; }
+  /* Own classes, not Tailwind's `delay-*`: those set `transition-delay` on
+     every property, and on desktop that held back each opacity GSAP wrote
+     until the writes stopped, so the copy snapped in at the end. */
+  .hero-reveal.hero-delay-1 { animation-delay: 0.15s; }
+  .hero-reveal.hero-delay-2 { animation-delay: 0.25s; }
 }
 
 @media (max-width: 767px) and (prefers-reduced-motion: reduce) {
@@ -6898,4 +6899,16 @@ div#experience.about-journey {
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0;
+}
+
+/* ── SplitText line masks ────────────────────────────────────────────────
+   GSAP wraps each split line in a mask with `overflow: clip` so the line can
+   rise from behind its own edge. Display headings here set at 0.92–1.05
+   leading, where the line box ends above the descenders, so a bare mask cut
+   the tails off g, y and p for the length of the entrance. The padding
+   widens the clip both ways and the negative margin keeps the lines where
+   they were set. */
+.split-line-mask {
+  padding-block: 0.1em 0.2em;
+  margin-block: -0.1em -0.2em;
 }
