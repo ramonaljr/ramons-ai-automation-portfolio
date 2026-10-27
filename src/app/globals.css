@@ -4807,34 +4807,108 @@ a.work-aux-link:hover {
 }
 
 /* ── Hero portrait ────────────────────────────────────────────────────────
-   A framed card inside the autumn scene rather than a cut-out on top of it:
-   the photo's own lamp-lit office matches the palette, so the frame reads as
-   a window into the same world. It wipes open from the base a beat after the
-   headline, the same entrance the work cards use. */
+   A cut-out standing in the autumn scene, not a framed card: the figure sits
+   on the hero's lower edge (the negative margin cancels the column's pb-10)
+   and fades out into the work strip below, with the tree and leaves behind.
+   It still wipes open from the base a beat after the headline.
+
+   Under the photo is a terracotta line drawing of the same frame. A circle of
+   it shows through wherever the pointer is: both layers read one radius,
+   registered with @property so it can grow and shrink as a transition. */
+@property --reveal-r {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
 .hero-portrait {
+  --reveal-r: 0px;
+
   position: relative;
   flex-shrink: 0;
-  width: clamp(17rem, 25vw, 25rem);
-  margin: 0;
+  align-self: flex-end;
+  width: clamp(21rem, 33vw, 34rem);
+  margin: 0 0 -2.5rem;
+  mask-image: linear-gradient(to bottom, #000 80%, transparent 99%);
+  transition: --reveal-r 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-portrait-frame {
-  overflow: hidden;
+  position: relative;
   aspect-ratio: 4 / 5;
-  border: 1px solid oklch(1 0 0 / 0.45);
-  border-radius: 1.75rem;
-  background: oklch(0.3 0.018 255);
-  box-shadow:
-    0 40px 90px -44px oklch(0.28 0.018 255 / 0.7),
-    0 12px 30px -18px oklch(0.28 0.018 255 / 0.4);
   clip-path: inset(0 0 0 0 round 1.75rem);
 }
 
-.hero-portrait-image {
+.hero-portrait-image,
+.hero-portrait-blueprint {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 20%;
+}
+
+.hero-portrait-image {
+  filter: drop-shadow(0 24px 36px oklch(0.28 0.018 255 / 0.28));
+}
+
+.hero-portrait-blueprint {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-portrait-hint {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .hero-portrait[data-reveal='ready'][data-pointer='in'] {
+    --reveal-r: 8.5rem;
+  }
+
+  .hero-portrait[data-reveal='ready'] .hero-portrait-blueprint {
+    opacity: 1;
+    mask-image: radial-gradient(
+      circle var(--reveal-r) at var(--mx, 50%) var(--my, 30%),
+      #000 72%,
+      transparent
+    );
+  }
+
+  .hero-portrait[data-reveal='ready'] .hero-portrait-image {
+    mask-image: radial-gradient(
+      circle var(--reveal-r) at var(--mx, 50%) var(--my, 30%),
+      transparent 72%,
+      #000
+    );
+  }
+
+  /* Says once that the portrait answers the pointer, and leaves for good
+     after the first hover. */
+  .hero-portrait-hint {
+    position: absolute;
+    bottom: 24%;
+    left: 50%;
+    display: block;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--ground) 78%, transparent);
+    backdrop-filter: blur(8px);
+    color: var(--ink-2);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    translate: -50% 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .hero-portrait[data-reveal='ready']:not([data-hinted]) .hero-portrait-hint {
+    opacity: 1;
+  }
 }
 
 .hero-byline-avatar {
@@ -5955,36 +6029,36 @@ div#experience.about-journey {
 
 /* ── Career history: collapsed on phones ─────────────────────────────────
    See ExperienceJourney. Desktop shows everything and no toggle. */
-.experience-role-toggle {
+.experience-role-more[data-open='false'] {
   display: none;
 }
 
+/* Every width now opens on the title, dates and headline achievement, with
+   the description and skills one click away; the full text ran About to over
+   4,000px on desktop. Collapsed text stays in the DOM, so search still reads
+   it. */
+.experience-role-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--rule-strong);
+  color: var(--ink);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.experience-role-toggle::after {
+  content: '+';
+  color: var(--accent);
+}
+
+.experience-role-toggle[aria-expanded='true']::after {
+  content: '−';
+}
+
 @media (max-width: 767px) {
-  .experience-role-more[data-open='false'] {
-    display: none;
-  }
-
-  .experience-role-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-top: 0.75rem;
-    padding: 0.35rem 0;
-    border-bottom: 1px solid var(--rule-strong);
-    color: var(--ink);
-    font-size: 0.8125rem;
-    cursor: pointer;
-  }
-
-  .experience-role-toggle::after {
-    content: '+';
-    color: var(--accent);
-  }
-
-  .experience-role-toggle[aria-expanded='true']::after {
-    content: '−';
-  }
-
   /* Collapsed roles are short, so the desktop rhythm around them read as
      gaps rather than air. */
   .experience-role {
@@ -6743,6 +6817,178 @@ div#experience.about-journey {
   .blossom-story-root .automation-field::before,
   .blossom-story-root .automation-field canvas {
     transition: none;
+  }
+}
+
+/* Work strip: every project, one scroll below the hero (work-strip.tsx).
+   Same frosted band as the proof strip beneath it, so the two read as one
+   ledge between the promise and the story. Seven columns fit from 1280px;
+   narrower screens scroll the row sideways and snap to each thumbnail. */
+.work-strip {
+  position: relative;
+  border-top: 1px solid var(--rule);
+  background: color-mix(in oklab, var(--ground) 82%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.work-strip-inner {
+  padding-block: 1.6rem 1.4rem;
+}
+
+.work-strip-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.work-strip-all {
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border-bottom: 1px solid var(--rule-strong);
+  transition: border-color 0.3s ease;
+}
+
+.work-strip-all::after {
+  content: ' →';
+  color: var(--accent);
+}
+
+.work-strip-all:hover {
+  border-color: var(--accent);
+}
+
+.work-strip-list {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(10.5rem, 1fr));
+  gap: 0.85rem;
+  margin: 0 -1.5rem;
+  padding: 0.35rem 1.5rem 0.6rem;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1.5rem;
+  scrollbar-width: none;
+}
+
+.work-strip-list::-webkit-scrollbar {
+  display: none;
+}
+
+.work-strip-list > li {
+  scroll-snap-align: start;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--strip-delay),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--strip-delay);
+}
+
+.work-strip-list[data-visible='true'] > li {
+  opacity: 1;
+  transform: none;
+}
+
+.work-strip-item {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.work-strip-thumb {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 0.55rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.85rem;
+  background: var(--surface);
+  box-shadow: 0 10px 24px -18px oklch(0.28 0.018 255 / 0.55);
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-strip-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 0 0;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-strip-item:hover .work-strip-thumb,
+.work-strip-item:focus-visible .work-strip-thumb {
+  border-color: var(--work-tone);
+  box-shadow: 0 16px 30px -18px color-mix(in oklab, var(--work-tone) 70%, transparent);
+  transform: translateY(-3px);
+}
+
+.work-strip-item:hover .work-strip-thumb img {
+  transform: scale(1.06);
+}
+
+.work-strip-item:focus-visible {
+  outline: none;
+}
+
+.work-strip-item:focus-visible .work-strip-thumb {
+  outline: 2px solid var(--work-tone);
+  outline-offset: 2px;
+}
+
+.work-strip-label {
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.work-strip-outcome {
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.work-strip-outcome strong {
+  color: var(--work-tone);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 48rem) {
+  .work-strip-list {
+    margin-inline: -3rem;
+    padding-inline: 3rem;
+    scroll-padding-inline: 3rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .work-strip-list {
+    margin-inline: -5rem;
+    padding-inline: 5rem;
+    scroll-padding-inline: 5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-strip-list > li,
+  .work-strip-thumb,
+  .work-strip-thumb img {
+    transition: none;
+  }
+
+  .work-strip-list > li {
+    opacity: 1;
+    transform: none;
   }
 }
 

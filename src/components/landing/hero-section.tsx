@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type PointerEvent } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -41,6 +41,23 @@ const LONGEST_WORK = ROTATING_WORK.reduce((a, b) => (b.length > a.length ? b : a
 const HERO_MOTION = `(min-width: 768px) and ${MOTION_OK}`
 
 /**
+ * Moves the portrait's reveal circle to the pointer. Written straight to the
+ * style, like the work cards' spotlight, so following the mouse never
+ * re-renders React. Touch has no hover to follow, so it is mouse and pen only.
+ */
+function trackReveal(event: PointerEvent<HTMLElement>) {
+  if (event.pointerType === 'touch') return
+
+  const figure = event.currentTarget
+  const box = figure.getBoundingClientRect()
+
+  figure.style.setProperty('--mx', `${event.clientX - box.left}px`)
+  figure.style.setProperty('--my', `${event.clientY - box.top}px`)
+  figure.setAttribute('data-pointer', 'in')
+  figure.setAttribute('data-hinted', 'true')
+}
+
+/**
  * `ready` lets the page gate the reveal on the intro animation finishing,
  * preserving the original choreography. Defaults to revealing on mount.
  */
@@ -72,11 +89,17 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
         // The splits are only scaffolding for the entrance. Once it lands the
         // markup goes back to what React rendered, so a later resize re-wraps
         // real text instead of lines measured at the old width.
+        // The blueprint under the portrait only answers the pointer once the
+        // entrance has landed, so the wipe and the reveal never fight over the
+        // same frame.
+        const portrait = q('.hero-portrait')[0] as HTMLElement | undefined
+
         const tl = gsap.timeline({
           defaults: { ease: 'expo.out', duration: 1.15 },
           onComplete: () => {
             titleSplit.revert()
             copySplit.revert()
+            portrait?.setAttribute('data-reveal', 'ready')
           }
         })
 
@@ -110,6 +133,8 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
             'portrait'
           )
           .fromTo(q('.hero-portrait-image'), { scale: 1.14 }, { scale: 1, duration: 2.1 }, 'portrait')
+
+        return () => portrait?.removeAttribute('data-reveal')
       })
 
       return () => mm.revert()
@@ -220,18 +245,28 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
         </div>
 
         {/* People hire people: a face above the fold does trust work before a
-            word is read. The office portrait is the strongest photo on the site
-            and already graded to the autumn palette, so it leads; the casual,
-            smiling one carries About, where the tone is personal. */}
-        <figure className='hero-portrait hidden lg:block'>
+            word is read. The office portrait, cut out of its office so the
+            person stands in the same autumn scene as the headline; the casual,
+            smiling one carries About, where the tone is personal.
+
+            Under the photo sits a line drawing of the same frame. Wherever the
+            pointer goes, a circle of the drawing shows through: the person,
+            then the system behind them. Desktop pointers only, and only once
+            the entrance has landed (`data-reveal`, set by the timeline). */}
+        <figure
+          className='hero-portrait hidden lg:block'
+          onPointerMove={trackReveal}
+          onPointerEnter={trackReveal}
+          onPointerLeave={event => event.currentTarget.removeAttribute('data-pointer')}
+        >
           <div className='hero-portrait-frame'>
-            {/* The card only shows at 1024px and up, but a hidden <img> still
+            {/* The figure only shows at 1024px and up, but a hidden <img> still
                 downloads. Below that the source is a 1px placeholder, so
-                phones skip 120 KB they would never see. */}
+                phones skip the 80 KB they would never see. */}
             <picture>
               <source media='(max-width: 1023px)' srcSet='data:image/gif;base64,R0lGODlhAQABAAAAACw=' />
               <img
-                src='/images/landing/ramon-portrait-autumn.webp'
+                src='/images/landing/ramon-portrait-cutout.webp'
                 alt={PROFILE.name}
                 width={1120}
                 height={1400}
@@ -239,7 +274,17 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
                 className='hero-portrait-image'
               />
             </picture>
+            <img
+              src='/images/landing/ramon-portrait-blueprint.webp'
+              alt=''
+              width={1120}
+              height={1400}
+              loading='lazy'
+              decoding='async'
+              className='hero-portrait-blueprint'
+            />
           </div>
+          <figcaption className='hero-portrait-hint' aria-hidden='true'>Hover to see the blueprint</figcaption>
         </figure>
       </div>
     </section>
