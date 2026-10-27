@@ -34,18 +34,19 @@ const WORK_LABELS: Record<string, string> = {
 
 const WORK_USE_CASES: Record<string, string> = {
   'hr-evaluation-assistant':
-    'Screen every applicant against the job, send tailored questions and invites, and book interviews automatically.',
-  'ai-appointment-setter': 'Let callers book, move or cancel appointments with an AI voice agent, at any hour.',
+    'Every applicant screened against the job the moment they apply, with tailored questions, invites and interviews booked for you.',
+  'ai-appointment-setter':
+    'Callers book, move or cancel appointments with an AI voice agent at any hour, while Google Calendar and Airtable stay in step.',
   'ai-prospecting-apollo':
-    'Find, score and research new prospects, with a draft first email ready for the team to approve.',
+    'New decision-makers found, scored and researched, each with a grounded first email that waits for your approval.',
   'ai-invoice-processing-approval':
-    'Check every invoice against its PO and delivery record, approve it in Slack and post it to QuickBooks.',
+    'Every invoice matched to its PO and delivery record before anyone approves it in Slack, then posted to QuickBooks.',
   'solar-lead-scoring-follow-up':
-    'Reply to every enquiry instantly, score it, assign a rep and escalate if nobody follows up in 15 minutes.',
+    'Every enquiry answered in under a second, scored and assigned, and escalated if nobody follows up within 15 minutes.',
   'hotel-employee-onboarding':
-    'Set up each new hire from one form, then follow up tasks, documents and check-ins for 30 days.',
+    'One HR form sets up each new hire, then tasks, documents and check-ins are followed up for their first 30 days.',
   'ai-unpaid-invoice-reminders':
-    'Chase unpaid invoices by policy, read every reply, and stop all reminders the moment a customer disputes.'
+    'Overdue invoices chased by your own policy, every reply read, and all reminders stopped the moment a customer disputes.'
 }
 
 const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title

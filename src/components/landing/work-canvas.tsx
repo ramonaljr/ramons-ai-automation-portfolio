@@ -3,14 +3,15 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 
 /**
- * A workflow canvas that runs.
+ * A process map that draws itself.
  *
- * The six canvases are hand-built SVGs with a stable grammar: nodes are
- * `<g filter>` cards, edges are paths stroked #6366f1, and each completed node
- * carries a checkmark path stroked #16a34a. Inlined rather than shown as an
- * `<img>`, that grammar lets the canvas execute — edges draw left to right,
- * nodes arrive as the run reaches them, checkmarks tick behind — which is the
- * one thing a screenshot of a workflow cannot show: that it goes.
+ * The canvases are hand-built SVGs with a stable grammar: each stage is a `<g>`
+ * whose first shape is a full-width pale band, steps are `<g filter>` tiles,
+ * edges are paths stroked #6366f1, and a completed step can carry a checkmark
+ * path stroked #16a34a. Inlined rather than shown as an `<img>`, that grammar
+ * lets the map be drawn the way a process is mapped — each stage's lane sweeps
+ * in with its label, its steps are pinned onto it one by one, and the
+ * connectors are drawn between them — rather than simply appearing.
  *
  * Nothing here knows about any particular workflow. Order comes from each
  * element's horizontal position, so a new canvas animates correctly the moment
@@ -44,6 +45,51 @@ function loadSvg(src: string) {
   }
 
   return pending
+}
+
+/**
+ * A stage's lane: a band at least 40% of the drawing wide in a pale fill. The
+ * width rules out step tiles, the fill rules out the maps' dark footer bar.
+ */
+function isLane(width: number, fill: string, viewWidth: number) {
+  const hex = fill.match(/^#([0-9a-f]{6})$/i)?.[1]
+
+  if (!hex || viewWidth <= 0 || width < viewWidth * 0.4) return false
+
+  const [r, g, b] = [0, 2, 4].map(i => parseInt(hex.slice(i, i + 2), 16))
+
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 > 0.6
+}
+
+type Role = 'lane' | 'step' | 'edge' | 'link' | 'check' | 'node'
+
+function roleOf(el: Element, viewWidth: number): Role {
+  const tag = el.tagName.toLowerCase()
+
+  if (tag === 'path') {
+    const stroke = el.getAttribute('stroke')?.toLowerCase()
+
+    if (stroke === EDGE) return 'edge'
+    if (stroke === CHECK) return 'check'
+
+    // The larger maps draw their connectors in a neutral grey of their own.
+    return el.getAttribute('fill') === 'none' && stroke ? 'link' : 'node'
+  }
+
+  if (tag === 'g') {
+    const first = el.firstElementChild
+
+    if (
+      first?.tagName.toLowerCase() === 'rect' &&
+      isLane(Number(first.getAttribute('width') ?? 0), first.getAttribute('fill') ?? '', viewWidth)
+    ) {
+      return 'lane'
+    }
+
+    if (el.hasAttribute('filter') || el.querySelector(':scope > g[filter]')) return 'step'
+  }
+
+  return 'node'
 }
 
 const escapeAttr = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
@@ -83,16 +129,15 @@ function choreograph(svg: SVGSVGElement) {
   const lefts = stage.map(el => el.getBBox().x)
   const first = Math.min(...lefts)
   const range = Math.max(1, Math.max(...lefts) - first)
+  const viewWidth = svg.viewBox.baseVal?.width ?? 0
 
   stage.forEach((el, index) => {
-    const tag = el.tagName.toLowerCase()
-    const stroke = el.getAttribute('stroke')?.toLowerCase()
-    const role = tag === 'path' && stroke === EDGE ? 'edge' : tag === 'path' && stroke === CHECK ? 'check' : 'node'
+    const role = roleOf(el, viewWidth)
 
     el.setAttribute('data-wc', role)
 
-    // A normalised length lets one dash rule draw every edge, whatever its size.
-    if (role === 'edge') el.setAttribute('pathLength', '1')
+    // A normalised length lets one dash rule draw every connector, whatever its size.
+    if (role === 'edge' || role === 'link') el.setAttribute('pathLength', '1')
 
     const placed = el.getAttribute('data-t')
 
@@ -222,10 +267,10 @@ export function WorkCanvas({
       {nodeCount > 0 && (
         <span className='work-canvas-status' aria-hidden='true' style={{ '--wc-nodes': nodeCount } as CSSProperties}>
           <span className='wc-running'>
-            <i /> RUNNING
+            <i /> MAPPING
           </span>
           <span className='wc-done'>
-            <b>✓</b> {nodeCount} NODES OK
+            <b>✓</b> {nodeCount} STEPS MAPPED
           </span>
         </span>
       )}
