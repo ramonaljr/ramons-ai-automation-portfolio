@@ -1,12 +1,12 @@
 ---
 slug: 'automated-invoice-payment-reminders'
 title: 'Payment reminders that stop when a customer disputes the invoice'
-seoTitle: 'Automated overdue invoice reminders with n8n, Xero and AI'
+seoTitle: 'Automated overdue invoice reminders with n8n, QuickBooks and AI'
 description: 'Automate overdue invoice reminders without annoying customers: rules decide, AI writes the email, and a dispute stops every reminder.'
 publishedAt: '2026-10-21'
-updatedAt: '2026-10-21'
+updatedAt: '2026-10-28'
 category: 'Finance'
-tags: ['Accounts Receivable', 'Payment Reminders', 'n8n', 'Xero']
+tags: ['Accounts Receivable', 'Payment Reminders', 'n8n', 'QuickBooks']
 coverImage: '/images/blog/automated-invoice-payment-reminders.jpg'
 # DRAFT, written 2026-10-21 from the AI Unpaid Invoice Reminders case study.
 # Every step matches that build; the voice is not yet yours. Read it through
@@ -34,7 +34,7 @@ I built a workflow for this: the [AI Unpaid Invoice Reminders](/case-study/ai-un
 
 The workflow runs every morning and loads its data once:
 
-- **Xero** for the unpaid invoices and each customer's billing email.
+- **QuickBooks** for the unpaid invoices and each customer's billing email.
 - **Pipedrive** for the account owner and any open deals.
 - **Postgres** (a database) for the reminder history.
 
@@ -69,7 +69,7 @@ This answers the problem of the surprised account manager. The person who owns t
 Reminders only matter if replies are read. In this build, AI reads each customer reply and pulls out the details that matter: promised dates, invoice numbers, dispute reasons and new contacts. Then the reply is routed.
 
 - A **promised payment** sets the next reminder date.
-- **"Already paid"** triggers a check in Xero.
+- **"Already paid"** triggers a check in QuickBooks.
 - A **request for an invoice copy** is handled as a request, not as a dispute.
 - A **wrong contact** updates who gets the reminders.
 - A **question** goes to a person.

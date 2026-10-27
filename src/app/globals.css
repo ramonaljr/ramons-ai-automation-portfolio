@@ -5784,6 +5784,15 @@ div#experience.about-journey {
   background: var(--ground);
 }
 
+/* The process maps end in a caption bar along their bottom edge, and the
+   status chip and view thumbnails float over that edge. In the dialog every
+   view sits above a strip that holds them, so they never cover the caption. */
+.work-dialog-frame .work-canvas-art,
+.work-dialog-frame .work-card-image {
+  box-sizing: border-box;
+  padding-bottom: 4rem;
+}
+
 .work-dialog-frame:has(.view-stage-layer[style*='z-index: 2'] .work-canvas) {
   background: oklch(0.205 0.007 255);
 }

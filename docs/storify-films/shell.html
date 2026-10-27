@@ -1,0 +1,92 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=IBM+Plex+Mono:wght@500;600&family=Public+Sans:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#EAE6DE; --surface:#FBF9F4; --ink:#2B2621; --muted:#6B6258; --line:#D8D0C2;
+  --bar:#231F1B; --bar-ink:#F4EFE6; --accent:#D2553F; --chip:#F3EEE4;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){color-scheme:dark;
+    --bg:#15130F; --surface:#1E1B17; --ink:#EDE6DA; --muted:#A79C8E; --line:#37312A;
+    --bar:#0D0C0A; --bar-ink:#EDE6DA; --accent:#EE7A62; --chip:#27231E;}
+}
+:root[data-theme="dark"]{color-scheme:dark;
+  --bg:#15130F; --surface:#1E1B17; --ink:#EDE6DA; --muted:#A79C8E; --line:#37312A;
+  --bar:#0D0C0A; --bar-ink:#EDE6DA; --accent:#EE7A62; --chip:#27231E;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "Public Sans","Segoe UI",system-ui,sans-serif;padding-inline:16px;padding-block:24px 40px}
+.wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{font:400 clamp(28px,4vw,40px)/1.1 "Patrick Hand","Comic Sans MS",cursive;margin:0}
+.sub{margin:2px 0 0;color:var(--muted);max-width:70ch}
+.player{border-radius:14px;overflow:hidden;background:var(--bar);border:1px solid var(--line)}
+canvas{display:block;width:100%;aspect-ratio:16/9;max-width:100%;background:#F1E9D8;cursor:pointer}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bar);color:var(--bar-ink)}
+.bar button{background:none;border:0;color:inherit;font:600 13px/1 "IBM Plex Mono",monospace;cursor:pointer;padding:6px;border-radius:6px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.bar button:hover{background:rgba(255,255,255,.08)}
+.bar button:focus-visible,.chap:focus-visible,canvas:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar svg{width:18px;height:18px;fill:currentColor}
+#scrub{flex:1;min-width:60px;accent-color:#F4EFE6}
+#time{font:600 13px/1 "IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;min-width:86px;text-align:right}
+.chapters{display:flex;flex-wrap:wrap;gap:6px}
+.chap{font:600 13px/1 "Public Sans",sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:8px 13px;cursor:pointer;display:flex;gap:7px;align-items:center}
+.chap .n{font:600 11px/1 "IBM Plex Mono",monospace}
+.chap.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.note{font-size:13px;color:var(--muted);max-width:80ch}
+.mode{display:flex;border:1px solid rgba(255,255,255,.22);border-radius:8px;overflow:hidden}
+.mode button{border-radius:0!important;padding:7px 10px!important;opacity:.6}
+.mode button[aria-pressed="true"]{background:rgba(255,255,255,.16);opacity:1}
+@media (max-width:760px){ .bar{flex-wrap:wrap} #scrub{order:10;flex-basis:100%} }
+.speed{position:relative}
+#spd{min-width:62px;justify-content:center;border:1px solid rgba(255,255,255,.22)}
+#spd[aria-expanded="true"]{background:rgba(255,255,255,.16)}
+.speed-menu{position:absolute;right:0;bottom:calc(100% + 8px);z-index:5;min-width:132px;padding:6px;border-radius:10px;
+  background:var(--bar);border:1px solid rgba(255,255,255,.18);box-shadow:0 8px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:2px}
+.speed-menu[hidden]{display:none}
+.speed-menu .h{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;opacity:.6;padding:6px 8px 4px}
+.speed-menu button{justify-content:space-between;width:100%;padding:8px 10px}
+.speed-menu button[aria-checked="true"]{background:rgba(255,255,255,.16)}
+.speed-menu button[aria-checked="true"]::after{content:"✓"}
+.player:fullscreen{display:flex;flex-direction:column;justify-content:center;border-radius:0}
+.player:fullscreen canvas{width:min(100vw,calc((100vh - 56px) * 16 / 9));margin:0 auto}
+@media (max-width:560px){ #time{min-width:0} .bar{gap:4px;padding:8px} .bar button span{display:none} }
+</style>
+
+<div class="wrap">
+  <div>
+    <h1>{{TITLE}}</h1>
+    <p class="sub">{{SUB}}</p>
+  </div>
+
+  <div class="player" id="player">
+    <canvas id="film" tabindex="0" role="img" aria-label="{{ARIA}}"></canvas>
+    <div class="bar">
+      <button id="prev" type="button" aria-label="Previous beat"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zm3 7l10-7v14z"/></svg></button>
+      <button id="pp" type="button" aria-label="Pause"></button>
+      <button id="next" type="button" aria-label="Next beat"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM5 5l10 7-10 7z"/></svg></button>
+      <input id="scrub" type="range" min="-6" max="60" step="0.01" value="0" aria-label="Seek">
+      <span id="time">1 / 1</span>
+      <div class="mode" role="group" aria-label="Playback mode">
+        <button id="mClick" type="button" aria-pressed="true">Click-through</button>
+        <button id="mAuto" type="button" aria-pressed="false">Autoplay</button>
+      </div>
+      <div class="speed" id="speedWrap">
+        <button id="spd" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="spdMenu" aria-label="Playback speed 1.5×">1.5×</button>
+        <div class="speed-menu" id="spdMenu" role="menu" aria-label="Playback speed" hidden><div class="h">Speed</div></div>
+      </div>
+      <button id="snd" type="button" aria-label="Turn sound on"></button>
+      <button id="fs" type="button" aria-label="Full screen"><svg viewBox="0 0 24 24"><path d="M4 4h6v2H6v4H4zm10 0h6v6h-2V6h-4zM4 14h2v4h4v2H4zm14 0h2v6h-6v-2h4z"/></svg></button>
+    </div>
+  </div>
+
+  <div class="chapters" id="chapters"></div>
+  <p class="note"><b>Click-through</b> (the default) stops after each beat until you click the film or press Space or →. <b>Autoplay</b> runs on its own, and clicking the film pauses it. Press ← to replay a beat. Every frame is drawn live in JavaScript, and the music and sound effects are generated in the browser.</p>
+</div>
+
+<script>
+{{SCRIPT}}
+</script>
