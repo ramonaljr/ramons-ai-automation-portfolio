@@ -18,7 +18,12 @@ const eslintConfig = defineConfig([
     'build/**',
     'next-env.d.ts',
     'eslint.config.mjs',
-    '**/*.css'
+    '**/*.css',
+
+    // Storify film sources: browser-script fragments that build.js stitches
+    // into one inline <script> (engine-core opens an IIFE engine-run closes),
+    // so they cannot parse alone, and the app's TS/React rules do not apply.
+    'docs/storify-films/**'
   ]),
   {
     plugins: {
