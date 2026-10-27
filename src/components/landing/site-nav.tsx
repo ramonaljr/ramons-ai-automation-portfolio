@@ -20,7 +20,7 @@ const NAV_LINKS = [
   { label: 'Home', hash: '#top' },
   { label: 'About', hash: '#about' },
   { label: 'Portfolio', hash: '#portfolio' },
-  { label: 'Services', hash: '#services' },
+  { label: 'Services', href: '/services' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contact', hash: '#contact' }
 ]
@@ -42,11 +42,9 @@ const SECTION_OWNERS: readonly (readonly [id: string, owner: string | null])[] =
   ['story', null],
   ['about', '#about'],
   ['portfolio', '#portfolio'],
-  ['services', '#services'],
+  ['services', null],
   ['process', null],
   ['testimonials', null],
-  ['engagement', null],
-  ['faq', null],
   ['contact', '#contact']
 ]
 
@@ -134,9 +132,14 @@ export function SiteNav() {
   // home first. `href` lets a link prefer a real page over a section anchor.
   const resolve = (link: (typeof NAV_LINKS)[number]) => link.href ?? (onLanding ? link.hash : `/${link.hash}`)
 
-  // Only in-page links can be "here", and only while the page they point into
-  // is the one being read.
-  const isHere = (link: (typeof NAV_LINKS)[number]) => onLanding && !link.href && link.hash === active
+  // A page link is "here" on its own page and the pages under it (Services on
+  // /services and each /services/<slug>); an in-page link only while the
+  // section it names is the one being read.
+  const current = (link: (typeof NAV_LINKS)[number]) => {
+    if (link.href) return pathname === link.href || pathname.startsWith(`${link.href}/`) ? 'page' : undefined
+
+    return onLanding && link.hash === active ? 'location' : undefined
+  }
 
   const contactHref = onLanding ? '#contact' : '/#contact'
   const close = () => setOpen(false)
@@ -170,7 +173,7 @@ export function SiteNav() {
               <a
                 key={l.label}
                 href={resolve(l)}
-                aria-current={isHere(l) ? 'location' : undefined}
+                aria-current={current(l)}
                 className='site-nav-link text-fine text-ink-2 hover:bg-ink/5 hover:text-ink relative rounded-md px-2.5 py-2 transition-colors duration-200'
               >
                 {l.label}
@@ -226,7 +229,7 @@ export function SiteNav() {
                 key={l.label}
                 href={resolve(l)}
                 onClick={close}
-                aria-current={isHere(l) ? 'location' : undefined}
+                aria-current={current(l)}
                 className='site-nav-link-mobile text-fine text-ink-2 hover:bg-ink/4 hover:text-ink rounded-xl px-4 py-3 transition-colors'
               >
                 {l.label}

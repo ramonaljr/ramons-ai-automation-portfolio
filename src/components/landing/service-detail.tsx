@@ -19,7 +19,7 @@ export function ServiceDetail({ service, others }: { service: Service; others: S
       <section className='px-6 pt-36 pb-14 md:px-12 lg:px-20'>
         <div className={CONTAINER}>
           <a
-            href='/#services'
+            href='/services'
             className='text-ink-2 hover:text-ink mb-10 inline-flex items-center gap-2 text-[13px] transition-colors'
           >
             <ArrowLeft size={14} strokeWidth={ICON_STROKE} aria-hidden='true' /> All services

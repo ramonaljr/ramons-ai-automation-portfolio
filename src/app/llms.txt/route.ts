@@ -50,6 +50,7 @@ Available for new work. Consultations are 30 minutes and free.
 
 ## Services
 
+${line('Services, pricing and FAQ', abs('/services'), 'Every service, how engagements are priced and run, and answers about access, ownership and reliability.')}
 ${SERVICES.map(s => line(s.title, abs(`/services/${s.slug}`), `${s.description} Typical duration ${s.duration}.`)).join('\n')}
 
 ## Platforms
@@ -79,6 +80,8 @@ ${caseStudies
 ${posts.map(p => line(p.title ?? p.slug, abs(`/blog/${p.slug}`), p.description)).join('\n')}
 
 ## Working together
+
+Full detail: ${abs('/services#engagement')}
 
 ${ENGAGEMENTS.map(e => `- **${e.name}** (${e.duration}; ${e.pricing.toLowerCase()}, ${e.pricingNote}): ${e.summary} Includes ${e.includes.join('; ')}.`).join('\n')}
 

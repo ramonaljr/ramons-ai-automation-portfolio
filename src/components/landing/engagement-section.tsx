@@ -3,7 +3,15 @@
 import type { CSSProperties, ReactNode } from 'react'
 
 import { AuditVisual, BuildVisual, LaunchVisual } from '@/components/landing/how-it-works-section'
-import { ArrowIcon, ArrowRight, CONTAINER, DISPLAY_FONT, SECTION_ANCHOR, useInView } from '@/components/landing/motion'
+import {
+  ArrowIcon,
+  ArrowRight,
+  CONTAINER,
+  DISPLAY_FONT,
+  SECTION_ANCHOR,
+  useContactHref,
+  useInView
+} from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
 
 import { ENGAGEMENTS } from '@/lib/portfolio'
@@ -22,6 +30,7 @@ const VISUALS: ReactNode[] = [<AuditVisual key='audit' />, <BuildVisual key='bui
  */
 export function EngagementSection() {
   const { ref, inView } = useInView<HTMLOListElement>(0.12)
+  const contactHref = useContactHref()
 
   return (
     <section id='engagement' className={SECTION_ANCHOR}>
@@ -39,7 +48,12 @@ export function EngagementSection() {
         />
 
         <ol ref={ref} className='engagement-path' data-visible={inView}>
-          {ENGAGEMENTS.map((tier, index) => (
+          {ENGAGEMENTS.map((tier, index) => {
+            // A tier pointing at a real page keeps it; one pointing at the
+            // contact section goes wherever contact is from this page.
+            const href = tier.href && !tier.href.startsWith('#') ? tier.href : contactHref
+
+            return (
             <li
               key={tier.name}
               className='engagement-step'
@@ -80,14 +94,15 @@ export function EngagementSection() {
                     {tier.outcome}
                   </p>
 
-                  <a href={tier.href ?? '#contact'} className='engagement-cta'>
+                  <a href={href} className='engagement-cta'>
                     {tier.cta}
-                    {(tier.href ?? '#contact').startsWith('#') ? <ArrowRight size={14} /> : <ArrowIcon />}
+                    {href === contactHref ? <ArrowRight size={14} /> : <ArrowIcon />}
                   </a>
                 </div>
               </article>
             </li>
-          ))}
+            )
+          })}
         </ol>
 
         <p className='engagement-reassure'>

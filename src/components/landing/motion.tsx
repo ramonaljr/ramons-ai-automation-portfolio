@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react'
 
+import { usePathname } from 'next/navigation'
 import { motion, useScroll, useTransform } from 'motion/react'
 import { ArrowRight as LucideArrowRight, ArrowUpRight } from 'lucide-react'
 
@@ -80,6 +81,18 @@ const subscribeToMotionPreference = (onChange: () => void) => {
   query.addEventListener('change', onChange)
 
   return () => query.removeEventListener('change', onChange)
+}
+
+/**
+ * Where a "Book a free call" button should go from the page it is on.
+ *
+ * Sections that live on more than one page (Services on the homepage and on
+ * /services; Engagement and the FAQ on /services) cannot hard-code `#contact`:
+ * off the homepage that hash points at nothing. The homepage keeps scrolling to
+ * its own contact section; anywhere else goes to the contact page.
+ */
+export function useContactHref() {
+  return usePathname() === '/' ? '#contact' : '/contact'
 }
 
 /**
