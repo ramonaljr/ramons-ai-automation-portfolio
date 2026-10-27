@@ -19,7 +19,7 @@ import { CaseStudyModal } from '@/components/landing/case-study-modal'
 import { WorkCanvas } from '@/components/landing/work-canvas'
 import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 import { ViewStage } from '@/components/landing/view-stage'
-import { filmOf, WORK_TONES, workViews } from '@/lib/work-views'
+import { filmOf, orderWork, WORK_TONES, workViews } from '@/lib/work-views'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 
 const WORK_LABELS: Record<string, string> = {
@@ -49,7 +49,7 @@ const WORK_USE_CASES: Record<string, string> = {
     'Overdue invoices chased by your own policy, every reply read, and all reminders stopped the moment a customer disputes.'
 }
 
-const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
+export const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
 
 const workTags = (cs: CaseStudyMetadata) => {
   const platform = cs.platform?.trim()
@@ -285,18 +285,8 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
    */
   const [views, setViews] = useState<Record<string, number>>({})
 
-  /**
-   * Delivered work leads, then complete builds for sample clients, then labs.
-   *
-   * `getCaseStudies` orders by `publishedAt`, which would otherwise interleave
-   * them by date alone. The sort is stable, so within each group the date
-   * order is preserved.
-   */
-  const shown = useMemo(() => {
-    const rank = (cs: CaseStudyMetadata) => (cs.sample ? 2 : cs.sampleClient ? 1 : 0)
-
-    return [...caseStudies].sort((a, b) => rank(a) - rank(b))
-  }, [caseStudies])
+  // Delivered work first, then sample clients, then labs (see `orderWork`).
+  const shown = useMemo(() => orderWork(caseStudies), [caseStudies])
 
   // No platform filter: with one project on Make and one on Zapier, two of
   // the three buttons filtered down to a single card. It can come back once

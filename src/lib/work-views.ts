@@ -96,6 +96,19 @@ export function workViews(cs: CaseStudyMetadata): WorkView[] {
 }
 
 /**
+ * Delivered work leads, then complete builds for sample clients, then labs.
+ *
+ * `getCaseStudies` orders by `publishedAt`, which would otherwise interleave
+ * them by date alone. The sort is stable, so within each group the date order
+ * is preserved. Shared so the strip under the hero and Selected Work agree.
+ */
+export function orderWork(caseStudies: CaseStudyMetadata[]) {
+  const rank = (cs: CaseStudyMetadata) => (cs.sample ? 2 : cs.sampleClient ? 1 : 0)
+
+  return [...caseStudies].sort((a, b) => rank(a) - rank(b))
+}
+
+/**
  * The project's film when it is hosted here, so it can play in place. A Loom
  * or other outside link is not a film in this sense and stays a plain link.
  */

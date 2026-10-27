@@ -7,6 +7,7 @@ import { BlossomStoryBackground } from '@/components/landing/blossom-story-backg
 import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { HeroSection } from '@/components/landing/hero-section'
+import { WorkStrip } from '@/components/landing/work-strip'
 import { ProofStrip } from '@/components/landing/proof-strip'
 import { IntroSection } from '@/components/landing/intro-section'
 import { ProjectsSection } from '@/components/landing/projects-section'
@@ -43,6 +44,7 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
 
         <div className='relative z-10'>
           <HeroSection ready={heroReady} />
+          <WorkStrip caseStudies={caseStudies} />
           <ProofStrip systemCount={caseStudies.length} />
 
           <div className='story-content relative'>

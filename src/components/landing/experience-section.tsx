@@ -53,11 +53,10 @@ export function ExperienceJourney() {
   const { ref, inView } = useInView<HTMLDivElement>(0.06)
 
   /**
-   * Which roles are expanded on phones. Below 768px each role shows its title,
-   * dates and headline achievement, with the description and skills behind a
-   * toggle: four full roles ran to five screens there. The toggle and the
-   * collapse are CSS-only above that width, so desktop is unchanged, and the
-   * text stays in the page for search either way.
+   * Which roles are expanded. Each role shows its title, dates and headline
+   * achievement, with the description and skills behind a toggle: four full
+   * roles ran to five screens on phones and kept About over 4,000px tall on
+   * desktop. The collapsed text stays in the page, so search still reads it.
    */
   const [open, setOpen] = useState<Record<string, boolean>>({})
 
