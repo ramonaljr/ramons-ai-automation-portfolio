@@ -50,6 +50,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.7
     },
+
+    // Services, pricing and the FAQ: the page a buyer checks before booking.
+    { url: abs('/services'), changeFrequency: 'monthly', priority: 0.9 },
     ...SERVICES.map(service => ({
       url: abs(`/services/${service.slug}`),
       changeFrequency: 'yearly' as const,

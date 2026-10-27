@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import { Bell, Clock, Handshake, KeyRound, Lock, Wrench, type LucideIcon } from 'lucide-react'
 
-import { CONTAINER, Cta, SECTION_ANCHOR } from '@/components/landing/motion'
+import { CONTAINER, Cta, SECTION_ANCHOR, useContactHref } from '@/components/landing/motion'
 import { OPEN_CHAT_EVENT, useChatAvailable } from '@/components/landing/chat-widget'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { FAQS, PROFILE } from '@/lib/portfolio'
@@ -24,6 +24,7 @@ const FAQ_ICONS: Record<string, LucideIcon> = {
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState(0)
   const chatAvailable = useChatAvailable()
+  const contactHref = useContactHref()
 
   return (
     <section id='faq' className={`${SECTION_ANCHOR} faq-reference-section`}>
@@ -36,7 +37,7 @@ export function FaqSection() {
               titleClassName='mt-6 text-[clamp(3.5rem,7vw,7rem)] leading-[0.9]'
               blurb='Clear answers about access, ownership, reliability and what happens after handover.'
             />
-            <Cta href='#contact' className='mt-8 self-start'>
+            <Cta href={contactHref} className='mt-8 self-start'>
               Book a free call
             </Cta>
           </div>

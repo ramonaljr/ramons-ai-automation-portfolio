@@ -18,13 +18,15 @@ import { PROFILE, SERVICES } from '@/lib/portfolio'
  * links in a line read as leftovers, grouped they read as a table of
  * contents. Hashes are rewritten to `/#section` away from the landing page.
  */
-const EXPLORE = [
+const EXPLORE: { label: string; hash?: string; href?: string }[] = [
   { label: 'About', hash: '#about' },
   { label: 'Career history', hash: '#experience' },
   { label: 'Portfolio', hash: '#portfolio' },
   { label: 'How it works', hash: '#process' },
-  { label: 'Working together', hash: '#engagement' },
-  { label: 'FAQ', hash: '#faq' }
+
+  // These two moved to /services with their sections.
+  { label: 'Working together', href: '/services#engagement' },
+  { label: 'FAQ', href: '/services#faq' }
 ]
 
 /** Live Manila time, updated each minute. Client-only, so it never mismatches the server render. */
@@ -98,7 +100,7 @@ export function SiteFooter() {
             <ul>
               {EXPLORE.map(link => (
                 <li key={link.label}>
-                  <a href={onLanding ? link.hash : `/${link.hash}`}>{link.label}</a>
+                  <a href={link.href ?? (onLanding ? link.hash : `/${link.hash}`)}>{link.label}</a>
                 </li>
               ))}
             </ul>
@@ -107,6 +109,9 @@ export function SiteFooter() {
           <nav aria-label='Services'>
             <p className='label-quiet'>Services</p>
             <ul>
+              <li>
+                <a href='/services'>All services &amp; pricing</a>
+              </li>
               {SERVICES.map(service => (
                 <li key={service.slug}>
                   <a href={`/services/${service.slug}`}>{service.short}</a>

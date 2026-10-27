@@ -2,8 +2,19 @@
 
 import { useState, type PointerEvent } from 'react'
 
+import { usePathname } from 'next/navigation'
+
 import { SectionIntro } from '@/components/landing/section-intro'
-import { ArrowIcon, CONTAINER, Cta, DISPLAY_FONT, rise, SECTION, useInView } from '@/components/landing/motion'
+import {
+  ArrowIcon,
+  CONTAINER,
+  Cta,
+  DISPLAY_FONT,
+  rise,
+  SECTION,
+  useContactHref,
+  useInView
+} from '@/components/landing/motion'
 
 import { ToolMark, ToolStackSection } from '@/components/landing/tool-stack-section'
 
@@ -71,6 +82,8 @@ const SIDEWAYS = '(min-width: 768px)'
  */
 export function ServicesSection() {
   const { ref, inView } = useInView<HTMLUListElement>(0.12)
+  const contactHref = useContactHref()
+  const onLanding = usePathname() === '/'
 
   // Its own trigger: tied to the accordion's, a jump that skipped the
   // accordion left this block invisible.
@@ -162,8 +175,18 @@ export function ServicesSection() {
               Describe the process that eats your week and I will tell you where it fits.
             </p>
           </div>
-          <Cta href='#contact'>Book a free call</Cta>
+          <Cta href={contactHref}>Book a free call</Cta>
         </div>
+
+        {/* Pricing and the FAQ live on /services now. The homepage keeps one
+            line saying how work is priced, so the only signal of cost does
+            not leave the page with them. */}
+        {onLanding && (
+          <p className='service-engagement-link' style={rise(inView, 220)}>
+            Three ways to work together: audit, fixed-price build, retainer, all priced up front.{' '}
+            <a href='/services#engagement'>See how it works</a>
+          </p>
+        )}
 
         {/* Platforms used to be a section of their own, with four cards of
             bullets. Visitors rarely choose the platform (they want it

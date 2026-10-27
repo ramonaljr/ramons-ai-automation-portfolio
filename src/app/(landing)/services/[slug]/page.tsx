@@ -62,7 +62,7 @@ const ServicePage = async ({ params }: { params: Promise<{ slug: string }> }) =>
     },
     breadcrumbLd([
       { name: 'Home', url: abs('') },
-      { name: 'Services', url: abs('/#services') },
+      { name: 'Services', url: abs('/services') },
       { name: service.title, url }
     ])
   )

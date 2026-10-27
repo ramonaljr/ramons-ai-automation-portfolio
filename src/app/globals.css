@@ -4693,6 +4693,58 @@ a.work-aux-link:hover {
   border-color: var(--service-cream);
 }
 
+/* /services: the three sections on the page, as pills under its header. */
+.services-page-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2.25rem;
+}
+
+.services-page-jump a {
+  padding: 0.55rem 1.05rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.services-page-jump a:hover {
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--ink) 3%, transparent);
+  color: var(--ink);
+}
+
+/* The homepage's one line about pricing, under the services CTA. */
+.service-engagement-link {
+  margin-top: 1rem;
+  padding-inline: 1.75rem;
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.service-engagement-link a {
+  color: var(--ink);
+  font-weight: 500;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--rule-strong);
+  transition: border-color 0.3s ease;
+}
+
+.service-engagement-link a::after {
+  content: ' →';
+  color: var(--accent);
+}
+
+.service-engagement-link a:hover {
+  border-color: var(--accent);
+}
+
 .service-accordion-cta {
   display: flex;
   flex-wrap: wrap;
