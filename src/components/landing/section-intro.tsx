@@ -1,8 +1,9 @@
 'use client'
 
-import type { CSSProperties, ReactNode } from 'react'
+import { useRef, type CSSProperties, type ReactNode } from 'react'
 
 import { DISPLAY_FONT, READABLE, useInView, usePrefersReducedMotion } from '@/components/landing/motion'
+import { gsap, LINE_DROP, MOTION_OK, SplitText, useGSAP } from '@/components/landing/gsap'
 
 /**
  * The entrance every section heading shares.
@@ -15,6 +16,9 @@ import { DISPLAY_FONT, READABLE, useInView, usePrefersReducedMotion } from '@/co
  * normal scroll speed the line that names the section was the last thing on
  * screen to become readable. It is now sharp from its first frame and settles
  * in well under a second, so motion never stands between a reader and a word.
+ *
+ * The heading itself is GSAP's: it rises line by line from behind each line's
+ * own edge (see `useHeadingReveal`). Tag and blurb stay on the CSS steps.
  */
 
 const EASE = 'cubic-bezier(0.16,1,0.3,1)'
@@ -38,6 +42,52 @@ export function introStep(
     transition: `opacity ${duration}s ${EASE} ${delay}ms, transform ${duration}s ${EASE} ${delay}ms`,
     willChange: inView ? undefined : 'opacity, transform'
   }
+}
+
+/**
+ * Masked line rise for a section heading, on the same beat as `introStep`'s
+ * 80ms heading slot.
+ *
+ * The heading renders at opacity 0 until its lines are split and parked below
+ * their masks; only then is it shown, so there is no frame where the whole
+ * heading is visible and then snaps out of view. Once the lines land the split
+ * is reverted, leaving the markup React rendered — a heading measured at one
+ * width must not keep those line breaks after a resize.
+ *
+ * Reduced motion never enters the matchMedia handler, and the caller falls
+ * back to the opacity-only `introStep` for those readers.
+ */
+function useHeadingReveal() {
+  const ref = useRef<HTMLHeadingElement>(null)
+
+  useGSAP(() => {
+    const heading = ref.current
+
+    if (!heading) return
+
+    const mm = gsap.matchMedia()
+
+    mm.add(MOTION_OK, () => {
+      const split = SplitText.create(heading, { type: 'lines', mask: 'lines', linesClass: 'split-line' })
+
+      gsap.set(split.lines, { yPercent: LINE_DROP })
+      gsap.set(heading, { opacity: 1 })
+
+      gsap.to(split.lines, {
+        yPercent: 0,
+        duration: 1,
+        ease: 'expo.out',
+        stagger: 0.09,
+        delay: 0.08,
+        scrollTrigger: { trigger: heading, start: 'top 92%', once: true },
+        onComplete: () => split.revert()
+      })
+    })
+
+    return () => mm.revert()
+  })
+
+  return ref
 }
 
 export function SectionIntro({
@@ -73,6 +123,7 @@ export function SectionIntro({
   // once it is already halfway up the screen and half of it has been missed.
   const { ref, inView } = useInView(0.05)
   const reduced = usePrefersReducedMotion()
+  const headingRef = useHeadingReveal()
 
   const centred = align === 'center'
 
@@ -96,10 +147,14 @@ export function SectionIntro({
 
       {title != null && (
         <h2
+          ref={headingRef}
           className={`${tag ? titleClassName : titleClassName.replace(/(^|\s)mt-\S+/g, '')} text-ink leading-[1.05] font-light tracking-tight`}
           style={{
             fontFamily: DISPLAY_FONT,
-            ...introStep(inView, reduced, { delay: 80, y: 16, duration: 0.7 })
+
+            // Hidden until `useHeadingReveal` has parked the lines; reduced
+            // motion keeps the opacity-only step instead.
+            ...(reduced ? introStep(inView, reduced, { delay: 80, y: 16, duration: 0.7 }) : { opacity: 0 })
           }}
         >
           {title}
