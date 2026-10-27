@@ -5784,9 +5784,11 @@ div#experience.about-journey {
   background: var(--ground);
 }
 
-/* The process maps end in a caption bar along their bottom edge, and the
-   status chip and view thumbnails float over that edge. In the dialog every
-   view sits above a strip that holds them, so they never cover the caption. */
+/* The status chip and view thumbnails float over the bottom edge, and the
+   process diagrams fill their drawing to that edge. So the diagram, on the
+   card and in the dialog, and every dialog view sit above a strip that holds
+   them; sized in rem like the controls, it fits them at any width. */
+.work-card-frame .work-canvas-art,
 .work-dialog-frame .work-canvas-art,
 .work-dialog-frame .work-card-image {
   box-sizing: border-box;
