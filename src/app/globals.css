@@ -6653,21 +6653,28 @@ div#experience.about-journey {
    fifteen label styles. */
 
 /* The scene fades out from About down (BlossomStoryBackground writes
-   `data-scene`). Video, tree overlay and falling leaves go together, so what
-   remains is the slate ground and the film grain. */
+   `data-scene`). The video, the tree overlay and the leaves' warm glow go;
+   the falling leaves stay, dimmed, so the lower page keeps a little life
+   without putting the busy video behind the work, the offer and the form. */
 .blossom-story-background > div,
-.blossom-story-root .automation-field {
+.blossom-story-root .automation-field::before,
+.blossom-story-root .automation-field canvas {
   transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .blossom-story-root[data-scene='calm'] .blossom-story-background > div,
-.blossom-story-root[data-scene='calm'] .automation-field {
+.blossom-story-root[data-scene='calm'] .automation-field::before {
   opacity: 0;
+}
+
+.blossom-story-root[data-scene='calm'] .automation-field canvas {
+  opacity: 0.4;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .blossom-story-background > div,
-  .blossom-story-root .automation-field {
+  .blossom-story-root .automation-field::before,
+  .blossom-story-root .automation-field canvas {
     transition: none;
   }
 }
