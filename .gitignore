@@ -43,3 +43,6 @@ next-env.d.ts
 
 # Playwright MCP screenshot/snapshot artifacts
 .playwright-mcp/
+
+# storify films: out/ is rebuilt from the sources by build.js
+/docs/storify-films/out/

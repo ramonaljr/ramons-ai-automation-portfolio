@@ -5784,6 +5784,17 @@ div#experience.about-journey {
   background: var(--ground);
 }
 
+/* The status chip and view thumbnails float over the bottom edge, and the
+   process diagrams fill their drawing to that edge. So the diagram, on the
+   card and in the dialog, and every dialog view sit above a strip that holds
+   them; sized in rem like the controls, it fits them at any width. */
+.work-card-frame .work-canvas-art,
+.work-dialog-frame .work-canvas-art,
+.work-dialog-frame .work-card-image {
+  box-sizing: border-box;
+  padding-bottom: 4rem;
+}
+
 .work-dialog-frame:has(.view-stage-layer[style*='z-index: 2'] .work-canvas) {
   background: oklch(0.205 0.007 255);
 }

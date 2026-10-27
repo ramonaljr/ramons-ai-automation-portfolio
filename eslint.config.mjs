@@ -23,7 +23,11 @@ const eslintConfig = defineConfig([
     // Storify film sources: browser-script fragments that build.js stitches
     // into one inline <script> (engine-core opens an IIFE engine-run closes),
     // so they cannot parse alone, and the app's TS/React rules do not apply.
-    'docs/storify-films/**'
+    'docs/storify-films/**',
+
+    // Process-diagram builder: a plain Node script that writes the card and
+    // dialog SVGs, outside the app, so the app's TS/React rules do not apply.
+    'docs/process-diagrams/**'
   ]),
   {
     plugins: {
