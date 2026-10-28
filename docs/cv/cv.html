@@ -45,6 +45,9 @@
   .group .item:first-child { margin-top: 0; }
   .note { color: var(--muted); }
   .tag { color: var(--accent); }
+  /* Each project links its case study on the site and its workflow on GitHub. */
+  .links { display: flex; gap: 12px; font-size: 10.8px; font-weight: 500; white-space: nowrap; }
+  .links a { color: var(--ink); border-bottom: 1px solid var(--rule); }
 </style>
 </head>
 <body>
@@ -82,29 +85,29 @@
 <section>
   <h2>Projects</h2>
   <div>
-    <p class="intro">End-to-end automations built in n8n, documented on my portfolio.<a href="https://ramonvallejera.com/#portfolio">View all 7 projects</a></p>
+    <p class="intro">End-to-end automations built in n8n: write-ups on my site, workflows on GitHub.<a href="https://ramonvallejera.com/#portfolio">View all 7 projects</a></p>
 
     <div class="item">
       <div class="row"><h3>AI Invoice Processing &amp; Approval</h3><span class="date"><span class="tag">Sample client build</span> · Sep 2026</span></div>
-      <p class="sub">n8n · OpenAI · Gmail · Airtable · Slack · QuickBooks</p>
+      <div class="row"><p class="sub">n8n · OpenAI · Gmail · Airtable · Slack · QuickBooks</p><p class="links"><a href="https://ramonvallejera.com/case-study/ai-invoice-processing-approval">Case study ↗</a><a href="https://github.com/ramonaljr/n8n-ai-invoice-processing-approval">GitHub ↗</a></p></div>
       <p>Reads invoices from Gmail, skips duplicates and has AI extract the details, then checks each against the purchase order and delivery record before Slack approval and posting to QuickBooks. Built for construction billing: progress payments, retention and lien waivers.</p>
     </div>
 
     <div class="item">
       <div class="row"><h3>AI Unpaid Invoice Reminders</h3><span class="date"><span class="tag">Sample client build</span> · Sep 2026</span></div>
-      <p class="sub">n8n · QuickBooks · Pipedrive · PostgreSQL · OpenAI · Gmail · Slack</p>
+      <div class="row"><p class="sub">n8n · QuickBooks · Pipedrive · PostgreSQL · OpenAI · Gmail · Slack</p><p class="links"><a href="https://ramonvallejera.com/case-study/ai-unpaid-invoice-reminders">Case study ↗</a><a href="https://github.com/ramonaljr/n8n-ai-unpaid-invoice-reminders">GitHub ↗</a></p></div>
       <p>Checks QuickBooks, Pipedrive and the collections database every morning and sends reminders by set rules. AI writes the emails and reads customer replies; a dispute stops all reminders until a person resolves it.</p>
     </div>
 
     <div class="item">
       <div class="row"><h3>AI Appointment Setter</h3><span class="date">Aug 2026</span></div>
-      <p class="sub">n8n · VAPI · Google Calendar · Airtable</p>
+      <div class="row"><p class="sub">n8n · VAPI · Google Calendar · Airtable</p><p class="links"><a href="https://ramonvallejera.com/case-study/ai-appointment-setter">Case study ↗</a><a href="https://github.com/ramonaljr/n8n-ai-appointment-setter">GitHub ↗</a></p></div>
       <p>VAPI voice agent backed by n8n webhooks that checks Google Calendar availability and books, reschedules and cancels appointments in real time — logging bookings and call results to Airtable.</p>
     </div>
 
     <div class="item">
       <div class="row"><h3>HR Evaluation and Job Posting Assistant with AI</h3><span class="date">Aug 2026</span></div>
-      <p class="sub">n8n · Groq · OpenAI · Airtable · Gmail · Google Calendar</p>
+      <div class="row"><p class="sub">n8n · Groq · OpenAI · Airtable · Gmail · Google Calendar</p><p class="links"><a href="https://ramonvallejera.com/case-study/hr-evaluation-assistant">Case study ↗</a><a href="https://github.com/ramonaljr/n8n-hr-evaluation-assistant">GitHub ↗</a></p></div>
       <p>Takes applications by form and uses an AI agent to evaluate each CV against its job posting, tagging candidates as potential hire or rejected. Shortlisted candidates get a tailored questionnaire, a personal interview invitation via Gmail and a booked slot in Google Calendar; the interviewer gets screening questions.</p>
     </div>
   </div>
