@@ -6139,8 +6139,14 @@ div#experience.about-journey {
   pointer-events: none;
 }
 
+/* Right-aligned on the cards: centred, the switcher ran over the map's
+   "N STEPS MAPPED" status in the left corner of every narrow card. The
+   dialog is wide enough to keep it centred. */
 .work-card-frame .view-tabs {
+  right: 0.8rem;
+  left: auto;
   pointer-events: auto;
+  transform: none;
 }
 
 /* ── Services: where I build it ──────────────────────────────────────────
