@@ -21,8 +21,14 @@ const FAQ_ICONS: Record<string, LucideIcon> = {
   clock: Clock
 }
 
-export function FaqSection() {
+/**
+ * `essentialOnly` is the homepage's version: the four questions most likely to
+ * stop a booking, just above the contact form, with a link to the rest on
+ * /services. The full list and its FAQPage markup live there.
+ */
+export function FaqSection({ essentialOnly = false }: { essentialOnly?: boolean }) {
   const [openIndex, setOpenIndex] = useState(0)
+  const items = essentialOnly ? FAQS.filter(item => item.essential) : FAQS
   const chatAvailable = useChatAvailable()
   const contactHref = useContactHref()
 
@@ -43,7 +49,7 @@ export function FaqSection() {
           </div>
 
           <div className='faq-reference-list'>
-            {FAQS.map((item, index) => {
+            {items.map((item, index) => {
               const open = openIndex === index
 
               return (
@@ -91,6 +97,12 @@ export function FaqSection() {
                 </div>
               )
             })}
+
+            {essentialOnly && (
+              <a href='/services#faq' className='faq-all-link'>
+                All {FAQS.length} questions
+              </a>
+            )}
 
             {/* Points to email while the assistant is unreachable, rather than
                 opening a chat that can only say so. */}
