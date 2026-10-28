@@ -56,27 +56,20 @@ export function SiteFooter() {
   const onLanding = pathname === '/'
   const reduced = usePrefersReducedMotion()
   const { scrollYProgress } = useScroll({ target: footerRef, offset: ['start end', 'end end'] })
-  const wordY = useTransform(scrollYProgress, [0, 1], [90, -12])
-  const wordScale = useTransform(scrollYProgress, [0, 1], [0.9, 1])
+  const wordY = useTransform(scrollYProgress, [0, 1], [60, 0])
 
-  // The wordmark fills with rust from the bottom as the page ends, like a
-  // signature being drawn.
-  const wordFill = useTransform(scrollYProgress, [0.2, 1], ['100% 0%', '100% 100%'])
+  // The wordmark fills with terracotta from the bottom as the page ends,
+  // like a signature being drawn.
+  const wordFill = useTransform(scrollYProgress, [0.4, 1], ['100% 30%', '100% 100%'])
   const manilaTime = useManilaTime()
 
   return (
-    <footer ref={footerRef} className='footer-scene saas-footer border-rule relative overflow-hidden border-t px-6 pt-28 pb-10 md:px-12 lg:px-20'>
-      <motion.div
-        className='footer-word pointer-events-none absolute inset-x-0 top-0 text-center text-[clamp(7rem,22vw,24rem)] leading-none font-black tracking-[-0.09em] select-none'
-        style={reduced ? { backgroundSize: '100% 100%' } : { y: wordY, scale: wordScale, backgroundSize: wordFill }}
-        aria-hidden='true'
-      >
-        RAMON
-      </motion.div>
-
-      <div className={`${CONTAINER} ${READABLE} relative z-10 flex min-h-[44vh] flex-col justify-end`}>
-        <div className='mb-20 max-w-2xl'>
-          <span className='label-quiet'>End of the manual loop</span>
+    <footer
+      ref={footerRef}
+      className='footer-scene saas-footer border-rule relative overflow-hidden border-t px-6 pt-20 md:px-12 lg:px-20'
+    >
+      <div className={`${CONTAINER} ${READABLE} relative z-10`}>
+        <div className='footer-close'>
           {/* The story opens at 9:14 PM with the work still waiting; the page
               closes on the real time where Ramon is. Doubles as the time-zone
               answer for international clients. */}
@@ -86,12 +79,19 @@ export function SiteFooter() {
               It&rsquo;s {manilaTime} in Manila
             </p>
           )}
-          <p
-            className='text-ink mt-5 text-[clamp(2rem,4vw,4.25rem)] leading-[1.02] font-light tracking-tight'
-            style={{ fontFamily: DISPLAY_FONT }}
-          >
-            Better systems.<br />More human work.
+          <p className='footer-ask' style={{ fontFamily: DISPLAY_FONT }}>
+            Have a process that
+            <br />
+            eats your week?
           </p>
+          <div className='footer-actions'>
+            <a href={onLanding ? '#contact' : '/contact'} className='footer-cta'>
+              Book a free call <span aria-hidden='true'>→</span>
+            </a>
+            <a href={`mailto:${PROFILE.email}`} className='footer-mail'>
+              {PROFILE.email}
+            </a>
+          </div>
         </div>
 
         <div className='footer-columns'>
@@ -124,9 +124,6 @@ export function SiteFooter() {
             <p className='label-quiet'>Connect</p>
             <ul>
               <li>
-                <a href={`mailto:${PROFILE.email}`}>Email</a>
-              </li>
-              <li>
                 <a href='/contact'>Contact form</a>
               </li>
               <li>
@@ -147,6 +144,7 @@ export function SiteFooter() {
             <p className='text-ink-2 mt-2 text-[14px]'>
               {PROFILE.title} · {PROFILE.location}
             </p>
+            <p className='text-ink-2 mt-4 text-[14px]'>Better systems. More human work.</p>
           </div>
         </div>
 
@@ -156,16 +154,34 @@ export function SiteFooter() {
             darkened ground. The name already ends in a full stop ("Jr."), so
             one is only added when it does not. */}
         {/* Right padding keeps "Back to top" clear of the fixed chat button. */}
-        <div className='border-rule text-meta text-ink-2 mt-10 flex flex-wrap items-center justify-between gap-4 border-t pt-6 pr-16 sm:pr-20'>
+        <div className='border-rule text-meta text-ink-2 mt-12 flex flex-wrap items-center justify-between gap-4 border-t pt-6 pr-16 sm:pr-20'>
           <p>
             © {new Date().getFullYear()} {PROFILE.name.endsWith('.') ? PROFILE.name : `${PROFILE.name}.`} Designed and
             built by me, running on Next.js and n8n.
           </p>
-          <a href={onLanding ? '#top' : '/#top'} className='text-ink-2 hover:text-ink group inline-flex items-center gap-2 transition-colors'>
+          <a
+            href={onLanding ? '#top' : '/#top'}
+            className='text-ink-2 hover:text-ink group inline-flex items-center gap-2 transition-colors'
+          >
             Back to top
-            <span className='transition-transform duration-300 group-hover:-translate-y-1' aria-hidden='true'>↑</span>
+            <span className='transition-transform duration-300 group-hover:-translate-y-1' aria-hidden='true'>
+              ↑
+            </span>
           </a>
         </div>
+      </div>
+
+      {/* The wordmark signs off the page: solid, cropped along the bottom
+          edge, filling with terracotta from the bottom as the page ends.
+          It sits below the links rather than behind the headline, where the
+          two used to muddy each other. */}
+      <div className='footer-signature' aria-hidden='true'>
+        <motion.div
+          className='footer-word'
+          style={reduced ? { backgroundSize: '100% 100%' } : { y: wordY, backgroundSize: wordFill }}
+        >
+          RAMON
+        </motion.div>
       </div>
     </footer>
   )

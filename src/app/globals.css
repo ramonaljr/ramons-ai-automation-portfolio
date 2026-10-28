@@ -7001,38 +7001,65 @@ div#experience.about-journey {
   background: color-mix(in oklch, var(--ink) 85%, var(--accent));
 }
 
-/* ── Contact: steps, next opening, and the last scene ────────────────── */
+/* ── Contact: one panel, booking first ───────────────────────────────
+   The pitch, what happens next and the other ways to reach me on the left;
+   the calendar on the right, always open. */
 .contact-scene {
   isolation: isolate;
 }
 
-/* The story's golden-hour desk, faint behind the booking: the page ends
-   where the story did. */
-.contact-scene::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: url('/images/landing/work-scenes/zero-touch-client-onboarding.webp') center 40% / cover no-repeat;
-  opacity: 0.22;
-  mask-image: radial-gradient(ellipse 60% 45% at 78% 18%, #000 25%, transparent 78%);
-  pointer-events: none;
+.contact-panel {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  padding: clamp(1.75rem, 4vw, 3.5rem);
+  border: 1px solid var(--rule);
+  border-radius: 2rem;
+  background: color-mix(in oklab, var(--ground) 92%, white);
+  box-shadow: 0 50px 120px -70px oklch(0.25 0.018 255 / 0.4);
 }
 
+.contact-pitch {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* `.saas-section-intro h2` forces one size on every section with
+   !important; this column is half the width those sizes were set for. */
+.contact-pitch .saas-section-intro h2 {
+  font-size: clamp(2.4rem, 4vw, 4rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.045em !important;
+  text-wrap: balance;
+}
+
+.contact-pitch .saas-section-intro > p {
+  max-width: 44ch;
+}
+
+/* What happens next, as a short timeline. */
 .contact-steps {
   display: grid;
-  gap: 0.75rem;
-  margin: -1.5rem 0 1.25rem;
+  margin: 2.25rem 0 0;
+  padding: 0;
+  list-style: none;
 }
 
 .contact-steps li {
+  position: relative;
   display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 0.85rem;
-  padding: 1rem 1.15rem;
-  border: 1px solid var(--rule);
-  border-radius: 1rem;
-  background: color-mix(in oklab, var(--ground) 78%, transparent);
+  grid-template-columns: 2rem 1fr;
+  padding-bottom: 1.25rem;
+}
+
+.contact-steps li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 1.6rem;
+  bottom: 0.3rem;
+  left: 0.4rem;
+  width: 1px;
+  background: var(--rule-strong);
 }
 
 .contact-steps span {
@@ -7040,26 +7067,25 @@ div#experience.about-journey {
   color: var(--accent);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.75rem;
-  padding-top: 0.2rem;
+  padding-top: 0.25rem;
 }
 
 .contact-steps strong {
   color: var(--ink);
-  font-family: var(--font-editorial), Georgia, serif;
-  font-size: 1.15rem;
-  font-weight: 400;
+  font-size: 1.05rem;
+  font-weight: 500;
 }
 
 .contact-steps p {
+  margin-top: 0.2rem;
   color: var(--ink-2);
-  font-size: 0.85rem;
-  line-height: 1.45;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
-@media (min-width: 768px) {
-  .contact-steps {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+.contact-reach {
+  margin-top: auto;
+  padding-top: 1.5rem;
 }
 
 .contact-next {
@@ -7067,7 +7093,7 @@ div#experience.about-journey {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.4rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   color: var(--ink-2);
   font-size: 0.9rem;
 }
@@ -7090,12 +7116,61 @@ div#experience.about-journey {
   cursor: pointer;
 }
 
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.7);
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  transition:
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.contact-links a:hover {
+  border-color: var(--rule-strong);
+  color: var(--ink);
+}
+
+.contact-response {
+  margin-top: 0.8rem;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+}
+
+.contact-booking {
+  min-width: 0;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border: 1px solid var(--rule);
+  border-radius: 1.5rem;
+  background: oklch(1 0 0 / 0.85);
+}
+
+@media (min-width: 1024px) {
+  .contact-panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+}
+
 /* ── Footer: clock, filling wordmark, three columns ──────────────────── */
 .footer-clock {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  margin: 0.85rem 0 0 1rem;
+  margin: 0;
   color: var(--ink-2);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.75rem;
@@ -7127,6 +7202,97 @@ div#experience.about-journey {
   background-position: bottom;
   background-repeat: no-repeat;
   background-size: 100% 0%;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* The close: the clock, one question and two ways to answer it. */
+.footer-close {
+  margin-bottom: clamp(3rem, 6vw, 4.5rem);
+}
+
+.footer-ask {
+  margin-top: 1rem;
+  color: var(--ink);
+  font-size: clamp(2.25rem, 4.6vw, 4.5rem);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.footer-cta,
+.footer-mail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.footer-cta {
+  background: var(--ink);
+  color: var(--ground);
+}
+
+.footer-cta:hover {
+  background: color-mix(in oklab, var(--ink) 88%, var(--ground));
+}
+
+.footer-mail {
+  border: 1px solid color-mix(in oklab, var(--ink) 22%, transparent);
+  color: var(--ink);
+}
+
+.footer-mail:hover {
+  border-color: color-mix(in oklab, var(--ink) 45%, transparent);
+}
+
+/* The signature: the wordmark along the very bottom, solid terracotta,
+   cropped by the footer's edge. The fill grows from the bottom as the page
+   ends (background-size is driven from the component). Specific enough to
+   beat the older faint, outlined .footer-word rules. */
+.footer-signature {
+  position: relative;
+  height: clamp(3.25rem, 14.5vw, 15rem);
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.saas-footer .footer-signature .footer-word {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  /* A faint base so the whole word reads before the fill reaches it. */
+  color: color-mix(in oklab, var(--accent) 16%, transparent);
+  font-family: var(--font-satoshi), system-ui, sans-serif;
+  font-size: clamp(4rem, 25vw, 26rem);
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.07em;
+  white-space: nowrap;
+  -webkit-text-stroke: 0;
+  background-image: linear-gradient(
+    to top,
+    var(--accent),
+    color-mix(in oklab, var(--accent) 55%, oklch(0.93 0.03 45))
+  );
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: 100% 30%;
   -webkit-background-clip: text;
   background-clip: text;
 }

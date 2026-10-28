@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Mail, MapPin } from 'lucide-react'
+import { CalendarDays, ChevronLeft, ChevronRight, Mail } from 'lucide-react'
 
 import { formatSlotLocal, isManilaClock, manilaDateKey, MAX_BOOKING_DAYS, slotInstant } from '@/lib/booking-policy'
 
@@ -258,143 +258,85 @@ export function ContactSection() {
     : '/contact'
 
   return (
-    <section
-      id='contact'
-      className='contact-scene saas-section border-rule relative border-t px-6 py-16 md:px-12 md:py-24 lg:px-20'
-    >
+    <section id='contact' className='contact-scene saas-section relative px-6 py-16 md:px-12 md:py-24 lg:px-20'>
       <div className={CONTAINER}>
-        <SectionIntro
-          title={<>Book a free 30-minute call.</>}
-          blurb='No charge, no deck. Bring the process that eats your week and I will tell you whether it is worth automating, and on which platform.'
-        />
+        {/* One panel, booking first: the pitch, what happens next and the
+            other ways to reach me on the left, the calendar on the right and
+            always open. The profile card that sat beside it repeated the nav
+            and footer (email, location, socials), so it is folded into the
+            links here. */}
+        <div ref={ref} className='contact-panel'>
+          <div className='contact-pitch'>
+            <SectionIntro
+              title={<>Book a free 30‑minute call.</>}
+              blurb='No charge, no deck. Bring the process that eats your week and I will tell you whether it is worth automating, and on which platform.'
+              margin=''
+            />
 
-        {/* What happens after the click, so the booking is not a leap. */}
-        <ol className='contact-steps'>
-          {[
-            ['Pick a time', 'Any open weekday slot below.'],
-            ['30-minute call', 'Walk me through the process that eats your week.'],
-            [
-              'Summary and quote in 48 hours',
-              'Whether it is worth automating, on which platform, and a fixed quote, or the audit first if it needs mapping.'
-            ]
-          ].map(([title, copy], index) => (
-            <li key={title}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <strong>{title}</strong>
-              <p>{copy}</p>
-            </li>
-          ))}
-        </ol>
+            {/* What happens after the click, so the booking is not a leap. */}
+            <ol className='contact-steps'>
+              {[
+                ['Pick a time', 'Any open weekday slot, shown in your own time zone.'],
+                ['30-minute call', 'Walk me through the process that eats your week.'],
+                [
+                  'Summary and quote in 48 hours',
+                  'Whether it is worth automating, on which platform, and a fixed quote, or the audit first if it needs mapping.'
+                ]
+              ].map(([title, copy], index) => (
+                <li key={title}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <strong>{title}</strong>
+                  <p>{copy}</p>
+                </li>
+              ))}
+            </ol>
 
-        <p className='contact-next' aria-live='polite'>
-          <i aria-hidden='true' />
-          {nextOpening ? (
-            <>
-              Next opening:{' '}
-              <button
-                type='button'
-                onClick={() => {
-                  pickDate(nextOpening.date)
-                  setTime(nextOpening.time)
-                }}
-              >
-                {zone
-                  ? formatSlotLocal(nextOpening.date, nextOpening.time)
-                  : `${new Date(`${nextOpening.date}T00:00:00`).toLocaleDateString('en-GB', { weekday: 'short' })} ${nextOpening.time}`}
-              </button>{' '}
-              {zone ? '(your time)' : '(Manila time)'}
-            </>
-          ) : (
-            <>Calls run Monday to Friday, 9:00-11:00 and 13:00-17:00 Manila time.</>
-          )}
-        </p>
+            <div className='contact-reach'>
+              <p className='contact-next' aria-live='polite'>
+                <i aria-hidden='true' />
+                {nextOpening ? (
+                  <>
+                    Next opening:{' '}
+                    <button
+                      type='button'
+                      onClick={() => {
+                        pickDate(nextOpening.date)
+                        setTime(nextOpening.time)
+                      }}
+                    >
+                      {zone
+                        ? formatSlotLocal(nextOpening.date, nextOpening.time)
+                        : `${new Date(`${nextOpening.date}T00:00:00`).toLocaleDateString('en-GB', { weekday: 'short' })} ${nextOpening.time}`}
+                    </button>{' '}
+                    {zone ? '(your time)' : '(Manila time)'}
+                  </>
+                ) : (
+                  <>Calls run Monday to Friday, 9:00-11:00 and 13:00-17:00 Manila time.</>
+                )}
+              </p>
 
-        <div ref={ref} className='grid items-start gap-5 lg:grid-cols-2'>
-          {/* ── Profile card ────────────────────────────────────────────── */}
-          <div
-            className='saas-contact-card border-rule bg-surface rounded-2xl border p-8 lg:p-10'
-            style={{
-              opacity: inView ? 1 : 0,
-              transform: inView ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)'
-            }}
-          >
-            <h3
-              className='text-ink text-2xl font-light tracking-tight lg:text-3xl'
-              style={{ fontFamily: DISPLAY_FONT }}
-            >
-              {PROFILE.name}
-            </h3>
-            <p className='text-ink-2 mt-1.5 text-[14px]'>
-              {PROFILE.title} · {PROFILE.credential}
-            </p>
-
-            <div className='mt-9 grid gap-x-6 gap-y-7 sm:grid-cols-2'>
-              <div className='flex gap-3'>
-                <span className='text-ink-2 mt-0.5'>
-                  <Mail size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
-                </span>
-                <div className='min-w-0'>
-                  <p className='label-quiet'>Email</p>
-                  <a
-                    href={`mailto:${PROFILE.email}`}
-                    className='text-ink-2 hover:text-ink mt-1 block text-[14px] break-all transition-colors'
-                  >
+              <ul className='contact-links'>
+                <li>
+                  <a href={`mailto:${PROFILE.email}`}>
+                    <Mail size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
                     {PROFILE.email}
                   </a>
-                </div>
-              </div>
-
-              <div className='flex gap-3'>
-                <span className='text-ink-2 mt-0.5'>
-                  <MapPin size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
-                </span>
-                <div>
-                  <p className='label-quiet'>Location</p>
-                  <p className='text-ink-2 mt-1 text-[14px]'>{PROFILE.location}</p>
-                  <p className='text-ink-2 text-[13px]'>Working across time zones</p>
-                </div>
-              </div>
-
-              <div className='flex gap-3'>
-                <span className='text-ink-2 mt-0.5'>
-                  <CalendarDays size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
-                </span>
-                <div>
-                  <p className='label-quiet'>Availability</p>
-                  <p className='text-ink-2 mt-1 text-[14px]'>Open for new projects &amp; custom builds</p>
-                </div>
-              </div>
-
-              <div className='flex gap-3'>
-                <span className='text-ink-2 mt-0.5'>
-                  <ArrowRight size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
-                </span>
-                <div>
-                  <p className='label-quiet'>Response</p>
-                  <p className='text-ink-2 mt-1 text-[14px]'>Usually within one business day</p>
-                </div>
-              </div>
-            </div>
-
-            <div className='border-rule mt-10 flex flex-wrap gap-2 border-t pt-8'>
-              {PROFILE.socials.map(s => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='border-rule text-ink-2 hover:text-ink hover:border-rule-strong hover:bg-ink/3 rounded-full border px-4 py-2.5 text-[12px] tracking-wide transition-all'
-                >
-                  {s.label}
-                </a>
-              ))}
+                </li>
+                {PROFILE.socials.map(s => (
+                  <li key={s.label}>
+                    <a href={s.href} target='_blank' rel='noopener noreferrer'>
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <p className='contact-response'>Replies usually within one business day.</p>
             </div>
           </div>
 
           {/* ── Booking panel ───────────────────────────────────────────── */}
           <div
-            className='saas-contact-card saas-contact-calendar border-rule bg-surface-raised rounded-2xl border p-8 lg:p-10'
+            className='contact-booking'
             style={{
               opacity: inView ? 1 : 0,
               transform: inView ? 'translateY(0)' : 'translateY(20px)',
