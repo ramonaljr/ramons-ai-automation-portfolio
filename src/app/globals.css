@@ -336,18 +336,6 @@
   }
 }
 
-@keyframes intro-signal-pass {
-  0% { transform: translateX(-100%); opacity: 0; }
-  18% { opacity: 0.55; }
-  82% { opacity: 0.25; }
-  100% { transform: translateX(100%); opacity: 0; }
-}
-
-@keyframes intro-progress-fill {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-
 .intro-mark {
   position: relative;
   width: 4.5rem;
@@ -455,63 +443,89 @@
   100% { opacity: 0.35; transform: scale(1); }
 }
 
-.intro-grid {
-  opacity: 0.42;
-  background-image:
-    linear-gradient(to right, var(--rule) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--rule) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(circle at center, black, transparent 68%);
+/* ── Intro: monogram and name, gliding into the nav brand ───────────────
+   The lockup is the nav brand at three times its size (6rem mark vs 2rem,
+   1.875rem gap vs 0.625rem, 2.85rem type vs 0.95rem), so a single uniform
+   scale lands it on the nav. Letter-spacing matches `.koisei-nav a`. */
+.intro-panel {
+  background: var(--ground);
 }
 
-.intro-signal {
-  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 68%, transparent), transparent);
-  animation: intro-signal-pass 1.55s var(--ease-entrance) both;
+.intro-lockup {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1.15rem;
 }
 
-.intro-loading {
-  width: clamp(15rem, 28vw, 22rem);
-}
-
-.intro-loading-head {
+.intro-row {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.65rem;
-  color: var(--ink-3);
-  font-family: var(--font-mono), monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
+  align-items: center;
+  gap: 1.875rem;
+  transform-origin: 0 0;
+  will-change: transform;
 }
 
-.intro-progress-track {
-  position: relative;
-  height: 3px;
+.intro-mark.intro-row-mark {
+  width: 6rem;
+  height: 6rem;
+  flex-shrink: 0;
+}
+
+.intro-name {
+  color: var(--ink);
+  font-size: 2.85rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* Padded so the descender of "j" survives the mask; the negative margin
+   keeps the line box the size of the type. */
+.intro-word-mask {
+  display: inline-block;
   overflow: hidden;
-  background: color-mix(in oklab, var(--ink) 11%, transparent);
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+  vertical-align: top;
 }
 
-.intro-progress {
-  position: absolute;
-  inset: 0;
+/* Hidden in CSS rather than by GSAP, so the name never flashes in while the
+   page hydrates. */
+.intro-word {
+  display: inline-block;
+  transform: translateY(110%);
+}
+
+.intro-rule {
   display: block;
-  width: 100%;
-  background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 55%, transparent), var(--accent));
-  box-shadow: 0 0 14px color-mix(in oklab, var(--accent) 42%, transparent);
-  transform-origin: left;
-  animation: intro-progress-fill linear both;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
 }
 
-.intro-progress::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 0;
-  width: 0.48rem;
-  height: 0.48rem;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 0.28rem color-mix(in oklab, var(--accent) 10%, transparent);
-  transform: translate(25%, -50%);
+/* Seen this session (set before paint, see SEEN_SCRIPT), or asked for less
+   motion: no panel at all, rather than one that vanishes on hydration. */
+[data-intro-seen] .intro-overlay {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-overlay {
+    display: none;
+  }
+}
+
+/* If the script never runs, the panel must not cover the page forever. */
+.intro-overlay {
+  animation: intro-failsafe 0.01s linear 8s forwards;
+}
+
+@keyframes intro-failsafe {
+  to {
+    visibility: hidden;
+  }
 }
 
 /* Reverse marquee, for the second tool-stack row */

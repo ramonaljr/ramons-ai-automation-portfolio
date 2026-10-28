@@ -1,179 +1,209 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Fragment, useRef, useState, useSyncExternalStore } from 'react'
 
+import { gsap, useGSAP } from '@/components/landing/gsap'
 import { usePrefersReducedMotion } from '@/components/landing/motion'
 import { BrandMark } from '@/components/landing/brand-mark'
 
-const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
-
-// Timing configuration (ms)
-const ENTER_DURATION = 650
-const HOLD_DURATION = 700
-const EXIT_START = ENTER_DURATION + HOLD_DURATION
-const EXIT_DURATION = 300
-const CURTAIN_START = EXIT_START + 100
-const CURTAIN_DURATION = 800
-const LOAD_DURATION = EXIT_START - 100
-
-export const HERO_REVEAL_MS = CURTAIN_START + CURTAIN_DURATION - 180
-export const INTRO_DURATION_MS = CURTAIN_START + CURTAIN_DURATION
-const TOTAL_DURATION = INTRO_DURATION_MS + 120
-
-type Phase = 'idle' | 'in' | 'out' | 'done'
+import { PROFILE } from '@/lib/portfolio'
 
 /** Below this the intro never plays. Match `.intro-overlay` in globals.css. */
 const PHONE = '(max-width: 767px)'
 
+/**
+ * Once per tab. Written when the intro finishes, not when it starts, so a
+ * re-render mid-intro (the page re-renders when the hero is released) never
+ * reads "seen" and unmounts the overlay halfway through its glide.
+ */
+const SEEN_KEY = 'rv-intro-seen'
+
+/**
+ * Runs while the HTML is still parsing, before the overlay's panel exists, so
+ * a returning visitor never sees the panel flash in and out while the page
+ * hydrates. `[data-intro-seen] .intro-overlay` hides it in globals.css.
+ */
+const SEEN_SCRIPT = `try{if(sessionStorage.getItem('${SEEN_KEY}')==='1')document.documentElement.setAttribute('data-intro-seen','')}catch(e){}`
+
+/** Input that hurries the intro along rather than making anyone sit through it. */
+const SKIP_EVENTS = ['pointerdown', 'keydown', 'wheel', 'touchstart'] as const
+
+const readSeen = () => {
+  try {
+    return sessionStorage.getItem(SEEN_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+const markSeen = () => {
+  try {
+    sessionStorage.setItem(SEEN_KEY, '1')
+  } catch {
+    // Storage blocked: the intro simply plays again next time.
+  }
+}
+
+const noSubscribe = () => () => {}
+
+/**
+ * The opening: the monogram draws itself, the name rises from behind its own
+ * edge over a terracotta hairline, then mark and name glide into the nav logo
+ * while the panel lifts off the hero. The nav's brand is the same mark and the
+ * same name at a third of the size, so the lockup lands on it and hands over.
+ *
+ * The lockup is sized at exactly three times the nav brand (mark, gap and
+ * type), so one uniform scale takes it onto the nav without the name drifting
+ * against the mark on the way.
+ */
 export function IntroAnimation({ onDone }: { onDone: () => void }) {
-  const [phase, setPhase] = useState<Phase>('idle')
-  const [curtainUp, setCurtainUp] = useState(false)
-  const [progress, setProgress] = useState(0)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const [done, setDone] = useState(false)
   const reducedMotion = usePrefersReducedMotion()
 
-  useEffect(() => {
-    // Reduced motion still has to release the hero, but it sets no local state:
-    // `reducedMotion` is known at render time, so "there is no intro" is derived
-    // below rather than assigned here. Writing `setPhase("done")` in an effect
-    // body scheduled a second render purely to reach a conclusion the first
-    // render already had.
-    if (reducedMotion) {
-      onDone()
+  // The server and the hydrating client both say "not seen", so the markup
+  // matches; the real value arrives on the next render. A client-side return
+  // to the homepage reads it straight away and never renders the overlay.
+  const seen = useSyncExternalStore(noSubscribe, readSeen, () => false)
 
-      return
-    }
+  useGSAP(
+    () => {
+      // Nothing to play. The hero still has to be released.
+      if (reducedMotion || seen) {
+        onDone()
 
-    // Phones skip the intro (the overlay is hidden in CSS below 768px, so the
-    // server-rendered page never shows it). On a mid-range phone the intro
-    // plus the wait for JavaScript held the hero back by over three seconds,
-    // which was most of the page's Largest Contentful Paint.
-    if (window.matchMedia(PHONE).matches) {
-      onDone()
+        return
+      }
 
-      return
-    }
+      // Phones skip the intro (the overlay is hidden in CSS below 768px, so
+      // the server-rendered page never shows it). On a mid-range phone the
+      // intro plus the wait for JavaScript held the hero back by over three
+      // seconds, which was most of the page's Largest Contentful Paint.
+      if (window.matchMedia(PHONE).matches) {
+        onDone()
 
-    const t0 = setTimeout(() => setPhase('in'), 60)
-    const t1 = setTimeout(() => setPhase('out'), EXIT_START)
-    const t2 = setTimeout(() => setCurtainUp(true), CURTAIN_START)
-    const t3 = setTimeout(() => onDone(), HERO_REVEAL_MS)
-    const t4 = setTimeout(() => setPhase('done'), TOTAL_DURATION)
-    const startedAt = performance.now()
-    let frame = 0
+        return
+      }
 
-    const updateProgress = (now: number) => {
-      const next = Math.min(100, Math.round(((now - startedAt) / LOAD_DURATION) * 100))
+      const root = rootRef.current
 
-      setProgress(next)
-      if (next < 100) frame = requestAnimationFrame(updateProgress)
-    }
+      if (!root) return
 
-    frame = requestAnimationFrame(updateProgress)
+      const panel = root.querySelector('.intro-panel')
+      const row = root.querySelector<HTMLElement>('.intro-row')
+      const mark = root.querySelector<HTMLElement>('.intro-row-mark')
+      const rule = root.querySelector('.intro-rule')
+      const words = root.querySelectorAll('.intro-word')
 
-    return () => {
-      clearTimeout(t0)
-      clearTimeout(t1)
-      clearTimeout(t2)
-      clearTimeout(t3)
-      clearTimeout(t4)
-      cancelAnimationFrame(frame)
-    }
-  }, [onDone, reducedMotion])
+      if (!row || !mark) return
 
-  // Nothing to play: either the intro has finished, or it never started.
-  if (reducedMotion || phase === 'done') return null
+      // Measured when the glide starts, not before: Satoshi may still be
+      // swapping in during the first frames, which changes the lockup's width.
+      let flip: { x: number; y: number; scale: number } | null = null
 
-  const isIdle = phase === 'idle'
-  const isIn = phase === 'in'
-  const isOut = phase === 'out'
+      const measure = () => {
+        if (flip) return flip
 
-  // Base transition helper for intro elements
-  const getItemStyle = (delayIn: number, yIn = 24, blurIn = 16) => {
-    const opacity = isIdle ? 0 : isIn ? 1 : 0
-    const blur = isIdle ? blurIn : isIn ? 0 : 16
-    const translateY = isIdle ? yIn : isIn ? 0 : -18
+        const target = document.querySelector('.nav-brand-mark')?.getBoundingClientRect()
+        const from = row.getBoundingClientRect()
+        const m = mark.getBoundingClientRect()
 
-    const transition = isOut
-      ? `opacity ${EXIT_DURATION}ms cubic-bezier(0.4, 0, 1, 1), filter ${EXIT_DURATION}ms cubic-bezier(0.4, 0, 1, 1), transform ${EXIT_DURATION}ms cubic-bezier(0.4, 0, 1, 1)`
-      : isIn
-        ? `opacity 750ms cubic-bezier(0.16, 1, 0.3, 1) ${delayIn}ms, filter 750ms cubic-bezier(0.16, 1, 0.3, 1) ${delayIn}ms, transform 750ms cubic-bezier(0.16, 1, 0.3, 1) ${delayIn}ms`
-        : 'none'
+        if (!target || !m.width) return (flip = { x: 0, y: 0, scale: 1 })
 
-    return {
-      opacity,
-      filter: `blur(${blur}px)`,
-      transform: `translateY(${translateY}px)`,
-      transition,
-      willChange: 'opacity, filter, transform'
-    }
-  }
+        // The row scales from its top-left corner, so the mark's offset inside
+        // the row shrinks with it.
+        const scale = target.width / m.width
+
+        flip = {
+          scale,
+          x: target.left - from.left - (m.left - from.left) * scale,
+          y: target.top - from.top - (m.top - from.top) * scale
+        }
+
+        return flip
+      }
+
+      const tl = gsap.timeline({
+        defaults: { ease: 'expo.out' },
+        onComplete: () => {
+          markSeen()
+          setDone(true)
+        }
+      })
+
+      // `y: 0` because GSAP reads the CSS starting offset (translateY(110%))
+      // as pixels into `y`, and would keep it while tweening `yPercent`.
+      tl.fromTo(words, { y: 0, yPercent: 110 }, { yPercent: 0, duration: 0.9, stagger: 0.07 }, 0.15)
+        .fromTo(rule, { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'expo.inOut' }, 0.35)
+        .addLabel('glide', 1.1)
+        .to(rule, { scaleX: 0, transformOrigin: '100% 50%', duration: 0.45, ease: 'power3.in' }, 'glide')
+        .to(
+          row,
+          {
+            x: () => measure().x,
+            y: () => measure().y,
+            scale: () => measure().scale,
+            duration: 0.9,
+            ease: 'expo.inOut'
+          },
+          'glide'
+        )
+        .fromTo(
+          panel,
+          { clipPath: 'inset(0% 0% 0% 0%)' },
+          { clipPath: 'inset(0% 0% 100% 0%)', duration: 0.9, ease: 'expo.inOut' },
+          'glide+=0.05'
+        )
+
+        // The hero's own timeline starts while the panel is still lifting, so
+        // its headline is already rising when the panel uncovers it.
+        .call(onDone, undefined, 'glide+=0.15')
+
+        // Landed on the nav brand, which is identical underneath.
+        .to(row, { autoAlpha: 0, duration: 0.2, ease: 'none' })
+
+      const skip = () => {
+        if (tl.time() < tl.labels.glide) tl.seek('glide')
+        tl.timeScale(2.2)
+      }
+
+      SKIP_EVENTS.forEach(type => window.addEventListener(type, skip, { passive: true }))
+
+      return () => SKIP_EVENTS.forEach(type => window.removeEventListener(type, skip))
+    },
+    { scope: rootRef, dependencies: [reducedMotion, seen], revertOnUpdate: true }
+  )
+
+  if (reducedMotion || seen || done) return null
 
   return (
-    <div className='intro-overlay pointer-events-none fixed inset-0 z-[100]' aria-hidden='true'>
-      {/* Curtain background — retracts upward to reveal the hero */}
-      <div
-        className='absolute inset-x-0 top-0'
-        style={{
-          bottom: curtainUp ? '100%' : '0%',
-          transition: curtainUp ? `bottom ${CURTAIN_DURATION}ms cubic-bezier(0.76, 0, 0.24, 1)` : 'none',
-          background: 'var(--ground)'
-        }}
-      >
-        <div className='intro-grid absolute inset-0' />
-        <div className='intro-signal absolute top-1/2 left-0 h-px w-full' />
-      </div>
+    <div ref={rootRef} className='intro-overlay pointer-events-none fixed inset-0 z-[100]' aria-hidden='true'>
+      <script dangerouslySetInnerHTML={{ __html: SEEN_SCRIPT }} />
 
-      {/* Intro presentation card */}
+      <div className='intro-panel absolute inset-0' />
+
       <div className='absolute inset-0 flex items-center justify-center px-6'>
-        <div className='flex max-w-2xl flex-col items-center text-center select-none'>
-          {/* An original workflow monogram: the routed line draws first, its
-              nodes resolve, then the wordmark arrives. This borrows the
-              ceremonial pacing of the reference without copying its crest. */}
-          <div className='intro-mark mb-7' style={getItemStyle(40, 10, 8)}>
-            <BrandMark />
-          </div>
-
-          {/* Eyebrow badge */}
-          <div
-            className='border-rule bg-ink/3 mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1'
-            style={getItemStyle(100, 12, 10)}
-          >
-            <span className='bg-accent h-1.5 w-1.5 animate-pulse rounded-full' />
-            <span className='text-ink-3 font-mono text-[11px] tracking-[0.2em] uppercase sm:text-[12px]'>
-              AI Automation &amp; Systems
+        <div className='intro-lockup select-none'>
+          <div className='intro-row'>
+            <span className='intro-mark intro-row-mark'>
+              <BrandMark />
             </span>
+
+            {/* A <p>, not a heading: it is an opening, and the page's real
+                H1 is the hero headline. */}
+            <p className='intro-name'>
+              {PROFILE.name.split(' ').map((word, i) => (
+                <Fragment key={word}>
+                  {i > 0 && ' '}
+                  <span className='intro-word-mask'>
+                    <span className='intro-word'>{word}</span>
+                  </span>
+                </Fragment>
+              ))}
+            </p>
           </div>
 
-          {/* Scaled & Refined RAMON title. A <p>, not an <h1>: it is a loading
-              screen, and the page's real H1 is the hero headline. Two H1s, the
-              first one the word "RAMON", gave crawlers a wrong headline. */}
-          <p
-            className='text-ink mb-5 text-[clamp(2.5rem,6vw,4.5rem)] leading-none font-light tracking-[0.14em] uppercase'
-            style={{
-              fontFamily: DISPLAY_FONT,
-              ...getItemStyle(220, 28, 20)
-            }}
-          >
-            RAMON
-          </p>
-
-          <div className='intro-loading mb-6' style={getItemStyle(300, 8, 6)}>
-            <div className='intro-loading-head'>
-              <span>INITIALIZING WORKFLOW</span>
-              <span>{String(progress).padStart(3, '0')}%</span>
-            </div>
-            <div className='intro-progress-track'>
-              <span className='intro-progress' style={{ animationDuration: `${LOAD_DURATION}ms` }} />
-            </div>
-          </div>
-
-          {/* Business pain-point slogan */}
-          <p
-            className='text-ink-2 max-w-[42ch] text-[15px] leading-relaxed font-light tracking-tight sm:text-lg md:text-xl'
-            style={getItemStyle(340, 20, 14)}
-          >
-            Automating the manual work that quietly eats your business week.
-          </p>
+          <span className='intro-rule' />
         </div>
       </div>
     </div>
