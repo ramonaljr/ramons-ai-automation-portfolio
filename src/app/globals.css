@@ -443,40 +443,70 @@
   100% { opacity: 0.35; transform: scale(1); }
 }
 
-/* ── Intro: monogram and name, gliding into the nav brand ───────────────
-   The lockup is the nav brand at three times its size (6rem mark vs 2rem,
-   1.875rem gap vs 0.625rem, 2.85rem type vs 0.95rem), so a single uniform
-   scale lands it on the nav. Letter-spacing matches `.koisei-nav a`. */
-.intro-panel {
-  background: var(--ground);
+/* ── Intro: the landing page behind frosted glass ──────────────────────
+   The glass is the nav bar's (ground at ~70% over a backdrop blur), so the
+   page's own leaves and fog show through out of focus. The type is the hero's:
+   Satoshi Light at display tracking, the mono eyebrow in the accent. Every
+   element starts hidden here, not in GSAP, so nothing flashes on hydration. */
+.intro-glass {
+  background: color-mix(in oklab, var(--ground) 70%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(1.05);
+  backdrop-filter: blur(22px) saturate(1.05);
 }
 
-.intro-lockup {
-  display: inline-flex;
+.intro-stack {
+  display: flex;
   flex-direction: column;
-  gap: 1.15rem;
+  align-items: center;
+  text-align: center;
 }
 
-.intro-row {
+.intro-mark.intro-stack-mark {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1.75rem;
+}
+
+.intro-eyebrow {
   display: flex;
   align-items: center;
-  gap: 1.875rem;
-  transform-origin: 0 0;
-  will-change: transform;
+  gap: 0.85rem;
+  margin-bottom: 1.4rem;
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
 }
 
-.intro-mark.intro-row-mark {
-  width: 6rem;
-  height: 6rem;
-  flex-shrink: 0;
+.intro-eyebrow-rule {
+  display: block;
+  width: 2rem;
+  height: 1px;
+  background: color-mix(in oklab, var(--ink) 25%, transparent);
+  transform: scaleX(0);
 }
 
+.intro-eyebrow-rule:first-child {
+  transform-origin: 100% 50%;
+}
+
+.intro-eyebrow-rule:last-child {
+  transform-origin: 0 50%;
+}
+
+.intro-eyebrow-text {
+  opacity: 0;
+}
+
+/* The hero H1's type: Satoshi Light, -0.055em (measured live: -3.64px at
+   66.24px), set a size up because it stands alone here. */
 .intro-name {
   color: var(--ink);
-  font-size: 2.85rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  line-height: 1.2;
+  font-size: clamp(3.25rem, 5.15vw, 4.75rem);
+  font-weight: 300;
+  letter-spacing: -0.055em;
+  line-height: 1;
   white-space: nowrap;
 }
 
@@ -485,24 +515,60 @@
 .intro-word-mask {
   display: inline-block;
   overflow: hidden;
-  padding-bottom: 0.14em;
-  margin-bottom: -0.14em;
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
   vertical-align: top;
 }
 
-/* Hidden in CSS rather than by GSAP, so the name never flashes in while the
-   page hydrates. */
 .intro-word {
   display: inline-block;
   transform: translateY(110%);
 }
 
-.intro-rule {
+.intro-word-accent {
+  color: var(--accent);
+}
+
+.intro-loading {
+  width: clamp(16rem, 24vw, 21rem);
+  margin-top: 2.1rem;
+  opacity: 0;
+}
+
+.intro-loading-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+  color: var(--ink-3);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.intro-loading-track {
   display: block;
-  height: 1px;
+  height: 2px;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--ink) 10%, transparent);
+}
+
+.intro-loading-fill {
+  display: block;
+  height: 100%;
   background: var(--accent);
   transform: scaleX(0);
   transform-origin: 0 50%;
+}
+
+.intro-slogan {
+  max-width: 42ch;
+  margin-top: 1.4rem;
+  color: var(--ink-2);
+  font-size: 1.125rem;
+  font-weight: 300;
+  line-height: 1.55;
+  opacity: 0;
 }
 
 /* Seen this session (set before paint, see SEEN_SCRIPT), or asked for less

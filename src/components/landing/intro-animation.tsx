@@ -14,19 +14,23 @@ const PHONE = '(max-width: 767px)'
 /**
  * Once per tab. Written when the intro finishes, not when it starts, so a
  * re-render mid-intro (the page re-renders when the hero is released) never
- * reads "seen" and unmounts the overlay halfway through its glide.
+ * reads "seen" and unmounts the glass halfway through clearing.
  */
 const SEEN_KEY = 'rv-intro-seen'
 
 /**
- * Runs while the HTML is still parsing, before the overlay's panel exists, so
- * a returning visitor never sees the panel flash in and out while the page
- * hydrates. `[data-intro-seen] .intro-overlay` hides it in globals.css.
+ * Runs while the HTML is still parsing, before the glass exists, so a
+ * returning visitor never sees it flash in and out while the page hydrates.
+ * `[data-intro-seen] .intro-overlay` hides it in globals.css.
  */
 const SEEN_SCRIPT = `try{if(sessionStorage.getItem('${SEEN_KEY}')==='1')document.documentElement.setAttribute('data-intro-seen','')}catch(e){}`
 
 /** Input that hurries the intro along rather than making anyone sit through it. */
 const SKIP_EVENTS = ['pointerdown', 'keydown', 'wheel', 'touchstart'] as const
+
+/** The name with its suffix split off, so the suffix can take the accent. */
+const NAME_WORDS = PROFILE.name.split(' ')
+const SUFFIX = NAME_WORDS[NAME_WORDS.length - 1]
 
 const readSeen = () => {
   try {
@@ -47,14 +51,10 @@ const markSeen = () => {
 const noSubscribe = () => () => {}
 
 /**
- * The opening: the monogram draws itself, the name rises from behind its own
- * edge over a terracotta hairline, then mark and name glide into the nav logo
- * while the panel lifts off the hero. The nav's brand is the same mark and the
- * same name at a third of the size, so the lockup lands on it and hands over.
- *
- * The lockup is sized at exactly three times the nav brand (mark, gap and
- * type), so one uniform scale takes it onto the nav without the name drifting
- * against the mark on the way.
+ * The opening is the landing page itself, out of focus. The page sits behind
+ * frosted glass like the nav bar's; over it the monogram draws, the brand line
+ * and the name rise in the hero's own display type, the workflow bar fills,
+ * and then the glass clears and the hero comes into focus where it stands.
  */
 export function IntroAnimation({ onDone }: { onDone: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -63,7 +63,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
 
   // The server and the hydrating client both say "not seen", so the markup
   // matches; the real value arrives on the next render. A client-side return
-  // to the homepage reads it straight away and never renders the overlay.
+  // to the homepage reads it straight away and never renders the glass.
   const seen = useSyncExternalStore(noSubscribe, readSeen, () => false)
 
   useGSAP(
@@ -85,43 +85,10 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
         return
       }
 
-      const root = rootRef.current
-
-      if (!root) return
-
-      const panel = root.querySelector('.intro-panel')
-      const row = root.querySelector<HTMLElement>('.intro-row')
-      const mark = root.querySelector<HTMLElement>('.intro-row-mark')
-      const rule = root.querySelector('.intro-rule')
-      const words = root.querySelectorAll('.intro-word')
-
-      if (!row || !mark) return
-
-      // Measured when the glide starts, not before: Satoshi may still be
-      // swapping in during the first frames, which changes the lockup's width.
-      let flip: { x: number; y: number; scale: number } | null = null
-
-      const measure = () => {
-        if (flip) return flip
-
-        const target = document.querySelector('.nav-brand-mark')?.getBoundingClientRect()
-        const from = row.getBoundingClientRect()
-        const m = mark.getBoundingClientRect()
-
-        if (!target || !m.width) return (flip = { x: 0, y: 0, scale: 1 })
-
-        // The row scales from its top-left corner, so the mark's offset inside
-        // the row shrinks with it.
-        const scale = target.width / m.width
-
-        flip = {
-          scale,
-          x: target.left - from.left - (m.left - from.left) * scale,
-          y: target.top - from.top - (m.top - from.top) * scale
-        }
-
-        return flip
-      }
+      // The percentage is written straight to the node rather than through
+      // state: a re-render per frame would be sixty renders for one number.
+      const percent = rootRef.current?.querySelector('.intro-loading-percent')
+      const progress = { value: 0 }
 
       const tl = gsap.timeline({
         defaults: { ease: 'expo.out' },
@@ -131,39 +98,39 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
         }
       })
 
-      // `y: 0` because GSAP reads the CSS starting offset (translateY(110%))
-      // as pixels into `y`, and would keep it while tweening `yPercent`.
-      tl.fromTo(words, { y: 0, yPercent: 110 }, { yPercent: 0, duration: 0.9, stagger: 0.07 }, 0.15)
-        .fromTo(rule, { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'expo.inOut' }, 0.35)
-        .addLabel('glide', 1.1)
-        .to(rule, { scaleX: 0, transformOrigin: '100% 50%', duration: 0.45, ease: 'power3.in' }, 'glide')
+      tl.fromTo('.intro-eyebrow-rule', { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'expo.inOut' }, 0.1)
+        .fromTo('.intro-eyebrow-text', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: 'power2.out' }, 0.2)
+
+        // `y: 0` because GSAP reads the CSS starting offset (translateY(110%))
+        // as pixels into `y`, and would keep it while tweening `yPercent`.
+        .fromTo('.intro-word', { y: 0, yPercent: 110 }, { yPercent: 0, duration: 1, stagger: 0.08 }, 0.2)
+        .fromTo('.intro-loading', { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.35)
+        .fromTo('.intro-loading-fill', { scaleX: 0 }, { scaleX: 1, duration: 1, ease: 'power1.inOut' }, 0.35)
         .to(
-          row,
+          progress,
           {
-            x: () => measure().x,
-            y: () => measure().y,
-            scale: () => measure().scale,
-            duration: 0.9,
-            ease: 'expo.inOut'
+            value: 100,
+            duration: 1,
+            ease: 'power1.inOut',
+            onUpdate: () => {
+              if (percent) percent.textContent = `${String(Math.round(progress.value)).padStart(3, '0')}%`
+            }
           },
-          'glide'
+          0.35
         )
-        .fromTo(
-          panel,
-          { clipPath: 'inset(0% 0% 0% 0%)' },
-          { clipPath: 'inset(0% 0% 100% 0%)', duration: 0.9, ease: 'expo.inOut' },
-          'glide+=0.05'
-        )
+        .fromTo('.intro-slogan', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.55)
+        .addLabel('clear', 1.5)
 
-        // The hero's own timeline starts while the panel is still lifting, so
-        // its headline is already rising when the panel uncovers it.
-        .call(onDone, undefined, 'glide+=0.15')
+        // The copy leaves first, then the glass clears behind it.
+        .to('.intro-stack', { autoAlpha: 0, y: -24, duration: 0.5, ease: 'power2.in' }, 'clear')
+        .to('.intro-glass', { autoAlpha: 0, duration: 0.9, ease: 'power2.inOut' }, 'clear+=0.15')
 
-        // Landed on the nav brand, which is identical underneath.
-        .to(row, { autoAlpha: 0, duration: 0.2, ease: 'none' })
+        // The hero's own timeline starts as the glass clears, so its headline
+        // is already rising when it comes into focus.
+        .call(onDone, undefined, 'clear+=0.2')
 
       const skip = () => {
-        if (tl.time() < tl.labels.glide) tl.seek('glide')
+        if (tl.time() < tl.labels.clear) tl.seek('clear')
         tl.timeScale(2.2)
       }
 
@@ -180,30 +147,44 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
     <div ref={rootRef} className='intro-overlay pointer-events-none fixed inset-0 z-[100]' aria-hidden='true'>
       <script dangerouslySetInnerHTML={{ __html: SEEN_SCRIPT }} />
 
-      <div className='intro-panel absolute inset-0' />
+      <div className='intro-glass absolute inset-0' />
 
       <div className='absolute inset-0 flex items-center justify-center px-6'>
-        <div className='intro-lockup select-none'>
-          <div className='intro-row'>
-            <span className='intro-mark intro-row-mark'>
-              <BrandMark />
-            </span>
+        <div className='intro-stack select-none'>
+          <span className='intro-mark intro-stack-mark'>
+            <BrandMark />
+          </span>
 
-            {/* A <p>, not a heading: it is an opening, and the page's real
-                H1 is the hero headline. */}
-            <p className='intro-name'>
-              {PROFILE.name.split(' ').map((word, i) => (
-                <Fragment key={word}>
-                  {i > 0 && ' '}
-                  <span className='intro-word-mask'>
-                    <span className='intro-word'>{word}</span>
-                  </span>
-                </Fragment>
-              ))}
-            </p>
+          <p className='intro-eyebrow'>
+            <span className='intro-eyebrow-rule' />
+            <span className='intro-eyebrow-text'>Better systems. More human work.</span>
+            <span className='intro-eyebrow-rule' />
+          </p>
+
+          {/* A <p>, not a heading: it is an opening, and the page's real H1
+              is the hero headline. */}
+          <p className='intro-name'>
+            {NAME_WORDS.map((word, i) => (
+              <Fragment key={word}>
+                {i > 0 && ' '}
+                <span className='intro-word-mask'>
+                  <span className={word === SUFFIX ? 'intro-word intro-word-accent' : 'intro-word'}>{word}</span>
+                </span>
+              </Fragment>
+            ))}
+          </p>
+
+          <div className='intro-loading'>
+            <div className='intro-loading-head'>
+              <span>Initializing workflow</span>
+              <span className='intro-loading-percent'>000%</span>
+            </div>
+            <span className='intro-loading-track'>
+              <span className='intro-loading-fill' />
+            </span>
           </div>
 
-          <span className='intro-rule' />
+          <p className='intro-slogan'>Automating the manual work that quietly eats your business week.</p>
         </div>
       </div>
     </div>
