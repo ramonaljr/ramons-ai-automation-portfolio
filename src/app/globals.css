@@ -2191,198 +2191,6 @@ body::after {
   line-height: 1.4;
 }
 
-/* ── By hand → now automated ──
-   Each role's claim sits beside the system that does that work today, linked
-   to the project. The two halves stack on narrow screens, where the arrow
-   turns to point down. */
-.experience-shift {
-  display: grid;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.experience-shift-label {
-  margin: 0 0 0.4rem;
-  color: var(--ink-3);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.experience-then .experience-role-achievement {
-  margin: 0;
-}
-
-.experience-shift-arrow {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid color-mix(in oklch, var(--accent) 30%, var(--rule));
-  border-radius: 50%;
-  background: var(--ground);
-  color: var(--accent);
-  transform: rotate(90deg);
-}
-
-.experience-now {
-  padding: 1rem 1.1rem 1.05rem;
-  border: 1px solid color-mix(in oklch, var(--accent) 22%, var(--rule));
-  border-radius: 0.9rem;
-  background: color-mix(in oklab, var(--accent) 5%, var(--ground));
-}
-
-.experience-now .experience-shift-label {
-  color: var(--accent);
-}
-
-.experience-now-copy {
-  margin: 0;
-  color: var(--ink);
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.experience-builds {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0.8rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.experience-builds a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.3rem 0.75rem;
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
-  background: var(--ground);
-  color: var(--ink);
-  font-size: 0.8rem;
-  transition: border-color 0.3s ease, color 0.3s ease;
-}
-
-.experience-builds a::after {
-  content: '→';
-  color: var(--accent);
-  transition: transform 0.3s var(--ease-entrance);
-}
-
-.experience-builds a:hover {
-  border-color: color-mix(in oklch, var(--accent) 55%, var(--rule));
-  color: var(--accent);
-}
-
-.experience-builds a:hover::after {
-  transform: translateX(2px);
-}
-
-@media (min-width: 900px) {
-  .experience-shift {
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.15fr);
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .experience-shift-arrow {
-    transform: none;
-  }
-}
-
-/* How to read the list, in the intro panel. */
-.experience-legend {
-  display: grid;
-  gap: 0.9rem;
-  margin: 1.75rem 0 0;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--rule);
-}
-
-.experience-legend div {
-  display: grid;
-  gap: 0.2rem;
-  padding-left: 1rem;
-  border-left: 2px solid var(--rule-strong);
-}
-
-.experience-legend div:last-child {
-  border-left-color: var(--accent);
-}
-
-.experience-legend dt {
-  color: var(--ink);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.experience-legend dd {
-  margin: 0;
-  color: var(--ink-2);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-/* ── How I work: the principles under the process steps ── */
-.process-principles {
-  margin-top: clamp(2.5rem, 5vw, 4rem);
-  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.25rem, 2.5vw, 2rem);
-  border: 1px solid var(--rule);
-  border-radius: 1.25rem;
-  background: color-mix(in oklab, var(--ground) 90%, transparent);
-  backdrop-filter: blur(10px);
-}
-
-.process-principles-label {
-  margin-bottom: 1.1rem;
-  color: var(--ink-3);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.process-principles ul {
-  display: grid;
-  gap: 1.1rem 2rem;
-}
-
-.process-principles li {
-  display: grid;
-  gap: 0.25rem;
-  padding-left: 1rem;
-  border-left: 2px solid color-mix(in oklab, var(--accent) 45%, transparent);
-}
-
-.process-principles strong {
-  color: var(--ink);
-  font-size: 0.9375rem;
-  font-weight: 500;
-}
-
-.process-principles span {
-  color: var(--ink-2);
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
-@media (min-width: 640px) {
-  .process-principles ul {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1100px) {
-  .process-principles ul {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
 /* Closing line of the section: it is the hinge between the history above and
    the systems below, so it is set as a statement rather than a caption. */
 .experience-thesis {
@@ -2414,6 +2222,18 @@ body::after {
   background-size: 0% 1px;
 }
 
+@media (min-width: 640px) {
+  .experience-role {
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .experience-role-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 
 @media (min-width: 1024px) {
   .experience-layout {
@@ -2425,6 +2245,16 @@ body::after {
     top: 7.5rem;
   }
 
+  .experience-role {
+    grid-template-columns: minmax(0, 9.5rem) minmax(0, 1fr);
+  }
+
+  .experience-role-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding-top: 0.35rem;
+  }
 }
 
 @media (max-width: 1023px) {
@@ -5999,6 +5829,44 @@ div#experience.about-journey {
   background: none !important;
 }
 
+.about-how {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.about-how-label {
+  margin-bottom: 1rem;
+  color: var(--ink-3);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+}
+
+.about-how ul {
+  display: grid;
+  gap: 1rem;
+}
+
+.about-how li {
+  display: grid;
+  gap: 0.2rem;
+  padding-left: 1rem;
+  border-left: 2px solid color-mix(in oklab, var(--accent) 45%, transparent);
+}
+
+.about-how strong {
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.about-how span {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
 /* ── How it works: step explorer ────────────────────────────────────────
    The chosen step's illustration and detail on the left, the titles grouped
    by engagement on the right. On phones the titles become a row of chips
@@ -6322,7 +6190,7 @@ div#experience.about-journey {
 .experience-history-label,
 .experience-role-index,
 .experience-tenure-span,
-.process-principles-label,
+.about-how-label,
 .story-copy-tag,
 .work-card-context,
 .work-card-outcome em {
@@ -6331,7 +6199,7 @@ div#experience.about-journey {
 
 .experience-history-label,
 .experience-role-index,
-.process-principles-label,
+.about-how-label,
 .work-card-stack,
 .work-card-outcome em {
   color: var(--ink-2);
