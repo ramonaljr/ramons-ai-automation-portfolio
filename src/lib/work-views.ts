@@ -1,19 +1,6 @@
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 
 /**
- * The photographed setting each system was built for. Kept here rather than in
- * the section component because the dialog shows the same three views, and two
- * copies of this map would drift the first time a project is added.
- */
-export const WORK_SCENES: Record<string, string> = {
-  'ai-appointment-setter': '/images/landing/work-scenes/ai-voice-receptionist.webp',
-  'ai-prospecting-apollo': '/images/landing/work-scenes/rag-knowledge-base.webp',
-  'ai-invoice-processing-approval': '/images/landing/work-scenes/invoice-processing-gl-reconciliation.webp',
-  'solar-lead-scoring-follow-up': '/images/landing/work-scenes/lead-routing-and-crm-enrichment.webp',
-  'hotel-employee-onboarding': '/images/landing/work-scenes/zero-touch-client-onboarding.webp'
-}
-
-/**
  * Each project's accent, used for its eyebrow, outcome figure and the ring on
  * its selected thumbnail, on the card and in the dialog alike. Hues are
  * unchanged from the original set; lightness is solved so every tone clears
@@ -33,7 +20,7 @@ export const WORK_TONES: Record<string, string> = {
 }
 
 export type WorkView = {
-  key: 'canvas' | 'map' | 'interface' | 'scene'
+  key: 'canvas' | 'map' | 'interface'
   label: string
   src: string
   alt: string
@@ -50,22 +37,21 @@ export type WorkView = {
 }
 
 /**
- * Three views per project, and deliberately three *kinds* of view rather than
- * three screenshots: the canvas that proves it was built, the interface a
- * client actually touches, and the setting it runs in.
+ * Two views per project, both of the build itself: the process map and the
+ * workflow as it stands in the tool. Shared by the card and the dialog.
  *
- * Canvas leads, and is therefore what both the card and the dialog open on. A
- * tidy desk proves nothing a stock library could not sell you; the canvas is
- * the only one of the three a competitor cannot reproduce.
+ * A third, photographed "scene" view was dropped: the photos were stock desks
+ * named for an older set of projects, and a desk proves nothing a stock
+ * library could not sell you. Every view here has to show this project.
  *
- * A project missing an asset simply shows fewer views — the array is built
- * from what exists rather than assuming all three always will.
+ * The map leads, so it is what both the card and the dialog open on. A
+ * project missing an asset simply shows fewer views; the array is built from
+ * what exists rather than assuming both always will.
  */
 export function workViews(cs: CaseStudyMetadata): WorkView[] {
   const platform = cs.platform ?? 'Workflow'
   const name = cs.title ?? cs.slug
   const mockup = cs.heroImage ?? cs.image
-  const scene = WORK_SCENES[cs.slug]
 
   const candidates: (WorkView | null)[] = [
     // Only an SVG canvas can run; a raster process map is shown as a picture.
@@ -88,8 +74,7 @@ export function workViews(cs: CaseStudyMetadata): WorkView[] {
           src: mockup,
           alt: cs.heroLabel ? `${cs.heroLabel} of ${name}` : `Interface mockup for ${name}`
         }
-      : null,
-    scene ? { key: 'scene', label: 'Scene', src: scene, alt: `Working environment for ${name}` } : null
+      : null
   ]
 
   return candidates.filter((view): view is WorkView => view !== null)
