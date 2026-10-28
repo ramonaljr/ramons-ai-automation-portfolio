@@ -578,8 +578,14 @@ export type Role = {
   /** The scannable claim. Rendered at full ink; must not restate `description`. */
   achievement: string
 
-  /** The supporting detail behind the claim. Rendered quieter. */
-  description: string
+  /**
+   * What the job involved, a line each. Taken from the CV, so the site and the
+   * downloadable CV describe the same work; nothing here goes beyond it.
+   */
+  highlights: string[]
+
+  /** What the employer is, for the line under the role title. */
+  employer: string
 }
 
 /**
@@ -605,8 +611,13 @@ export const EXPERIENCE: Role[] = [
     arrangement: 'US Remote',
     stack: ['Claude', 'Valuation Models', 'Financial Analysis', 'Forecasting', 'Excel'],
     achievement: 'Build company valuation models and forecasts for US stock portfolios',
-    description:
-      'Claude and AI tooling carry the research, market-data analysis and structured reporting around that work. The habit of handing repeatable analysis to a machine started here.'
+    employer: 'Independent contractor · United States, remote',
+    highlights: [
+      'Maintain discounted cash flow valuation models and financial statement forecasts across a portfolio of US-listed companies.',
+      'Turn earnings calls and investor guidance into revised assumptions every quarter, so each model reflects the latest numbers.',
+      'Research filings and market data and turn them into structured reports.',
+      'Use Claude and other AI tools daily to speed up research, analysis and reporting.'
+    ]
   },
   {
     index: '02',
@@ -616,8 +627,13 @@ export const EXPERIENCE: Role[] = [
     period: '2020 - 2021',
     stack: ['Team Leadership', 'Payables & Receivables', 'Account Reconciliation', 'SAP', 'Process Mapping'],
     achievement: 'Led a 10-person accounting team closing the books every month and year',
-    description:
-      'Ran and documented the month-end close, account checks and approvals for supplier bills, customer payments and payouts: the same step-by-step mapping that automation depends on.'
+    employer: 'Real estate developer · Cagayan de Oro',
+    highlights: [
+      'Delivered the branch’s monthly and annual financial statements on a fixed close cycle.',
+      'Owned the month-end close and the account reconciliations behind it.',
+      'Ran and documented the approval processes for supplier bills, customer payments and payouts.',
+      'Kept the branch accounts in SAP, reconciled and ready for review.'
+    ]
   },
   {
     index: '03',
@@ -627,8 +643,12 @@ export const EXPERIENCE: Role[] = [
     period: '2016 - 2020',
     stack: ['Cost Accounting', 'Budget vs Actual', 'QuickBooks', 'Workbooks'],
     achievement: 'Checked multi-million project costs against the books, with automated reports',
-    description:
-      'Compared planned and actual costs for a major real estate developer, checked material, labour and overhead costs against the records, and built reports that ran on a schedule.'
+    employer: 'Real estate developer · Cagayan de Oro',
+    highlights: [
+      'Performed standard costing and budget-versus-actual variance analysis on the developer’s projects.',
+      'Reconciled material, labour and overhead costs against the item ledger.',
+      'Built and maintained recurring cost and project reporting workbooks.'
+    ]
   },
   {
     index: '04',
@@ -638,8 +658,12 @@ export const EXPERIENCE: Role[] = [
     period: '2015 - 2018',
     stack: ['Tax Compliance', 'Invoicing', 'Supplier Reconciliation', 'Payment Approvals'],
     achievement: 'Ran supplier invoices from receipt to payment and kept every tax filing on time',
-    description:
-      'Oversaw invoice processing, overdue supplier balances and payment approvals, and managed the tax filing calendar: high-volume, rule-based work that is ideal for automation.'
+    employer: 'Real estate developer · Cagayan de Oro',
+    highlights: [
+      'Supervised the full accounts payable cycle: invoice processing, supplier reconciliation, aging and voucher controls.',
+      'Reviewed payment approvals and followed up overdue supplier balances.',
+      'Managed statutory tax compliance and the filing calendar, so every return went in on time.'
+    ]
   }
 ]
 

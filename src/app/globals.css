@@ -1982,287 +1982,6 @@ body::after {
   68% { transform: translate3d(-2px, -1px, 0) rotate(-1deg); }
 }
 
-.experience-layout {
-  display: grid;
-  align-items: start;
-  gap: clamp(2rem, 4vw, 4.5rem);
-}
-
-.experience-intro {
-  min-width: 0;
-  /* Square corners made this the only hard-edged panel on a page where every
-     other surface is rounded, so it read as unstyled rather than restrained.
-     Padding is tighter horizontally than vertically: the column is narrow,
-     and symmetric padding was spending it on margins instead of measure. */
-  padding: clamp(1.75rem, 3vw, 2.75rem) clamp(1.25rem, 2vw, 1.75rem);
-  border: 1px solid color-mix(in oklch, var(--accent) 20%, var(--rule));
-  border-radius: 1.25rem;
-  background: color-mix(in oklab, var(--ground) 72%, transparent);
-  backdrop-filter: blur(10px);
-}
-
-/* The 45ch cap never applied — the column is narrower than that, so the real
-   measure was set by the column and came out at ~32 characters, which is
-   where the ragged, cramped look came from. */
-.experience-intro .saas-section-intro > p {
-  max-width: none;
-}
-
-/* `.saas-section-intro h2` sets `font-size: … !important`, which silently
-   defeats the `titleClassName` prop SectionIntro exposes for exactly this —
-   every section renders at the same forced size regardless of what it asks
-   for. Overriding by specificity here rather than unpicking that rule, which
-   governs all eleven sections and is its own change.
-   This column is ~670px wide; at the forced 108px the heading ran to four
-   lines and pushed the body copy into the bottom third of the panel. */
-.experience-intro .saas-section-intro h2 {
-  font-size: clamp(1.9rem, 2.6vw, 3.25rem) !important;
-  line-height: 1.04 !important;
-  letter-spacing: -0.03em !important;
-}
-
-.experience-history {
-  min-width: 0;
-  /* The same panel as the intro beside it, but opaque enough that the
-     falling leaves and the About centre line never run behind the text.
-     The extra left padding holds the progress rail inside the card. */
-  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 2.5vw, 2.25rem) clamp(1.75rem, 3vw, 2.75rem)
-    clamp(1.25rem, 3.5vw, 3.25rem);
-  border: 1px solid color-mix(in oklch, var(--accent) 20%, var(--rule));
-  border-radius: 1.25rem;
-  background: color-mix(in oklab, var(--ground) 94%, transparent);
-  backdrop-filter: blur(10px);
-}
-
-.experience-history-label {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 0 2rem 0;
-  color: var(--ink-3);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
-}
-
-/* ── Tenure ledger ──────────────────────────────────────────────────────────
-   Roles are grouped under the employer they belong to, so a six-year tenure
-   with two promotions reads as one relationship rather than three jobs. The
-   card-per-role treatment this replaces nested a panel inside the already
-   panelled section and gave four levels of information one visual weight. */
-
-.experience-tenures {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(2.75rem, 5vw, 4rem);
-}
-
-.experience-tenure-head {
-  position: relative;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-bottom: 0.7rem;
-}
-
-.experience-tenure-rule {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 1px;
-  transform-origin: left;
-  background: linear-gradient(
-    to right,
-    color-mix(in oklab, var(--accent) 55%, transparent),
-    color-mix(in oklab, var(--ink) 12%, transparent) 45%,
-    transparent
-  );
-}
-
-.experience-tenure-company {
-  margin: 0;
-  color: var(--ink);
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.experience-tenure-span {
-  flex-shrink: 0;
-  color: var(--ink-2);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-}
-
-.experience-roles {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.experience-role {
-  display: grid;
-  gap: 0.35rem 2rem;
-  padding: 1.6rem 0;
-  border-bottom: 1px solid color-mix(in oklab, var(--ink) 8%, transparent);
-}
-
-.experience-role:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
-}
-
-.experience-role-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-}
-
-.experience-role-index {
-  color: var(--ink-3);
-}
-
-.experience-role-period {
-  color: var(--ink-2);
-}
-
-.experience-role-arrangement {
-  padding: 0.15rem 0.5rem;
-  border: 1px solid color-mix(in oklab, var(--accent) 34%, transparent);
-  border-radius: 0.25rem;
-  color: color-mix(in oklch, var(--accent) 78%, var(--ink));
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.experience-role-body {
-  min-width: 0;
-}
-
-.experience-role-title {
-  margin: 0;
-  color: var(--ink);
-  font-size: clamp(1.55rem, 2.4vw, 2.15rem);
-  font-weight: 300;
-  line-height: 1.08;
-  letter-spacing: -0.022em;
-}
-
-/* The scannable claim: full ink, a step up in size, tight leading. The
-   supporting sentence below is the only thing allowed to be quiet. */
-.experience-role-achievement {
-  margin: 0.75rem 0 0;
-  max-width: 52ch;
-  color: var(--ink);
-  font-size: 1.02rem;
-  line-height: 1.42;
-}
-
-.experience-role-description {
-  margin: 0.5rem 0 0;
-  max-width: 62ch;
-  color: var(--ink-2);
-  font-size: 0.9375rem;
-  line-height: 1.62;
-}
-
-.experience-role-stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 1rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.experience-role-stack li {
-  padding: 0.2rem 0.65rem;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--ink) 3%, transparent);
-  color: var(--ink-2);
-  font-size: 0.78rem;
-  line-height: 1.4;
-}
-
-/* Closing line of the section: it is the hinge between the history above and
-   the systems below, so it is set as a statement rather than a caption. */
-.experience-thesis {
-  max-width: 46ch;
-  margin: clamp(2.5rem, 5vw, 3.5rem) 0 0;
-  padding-top: clamp(1.5rem, 3vw, 2rem);
-  border-top: 1px solid color-mix(in oklch, var(--accent) 30%, var(--rule));
-  color: var(--ink);
-  font-family: var(--font-editorial), Georgia, serif;
-  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
-  font-weight: 300;
-  line-height: 1.34;
-}
-
-.experience-thesis a {
-  display: block;
-  margin-top: 0.5rem;
-  color: var(--accent);
-  text-decoration: none;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 100% 1px;
-  padding-bottom: 0.1rem;
-  transition: background-size 0.4s var(--ease-standard);
-}
-
-.experience-thesis a:hover {
-  background-size: 0% 1px;
-}
-
-@media (min-width: 640px) {
-  .experience-role {
-    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
-  }
-}
-
-@media (min-width: 640px) and (max-width: 1023px) {
-  .experience-role-meta {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-@media (min-width: 1024px) {
-  .experience-layout {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.28fr);
-  }
-
-  .experience-intro {
-    position: sticky;
-    top: 7.5rem;
-  }
-
-  .experience-role {
-    grid-template-columns: minmax(0, 9.5rem) minmax(0, 1fr);
-  }
-
-  .experience-role-meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.4rem;
-    padding-top: 0.35rem;
-  }
-}
-
-@media (max-width: 1023px) {
-  .experience-intro {
-    max-width: 48rem;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .kinetic-card::after {
     display: none;
@@ -5829,44 +5548,6 @@ div#experience.about-journey {
   background: none !important;
 }
 
-.about-how {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--rule);
-}
-
-.about-how-label {
-  margin-bottom: 1rem;
-  color: var(--ink-3);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.2em;
-}
-
-.about-how ul {
-  display: grid;
-  gap: 1rem;
-}
-
-.about-how li {
-  display: grid;
-  gap: 0.2rem;
-  padding-left: 1rem;
-  border-left: 2px solid color-mix(in oklab, var(--accent) 45%, transparent);
-}
-
-.about-how strong {
-  color: var(--ink);
-  font-size: 0.9375rem;
-  font-weight: 500;
-}
-
-.about-how span {
-  color: var(--ink-2);
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
 /* ── How it works: step explorer ────────────────────────────────────────
    The chosen step's illustration and detail on the left, the titles grouped
    by engagement on the right. On phones the titles become a row of chips
@@ -6532,53 +6213,6 @@ div#experience.about-journey {
   }
 }
 
-/* ── Career history: collapsed on phones ─────────────────────────────────
-   See ExperienceJourney. Desktop shows everything and no toggle. */
-.experience-role-more[data-open='false'] {
-  display: none;
-}
-
-/* Every width now opens on the title, dates and headline achievement, with
-   the description and skills one click away; the full text ran About to over
-   4,000px on desktop. Collapsed text stays in the DOM, so search still reads
-   it. */
-.experience-role-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.75rem;
-  padding: 0.35rem 0;
-  border-bottom: 1px solid var(--rule-strong);
-  color: var(--ink);
-  font-size: 0.8125rem;
-  cursor: pointer;
-}
-
-.experience-role-toggle::after {
-  content: '+';
-  color: var(--accent);
-}
-
-.experience-role-toggle[aria-expanded='true']::after {
-  content: '−';
-}
-
-@media (max-width: 767px) {
-  /* Collapsed roles are short, so the desktop rhythm around them read as
-     gaps rather than air. */
-  .experience-role {
-    padding: 1.1rem 0;
-  }
-
-  .experience-tenures {
-    gap: 2rem;
-  }
-
-  .experience-role-toggle {
-    margin-top: 0.5rem;
-  }
-}
-
 /* ── Working together: one path, three steps ─────────────────────────────
    See engagement-section.tsx. A rule runs through the step numbers and
    draws in when the section arrives; the build (featured) is the dark card. */
@@ -6911,143 +6545,409 @@ div#experience.about-journey {
   }
 }
 
-/* ── Career history: the scroll story ────────────────────────────────────
-   See ExperienceJourney. Roles rise in as they reach the lower part of the
-   screen; on wide screens a rail fills with progress and the role under the
-   middle of the screen is in focus while the others dim. */
-.experience-role {
+/* ── Career history: a pinned year timeline ─────────────────────────────
+   See ExperienceJourney. On wide, tall-enough screens the section pins like
+   the Story above it: the year runs forward from the first job as the reader
+   scrolls, the card swaps to the role held then, and the axis along the foot
+   fills toward now. Elsewhere the same roles are a plain list. */
+.experience-track {
+  position: relative;
+  height: 380vh;
+}
+
+.experience-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding: 5.75rem clamp(1rem, 3vw, 3rem) clamp(1rem, 2.5vw, 2rem);
+}
+
+.experience-screen {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 1.5rem clamp(2rem, 4vw, 4.5rem);
+  height: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  padding: clamp(1.75rem, 3.5vh, 2.75rem) clamp(1.75rem, 4vw, 4rem) clamp(1.25rem, 3vh, 2rem);
+  border: 1px solid var(--rule);
+  border-radius: 2rem;
+  background: color-mix(in oklab, var(--ground) 90%, white);
+  box-shadow: 0 50px 120px -70px oklch(0.25 0.018 255 / 0.4);
+}
+
+.experience-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.experience-heading {
+  max-width: 16ch;
+  color: var(--ink);
+  font-size: clamp(1.6rem, 2.2vw, 2.35rem);
+  font-weight: 300;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+}
+
+.experience-blurb {
+  max-width: 40ch;
+  margin-top: 0.9rem;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* The year: large, light, rolling to the next as the role changes. */
+.experience-year {
+  position: relative;
+  overflow: hidden;
+  margin-top: auto;
+  color: var(--ink);
+  font-size: clamp(6rem, 12vw, 11rem);
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+}
+
+.experience-year span {
+  display: block;
+}
+
+.experience-year-to {
+  margin-top: 0.9rem;
+  color: var(--ink-2);
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+}
+
+.experience-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  min-height: 0;
+}
+
+.experience-card {
+  padding: clamp(1.5rem, 3vh, 2.25rem) clamp(1.5rem, 2.5vw, 2.5rem);
+  border: 1px solid var(--rule);
+  border-radius: 1.4rem;
+  background: oklch(1 0 0);
+  box-shadow: 0 30px 60px -45px oklch(0.25 0.018 255 / 0.4);
+}
+
+.experience-main .experience-card {
+  flex: 1;
+  overflow: hidden;
+}
+
+.experience-card-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.experience-card-kicker span {
+  padding: 0.15rem 0.5rem;
+  border: 1px solid color-mix(in oklab, var(--accent) 34%, transparent);
+  border-radius: 0.25rem;
+  letter-spacing: 0.1em;
+}
+
+.experience-card-title {
+  margin-top: 0.8rem;
+  color: var(--ink);
+  font-size: clamp(1.9rem, 2.9vw, 3rem);
+  font-weight: 300;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.experience-card-employer {
+  margin-top: 0.5rem;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+}
+
+.experience-card-achievement {
+  max-width: 46ch;
+  margin-top: clamp(0.9rem, 2vh, 1.4rem);
+  color: var(--ink);
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+  line-height: 1.42;
+}
+
+.experience-card-highlights {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: clamp(0.8rem, 1.8vh, 1.2rem);
+  padding: 0;
+  list-style: none;
+}
+
+.experience-card-highlights li {
+  position: relative;
+  max-width: 64ch;
+  padding-left: 1.1rem;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.experience-card-highlights li::before {
+  content: '';
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 0.4rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+.experience-card-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: clamp(0.9rem, 2vh, 1.25rem);
+  padding: 0;
+  list-style: none;
+}
+
+.experience-card-stack li {
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--ink) 3%, transparent);
+  color: var(--ink-2);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* The four roles as tabs: a legend, and a way to jump between them. */
+.experience-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.experience-tabs li {
+  display: flex;
+}
+
+.experience-tabs button {
+  display: grid;
+  align-content: start;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--ground) 60%, white);
+  color: var(--ink);
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
   transition:
-    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    border-color 0.3s ease,
+    background 0.3s ease;
 }
 
-.experience-tenures[data-tracking] .experience-role[data-revealed='false'] {
-  opacity: 0;
-  transform: translate3d(0, 1.75rem, 0);
+.experience-tabs button span {
+  color: var(--ink-3);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
 }
 
-.experience-counter {
+.experience-tabs button:hover {
+  border-color: var(--rule-strong);
+}
+
+.experience-tabs button[data-active='true'] {
+  border-color: var(--accent);
+  background: oklch(1 0 0);
+}
+
+.experience-tabs button[data-active='true'] span {
+  color: var(--accent);
+}
+
+/* The axis along the foot of the panel. */
+.experience-axis {
+  grid-column: 1 / -1;
+}
+
+.experience-axis-line {
+  position: relative;
+  height: 2px;
+  margin: 0 0.5rem;
+  background: color-mix(in oklab, var(--ink) 10%, transparent);
+}
+
+.experience-axis-line i {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: left;
+}
+
+.experience-axis-line b {
+  position: absolute;
+  top: 50%;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background: var(--ground);
+  transform: translate(-50%, -50%);
+}
+
+.experience-axis ol {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  color: var(--ink-3);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  list-style: none;
+}
+
+.experience-axis li[data-start] {
+  color: var(--ink);
+}
+
+/* The list version. */
+.experience-list {
   display: none;
+  padding: 0 clamp(1rem, 4vw, 2rem);
 }
 
-.experience-rail {
-  display: none;
+.experience-list-intro {
+  margin-bottom: 1.5rem;
 }
 
-@media (min-width: 1024px) {
-  .experience-tenures {
-    position: relative;
+.experience-list ol {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Below the timeline: how the work is run, and the way on to the work. */
+.experience-after {
+  display: grid;
+  gap: 2rem;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding: 0 clamp(1rem, 4vw, 2rem);
+}
+
+.experience-how {
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.25rem, 2.5vw, 2rem);
+  border: 1px solid var(--rule);
+  border-radius: 1.25rem;
+  background: color-mix(in oklab, var(--ground) 90%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.experience-how-label {
+  margin-bottom: 1.1rem;
+  color: var(--ink-2);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.experience-how ul {
+  display: grid;
+  gap: 1.1rem 2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.experience-how li {
+  display: grid;
+  align-content: start;
+  gap: 0.25rem;
+  padding-left: 1rem;
+  border-left: 2px solid color-mix(in oklab, var(--accent) 45%, transparent);
+}
+
+.experience-how strong {
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.experience-how span {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Closing line: the hinge between the history above and the work below, so
+   it is set as a statement rather than a caption. */
+.experience-thesis {
+  max-width: 46ch;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  font-weight: 300;
+  line-height: 1.34;
+}
+
+.experience-thesis a {
+  display: inline-block;
+  margin-left: 0.4rem;
+  color: var(--accent);
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  transition: background-size 0.4s var(--ease-standard);
+}
+
+.experience-thesis a:hover {
+  background-size: 0% 1px;
+}
+
+@media (min-width: 640px) {
+  .experience-how ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .experience-how ul {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Phones, narrow tablets and short laptop screens get the list: the pinned
+   card needs both the width and the height to hold a whole role. */
+@media (max-width: 1023px), (max-height: 759px), (prefers-reduced-motion: reduce) {
+  .experience-track {
+    display: none;
   }
 
-  /* The rail runs down the left edge of the roles, behind the tenure rules. */
-  .experience-rail {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: -1.75rem;
+  .experience-list {
     display: block;
-    width: 2px;
-    border-radius: 999px;
-    background: color-mix(in oklab, var(--ink) 9%, transparent);
-  }
-
-  .experience-rail i {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(to bottom, var(--accent), color-mix(in oklch, var(--accent) 60%, oklch(0.8 0.12 70)));
-    transform-origin: top;
-  }
-
-  /* Focus without fading: every role stays fully readable. The one being
-     read gets a marker on the rail and its title at full ink; the others'
-     titles step back only slightly. (Dimming them to 38% left most of the
-     list as pale grey text at any moment.) */
-  .experience-role {
-    position: relative;
-  }
-
-  .experience-tenures[data-tracking] .experience-role-title {
-    color: color-mix(in oklab, var(--ink) 74%, var(--ground));
-    transition: color 0.5s ease;
-  }
-
-  .experience-tenures[data-tracking] .experience-role[data-active='true'] .experience-role-title {
-    color: var(--ink);
-  }
-
-  .experience-tenures[data-tracking] .experience-role::before {
-    content: '';
-    position: absolute;
-    top: 2.05rem;
-    left: calc(-1.75rem - 4px);
-    width: 10px;
-    height: 10px;
-    border: 2px solid var(--accent);
-    border-radius: 50%;
-    background: var(--ground);
-    opacity: 0;
-    transform: scale(0.4);
-    transition:
-      opacity 0.4s ease,
-      transform 0.4s var(--ease-entrance);
-  }
-
-  .experience-tenures[data-tracking] .experience-role[data-active='true']::before {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .experience-counter {
-    display: flex;
-    align-items: baseline;
-    gap: 0.9rem;
-    margin-top: 1.5rem;
-    padding: 0.9rem 1rem;
-    border-radius: 0.8rem;
-    background: color-mix(in oklab, var(--accent) 7%, transparent);
-  }
-
-  .experience-counter-index {
-    flex-shrink: 0;
-    color: var(--accent);
-    font-family: var(--font-geist-mono), ui-monospace, monospace;
-    font-size: 0.875rem;
-    letter-spacing: 0.08em;
-  }
-
-  .experience-counter-index i {
-    color: var(--ink-3);
-    font-style: normal;
-  }
-
-  .experience-counter-role {
-    color: var(--ink);
-    font-family: var(--font-editorial), Georgia, serif;
-    font-size: 1.15rem;
-    line-height: 1.2;
-  }
-
-  /* Holds the panel just under the nav; the old 7.5rem left a gap that
-     pushed the panel's foot off shorter laptop screens. */
-  .experience-intro {
-    top: 6.25rem;
-  }
-}
-
-/* Too short to hold the whole panel in view: let it scroll with the page
-   rather than cut off its last lines. */
-@media (min-width: 1024px) and (max-height: 859px) {
-  .experience-intro {
-    position: static;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .experience-role,
-  .experience-role::before,
-  .experience-tenures .experience-role-title {
-    transition: none;
   }
 }
 
