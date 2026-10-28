@@ -2,30 +2,37 @@
 
 import { useRef, useState } from 'react'
 
-import { motion, useMotionValueEvent, useScroll } from 'motion/react'
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from 'motion/react'
 
-import { TENURES } from '@/lib/portfolio'
-import { useInView, usePrefersReducedMotion } from '@/components/landing/motion'
-import { SectionIntro } from '@/components/landing/section-intro'
+import { EXPERIENCE, type Role } from '@/lib/portfolio'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 
+/** Oldest first, so the year runs forward as the reader scrolls. */
+const ROLES = [...EXPERIENCE].reverse()
+
+const startYear = (role: Role) => Number(role.period.split(' - ')[0])
+const endLabel = (role: Role) => role.period.split(' - ').at(-1)?.trim() ?? ''
+
+/** The axis: 2015 to now, one tick a year. */
+const FIRST_YEAR = startYear(ROLES[0])
+const NOW_YEAR = new Date().getFullYear()
+const TICKS = Array.from({ length: NOW_YEAR - FIRST_YEAR + 1 }, (_, i) => FIRST_YEAR + i)
+
 /**
- * How many roles precede each tenure, so the reveal cascade is staggered across
- * the flat list rather than restarting inside every group — the markup is
- * nested but it should read as one sequence. Derived at module scope: `TENURES`
- * is static, and a counter mutated during render is not.
+ * Where the axis stands for a given scroll progress. Each role owns an equal
+ * share of the scroll, and across its share the year runs from its own start
+ * to the next role's start (or to now), so the marker lands on each role's
+ * first year as that role comes into view.
  */
-const TENURE_OFFSETS = TENURES.reduce<number[]>(
-  (offsets, tenure) => [...offsets, offsets[offsets.length - 1] + tenure.roles.length],
-  [0]
-)
+function yearAt(progress: number) {
+  const span = progress * ROLES.length
+  const index = Math.min(ROLES.length - 1, Math.floor(span))
+  const from = startYear(ROLES[index])
+  const to = index + 1 < ROLES.length ? startYear(ROLES[index + 1]) : NOW_YEAR
 
-/** A role is "in focus" once its top passes this line of the viewport. */
-const FOCUS_LINE = 0.5
-
-/** …and starts its entrance once its top passes this one. */
-const REVEAL_LINE = 0.9
+  return from + (to - from) * Math.min(1, span - index)
+}
 
 /**
  * How the work is run, stated once. Every line repeats a commitment made
@@ -43,185 +50,212 @@ const HOW_I_WORK = [
   { label: 'Documented handover', copy: 'Your team can run and extend it without me.' }
 ] as const
 
+const HEADING = 'Four roles. One habit: map the work first.'
+
+const BLURB =
+  'Each role handed me a process to run by hand: invoices and supplier payments, project cost records, month-end accounts, then forecasting.'
+
 /**
- * The career behind the practice. This used to be its own Experience section
- * several screens after About; it now closes About, so the person and the
- * decade that shaped the work are read together. It keeps the `experience`
- * id so existing links still land on it.
+ * The career, closing About. It keeps the `experience` id so existing links
+ * still land on it.
+ *
+ * On wide, tall-enough screens it is a pinned timeline like the Story section:
+ * the year runs forward from 2015 as the reader scrolls, the role card swaps
+ * to the job held then, and an axis along the foot fills toward now. Everywhere
+ * else (phones, short screens, reduced motion) the same roles are a plain
+ * list. Only one of the two is ever displayed, so screen readers meet the
+ * roles once.
  */
 export function ExperienceJourney() {
-  const { ref, inView } = useInView<HTMLDivElement>(0.06)
-
-  /**
-   * Which roles are expanded. Each role shows its title, dates and headline
-   * achievement, with the description and skills behind a toggle: four full
-   * roles ran to five screens on phones and kept About over 4,000px tall on
-   * desktop. The collapsed text stays in the page, so search still reads it.
-   */
-  const [open, setOpen] = useState<Record<string, boolean>>({})
-
-  /**
-   * The scroll story on wide screens. The left panel holds still (sticky in
-   * CSS) while the roles scroll past it: a rail beside them fills with the
-   * reader's progress, the role under the middle of the screen is in focus
-   * while the rest dim, each role rises in as it arrives, and a counter in the
-   * panel names the role being read. One scroll listener, via Motion, and
-   * state only changes when a role actually crosses a line.
-   */
-  const reduced = usePrefersReducedMotion()
-  const tenuresRef = useRef<HTMLDivElement>(null)
-  const [active, setActive] = useState(0)
-  const [revealed, setRevealed] = useState(-1)
-  const { scrollY } = useScroll()
-
-  const { scrollYProgress: railProgress } = useScroll({
-    target: tenuresRef,
-    offset: [`start ${FOCUS_LINE * 100}%`, `end ${FOCUS_LINE * 100}%`]
-  })
-
-  useMotionValueEvent(scrollY, 'change', () => {
-    const roles = tenuresRef.current?.querySelectorAll<HTMLElement>('.experience-role')
-
-    if (!roles) return
-
-    let focus = 0
-    let shown = -1
-
-    roles.forEach((role, index) => {
-      const top = role.getBoundingClientRect().top
-
-      if (top <= window.innerHeight * FOCUS_LINE) focus = index
-      if (top <= window.innerHeight * REVEAL_LINE) shown = index
-    })
-
-    if (focus !== active) setActive(focus)
-    if (shown > revealed) setRevealed(shown)
-  })
-
   return (
     <div id='experience' className='about-journey'>
-      {/* Same measure as the About panel above, so the two edges line up. */}
+      <PinnedTimeline />
+      <RoleList />
+
       <div className='mx-auto max-w-[1240px]'>
-        <div className='experience-layout'>
-          <div className='experience-intro'>
-            <SectionIntro
-              title='Four roles. One habit: map the work first.'
-              blurb='Each role handed me a process to run by hand: invoices and supplier payments, project cost records, month-end accounts, then forecasting. That is why the workflows I build match how a business actually runs, rather than how a process diagram says it should.'
-              margin=''
-              titleClassName='mt-5 text-[clamp(1.9rem,3.2vw,3.4rem)]'
-            />
-
-
-            <div className='about-how'>
-              <p className='about-how-label label-quiet'>How I work</p>
-              <ul>
-                {HOW_I_WORK.map(item => (
-                  <li key={item.label}>
-                    <strong>{item.label}</strong>
-                    <span>{item.copy}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className='experience-after'>
+          <div className='experience-how'>
+            <p className='experience-how-label'>How I work</p>
+            <ul>
+              {HOW_I_WORK.map(item => (
+                <li key={item.label}>
+                  <strong>{item.label}</strong>
+                  <span>{item.copy}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div ref={ref} className='experience-history relative'>
+          <p className='experience-thesis'>
+            Every system on this page began as something on that list. <a href='#portfolio'>See examples</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
 
-            <div ref={tenuresRef} className='experience-tenures' data-tracking={!reduced || undefined}>
-              <span className='experience-rail' aria-hidden='true'>
-                <motion.i style={reduced ? { scaleY: 1 } : { scaleY: railProgress }} />
-              </span>
+function PinnedTimeline() {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] })
+  const [active, setActive] = useState(0)
 
-              {TENURES.map((tenure, tenureIndex) => (
-                <section key={tenure.company} className='experience-tenure' aria-label={tenure.company}>
-                  <header className='experience-tenure-head'>
-                    <span
-                      aria-hidden='true'
-                      className='experience-tenure-rule'
-                      style={{
-                        transform: inView ? 'scaleX(1)' : 'scaleX(0)',
-                        transition: 'transform 1s cubic-bezier(0.16,1,0.3,1) 120ms'
-                      }}
-                    />
-                    <h3 className='experience-tenure-company'>{tenure.company}</h3>
-                    <span className='experience-tenure-span'>{tenure.span}</span>
-                  </header>
+  // State changes only when the reader crosses into another role's share.
+  useMotionValueEvent(scrollYProgress, 'change', latest => {
+    const next = Math.min(ROLES.length - 1, Math.max(0, Math.floor(latest * ROLES.length)))
 
-                  <ol className='experience-roles'>
-                    {tenure.roles.map((role, roleIndex) => {
-                      const flat = TENURE_OFFSETS[tenureIndex] + roleIndex
+    if (next !== active) setActive(next)
+  })
 
-                      return (
-                        <li
-                          key={role.index}
-                          className='experience-role'
-                          data-revealed={reduced || flat <= revealed}
-                          data-active={flat === active}
-                        >
-                          <div className='experience-role-meta'>
-                            {/* A one-role tenure already shows these dates in its header. */}
-                            {tenure.roles.length > 1 && <span className='experience-role-period'>{role.period}</span>}
-                            {role.arrangement && (
-                              <span className='experience-role-arrangement'>{role.arrangement}</span>
-                            )}
-                          </div>
+  const fill = useTransform(
+    scrollYProgress,
+    p => (yearAt(Math.min(0.9999, Math.max(0, p))) - FIRST_YEAR) / (NOW_YEAR - FIRST_YEAR)
+  )
 
-                          <div className='experience-role-body'>
-                            <h4 className='experience-role-title' style={{ fontFamily: DISPLAY_FONT }}>
-                              {role.role}
-                            </h4>
+  const marker = useTransform(fill, f => `${(f * 100).toFixed(3)}%`)
 
-                            <p className='experience-role-achievement'>{role.achievement}</p>
+  // Jumps the scroll to the middle of a role's share, so the tabs work as
+  // navigation as well as a legend.
+  const goTo = (index: number) => {
+    const track = trackRef.current
 
-                            <div
-                              id={`role-more-${role.index}`}
-                              className='experience-role-more'
-                              data-open={Boolean(open[role.index])}
-                            >
-                              <p className='experience-role-description'>{role.description}</p>
+    if (!track) return
 
-                              <ul className='experience-role-stack'>
-                                {role.stack.map(item => (
-                                  <li key={item}>{item}</li>
-                                ))}
-                              </ul>
-                            </div>
+    const top = track.getBoundingClientRect().top + window.scrollY
+    const run = track.offsetHeight - window.innerHeight
 
-                            <button
-                              type='button'
-                              className='experience-role-toggle'
-                              aria-expanded={Boolean(open[role.index])}
-                              aria-controls={`role-more-${role.index}`}
-                              onClick={() => setOpen(current => ({ ...current, [role.index]: !current[role.index] }))}
-                            >
-                              {open[role.index] ? 'Less' : 'More about this role'}
-                            </button>
-                          </div>
-                        </li>
-                      )
-                    })}
-                  </ol>
-                </section>
-              ))}
+    window.scrollTo({ top: top + run * ((index + 0.5) / ROLES.length), behavior: 'smooth' })
+  }
 
-              {/* The chronology is only half the argument. This turns four
-                  finance roles into the reason the rest of the page exists,
-                  and hands the reader back to the work. */}
-              <p
-                className='experience-thesis'
-                style={{
-                  opacity: inView ? 1 : 0,
-                  transform: inView ? 'none' : 'translateY(14px)',
-                  transition:
-                    'opacity .9s cubic-bezier(0.16,1,0.3,1) 200ms, transform .9s cubic-bezier(0.16,1,0.3,1) 200ms'
-                }}
-              >
-                Every system on this page began as something on that list. <a href='#portfolio'>See examples</a>
-              </p>
+  const role = ROLES[active]
+
+  return (
+    <div ref={trackRef} className='experience-track'>
+      <div className='experience-stage'>
+        <div className='experience-screen'>
+          <div className='experience-side'>
+            {/* A <p>, not an <h2>: the list version below carries the heading,
+                and only one of the two is ever displayed. */}
+            <p className='experience-heading' style={{ fontFamily: DISPLAY_FONT }}>
+              {HEADING}
+            </p>
+            <p className='experience-blurb'>{BLURB}</p>
+
+            <div className='experience-year' style={{ fontFamily: DISPLAY_FONT }} aria-hidden='true'>
+              <AnimatePresence mode='popLayout' initial={false}>
+                <motion.span
+                  key={startYear(role)}
+                  initial={{ y: '60%', opacity: 0 }}
+                  animate={{ y: '0%', opacity: 1 }}
+                  exit={{ y: '-60%', opacity: 0 }}
+                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  {startYear(role)}
+                </motion.span>
+              </AnimatePresence>
             </div>
+            <p className='experience-year-to'>
+              to {endLabel(role)} · {role.company}
+            </p>
+          </div>
+
+          <div className='experience-main'>
+            <AnimatePresence mode='wait' initial={false}>
+              <motion.article
+                key={role.index}
+                className='experience-card'
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <RoleBody role={role} position={active + 1} />
+              </motion.article>
+            </AnimatePresence>
+
+            <ol className='experience-tabs'>
+              {ROLES.map((item, index) => (
+                <li key={item.index}>
+                  <button
+                    type='button'
+                    data-active={index === active}
+                    aria-current={index === active ? 'step' : undefined}
+                    onClick={() => goTo(index)}
+                  >
+                    <span>{item.period}</span>
+                    {item.short}
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className='experience-axis' aria-hidden='true'>
+            <div className='experience-axis-line'>
+              <motion.i style={{ scaleX: fill }} />
+              <motion.b style={{ left: marker }} />
+            </div>
+            <ol>
+              {TICKS.map(year => (
+                <li key={year} data-start={ROLES.some(r => startYear(r) === year) || undefined}>
+                  {year === NOW_YEAR ? 'Now' : year}
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+/** One role: title, employer, the headline claim, what the job involved, skills. */
+function RoleBody({ role, position }: { role: Role; position?: number }) {
+  return (
+    <>
+      <p className='experience-card-kicker'>
+        {position ? `Role ${position} of ${ROLES.length}` : role.period}
+        {role.arrangement && <span>{role.arrangement}</span>}
+      </p>
+      <h3 className='experience-card-title' style={{ fontFamily: DISPLAY_FONT }}>
+        {role.role}
+      </h3>
+      <p className='experience-card-employer'>
+        {role.company} · {role.employer}
+      </p>
+      <p className='experience-card-achievement'>{role.achievement}</p>
+      <ul className='experience-card-highlights'>
+        {role.highlights.map(line => (
+          <li key={line}>{line}</li>
+        ))}
+      </ul>
+      <ul className='experience-card-stack'>
+        {role.stack.map(item => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </>
+  )
+}
+
+/** The same roles as a list, newest first, for phones, short screens and reduced motion. */
+function RoleList() {
+  return (
+    <div className='experience-list mx-auto max-w-[1240px]'>
+      <div className='experience-list-intro'>
+        <h2 className='experience-heading' style={{ fontFamily: DISPLAY_FONT }}>
+          {HEADING}
+        </h2>
+        <p className='experience-blurb'>{BLURB}</p>
+      </div>
+
+      <ol>
+        {EXPERIENCE.map(role => (
+          <li key={role.index} className='experience-card'>
+            <RoleBody role={role} />
+          </li>
+        ))}
+      </ol>
     </div>
   )
 }
