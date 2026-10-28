@@ -5214,10 +5214,16 @@ a.work-aux-link:hover {
 
 /* ── Story: problem → system → outcome ───────────────────────────────────
    A three-screen pinned scene on desktop; three stacked panels on phones and
-   for reduced motion. Exactly one of the two is displayed at a time. */
+   for reduced motion. Exactly one of the two is displayed at a time.
+
+   The scene is light, like the page around it: the copy on the left and, on
+   the right, a board drawn in the process-map language of the Selected Work
+   cards (dotted canvas, pastel numbered stages, white tool tiles, indigo
+   arrows). The board is sized in em off its own width (1em = 1/64 of it), so
+   everything on it scales together. */
 .story-section {
-  --story-cream: oklch(0.97 0.007 255);
   --story-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --story-edge: #6366f1;
 
   position: relative;
 }
@@ -5242,48 +5248,26 @@ a.work-aux-link:hover {
   height: 100%;
   max-width: 1600px;
   margin-inline: auto;
-  border: 1px solid oklch(1 0 0 / 0.35);
+  border: 1px solid var(--rule);
   border-radius: 2rem;
-  background: oklch(0.22 0.018 255);
-  box-shadow: 0 50px 120px -60px oklch(0.25 0.018 255 / 0.8);
-  color: var(--story-cream);
-}
-
-.story-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  will-change: transform, filter;
-}
-
-.story-image-golden {
-  filter: saturate(1.08) brightness(0.9);
-}
-
-.story-shade {
-  position: absolute;
-  inset: 0;
-  /* Shaded in warm espresso with a terracotta glow from the lamp side, so
-     the dark scenes read as the same autumn palette as the page around them
-     rather than a separate, near-black film. */
   background:
-    radial-gradient(ellipse at 88% 12%, oklch(0.64 0.13 45 / 0.2), transparent 55%),
-    linear-gradient(90deg, oklch(0.19 0.018 255 / 0.9) 0%, oklch(0.19 0.018 255 / 0.55) 42%, transparent 70%),
-    linear-gradient(0deg, oklch(0.19 0.018 255 / 0.7) 0%, transparent 35%);
+    radial-gradient(circle at 12% 0%, color-mix(in oklab, var(--accent) 6%, transparent), transparent 32rem),
+    color-mix(in oklab, var(--ground) 86%, white);
+  box-shadow: 0 50px 120px -70px oklch(0.25 0.018 255 / 0.45);
+  color: var(--ink);
 }
 
 .story-copy {
   position: absolute;
-  left: clamp(1.75rem, 5vw, 5rem);
-  bottom: clamp(5.5rem, 13vh, 8rem);
-  max-width: min(40rem, 52%);
+  top: 50%;
+  left: clamp(1.75rem, 4.5vw, 4.5rem);
+  width: min(28rem, 33%);
+  translate: 0 -55%;
 }
 
 .story-copy-tag {
   margin-bottom: 1rem;
-  color: oklch(0.8 0.1 60);
+  color: var(--accent);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.6875rem;
   letter-spacing: 0.22em;
@@ -5291,18 +5275,18 @@ a.work-aux-link:hover {
 }
 
 .story-copy-title {
-  font-size: clamp(2.4rem, 4.6vw, 4.75rem);
+  font-size: clamp(2.1rem, 3.1vw, 3.4rem);
   font-weight: 300;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
 }
 
 .story-copy-body {
-  max-width: 46ch;
+  max-width: 42ch;
   margin-top: 1.25rem;
-  font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+  color: var(--ink-2);
+  font-size: clamp(0.95rem, 1.05vw, 1.05rem);
   line-height: 1.6;
-  color: color-mix(in oklab, var(--story-cream) 82%, transparent);
 }
 
 .story-outcome {
@@ -5320,17 +5304,18 @@ a.work-aux-link:hover {
 }
 
 .story-outcome strong {
-  font-size: clamp(2.2rem, 3.6vw, 3.5rem);
+  color: var(--accent);
+  font-size: clamp(2.2rem, 3.4vw, 3.25rem);
   font-weight: 300;
   line-height: 1;
-  color: oklch(0.86 0.11 75);
+  letter-spacing: -0.03em;
 }
 
 .story-outcome span {
   max-width: 14ch;
+  color: var(--ink-2);
   font-size: 0.85rem;
   line-height: 1.35;
-  color: color-mix(in oklab, var(--story-cream) 80%, transparent);
 }
 
 .story-outcome-link {
@@ -5339,10 +5324,10 @@ a.work-aux-link:hover {
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
   border-radius: 999px;
-  background: var(--story-cream);
-  color: oklch(0.22 0.018 255);
+  background: var(--ink);
+  color: var(--ground);
   font-size: 0.875rem;
-  transition: transform 0.3s var(--story-ease), background 0.3s ease;
+  transition: transform 0.3s var(--story-ease), opacity 0.3s ease;
 }
 
 .story-outcome-link::after {
@@ -5351,124 +5336,400 @@ a.work-aux-link:hover {
 
 .story-outcome-link:hover {
   transform: translateX(3px);
-  background: oklch(1 0 0);
+  opacity: 0.9;
 }
 
-/* The backlog sits top right, so it reads as a notification stack. */
-.story-backlog {
+/* ── The board ── */
+.story-board-wrap {
   position: absolute;
-  top: clamp(1.75rem, 5vh, 3rem);
-  right: clamp(1.75rem, 4vw, 4rem);
-  display: grid;
-  gap: 0.6rem;
-  min-width: 15rem;
+  top: 50%;
+  right: clamp(1.5rem, 3.5vw, 3.5rem);
+  width: min(58%, calc((100svh - 12rem) * 1.28));
+  translate: 0 -50%;
+  container-type: inline-size;
 }
 
-.story-backlog li {
+.story-board {
+  position: relative;
+  aspect-ratio: 64 / 50;
+  overflow: hidden;
+  border: 1px solid #e4e4ea;
+  border-radius: 1.4em;
+  background-color: #fcfcfd;
+  background-image: radial-gradient(circle at 1px 1px, #d9d9e2 1px, transparent 1.2px);
+  background-size: 2.2em 2.2em;
+  color: #1d1d27;
+  font-family: Inter, 'Helvetica Neue', Arial, sans-serif;
+  font-size: calc(100cqw / 64);
+  box-shadow: 0 2.4em 5em -3em oklch(0.25 0.018 255 / 0.28);
+}
+
+.story-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.story-logo {
+  display: block;
+  flex-shrink: 0;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.story-board-top {
+  position: absolute;
+  top: 2.2em;
+  right: 2.5em;
+  left: 2.5em;
+  z-index: 3;
   display: flex;
-  align-items: baseline;
-  gap: 0.9rem;
-  padding: 0.75rem 1.1rem;
-  border: 1px solid oklch(1 0 0 / 0.14);
-  border-radius: 1rem;
-  background: oklch(0.16 0.012 255 / 0.62);
-  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5em;
 }
 
-.story-backlog strong {
-  min-width: 2.2ch;
-  font-size: 2rem;
+.story-clock {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  height: 3.6em;
+  padding: 0 1.3em 0 1em;
+  border: 1px solid #e4e4ea;
+  border-radius: 999px;
+  background: #fff;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 1.15em;
+  letter-spacing: 0.06em;
+}
+
+.story-clock > .story-icon {
+  width: 1.4em;
+  height: 1.4em;
+  color: var(--accent);
+}
+
+.story-clock-time {
+  display: block;
+  min-width: 5.6em;
+}
+
+/* The day time sits on top of the night time and crossfades in. */
+.story-clock-day {
+  position: absolute;
+  left: 3.1em;
+  color: #2e9447;
+}
+
+.story-counters {
+  display: flex;
+  gap: 0.9em;
+}
+
+.story-counters li {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0.6em 1.1em 0.6em 0.9em;
+  border: 1px solid #e4e4ea;
+  border-radius: 1em;
+  background: #fff;
+}
+
+.story-counters strong {
+  min-width: 1.6em;
+  color: var(--accent);
+  font-size: 2.3em;
   font-weight: 300;
   line-height: 1;
-  color: oklch(0.8 0.13 45);
   font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
-.story-backlog span {
-  font-size: 0.8125rem;
-  color: color-mix(in oklab, var(--story-cream) 78%, transparent);
+.story-counters span {
+  max-width: 7.5em;
+  color: #55556a;
+  font-size: 1em;
+  line-height: 1.2;
 }
 
-.story-flow {
+/* The pile. */
+.story-item {
   position: absolute;
-  top: 42%;
-  left: clamp(1.75rem, 5vw, 5rem);
-  right: clamp(1.75rem, 5vw, 5rem);
-}
-
-.story-flow-line {
-  position: absolute;
-  top: 0.55rem;
+  top: 0;
   left: 0;
-  width: 100%;
-  height: 2px;
-  border-radius: 999px;
-  background: oklch(1 0 0 / 0.16);
-}
-
-.story-flow-line i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: oklch(0.8 0.13 65);
-  box-shadow: 0 0 12px oklch(0.8 0.13 65 / 0.6);
-  transform-origin: left;
-}
-
-.story-flow ol {
-  position: relative;
+  z-index: 2;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+  width: 18em;
+  height: 5.5em;
+  padding: 0 1.2em 0 0.9em;
+  border: 1px solid #e4e4ea;
+  border-radius: 1em;
+  background: #fff;
+  box-shadow: 0 0.3em 0.9em -0.2em rgb(0 0 0 / 0.12);
 }
 
-.story-flow li {
+.story-item-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 3.2em;
+  height: 3.2em;
+  border: 1px solid #ececf1;
+  border-radius: 0.8em;
+  background: #fff;
+}
+
+.story-item-icon .story-icon {
+  width: 1.6em;
+  height: 1.6em;
+}
+
+.story-item-text {
+  display: grid;
+  min-width: 0;
+  gap: 0.15em;
+}
+
+.story-item-text strong {
+  overflow: hidden;
+  font-size: 1.1em;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.story-item-text span {
+  color: #77778a;
+  font-size: 0.95em;
+}
+
+.story-item[data-kind='invoice'] .story-item-text span,
+.story-item[data-kind='lead'] .story-item-text span {
+  color: #c2410c;
+}
+
+/* The workflow. */
+.story-map {
+  position: absolute;
+  inset: 0;
+}
+
+.story-stage-card {
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  padding: 1.2em 1em 1em;
+  border: 0.13em solid var(--stage-border);
+  border-radius: 1.3em;
+  background: var(--stage-bg);
+  box-shadow: 0 0.2em 0.5em rgb(0 0 0 / 0.06);
+}
+
+.story-stage-head {
+  display: flex;
+  align-self: stretch;
+  align-items: flex-start;
+  gap: 0.6em;
+  min-height: 3.2em;
+  font-size: 1.15em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.story-stage-badge {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 1.65em;
+  height: 1.65em;
+  border-radius: 50%;
+  background: var(--stage-accent);
+  color: #fff;
+  font-size: 0.9em;
+}
+
+.story-stage-tool {
+  display: grid;
+  place-items: center;
+  width: 5em;
+  height: 5em;
+  margin-top: auto;
+  border: 0.13em solid var(--stage-border);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.story-stage-name {
+  margin-top: 0.7em;
+  color: #55556a;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.story-flow-node {
-  width: 1.2rem;
-  height: 1.2rem;
-  border: 2px solid oklch(0.8 0.13 65);
+.story-arrow {
+  position: absolute;
+  height: 0.18em;
+  margin-top: -0.09em;
+  border-radius: 999px;
+  background: var(--story-edge);
+  transform-origin: left;
+}
+
+.story-arrow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -0.1em;
+  width: 0.6em;
+  height: 0.6em;
+  border-top: 0.18em solid var(--story-edge);
+  border-right: 0.18em solid var(--story-edge);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.story-packet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 1.1em;
+  height: 1.1em;
+  border: 0.22em solid #fff;
   border-radius: 50%;
-  background: oklch(0.2 0.015 255);
+  background: var(--story-edge);
+  box-shadow: 0 0 0 0.25em color-mix(in oklab, var(--story-edge) 22%, transparent);
+}
+
+.story-packet-alert {
+  background: #d6453a;
+  box-shadow: 0 0 0 0.25em color-mix(in oklab, #d6453a 22%, transparent);
+}
+
+.story-exception-line {
+  position: absolute;
+  width: 0;
+  border-left: 0.16em dashed #e7958d;
+  transform-origin: top;
+}
+
+.story-exception {
+  position: absolute;
+  left: 17.5em;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  width: 28em;
+  padding: 1.1em 1.3em;
+  border: 0.13em solid #f1b5af;
+  border-radius: 1.3em;
+  background: #fdecea;
+  color: #55556a;
+  font-size: 1em;
+  line-height: 1.35;
+}
+
+.story-exception strong,
+.story-clear strong {
+  display: block;
+  color: #1d1d27;
+  font-size: 1.1em;
+}
+
+.story-exception-icon,
+.story-clear-check {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 3.4em;
+  height: 3.4em;
+  padding: 0.75em;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.story-exception-icon {
+  border: 0.13em solid #f1b5af;
+  color: #d6453a;
+}
+
+.story-runs-on {
+  position: absolute;
+  right: 2.5em;
+  bottom: 2.2em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.55em 1em;
+  border: 1px solid #e4e4ea;
+  border-radius: 999px;
+  background: #fff;
+  color: #55556a;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.95em;
+  letter-spacing: 0.08em;
+}
+
+.story-clear {
+  position: absolute;
+  bottom: 2.2em;
+  left: 2.5em;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  width: 33em;
+  padding: 1.1em 1.3em;
+  border: 0.13em solid #aad8b3;
+  border-radius: 1.3em;
+  background: #eaf6ec;
+  color: #55556a;
+  line-height: 1.35;
+}
+
+.story-clear-check {
+  border: 0.13em solid #aad8b3;
+  color: #2e9447;
 }
 
 .story-rail {
   position: absolute;
-  right: clamp(1.75rem, 4vw, 4rem);
   bottom: clamp(1.5rem, 4vh, 2.5rem);
-  width: min(22rem, 34%);
+  left: clamp(1.75rem, 4.5vw, 4.5rem);
+  width: min(20rem, 30%);
 }
 
 .story-rail-labels {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.6rem;
+  color: var(--ink-3);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.625rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--story-cream) 70%, transparent);
 }
 
 .story-rail-track {
   height: 2px;
   overflow: hidden;
   border-radius: 999px;
-  background: oklch(1 0 0 / 0.18);
+  background: color-mix(in oklab, var(--ink) 10%, transparent);
 }
 
 .story-rail-track i {
   display: block;
   height: 100%;
-  background: oklch(0.8 0.13 65);
+  background: var(--accent);
   transform-origin: left;
 }
 
@@ -5480,88 +5741,55 @@ a.work-aux-link:hover {
 }
 
 .story-panel {
-  position: relative;
-  overflow: hidden;
-  min-height: 30rem;
-  border: 1px solid oklch(1 0 0 / 0.35);
-  border-radius: 1.5rem;
-  background: oklch(0.2 0.015 255);
-  color: var(--story-cream);
-}
-
-.story-panel-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.story-panel[data-act='0'] .story-panel-image {
-  filter: grayscale(0.85) brightness(0.45) contrast(1.1);
-}
-
-.story-panel[data-act='1'] .story-panel-image {
-  filter: grayscale(0.2) brightness(0.6);
-}
-
-.story-panel-shade {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 90% 8%, oklch(0.64 0.13 45 / 0.18), transparent 60%),
-    linear-gradient(0deg, oklch(0.19 0.018 255 / 0.92) 0%, oklch(0.19 0.018 255 / 0.6) 55%, oklch(0.19 0.018 255 / 0.25));
-}
-
-.story-panel-copy {
-  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  min-height: 30rem;
   padding: 1.75rem 1.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 1.5rem;
+  background: color-mix(in oklab, var(--ground) 86%, white);
+  color: var(--ink);
 }
 
 .story-panel-title {
   font-size: clamp(2rem, 8vw, 3rem);
   font-weight: 300;
   line-height: 1.02;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .story-panel-list {
   display: grid;
   gap: 0.35rem;
   margin-top: 1.25rem;
+  color: var(--ink-2);
   font-size: 0.875rem;
-  color: color-mix(in oklab, var(--story-cream) 82%, transparent);
 }
 
 .story-panel-list strong {
-  color: oklch(0.8 0.13 45);
+  color: var(--accent);
   font-weight: 500;
 }
 
 .story-panel-tools {
   margin-top: 1.25rem;
+  color: var(--accent);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.75rem;
   letter-spacing: 0.1em;
-  color: oklch(0.8 0.13 65);
 }
 
 .story-panel-stat {
-  margin: 1.25rem 0 1.25rem;
+  margin: 1.25rem 0;
+  color: var(--ink-2);
   font-size: 0.875rem;
-  color: color-mix(in oklab, var(--story-cream) 82%, transparent);
 }
 
 .story-panel-stat strong {
   display: block;
+  color: var(--accent);
   font-size: 2.5rem;
   font-weight: 300;
   line-height: 1;
-  color: oklch(0.86 0.11 75);
 }
 
 .story-panel .story-outcome-link {
