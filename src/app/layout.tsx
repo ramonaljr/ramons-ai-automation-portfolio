@@ -13,6 +13,7 @@ import { Toaster } from '@/components/ui/sonner'
 import CustomCursor from '@/components/layout/custom-cursor'
 
 import { cn } from '@/lib/utils'
+import { SITE_SHARE_IMAGE } from '@/lib/seo'
 import { SITE_URL } from '@/lib/site'
 
 import './globals.css'
@@ -118,15 +119,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Ramon Vallejera Jr.',
     url: SITE_URL,
-    images: [
-      {
-        url: '/images/og-image-v3.jpg',
-        type: 'image/jpeg',
-        width: 1200,
-        height: 630,
-        alt: 'Ramon Vallejera Jr. | Better systems. More human work.'
-      }
-    ]
+    images: [SITE_SHARE_IMAGE]
   },
   twitter: {
     card: 'summary_large_image',
@@ -136,7 +129,7 @@ export const metadata: Metadata = {
     },
     description:
       'AI automation for any team buried in repetitive work, from a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier and Make.',
-    images: ['/images/og-image-v3.jpg']
+    images: [SITE_SHARE_IMAGE.url]
   }
 }
 
