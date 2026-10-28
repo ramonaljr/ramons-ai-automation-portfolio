@@ -11,14 +11,15 @@ import ContactForm from '@/components/contact/contact-form/contact-form'
 // Data Imports
 import { getCaseStudies } from '@/lib/case-studies'
 import { PRINCIPLES, PROFILE, SERVICES } from '@/lib/portfolio'
+import { pageMetadata } from '@/lib/seo'
 import { abs, SITE_URL } from '@/lib/site'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Contact',
   description:
     'Tell me the process that eats your week: what happens today, who does it, and how often. I will tell you whether it is worth automating and on which platform.',
-  alternates: { canonical: abs('/contact') }
-}
+  path: '/contact'
+})
 
 const jsonLd = {
   '@context': 'https://schema.org',

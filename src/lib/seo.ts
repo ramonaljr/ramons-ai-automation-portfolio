@@ -154,6 +154,37 @@ export function metaDescription(text: string | undefined, max = 155): string | u
 
 export const socialImage = () => abs('/images/og-image.png')
 
+/** The site-wide share card the root layout uses. */
+export const SITE_SHARE_IMAGE = {
+  url: '/images/og-image-v3.jpg',
+  type: 'image/jpeg',
+  width: 1200,
+  height: 630,
+  alt: 'Ramon Vallejera Jr. | Better systems. More human work.'
+}
+
+/**
+ * Canonical, Open Graph and Twitter metadata for one page, from one title,
+ * description and path.
+ *
+ * A page that sets only `alternates` inherits the root layout's `openGraph`
+ * and `twitter` whole, so its shared link shows the homepage's title,
+ * description and URL. Setting either object replaces the parent's rather
+ * than merging into it, which is why the image is repeated here. The layout's
+ * title templates still apply, so `title` gains the name suffix on its own.
+ */
+export function pageMetadata({ title, description, path }: { title: string; description?: string; path: string }) {
+  const url = abs(path)
+
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { type: 'website' as const, title, description, url, images: [SITE_SHARE_IMAGE] },
+    twitter: { card: 'summary_large_image' as const, title, description, images: [SITE_SHARE_IMAGE.url] }
+  }
+}
+
 export function blogPostingLd(post: PostMetadata, body: string) {
   const url = postUrl(post.slug)
   const published = post.publishedAt

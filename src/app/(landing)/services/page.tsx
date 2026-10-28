@@ -12,7 +12,7 @@ import { CONTAINER, DISPLAY_FONT, PAGE } from '@/components/landing/motion'
 
 // Data Imports
 import { FAQS } from '@/lib/portfolio'
-import { breadcrumbLd, graph, PERSON_ID } from '@/lib/seo'
+import { breadcrumbLd, graph, pageMetadata, PERSON_ID } from '@/lib/seo'
 import { abs, SITE_URL } from '@/lib/site'
 
 const URL = abs('/services')
@@ -20,11 +20,11 @@ const URL = abs('/services')
 const DESCRIPTION =
   'What I build, how a project is priced and run, and answers about access, ownership and reliability: audit, fixed-price build or retainer, all agreed up front.'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Services, pricing and FAQ',
   description: DESCRIPTION,
-  alternates: { canonical: URL }
-}
+  path: '/services'
+})
 
 /**
  * The FAQPage node moved here with the questions. Its markup has to describe

@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { ServiceDetail } from '@/components/landing/service-detail'
 
 import { PROFILE, SERVICES } from '@/lib/portfolio'
-import { breadcrumbLd, graph, metaDescription, PERSON_ID } from '@/lib/seo'
+import { breadcrumbLd, graph, metaDescription, pageMetadata, PERSON_ID } from '@/lib/seo'
 import { abs } from '@/lib/site'
 
 export async function generateStaticParams() {
@@ -17,13 +17,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!service) return {}
 
-  return {
+  return pageMetadata({
     title: service.title,
     description: metaDescription(service.description),
-    alternates: {
-      canonical: abs(`/services/${service.slug}`)
-    }
-  }
+    path: `/services/${service.slug}`
+  })
 }
 
 export const dynamicParams = false

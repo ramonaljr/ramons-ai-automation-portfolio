@@ -15,7 +15,7 @@ import { ReadingRail } from '@/components/shared/prose/reading-rail'
 // Data Imports
 import { getCaseStudyBySlug, getCaseStudies, type CaseStudyMetadata } from '@/lib/case-studies'
 import { extractHeadings } from '@/lib/extract-headings'
-import { metaDescription } from '@/lib/seo'
+import { metaDescription, pageMetadata } from '@/lib/seo'
 import { abs } from '@/lib/site'
 import { filmOf } from '@/lib/work-views'
 
@@ -35,11 +35,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const { metadata } = caseStudy
 
-  return {
+  return pageMetadata({
     title: `Case Study: ${metadata.title}`,
     description: metaDescription(metadata.description),
-    alternates: { canonical: abs(`/case-study/${metadata.slug}`) }
-  }
+    path: `/case-study/${metadata.slug}`
+  })
 }
 
 export const dynamicParams = false
