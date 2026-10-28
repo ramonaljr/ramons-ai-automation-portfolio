@@ -580,6 +580,14 @@ export type Role = {
 
   /** The supporting detail behind the claim. Rendered quieter. */
   description: string
+
+  /**
+   * What that work became: the system that now does it, in one sentence, and
+   * the projects that show it. Every claim here must already be on the linked
+   * case study; this pairs the history with the work, it adds nothing new.
+   */
+  now: string
+  builds: { slug: string; title: string }[]
 }
 
 /**
@@ -606,7 +614,9 @@ export const EXPERIENCE: Role[] = [
     stack: ['Claude', 'Valuation Models', 'Financial Analysis', 'Forecasting', 'Excel'],
     achievement: 'Build company valuation models and forecasts for US stock portfolios',
     description:
-      'Claude and AI tooling carry the research, market-data analysis and structured reporting around that work. The habit of handing repeatable analysis to a machine started here.'
+      'Claude and AI tooling carry the research, market-data analysis and structured reporting around that work. The habit of handing repeatable analysis to a machine started here.',
+    now: 'AI researches each company and drafts the first email, and a person approves before anything is sent.',
+    builds: [{ slug: 'ai-prospecting-apollo', title: 'AI Prospecting with Apollo' }]
   },
   {
     index: '02',
@@ -617,7 +627,9 @@ export const EXPERIENCE: Role[] = [
     stack: ['Team Leadership', 'Payables & Receivables', 'Account Reconciliation', 'SAP', 'Process Mapping'],
     achievement: 'Led a 10-person accounting team closing the books every month and year',
     description:
-      'Ran and documented the month-end close, account checks and approvals for supplier bills, customer payments and payouts: the same step-by-step mapping that automation depends on.'
+      'Ran and documented the month-end close, account checks and approvals for supplier bills, customer payments and payouts: the same step-by-step mapping that automation depends on.',
+    now: 'Overdue invoices are followed up by set rules every morning, and a disputed one stops the reminders until a person resolves it.',
+    builds: [{ slug: 'ai-unpaid-invoice-reminders', title: 'AI Unpaid Invoice Reminders' }]
   },
   {
     index: '03',
@@ -628,7 +640,9 @@ export const EXPERIENCE: Role[] = [
     stack: ['Cost Accounting', 'Budget vs Actual', 'QuickBooks', 'Workbooks'],
     achievement: 'Checked multi-million project costs against the books, with automated reports',
     description:
-      'Compared planned and actual costs for a major real estate developer, checked material, labour and overhead costs against the records, and built reports that ran on a schedule.'
+      'Compared planned and actual costs for a major real estate developer, checked material, labour and overhead costs against the records, and built reports that ran on a schedule.',
+    now: 'Every invoice is checked against its purchase order and delivery record, built for construction billing: progress payments, retention and lien waivers.',
+    builds: [{ slug: 'ai-invoice-processing-approval', title: 'AI Invoice Processing & Approval' }]
   },
   {
     index: '04',
@@ -639,7 +653,9 @@ export const EXPERIENCE: Role[] = [
     stack: ['Tax Compliance', 'Invoicing', 'Supplier Reconciliation', 'Payment Approvals'],
     achievement: 'Ran supplier invoices from receipt to payment and kept every tax filing on time',
     description:
-      'Oversaw invoice processing, overdue supplier balances and payment approvals, and managed the tax filing calendar: high-volume, rule-based work that is ideal for automation.'
+      'Oversaw invoice processing, overdue supplier balances and payment approvals, and managed the tax filing calendar: high-volume, rule-based work that is ideal for automation.',
+    now: 'Invoices are read from the inbox, duplicates skipped, approved in Slack and added to QuickBooks without retyping.',
+    builds: [{ slug: 'ai-invoice-processing-approval', title: 'AI Invoice Processing & Approval' }]
   }
 ]
 

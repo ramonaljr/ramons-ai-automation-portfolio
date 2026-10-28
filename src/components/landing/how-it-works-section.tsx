@@ -162,6 +162,22 @@ export function LaunchVisual() {
   )
 }
 
+/**
+ * How the work is run, stated once, under the steps it governs. Every line
+ * repeats a commitment made elsewhere on the page (services, contact), so
+ * nothing here is a new claim. It used to sit in the career history, where it
+ * described the process rather than the career.
+ */
+const HOW_I_WORK = [
+  { label: 'Business case first', copy: 'Start with the work and the hours it costs, not the software.' },
+  {
+    label: 'Ready for when things fail',
+    copy: 'Every build checks for errors and alerts you when something goes wrong.'
+  },
+  { label: 'Human control retained', copy: 'A person reviews anything where a mistake would be expensive.' },
+  { label: 'Documented handover', copy: 'Your team can run and extend it without me.' }
+] as const
+
 const VISUALS: ReactNode[] = [
   <DiscoveryVisual key='discovery' />,
   <AuditVisual key='audit' />,
@@ -437,6 +453,18 @@ export function HowItWorksSection() {
             </div>
           </div>
         </MotionConfig>
+
+        <div className='process-principles'>
+          <p className='process-principles-label'>How I work</p>
+          <ul>
+            {HOW_I_WORK.map(item => (
+              <li key={item.label}>
+                <strong>{item.label}</strong>
+                <span>{item.copy}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   )

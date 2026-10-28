@@ -4,8 +4,10 @@ import { useRef, useState } from 'react'
 
 import { motion, useMotionValueEvent, useScroll } from 'motion/react'
 
+import { ArrowRight } from 'lucide-react'
+
 import { TENURES } from '@/lib/portfolio'
-import { useInView, usePrefersReducedMotion } from '@/components/landing/motion'
+import { ICON_STROKE, useInView, usePrefersReducedMotion } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
@@ -26,22 +28,6 @@ const FOCUS_LINE = 0.5
 
 /** …and starts its entrance once its top passes this one. */
 const REVEAL_LINE = 0.9
-
-/**
- * How the work is run, stated once. Every line repeats a commitment made
- * elsewhere on the page (process, services, contact), so nothing here is a
- * new claim; it is the same promise gathered where a reader weighing the
- * person behind it will look.
- */
-const HOW_I_WORK = [
-  { label: 'Business case first', copy: 'Start with the work and the hours it costs, not the software.' },
-  {
-    label: 'Ready for when things fail',
-    copy: 'Every build checks for errors and alerts you when something goes wrong.'
-  },
-  { label: 'Human control retained', copy: 'A person reviews anything where a mistake would be expensive.' },
-  { label: 'Documented handover', copy: 'Your team can run and extend it without me.' }
-] as const
 
 /**
  * The career behind the practice. This used to be its own Experience section
@@ -111,22 +97,20 @@ export function ExperienceJourney() {
               titleClassName='mt-5 text-[clamp(1.9rem,3.2vw,3.4rem)]'
             />
 
-
-            <div className='about-how'>
-              <p className='about-how-label label-quiet'>How I work</p>
-              <ul>
-                {HOW_I_WORK.map(item => (
-                  <li key={item.label}>
-                    <strong>{item.label}</strong>
-                    <span>{item.copy}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {/* How to read the list: each role sits beside what it became. */}
+            <dl className='experience-legend'>
+              <div>
+                <dt>By hand</dt>
+                <dd>The work as I did it, in each role.</dd>
+              </div>
+              <div>
+                <dt>Now automated</dt>
+                <dd>The system that runs it today, with the project that shows it.</dd>
+              </div>
+            </dl>
           </div>
 
           <div ref={ref} className='experience-history relative'>
-
             <div ref={tenuresRef} className='experience-tenures' data-tracking={!reduced || undefined}>
               <span className='experience-rail' aria-hidden='true'>
                 <motion.i style={reduced ? { scaleY: 1 } : { scaleY: railProgress }} />
@@ -171,7 +155,29 @@ export function ExperienceJourney() {
                               {role.role}
                             </h4>
 
-                            <p className='experience-role-achievement'>{role.achievement}</p>
+                            {/* Then and now, side by side: the habit and the system it became. */}
+                            <div className='experience-shift'>
+                              <div className='experience-then'>
+                                <p className='experience-shift-label'>By hand</p>
+                                <p className='experience-role-achievement'>{role.achievement}</p>
+                              </div>
+
+                              <span className='experience-shift-arrow' aria-hidden='true'>
+                                <ArrowRight size={18} strokeWidth={ICON_STROKE} />
+                              </span>
+
+                              <div className='experience-now'>
+                                <p className='experience-shift-label'>Now automated</p>
+                                <p className='experience-now-copy'>{role.now}</p>
+                                <ul className='experience-builds'>
+                                  {role.builds.map(build => (
+                                    <li key={build.slug}>
+                                      <a href={`/case-study/${build.slug}`}>{build.title}</a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
 
                             <div
                               id={`role-more-${role.index}`}
