@@ -4693,6 +4693,171 @@ a.work-aux-link:hover {
   border-color: var(--service-cream);
 }
 
+/* Homepage pricing row (EngagementSummary): the three ways to work together
+   and how each is priced, as one frosted band after How it works. The full
+   cards with what each includes are on /services. */
+.pricing-summary {
+  position: relative;
+  padding-block: 3.5rem;
+  border-block: 1px solid var(--rule);
+  background: color-mix(in oklab, var(--ground) 84%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.pricing-summary-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.pricing-summary-title {
+  margin-top: 0.85rem;
+  color: var(--ink);
+  font-size: clamp(1.75rem, 3vw, 2.6rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.pricing-summary-link {
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-bottom: 1px solid var(--rule-strong);
+  transition: border-color 0.3s ease;
+}
+
+.pricing-summary-link::after {
+  content: ' →';
+  color: var(--accent);
+}
+
+.pricing-summary-link:hover {
+  border-color: var(--accent);
+}
+
+.pricing-summary-list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pricing-summary-list > li {
+  padding: 1.35rem 1.5rem 1.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 1.1rem;
+  background: var(--surface);
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--step-delay),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--step-delay);
+}
+
+.pricing-summary-list[data-visible='true'] > li {
+  opacity: 1;
+  transform: none;
+}
+
+.pricing-summary-list > li[data-featured] {
+  border-color: transparent;
+  background: var(--ink);
+  color: var(--ground);
+}
+
+.pricing-summary-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+}
+
+.pricing-summary-meta span {
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+.pricing-summary-meta em {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--accent) 12%, var(--ground));
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pricing-summary-name {
+  margin-top: 0.8rem;
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.pricing-summary-price {
+  margin-top: 0.35rem;
+  color: var(--ink-2);
+  font-size: 0.875rem;
+}
+
+.pricing-summary-price strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.pricing-summary-list > li[data-featured] .pricing-summary-meta,
+.pricing-summary-list > li[data-featured] .pricing-summary-price {
+  color: color-mix(in oklab, var(--ground) 70%, transparent);
+}
+
+.pricing-summary-list > li[data-featured] .pricing-summary-price strong {
+  color: var(--ground);
+}
+
+@media (min-width: 48rem) {
+  .pricing-summary-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-summary-list > li {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* The homepage FAQ ends with the way to the full list on /services. */
+.faq-all-link {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-bottom: 1px solid var(--rule-strong);
+  transition: border-color 0.3s ease;
+}
+
+.faq-all-link::after {
+  content: ' →';
+  color: var(--accent);
+}
+
+.faq-all-link:hover {
+  border-color: var(--accent);
+}
+
 /* /services: the three sections on the page, as pills under its header. */
 .services-page-jump {
   display: flex;
@@ -4717,32 +4882,6 @@ a.work-aux-link:hover {
   border-color: var(--accent);
   background: color-mix(in oklab, var(--ink) 3%, transparent);
   color: var(--ink);
-}
-
-/* The homepage's one line about pricing, under the services CTA. */
-.service-engagement-link {
-  margin-top: 1rem;
-  padding-inline: 1.75rem;
-  color: var(--ink-2);
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
-.service-engagement-link a {
-  color: var(--ink);
-  font-weight: 500;
-  white-space: nowrap;
-  border-bottom: 1px solid var(--rule-strong);
-  transition: border-color 0.3s ease;
-}
-
-.service-engagement-link a::after {
-  content: ' →';
-  color: var(--accent);
-}
-
-.service-engagement-link a:hover {
-  border-color: var(--accent);
 }
 
 .service-accordion-cta {

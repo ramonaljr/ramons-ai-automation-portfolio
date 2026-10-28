@@ -739,8 +739,12 @@ export const ENGAGEMENTS = [
 // ─── FAQ ─────────────────────────────────────────────────────────────────────
 
 /**
- * Shared by the FAQ section and the landing page's FAQPage structured data,
- * so the answers search engines show are the ones on the page.
+ * Shared by the FAQ section and the FAQPage structured data on /services, so
+ * the answers search engines show are the ones on the page.
+ *
+ * `essential` marks the four the homepage keeps above its contact form: cost,
+ * privacy, failure and ownership, the doubts that stop a booking. /services
+ * shows all of them.
  */
 export const FAQS = [
   {
@@ -752,6 +756,7 @@ export const FAQS = [
   {
     icon: 'clock',
     question: 'How much does an automation project cost?',
+    essential: true,
     answer:
       'Projects are priced up front, not by the hour. The Automation Audit is a fixed fee quoted on the free call, a build is a fixed quote per workflow agreed before work starts, and the optional monthly retainer is a flat fee with the scope agreed up front. You see the number before anything begins.'
   },
@@ -764,6 +769,7 @@ export const FAQS = [
   {
     icon: 'lock',
     question: 'Will my business data remain private?',
+    essential: true,
     answer:
       'Yes. I work inside accounts and systems you control, request only the access the workflow needs, and can run everything on your own servers when sensitive data should never leave your business.'
   },
@@ -776,12 +782,14 @@ export const FAQS = [
   {
     icon: 'handshake',
     question: 'Who owns and maintains the automation?',
+    essential: true,
     answer:
       'You do. The finished workflow runs in your accounts and includes documentation, a recorded handover and clear instructions for the person who maintains it next.'
   },
   {
     icon: 'bell',
     question: 'What happens if a workflow fails?',
+    essential: true,
     answer:
       'Important workflows alert you when something fails, retry safely without creating duplicates, and pause for a person to check anything where a wrong decision would be costly. Problems are flagged, never hidden.'
   },

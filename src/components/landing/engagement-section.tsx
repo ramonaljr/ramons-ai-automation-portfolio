@@ -20,6 +20,56 @@ import { ENGAGEMENTS } from '@/lib/portfolio'
 const VISUALS: ReactNode[] = [<AuditVisual key='audit' />, <BuildVisual key='build' />, <LaunchVisual key='launch' />]
 
 /**
+ * The homepage's pricing row: the three ways to work together and how each is
+ * priced, in one band after How it works. It says prices are fixed up front
+ * without sending anyone away to find out; what each includes is on /services,
+ * where the full path below lives.
+ */
+export function EngagementSummary() {
+  const { ref, inView } = useInView<HTMLOListElement>(0.2)
+
+  return (
+    <section id='pricing' aria-labelledby='pricing-title' className='pricing-summary px-6 md:px-12 lg:px-20'>
+      <div className={CONTAINER}>
+        <div className='pricing-summary-head'>
+          <div>
+            <p className='eyebrow'>Working together</p>
+            <h2 id='pricing-title' className='pricing-summary-title' style={{ fontFamily: DISPLAY_FONT }}>
+              Priced up front, not by the hour.
+            </h2>
+          </div>
+          <a href='/services#engagement' className='pricing-summary-link'>
+            See what each includes
+          </a>
+        </div>
+
+        <ol ref={ref} className='pricing-summary-list' data-visible={inView}>
+          {ENGAGEMENTS.map((tier, index) => (
+            <li
+              key={tier.name}
+              data-featured={tier.featured || undefined}
+              style={{ '--step-delay': `${index * 120}ms` } as CSSProperties}
+            >
+              <p className='pricing-summary-meta'>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                {tier.duration}
+                {tier.start && <em>Most clients start here</em>}
+              </p>
+              <h3 className='pricing-summary-name' style={{ fontFamily: DISPLAY_FONT }}>
+                {tier.name}
+              </h3>
+              <p className='pricing-summary-price'>
+                <strong>{tier.pricing}</strong> {tier.pricingNote}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )
+}
+
+/**
  * Working together, as a path rather than a menu.
  *
  * Audit, build and retainer are the order most clients take them in, so they
