@@ -4295,201 +4295,278 @@ a.work-aux-link:hover {
     transform: none !important;
   }
 }
-/* ── Services: image accordion ───────────────────────────────────────────
-   One panel open, the rest folded to a spine. `data-open` drives everything,
-   so the component only tracks an index. Desktop folds sideways; phones fold
-   downwards, since five spines across 360px would leave no room to read. */
-.service-accordion {
-  --service-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --service-cream: oklch(0.97 0.007 255);
-
-  display: flex;
-  gap: 0.75rem;
-  height: clamp(28rem, 64vh, 36rem);
-  margin-top: 0.5rem;
-}
-
-.service-panel {
-  position: relative;
-  flex: 0 0 4.75rem;
-  min-width: 0;
-  overflow: hidden;
+/* ── Services: a picker and a board ──────────────────────────────────────
+   The five services as a list; the selected one as three steps on a process
+   board in the Selected Work maps' language, with its copy underneath. Side
+   by side from 1024px, stacked below that. */
+/* On a light panel like the Story, Experience and Contact sections, so the
+   falling leaves never run behind the copy. */
+.service-picker {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+  padding: clamp(1rem, 3vw, 2.5rem);
   border: 1px solid var(--rule);
-  border-radius: 1.25rem;
-  background: oklch(0.24 0.018 255);
-  box-shadow: 0 24px 60px -40px oklch(0.25 0.018 255 / 0.55);
-  transition:
-    flex 0.8s var(--service-ease),
-    border-color 0.4s ease;
+  border-radius: 2rem;
+  background: color-mix(in oklab, var(--ground) 92%, white);
+  box-shadow: 0 50px 120px -70px oklch(0.25 0.018 255 / 0.4);
 }
 
-.service-panel[data-open='true'] {
-  flex: 1 1 0;
-  border-color: var(--rule-strong);
+.service-list {
+  display: grid;
+  gap: 0.35rem;
 }
 
-.service-panel-image {
-  position: absolute;
-  inset: 0;
+.service-list-item {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 0.2rem 0.5rem;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.12);
-  filter: saturate(0.55) brightness(0.62);
-  transition:
-    transform 1.2s var(--service-ease),
-    filter 0.8s ease;
-}
-
-.service-panel[data-open='true'] .service-panel-image {
-  transform: scale(1);
-  filter: saturate(1.05) brightness(0.9);
-}
-
-.service-panel-shade {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(to top, oklch(0.18 0.018 255 / 0.94) 0%, oklch(0.18 0.018 255 / 0.62) 38%, transparent 72%),
-    linear-gradient(to right, oklch(0.18 0.018 255 / 0.35), transparent 60%);
-}
-
-/* The toggle covers the whole panel so a tap anywhere opens it. */
-.service-panel-heading {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-}
-
-.service-panel-toggle {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  cursor: pointer;
-  color: var(--service-cream);
+  padding: 1.05rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: 1.1rem;
+  color: var(--ink);
   text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-.service-panel-toggle:focus-visible {
-  outline: 2px solid var(--service-cream);
-  outline-offset: -6px;
-  border-radius: 1.25rem;
+.service-list-item:hover {
+  background: oklch(1 0 0 / 0.6);
 }
 
-.service-panel-index {
-  position: absolute;
-  top: 1.35rem;
-  left: 50%;
-  transform: translateX(-50%);
+.service-list-item[aria-selected='true'] {
+  border-color: var(--rule);
+  background: oklch(1 0 0);
+  box-shadow: 0 24px 48px -36px oklch(0.25 0.018 255 / 0.4);
+}
+
+.service-list-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.service-list-index {
+  grid-row: span 2;
+  padding-top: 0.35rem;
+  color: var(--ink-3);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.2em;
-  color: color-mix(in oklab, var(--service-cream) 72%, transparent);
-  transition: left 0.6s var(--service-ease), transform 0.6s var(--service-ease);
+  font-size: 0.75rem;
 }
 
-.service-panel[data-open='true'] .service-panel-index {
-  left: 1.75rem;
-  transform: none;
+.service-list-item[aria-selected='true'] .service-list-index {
+  color: var(--accent);
 }
 
-/* The folded label reads bottom-to-top along the spine. */
-.service-panel-spine {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 50%;
-  writing-mode: vertical-rl;
-  transform: translateX(-50%) rotate(180deg);
-  max-height: calc(100% - 5rem);
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-family: var(--font-editorial), Georgia, serif;
-  font-size: 1.05rem;
-  letter-spacing: 0.01em;
-  transition: opacity 0.3s ease;
-}
-
-.service-panel[data-open='true'] .service-panel-spine {
-  opacity: 0;
-}
-
-/* Above the toggle so the link stays clickable; the toggle still catches
-   taps everywhere else on the panel. */
-.service-panel-body {
-  position: absolute;
-  inset: auto 0 0 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.9rem;
-  padding: 2rem 1.75rem 1.75rem;
-  min-width: 22rem;
-  max-width: 40rem;
-  color: var(--service-cream);
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(1.25rem);
-  transition:
-    opacity 0.35s ease,
-    transform 0.35s ease;
-}
-
-.service-panel[data-open='true'] .service-panel-body {
-  pointer-events: auto;
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 0.6s ease 0.3s,
-    transform 0.8s var(--service-ease) 0.3s;
-}
-
-.service-panel-title {
-  font-size: clamp(1.6rem, 2.4vw, 2.25rem);
-  font-weight: 300;
-  line-height: 1.08;
+.service-list-title {
+  font-size: clamp(1.15rem, 1.5vw, 1.35rem);
+  font-weight: 400;
+  line-height: 1.2;
   letter-spacing: -0.02em;
 }
 
-.service-panel-copy {
-  max-width: 44ch;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: color-mix(in oklab, var(--service-cream) 84%, transparent);
+.service-list-outcomes {
+  color: var(--ink-3);
+  font-size: 0.8125rem;
 }
 
-.service-panel-tags {
+.service-stage {
+  display: grid;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+/* The board: the dotted canvas of the process maps. */
+.service-board {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(15rem, 24vw, 20rem);
+  padding: 3rem clamp(1rem, 2.5vw, 2rem) 2rem;
+  border: 1px solid #e4e4ea;
+  border-radius: 1.4rem;
+  background-color: #fcfcfd;
+  background-image: radial-gradient(circle at 1px 1px, #d9d9e2 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+.service-board-label {
+  position: absolute;
+  top: 1.1rem;
+  left: 1.3rem;
+  color: var(--ink-3);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.service-flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.75rem, 3.5vw, 3rem);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.service-flow-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: 11.5rem;
+  padding: 1rem;
+  border: 2px solid var(--stage-border);
+  border-radius: 1.1rem;
+  background: var(--stage-bg);
+  box-shadow: 0 0.2rem 0.5rem rgb(0 0 0 / 0.05);
+}
+
+/* The arrow to the next step, in the maps' indigo. */
+.service-flow-step:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 2px);
+  width: clamp(1.75rem, 3.5vw, 3rem);
+  color: #6366f1;
+  font-size: 1.4rem;
+  line-height: 1;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+.service-flow-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: #1d1d27;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.service-flow-badge {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: var(--stage-accent);
+  color: #fff;
+  font-size: 0.75rem;
+}
+
+.service-flow-tile {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: auto auto 0;
+  border: 2px solid var(--stage-border);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.service-flow-logo {
+  display: block;
+  width: 1.6rem;
+  height: 1.6rem;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.service-detail-title {
+  color: var(--ink);
+  font-size: clamp(1.6rem, 2.4vw, 2.25rem);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.service-detail-copy {
+  max-width: 58ch;
+  margin-top: 0.75rem;
+  color: var(--ink-2);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.service-detail-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-.service-panel-tags li {
-  padding: 0.3rem 0.7rem;
-  border: 1px solid color-mix(in oklab, var(--service-cream) 26%, transparent);
+.service-detail-tags li {
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--rule);
   border-radius: 999px;
-  background: color-mix(in oklab, var(--service-cream) 8%, transparent);
-  font-size: 0.75rem;
-  color: color-mix(in oklab, var(--service-cream) 90%, transparent);
+  background: oklch(1 0 0 / 0.75);
+  color: var(--ink-2);
+  font-size: 0.8125rem;
 }
 
-.service-panel-link {
+.service-detail-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.35rem;
+  gap: 0.4rem;
+  margin-top: 1.1rem;
   padding-bottom: 0.15rem;
-  border-bottom: 1px solid color-mix(in oklab, var(--service-cream) 45%, transparent);
-  font-size: 0.875rem;
-  color: var(--service-cream);
-  transition: border-color 0.3s ease, gap 0.3s ease;
+  border-bottom: 1px solid var(--ink);
+  color: var(--ink);
+  font-size: 0.9375rem;
 }
 
-.service-panel-link:hover {
-  gap: 0.75rem;
-  border-color: var(--service-cream);
+.service-detail-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+@media (min-width: 1024px) {
+  .service-picker {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.3fr);
+  }
+}
+
+/* Narrow screens: the three steps stack, with the arrow turned down. */
+@media (max-width: 639px) {
+  .service-flow {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .service-flow-step {
+    flex-direction: row;
+    align-items: center;
+    min-height: 0;
+  }
+
+  .service-flow-tile {
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 0 0 0 auto;
+  }
+
+  .service-flow-step:not(:last-child)::after {
+    top: calc(100% + 2px);
+    left: 50%;
+    width: auto;
+    transform: translateX(-50%) rotate(90deg);
+  }
 }
 
 /* Homepage pricing row (EngagementSummary): the three ways to work together
@@ -4694,72 +4771,6 @@ a.work-aux-link:hover {
   border: 1px solid var(--rule);
   border-radius: 1.25rem;
   background: color-mix(in oklab, var(--ground) 72%, transparent);
-}
-
-@media (max-width: 767px) {
-  .service-accordion {
-    flex-direction: column;
-    height: auto;
-    gap: 0.6rem;
-  }
-
-  .service-panel {
-    flex: none;
-    height: 4.25rem;
-    transition:
-      height 0.7s var(--service-ease),
-      border-color 0.4s ease;
-  }
-
-  .service-panel[data-open='true'] {
-    flex: none;
-    height: 29rem;
-  }
-
-  .service-panel-index,
-  .service-panel[data-open='true'] .service-panel-index {
-    top: 50%;
-    left: 1.25rem;
-    transform: translateY(-50%);
-  }
-
-  .service-panel[data-open='true'] .service-panel-index {
-    top: 1.4rem;
-    transform: none;
-  }
-
-  /* Two lines rather than an ellipsis: the longer titles lost their ends. */
-  .service-panel-spine {
-    top: 50%;
-    bottom: auto;
-    left: 3.5rem;
-    right: 1.25rem;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    writing-mode: horizontal-tb;
-    transform: translateY(-50%);
-    max-height: none;
-    white-space: normal;
-    font-size: 0.95rem;
-    line-height: 1.25;
-  }
-
-  .service-panel-body {
-    min-width: 0;
-    padding: 1.5rem 1.25rem 1.35rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .service-panel,
-  .service-panel-image,
-  .service-panel-index,
-  .service-panel-spine,
-  .service-panel-body,
-  .service-panel[data-open='true'] .service-panel-body {
-    transition: none;
-  }
 }
 
 /* ── One continuous wash from About to the footer ────────────────────────
