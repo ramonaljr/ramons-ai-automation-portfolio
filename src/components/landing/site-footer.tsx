@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { usePathname } from 'next/navigation'
-import { motion, useScroll, useTransform } from 'motion/react'
+import { motion, useScroll, useTransform, type MotionValue, type Variants } from 'motion/react'
 
 import { CONTAINER, DISPLAY_FONT, READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
 import { PROFILE, SERVICES } from '@/lib/portfolio'
@@ -50,17 +50,70 @@ function useManilaTime() {
   return time
 }
 
+const EASE = [0.16, 1, 0.3, 1] as const
+
+/** Sections of the footer rise in as they arrive, their children a beat apart. */
+const GROUP: Variants = {
+  hidden: {},
+  shown: { transition: { staggerChildren: 0.07 } }
+}
+
+const ITEM: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  shown: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE, staggerChildren: 0.04 } }
+}
+
+/** A headline line, rising from behind its own edge. */
+const LINE: Variants = {
+  hidden: { y: '110%' },
+  shown: { y: '0%', transition: { duration: 0.9, ease: EASE } }
+}
+
+const LETTERS = ['R', 'A', 'M', 'O', 'N']
+
+/**
+ * One letter of the signature. It rises out of the bottom edge as the reader
+ * reaches the end of the page, each letter a beat after the last, and fills
+ * with terracotta on the same scroll.
+ */
+function SignatureLetter({
+  letter,
+  index,
+  progress,
+  fill,
+  reduced
+}: {
+  letter: string
+  index: number
+  progress: MotionValue<number>
+  fill: MotionValue<string>
+  reduced: boolean
+}) {
+  // `progress` runs from the signature entering the screen to the end of
+  // the page, so the whole rise happens where it can be seen.
+  const start = index * 0.1
+  const y = useTransform(progress, [0, start, start + 0.55, 1], ['105%', '105%', '0%', '0%'])
+
+  return (
+    <motion.span style={reduced ? { backgroundSize: '100% 100%' } : { y, backgroundSize: fill }}>{letter}</motion.span>
+  )
+}
+
 export function SiteFooter() {
   const footerRef = useRef<HTMLElement>(null)
   const pathname = usePathname()
   const onLanding = pathname === '/'
   const reduced = usePrefersReducedMotion()
-  const { scrollYProgress } = useScroll({ target: footerRef, offset: ['start end', 'end end'] })
-  const wordY = useTransform(scrollYProgress, [0, 1], [60, 0])
+  const signatureRef = useRef<HTMLDivElement>(null)
+
+  // From the signature's top reaching the bottom of the screen to the end of
+  // the page: it is only on screen for the last stretch of the scroll, so its
+  // motion keys off its own position rather than the whole footer's.
+  const { scrollYProgress } = useScroll({ target: signatureRef, offset: ['start end', 'end end'] })
 
   // The wordmark fills with terracotta from the bottom as the page ends,
   // like a signature being drawn.
-  const wordFill = useTransform(scrollYProgress, [0.4, 1], ['100% 30%', '100% 100%'])
+  const wordFill = useTransform(scrollYProgress, [0.2, 1], ['100% 30%', '100% 100%'])
   const manilaTime = useManilaTime()
 
   return (
@@ -69,7 +122,13 @@ export function SiteFooter() {
       className='footer-scene saas-footer border-rule relative overflow-hidden border-t px-6 pt-20 md:px-12 lg:px-20'
     >
       <div className={`${CONTAINER} ${READABLE} relative z-10`}>
-        <div className='footer-close'>
+        <motion.div
+          className='footer-close'
+          variants={GROUP}
+          initial={reduced ? false : 'hidden'}
+          whileInView='shown'
+          viewport={{ once: true, amount: 0.5 }}
+        >
           {/* The story opens at 9:14 PM with the work still waiting; the page
               closes on the real time where Ramon is. Doubles as the time-zone
               answer for international clients. */}
@@ -80,73 +139,82 @@ export function SiteFooter() {
             </p>
           )}
           <p className='footer-ask' style={{ fontFamily: DISPLAY_FONT }}>
-            Have a process that
-            <br />
-            eats your week?
+            <span className='footer-ask-line'>
+              <motion.span variants={LINE}>Have a process that</motion.span>
+            </span>
+            <span className='footer-ask-line'>
+              <motion.span variants={LINE}>eats your week?</motion.span>
+            </span>
           </p>
-          <div className='footer-actions'>
+          <motion.div className='footer-actions' variants={ITEM}>
             <a href={onLanding ? '#contact' : '/contact'} className='footer-cta'>
               Book a free call <span aria-hidden='true'>→</span>
             </a>
             <a href={`mailto:${PROFILE.email}`} className='footer-mail'>
               {PROFILE.email}
             </a>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        <div className='footer-columns'>
-          <nav aria-label='Explore the page'>
+        <motion.div
+          className='footer-columns'
+          variants={GROUP}
+          initial={reduced ? false : 'hidden'}
+          whileInView='shown'
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          <motion.nav variants={ITEM} aria-label='Explore the page'>
             <p className='label-quiet'>Explore</p>
             <ul>
               {EXPLORE.map(link => (
-                <li key={link.label}>
+                <motion.li key={link.label} variants={ITEM}>
                   <a href={link.href ?? (onLanding ? link.hash : `/${link.hash}`)}>{link.label}</a>
-                </li>
+                </motion.li>
               ))}
             </ul>
-          </nav>
+          </motion.nav>
 
-          <nav aria-label='Services'>
+          <motion.nav variants={ITEM} aria-label='Services'>
             <p className='label-quiet'>Services</p>
             <ul>
-              <li>
+              <motion.li variants={ITEM}>
                 <a href='/services'>All services &amp; pricing</a>
-              </li>
+              </motion.li>
               {SERVICES.map(service => (
-                <li key={service.slug}>
+                <motion.li key={service.slug} variants={ITEM}>
                   <a href={`/services/${service.slug}`}>{service.short}</a>
-                </li>
+                </motion.li>
               ))}
             </ul>
-          </nav>
+          </motion.nav>
 
-          <nav aria-label='Connect'>
+          <motion.nav variants={ITEM} aria-label='Connect'>
             <p className='label-quiet'>Connect</p>
             <ul>
-              <li>
+              <motion.li variants={ITEM}>
                 <a href='/contact'>Contact form</a>
-              </li>
-              <li>
+              </motion.li>
+              <motion.li variants={ITEM}>
                 <a href='/blog'>Blog</a>
-              </li>
+              </motion.li>
               {PROFILE.socials.map(social => (
-                <li key={social.label}>
+                <motion.li key={social.label} variants={ITEM}>
                   <a href={social.href} target='_blank' rel='noopener noreferrer'>
                     {social.label}
                   </a>
-                </li>
+                </motion.li>
               ))}
             </ul>
-          </nav>
+          </motion.nav>
 
-          <div className='footer-identity'>
+          <motion.div className='footer-identity' variants={ITEM}>
             <p className='text-ink text-[0.95rem] font-medium tracking-[-0.01em]'>{PROFILE.name}</p>
             <p className='text-ink-2 mt-2 text-[14px]'>
               {PROFILE.title} · {PROFILE.location}
             </p>
             <p className='text-ink-2 mt-4 text-[14px]'>Better systems. More human work.</p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* TODO: privacy + terms links belong here — the routes do not exist
             yet, and linking them before they do would only ship two 404s. */}
@@ -172,16 +240,23 @@ export function SiteFooter() {
       </div>
 
       {/* The wordmark signs off the page: solid, cropped along the bottom
-          edge, filling with terracotta from the bottom as the page ends.
+          edge, its letters rising one by one and filling with terracotta
+          from the bottom as the page ends.
           It sits below the links rather than behind the headline, where the
           two used to muddy each other. */}
-      <div className='footer-signature' aria-hidden='true'>
-        <motion.div
-          className='footer-word'
-          style={reduced ? { backgroundSize: '100% 100%' } : { y: wordY, backgroundSize: wordFill }}
-        >
-          RAMON
-        </motion.div>
+      <div ref={signatureRef} className='footer-signature' aria-hidden='true'>
+        <div className='footer-word'>
+          {LETTERS.map((letter, index) => (
+            <SignatureLetter
+              key={letter}
+              letter={letter}
+              index={index}
+              progress={scrollYProgress}
+              fill={wordFill}
+              reduced={reduced}
+            />
+          ))}
+        </div>
       </div>
     </footer>
   )
