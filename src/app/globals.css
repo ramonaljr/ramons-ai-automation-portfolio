@@ -7511,6 +7511,32 @@ div#experience.about-journey {
   margin-top: 0.9rem;
 }
 
+/* The footer's entrances are set inline by Motion, which starts every one
+   hidden in the server render. Three cases must never see them hidden:
+   - Reduced motion. The preference is only known after hydration, by which
+     point the hidden start has already been rendered and Motion plays the
+     entrance anyway.
+   - A link reached by keyboard before its column has cascaded in: the focus
+     ring landed on invisible text.
+   - No JavaScript (see the <noscript> in SiteFooter). */
+@media (prefers-reduced-motion: reduce) {
+  .footer-ask-line > span,
+  .footer-actions,
+  .footer-columns nav,
+  .footer-columns li,
+  .footer-identity,
+  .saas-footer .footer-signature .footer-word span {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+.footer-columns li:focus-within,
+.footer-columns nav:focus-within {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 /* On hover a link nudges right as an underline slides in from the left. */
 .footer-columns a {
   display: inline-block;

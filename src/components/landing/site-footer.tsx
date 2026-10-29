@@ -121,6 +121,15 @@ export function SiteFooter() {
       ref={footerRef}
       className='footer-scene saas-footer border-rule relative overflow-hidden border-t px-6 pt-20 md:px-12 lg:px-20'
     >
+      {/* Without JavaScript nothing runs the entrances, so show their end state. */}
+      <noscript>
+        <style>
+          {
+            '.footer-ask-line>span,.footer-actions,.footer-columns nav,.footer-columns li,.footer-identity,.footer-word span{opacity:1!important;transform:none!important}'
+          }
+        </style>
+      </noscript>
+
       <div className={`${CONTAINER} ${READABLE} relative z-10`}>
         <motion.div
           className='footer-close'
