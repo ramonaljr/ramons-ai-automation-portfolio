@@ -4384,7 +4384,7 @@ a.work-aux-link:hover {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: clamp(15rem, 24vw, 20rem);
+  min-height: clamp(11rem, 16vw, 14rem);
   padding: 3rem clamp(1rem, 2.5vw, 2rem) 2rem;
   border: 1px solid #e4e4ea;
   border-radius: 1.4rem;
@@ -4404,23 +4404,29 @@ a.work-aux-link:hover {
   text-transform: uppercase;
 }
 
+.service-flow-wrap {
+  position: relative;
+  width: 100%;
+}
+
 .service-flow {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1.75rem, 3.5vw, 3rem);
-  width: 100%;
+  gap: clamp(1.75rem, 3vw, 2.75rem);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* Compact: the tool beside the step, and a line of what happens there. */
 .service-flow-step {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  min-height: 11.5rem;
-  padding: 1rem;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.95rem 1rem;
   border: 2px solid var(--stage-border);
   border-radius: 1.1rem;
   background: var(--stage-bg);
@@ -4433,20 +4439,37 @@ a.work-aux-link:hover {
   position: absolute;
   top: 50%;
   left: calc(100% + 2px);
-  width: clamp(1.75rem, 3.5vw, 3rem);
+  width: clamp(1.75rem, 3vw, 2.75rem);
   color: #6366f1;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   line-height: 1;
   text-align: center;
   transform: translateY(-50%);
 }
 
+.service-flow-tile {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 2px solid var(--stage-border);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.service-flow-text {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
 .service-flow-head {
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 0.45rem;
   color: #1d1d27;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   line-height: 1.25;
 }
@@ -4455,35 +4478,148 @@ a.work-aux-link:hover {
   display: grid;
   flex-shrink: 0;
   place-items: center;
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1.3rem;
+  height: 1.3rem;
   border-radius: 50%;
   background: var(--stage-accent);
   color: #fff;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
-.service-flow-tile {
-  display: grid;
-  place-items: center;
-  width: 3.5rem;
-  height: 3.5rem;
-  margin: auto auto 0;
-  border: 2px solid var(--stage-border);
-  border-radius: 50%;
-  background: #fff;
+.service-flow-example {
+  color: #55556a;
+  font-size: 0.8125rem;
+  line-height: 1.35;
 }
 
 .service-flow-logo {
   display: block;
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 1.45rem;
+  height: 1.45rem;
   -webkit-mask-size: contain;
   mask-size: contain;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
   mask-position: center;
+}
+
+/* Live: one cycle is 3.6s. Each step lights for its third of it as the
+   packet passes; the packet runs left to right behind the cards, so it is
+   seen crossing the gaps along the arrows. */
+.service-flow-packet {
+  display: none;
+}
+
+.service-flow-wrap[data-live] .service-flow-step {
+  animation: service-step-lit 3.6s ease-in-out infinite;
+  animation-delay: calc(var(--step) * 1.2s + 0.4s);
+}
+
+.service-flow-wrap[data-live] .service-flow-tile {
+  animation: service-tile-lit 3.6s ease-in-out infinite;
+  animation-delay: calc(var(--step) * 1.2s + 0.4s);
+}
+
+.service-flow-wrap[data-live] .service-flow-packet {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  /* Behind the cards: it shows only in the gaps, riding the arrows. */
+  z-index: 0;
+  display: block;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-top: -0.425rem;
+  border: 0.18rem solid #fff;
+  border-radius: 50%;
+  background: #6366f1;
+  box-shadow: 0 0 0 0.25rem color-mix(in oklab, #6366f1 22%, transparent);
+  animation: service-packet-run 3.6s cubic-bezier(0.45, 0, 0.55, 1) 0.4s infinite;
+  pointer-events: none;
+}
+
+@keyframes service-step-lit {
+  0%,
+  40%,
+  100% {
+    border-color: var(--stage-border);
+    box-shadow: 0 0.2rem 0.5rem rgb(0 0 0 / 0.05);
+  }
+
+  12%,
+  28% {
+    border-color: var(--stage-accent);
+    box-shadow: 0 0.9rem 1.6rem -0.9rem color-mix(in oklab, var(--stage-accent) 55%, transparent);
+  }
+}
+
+@keyframes service-tile-lit {
+  0%,
+  40%,
+  100% {
+    transform: none;
+  }
+
+  15% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes service-packet-run {
+  0% {
+    left: 16%;
+    opacity: 0;
+  }
+
+  6% {
+    opacity: 1;
+  }
+
+  80% {
+    left: 84%;
+    opacity: 1;
+  }
+
+  92%,
+  100% {
+    left: 84%;
+    opacity: 0;
+  }
+}
+
+/* The active service's progress bar, under its title. Its animationend
+   advances the picker; paused, it simply holds. */
+.service-list-progress {
+  grid-column: 2;
+  display: block;
+  height: 2px;
+  margin-top: 0.6rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--ink) 8%, transparent);
+}
+
+.service-list-progress i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  animation: service-progress 6s linear forwards;
+}
+
+.service-list-progress i[data-playing='false'] {
+  animation-play-state: paused;
+}
+
+@keyframes service-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
 }
 
 .service-detail-title {
@@ -4542,23 +4678,18 @@ a.work-aux-link:hover {
   }
 }
 
-/* Narrow screens: the three steps stack, with the arrow turned down. */
-@media (max-width: 639px) {
+/* Narrow screens: the three steps stack, the arrows turn down, and the
+   packet runs down the side instead of across. */
+@media (max-width: 767px) {
   .service-flow {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.75rem;
   }
 
+  /* One wide card per row: the tool sits beside the text. */
   .service-flow-step {
     flex-direction: row;
     align-items: center;
-    min-height: 0;
-  }
-
-  .service-flow-tile {
-    width: 2.75rem;
-    height: 2.75rem;
-    margin: 0 0 0 auto;
   }
 
   .service-flow-step:not(:last-child)::after {
@@ -4566,6 +4697,43 @@ a.work-aux-link:hover {
     left: 50%;
     width: auto;
     transform: translateX(-50%) rotate(90deg);
+  }
+
+  .service-flow-wrap[data-live] .service-flow-packet {
+    top: 0;
+    left: auto;
+    right: -1.1rem;
+    margin-top: 0;
+    animation-name: service-packet-drop;
+  }
+}
+
+@keyframes service-packet-drop {
+  0% {
+    top: 12%;
+    opacity: 0;
+  }
+
+  6% {
+    opacity: 1;
+  }
+
+  80% {
+    top: 82%;
+    opacity: 1;
+  }
+
+  92%,
+  100% {
+    top: 82%;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-flow-step,
+  .service-flow-tile {
+    animation: none !important;
   }
 }
 

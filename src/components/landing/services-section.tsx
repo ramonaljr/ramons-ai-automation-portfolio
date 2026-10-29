@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 import { CalendarCheck, FileText, MessageCircle, Phone, ClipboardCheck, Mic } from 'lucide-react'
@@ -15,7 +15,8 @@ import {
   rise,
   SECTION,
   useContactHref,
-  useInView
+  useInView,
+  usePrefersReducedMotion
 } from '@/components/landing/motion'
 
 import { ToolMark, ToolStackSection } from '@/components/landing/tool-stack-section'
@@ -60,7 +61,7 @@ const SERVICE_PRESENTATION: Record<string, { title: string; description: string;
   }
 }
 
-type Step = { label: string; icon: ReactNode }
+type Step = { label: string; example: string; icon: ReactNode }
 
 /** A brand mark from public/images/tools, in its own colour. */
 const logo = (slug: string, color: string) => (
@@ -85,29 +86,45 @@ const icon = (Icon: typeof Phone, color: string) => (
  */
 const SERVICE_FLOWS: Record<string, Step[]> = {
   'n8n-ai-agents': [
-    { label: 'New data arrives', icon: logo('gmail', '#EA4335') },
-    { label: 'Checked and entered', icon: logo('n8n', '#EA4B71') },
-    { label: 'Report sent to the team', icon: logo('slack', '#4A154B') }
+    { label: 'New data arrives', example: 'An order email lands in the inbox', icon: logo('gmail', '#EA4335') },
+    { label: 'Checked and entered', example: 'Details checked, then added to the sheet', icon: logo('n8n', '#EA4B71') },
+    { label: 'Report sent to the team', example: 'The weekly summary posts itself', icon: logo('slack', '#4A154B') }
   ],
   'business-process-automation': [
-    { label: 'A form is submitted', icon: icon(ClipboardCheck, '#2F6FD6') },
-    { label: 'Approved in Slack', icon: logo('slack', '#4A154B') },
-    { label: 'Folder and record created', icon: logo('googledrive', '#4285F4') }
+    { label: 'A form is submitted', example: 'A new hire’s details come in', icon: icon(ClipboardCheck, '#2F6FD6') },
+    { label: 'Approved in Slack', example: 'The manager taps Approve', icon: logo('slack', '#4A154B') },
+    {
+      label: 'Folder and record created',
+      example: 'Drive folder and record set up',
+      icon: logo('googledrive', '#4285F4')
+    }
   ],
   'llm-rag-integrations': [
-    { label: 'Someone asks a question', icon: icon(MessageCircle, '#2F6FD6') },
-    { label: 'AI reads your documents', icon: logo('anthropic', '#191919') },
-    { label: 'Answer with the source linked', icon: icon(FileText, '#7650D6') }
+    { label: 'Someone asks a question', example: '“What is our refund policy?”', icon: icon(MessageCircle, '#2F6FD6') },
+    {
+      label: 'AI reads your documents',
+      example: 'Policies and contracts searched',
+      icon: logo('anthropic', '#191919')
+    },
+    {
+      label: 'Answer with the source linked',
+      example: 'The reply points to the exact page',
+      icon: icon(FileText, '#7650D6')
+    }
   ],
   'saas-api-integrations': [
-    { label: 'A record changes', icon: logo('airtable', '#18BFFF') },
-    { label: 'Updated everywhere', icon: logo('googlesheets', '#34A853') },
-    { label: 'The team is alerted', icon: logo('slack', '#4A154B') }
+    { label: 'A record changes', example: 'A customer’s email is updated', icon: logo('airtable', '#18BFFF') },
+    { label: 'Updated everywhere', example: 'Sheet and CRM updated to match', icon: logo('googlesheets', '#34A853') },
+    { label: 'The team is alerted', example: 'A note lands in the team channel', icon: logo('slack', '#4A154B') }
   ],
   'ai-voice-agents': [
-    { label: 'A call comes in', icon: icon(Phone, '#2F6FD6') },
-    { label: 'AI answers and takes the details', icon: icon(Mic, '#13917C') },
-    { label: 'Booked in your calendar', icon: icon(CalendarCheck, '#7650D6') }
+    { label: 'A call comes in', example: 'After hours, on a Saturday', icon: icon(Phone, '#2F6FD6') },
+    { label: 'AI answers and takes the details', example: 'Name, need and a good time', icon: icon(Mic, '#13917C') },
+    {
+      label: 'Booked in your calendar',
+      example: 'The caller gets a confirmation',
+      icon: icon(CalendarCheck, '#7650D6')
+    }
   ]
 }
 
@@ -140,6 +157,39 @@ export function ServicesSection() {
   const { ref: platformsRef, inView: platformsInView } = useInView<HTMLDivElement>(0.15)
   const [active, setActive] = useState(0)
 
+  /**
+   * Auto-play: the services take turns, each for as long as its progress bar
+   * takes to fill (the bar's own animationend advances it, so the bar and the
+   * switch can never drift apart). A pointer over the panel pauses it, the
+   * panel leaving the screen pauses it, and the first click or keyboard focus
+   * stops it for good: from then on the reader is choosing.
+   */
+  const reduced = usePrefersReducedMotion()
+  const [stopped, setStopped] = useState(false)
+  const [hovering, setHovering] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const pickerRef = useRef<HTMLDivElement>(null)
+  const playing = !reduced && !stopped && !hovering && visible
+
+  useEffect(() => {
+    const el = pickerRef.current
+
+    if (!el) return
+
+    const obs = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.35 })
+
+    obs.observe(el)
+
+    return () => obs.disconnect()
+  }, [])
+
+  const advance = () => setActive(current => (current + 1) % SERVICES.length)
+
+  const choose = (index: number) => {
+    setActive(index)
+    setStopped(true)
+  }
+
   // Hover only switches services side by side. Stacked, the board is below
   // the list, and a pointer resting on the list would keep changing it.
   const openOnHover = (index: number) => (event: PointerEvent<HTMLElement>) => {
@@ -163,7 +213,16 @@ export function ServicesSection() {
           blurb='Five practical ways to remove repetitive work: from intake and follow-up to approvals, reporting and customer response. Every build is documented so your team can run it without me.'
         />
 
-        <div ref={ref} className='service-picker' style={rise(inView)}>
+        <div
+          ref={node => {
+            ref.current = node
+            pickerRef.current = node
+          }}
+          className='service-picker'
+          style={rise(inView)}
+          onPointerEnter={event => event.pointerType === 'mouse' && setHovering(true)}
+          onPointerLeave={() => setHovering(false)}
+        >
           <div className='service-list' role='tablist' aria-label='Services' aria-orientation='vertical'>
             {SERVICES.map((item, index) => {
               const copy = SERVICE_PRESENTATION[item.slug]
@@ -178,14 +237,19 @@ export function ServicesSection() {
                   aria-controls={`service-panel-${item.slug}`}
                   className='service-list-item'
                   onPointerEnter={openOnHover(index)}
-                  onClick={() => setActive(index)}
-                  onFocus={() => setActive(index)}
+                  onClick={() => choose(index)}
+                  onFocus={() => choose(index)}
                 >
                   <span className='service-list-index'>{String(index + 1).padStart(2, '0')}</span>
                   <span className='service-list-title' style={{ fontFamily: DISPLAY_FONT }}>
                     {copy?.title ?? item.title}
                   </span>
                   <span className='service-list-outcomes'>{(copy?.outcomes ?? []).join(' · ')}</span>
+                  {index === active && !stopped && !reduced && (
+                    <span className='service-list-progress' aria-hidden='true'>
+                      <i data-playing={playing} onAnimationEnd={advance} />
+                    </span>
+                  )}
                 </button>
               )
             })}
@@ -198,39 +262,49 @@ export function ServicesSection() {
             <div className='service-board' aria-hidden='true'>
               <span className='service-board-label'>How it runs</span>
               <AnimatePresence mode='wait' initial={false}>
-                <motion.ol
+                <motion.div
                   key={service.slug}
-                  className='service-flow'
+                  className='service-flow-wrap'
+                  data-live={!reduced || undefined}
                   initial='hidden'
                   animate='shown'
                   exit='gone'
                   variants={{ shown: { transition: { staggerChildren: 0.12 } } }}
                 >
-                  {steps.map((step, index) => (
-                    <motion.li
-                      key={step.label}
-                      className='service-flow-step'
-                      style={
-                        {
-                          '--stage-bg': STAGE_COLOURS[index].bg,
-                          '--stage-border': STAGE_COLOURS[index].border,
-                          '--stage-accent': STAGE_COLOURS[index].accent
-                        } as CSSProperties
-                      }
-                      variants={{
-                        hidden: { opacity: 0, y: 16 },
-                        shown: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
-                        gone: { opacity: 0, transition: { duration: 0.15 } }
-                      }}
-                    >
-                      <span className='service-flow-head'>
-                        <span className='service-flow-badge'>{index + 1}</span>
-                        {step.label}
-                      </span>
-                      <span className='service-flow-tile'>{step.icon}</span>
-                    </motion.li>
-                  ))}
-                </motion.ol>
+                  {/* A unit of work travelling the three steps, on a loop,
+                      while each step lights as it passes. */}
+                  <span className='service-flow-packet' />
+                  <ol className='service-flow'>
+                    {steps.map((step, index) => (
+                      <motion.li
+                        key={step.label}
+                        className='service-flow-step'
+                        style={
+                          {
+                            '--stage-bg': STAGE_COLOURS[index].bg,
+                            '--stage-border': STAGE_COLOURS[index].border,
+                            '--stage-accent': STAGE_COLOURS[index].accent,
+                            '--step': index
+                          } as CSSProperties
+                        }
+                        variants={{
+                          hidden: { opacity: 0, y: 16 },
+                          shown: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+                          gone: { opacity: 0, transition: { duration: 0.15 } }
+                        }}
+                      >
+                        <span className='service-flow-tile'>{step.icon}</span>
+                        <span className='service-flow-text'>
+                          <span className='service-flow-head'>
+                            <span className='service-flow-badge'>{index + 1}</span>
+                            {step.label}
+                          </span>
+                          <span className='service-flow-example'>{step.example}</span>
+                        </span>
+                      </motion.li>
+                    ))}
+                  </ol>
+                </motion.div>
               </AnimatePresence>
             </div>
 
