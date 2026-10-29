@@ -7399,6 +7399,19 @@ div#experience.about-journey {
   letter-spacing: -0.045em;
 }
 
+/* Each line rises from behind its own edge (see SiteFooter). Padded so the
+   descender of "y" survives the mask. */
+.footer-ask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.footer-ask-line > span {
+  display: inline-block;
+}
+
 .footer-actions {
   display: flex;
   flex-wrap: wrap;
@@ -7454,9 +7467,9 @@ div#experience.about-journey {
   position: absolute;
   top: 0;
   left: 50%;
+  display: flex;
   translate: -50% 0;
-  /* A faint base so the whole word reads before the fill reaches it. */
-  color: color-mix(in oklab, var(--accent) 16%, transparent);
+  color: transparent;
   font-family: var(--font-satoshi), system-ui, sans-serif;
   font-size: clamp(4rem, 25vw, 26rem);
   font-weight: 900;
@@ -7464,6 +7477,15 @@ div#experience.about-journey {
   letter-spacing: -0.07em;
   white-space: nowrap;
   -webkit-text-stroke: 0;
+  background: none;
+}
+
+/* Each letter rises on its own and carries its own fill, so the gradient
+   and the clip live on the letters. A faint base so the whole word reads
+   before the fill reaches it. */
+.saas-footer .footer-signature .footer-word span {
+  display: inline-block;
+  color: color-mix(in oklab, var(--accent) 16%, transparent);
   background-image: linear-gradient(
     to top,
     var(--accent),
@@ -7489,14 +7511,27 @@ div#experience.about-journey {
   margin-top: 0.9rem;
 }
 
+/* On hover a link nudges right as an underline slides in from the left. */
 .footer-columns a {
+  display: inline-block;
+  padding-bottom: 0.1rem;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
   color: var(--ink-2);
   font-size: 0.875rem;
-  transition: color 0.2s ease;
+  transition:
+    color 0.25s ease,
+    background-size 0.35s var(--ease-entrance),
+    transform 0.35s var(--ease-entrance);
 }
 
-.footer-columns a:hover {
+.footer-columns a:hover,
+.footer-columns a:focus-visible {
+  background-size: 100% 1px;
   color: var(--ink);
+  transform: translateX(3px);
 }
 
 @media (min-width: 640px) {
