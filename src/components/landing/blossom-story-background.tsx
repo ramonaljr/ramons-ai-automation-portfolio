@@ -172,6 +172,13 @@ export function BlossomStoryBackground() {
           className='blossom-story-foreground absolute inset-0 h-full w-full object-cover'
           style={reduced ? undefined : { y: foregroundY, scale: foregroundScale }}
         />
+        {/* Warm light falling through the branches from the top right: two
+            sets of shafts drifting against each other, so where they cross
+            the light shimmers. Golden scene only (globals.css). */}
+        <div className='blossom-story-rays absolute inset-0'>
+          <i />
+          <i />
+        </div>
         <div className='blossom-story-horizon absolute inset-x-0 bottom-0' />
       </div>
     </div>

@@ -8663,3 +8663,183 @@ div#experience.about-journey {
     left: 0;
   }
 }
+
+/* ── Background motion (2026-10-31) ───────────────────────────────────────
+   Light through the tree in the golden scene, and a slow living glow in the
+   quiet middle of the page. The leaves themselves are particle-field.tsx. */
+
+/* Shafts of warm light from a source above the top right, falling down and
+   to the left through the branches. Two sets sway against each other; where
+   they cross the light brightens and fades, which reads as a shimmer. Kept
+   clear of the hero copy with the same ellipse the branches use. */
+.blossom-story-rays {
+  z-index: 5;
+  overflow: hidden;
+  mix-blend-mode: screen;
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-mask-image:
+    radial-gradient(ellipse 38% 34% at 28% 52%, transparent 35%, #000 100%),
+    linear-gradient(#000 30%, transparent 88%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(ellipse 38% 34% at 28% 52%, transparent 35%, #000 100%),
+    linear-gradient(#000 30%, transparent 88%);
+  mask-composite: intersect;
+}
+
+.blossom-story-rays i {
+  position: absolute;
+  inset: -20% -10% -10% 0;
+  transform-origin: 84% 0%;
+  filter: blur(10px);
+  will-change: transform, opacity;
+}
+
+.blossom-story-rays i:first-child {
+  background: conic-gradient(
+    from 180deg at 84% -6%,
+    transparent 0deg 10deg,
+    oklch(0.93 0.08 78 / 0.51) 13deg,
+    transparent 17deg 24deg,
+    oklch(0.95 0.07 82 / 0.33) 27deg,
+    oklch(0.95 0.07 82 / 0.24) 31deg,
+    transparent 35deg 44deg,
+    oklch(0.92 0.09 70 / 0.42) 47deg,
+    transparent 51deg 60deg,
+    oklch(0.95 0.06 85 / 0.21) 64deg,
+    transparent 70deg
+  );
+  animation:
+    rays-sway 19s ease-in-out infinite alternate,
+    rays-breathe 7.5s ease-in-out infinite alternate;
+}
+
+.blossom-story-rays i:last-child {
+  background: conic-gradient(
+    from 180deg at 84% -6%,
+    transparent 0deg 6deg,
+    oklch(0.96 0.06 85 / 0.27) 8deg,
+    transparent 11deg 19deg,
+    oklch(0.93 0.08 75 / 0.36) 21deg,
+    transparent 25deg 38deg,
+    oklch(0.96 0.05 88 / 0.30) 40deg,
+    transparent 44deg 54deg,
+    oklch(0.93 0.08 74 / 0.24) 57deg,
+    transparent 62deg
+  );
+  animation:
+    rays-sway-back 27s ease-in-out infinite alternate,
+    rays-shimmer 3.8s ease-in-out infinite alternate;
+}
+
+@keyframes rays-sway {
+  from { transform: rotate(-2.5deg); }
+  to { transform: rotate(3deg); }
+}
+
+@keyframes rays-sway-back {
+  from { transform: rotate(3.5deg); }
+  to { transform: rotate(-2deg); }
+}
+
+@keyframes rays-breathe {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+@keyframes rays-shimmer {
+  0% { opacity: 0.35; }
+  45% { opacity: 0.85; }
+  100% { opacity: 0.55; }
+}
+
+/* At the close the branches return but the sun has moved on. */
+.blossom-story-root[data-scene='close'] .blossom-story-rays {
+  opacity: 0;
+}
+
+@media (max-width: 1023px) {
+  /* The copy spans the screen: light the top band only, one set of shafts. */
+  .blossom-story-rays {
+    opacity: 0.7;
+    -webkit-mask-image: linear-gradient(#000 8%, transparent 38%);
+    mask-image: linear-gradient(#000 8%, transparent 38%);
+  }
+
+  .blossom-story-rays i:last-child {
+    display: none;
+  }
+}
+
+/* A slow drifting glow behind the work, About, services and pricing: slate
+   light and a terracotta warmth that wander over about a minute, so the
+   calm ground is alive without anything to look at. Only the homepage sets
+   the calm scene; elsewhere the layer stays hidden. */
+.field-aura {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.field-aura i {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.field-aura i:nth-child(1) {
+  left: -14vmax;
+  top: -10vmax;
+  width: 62vmax;
+  height: 62vmax;
+  background: radial-gradient(circle, oklch(0.66 0.13 42 / 0.5), transparent 66%);
+  animation: aura-warm 52s ease-in-out infinite alternate;
+}
+
+.field-aura i:nth-child(2) {
+  right: -18vmax;
+  bottom: -20vmax;
+  width: 70vmax;
+  height: 70vmax;
+  background: radial-gradient(circle, oklch(0.44 0.05 255 / 0.48), transparent 64%);
+  animation: aura-slate 63s ease-in-out infinite alternate;
+}
+
+.field-aura i:nth-child(3) {
+  left: 30%;
+  top: 22%;
+  width: 46vmax;
+  height: 46vmax;
+  background: radial-gradient(circle, oklch(0.99 0.008 255 / 0.55), transparent 62%);
+  animation: aura-light 41s ease-in-out infinite alternate;
+}
+
+@keyframes aura-warm {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(38vw, 26vh) scale(1.18); }
+  100% { transform: translate(12vw, 58vh) scale(0.92); }
+}
+
+@keyframes aura-slate {
+  0% { transform: translate(0, 0) scale(1.05); }
+  50% { transform: translate(-30vw, -22vh) scale(0.9); }
+  100% { transform: translate(-48vw, -4vh) scale(1.15); }
+}
+
+@keyframes aura-light {
+  0% { transform: translate(-20vw, 10vh) scale(0.9); }
+  100% { transform: translate(18vw, -14vh) scale(1.12); }
+}
+
+.blossom-story-root[data-scene='calm'] .field-aura {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* :nth-child(n) matches the specificity of the per-layer rules above. */
+  .blossom-story-rays i:nth-child(n),
+  .field-aura i:nth-child(n) {
+    animation: none;
+  }
+}
