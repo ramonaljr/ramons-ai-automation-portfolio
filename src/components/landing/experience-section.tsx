@@ -160,18 +160,30 @@ function PinnedTimeline() {
           </div>
 
           <div className='experience-main'>
-            <AnimatePresence mode='wait' initial={false}>
-              <motion.article
-                key={role.index}
-                className='experience-card'
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <RoleBody role={role} position={active + 1} />
-              </motion.article>
-            </AnimatePresence>
+            {/* Every role is laid out invisibly in the same grid cell, so the
+                card is as tall as the longest role and no taller. It used to
+                stretch to fill the screen, which left the shorter roles
+                sitting on a mostly empty card, and a card sized to the role
+                on show would make the tabs jump on every change. */}
+            <div className='experience-card-frame'>
+              {ROLES.map(item => (
+                <div key={item.index} className='experience-card experience-card-sizer' aria-hidden='true'>
+                  <RoleBody role={item} position={1} />
+                </div>
+              ))}
+              <AnimatePresence mode='wait' initial={false}>
+                <motion.article
+                  key={role.index}
+                  className='experience-card'
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <RoleBody role={role} position={active + 1} />
+                </motion.article>
+              </AnimatePresence>
+            </div>
 
             <ol className='experience-tabs'>
               {ROLES.map((item, index) => (
@@ -213,10 +225,14 @@ function PinnedTimeline() {
 function RoleBody({ role, position }: { role: Role; position?: number }) {
   return (
     <>
-      <p className='experience-card-kicker'>
-        {position ? `Role ${position} of ${ROLES.length}` : role.period}
-        {role.arrangement && <span>{role.arrangement}</span>}
-      </p>
+      {/* The pinned card drops the period: its tabs, axis and big year
+          already say when, and a "Role 1 of 4" kicker was a numbered label. */}
+      {(!position || role.arrangement) && (
+        <p className='experience-card-kicker'>
+          {!position && role.period}
+          {role.arrangement && <span>{role.arrangement}</span>}
+        </p>
+      )}
       <h3 className='experience-card-title' style={{ fontFamily: DISPLAY_FONT }}>
         {role.role}
       </h3>

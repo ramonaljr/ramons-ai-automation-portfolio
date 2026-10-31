@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { motion, useScroll, useSpring } from 'motion/react'
 
 import { BrandMark } from '@/components/landing/brand-mark'
+import { CONTAINER } from '@/components/landing/motion'
 
 import { PROFILE } from '@/lib/portfolio'
 
@@ -18,8 +19,8 @@ import { PROFILE } from '@/lib/portfolio'
 
 const NAV_LINKS = [
   { label: 'Home', hash: '#top' },
-  { label: 'About', hash: '#about' },
   { label: 'Portfolio', hash: '#portfolio' },
+  { label: 'About', hash: '#about' },
   { label: 'Services', href: '/services' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contact', hash: '#contact' }
@@ -40,8 +41,8 @@ const NAV_LINKS = [
  */
 const SECTION_OWNERS: readonly (readonly [id: string, owner: string | null])[] = [
   ['story', null],
-  ['about', '#about'],
   ['portfolio', '#portfolio'],
+  ['about', '#about'],
   ['services', null],
   ['process', null],
   ['testimonials', null],
@@ -144,9 +145,12 @@ export function SiteNav() {
   const contactHref = onLanding ? '#contact' : '/#contact'
   const close = () => setOpen(false)
 
+  // The bar shares the sections' container and desktop gutters, so its edges
+  // line up with the content under it. It was a narrower 1280px bar over
+  // 1600px content on wide screens.
   return (
-    <div className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4'>
-      <div className='pointer-events-auto w-full max-w-7xl'>
+    <div className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4 md:px-12 lg:px-20'>
+      <div className={`pointer-events-auto w-full ${CONTAINER}`}>
         {/* Main bar */}
         <nav
           className='site-nav-glass koisei-nav border-rule relative flex items-center justify-between overflow-hidden rounded-2xl border px-5 py-3'

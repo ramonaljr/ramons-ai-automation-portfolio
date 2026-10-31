@@ -51,7 +51,6 @@ export function EngagementSummary() {
               style={{ '--step-delay': `${index * 120}ms` } as CSSProperties}
             >
               <p className='pricing-summary-meta'>
-                <span>{String(index + 1).padStart(2, '0')}</span>
                 {tier.duration}
                 {tier.start && <em>Most clients start here</em>}
               </p>
@@ -104,60 +103,60 @@ export function EngagementSection() {
             const href = tier.href && !tier.href.startsWith('#') ? tier.href : contactHref
 
             return (
-            <li
-              key={tier.name}
-              className='engagement-step'
-              data-featured={tier.featured || undefined}
-              style={{ '--step-delay': `${index * 160}ms` } as CSSProperties}
-            >
-              <div className='engagement-step-head'>
-                <span className='engagement-step-number'>{String(index + 1).padStart(2, '0')}</span>
-                {tier.start && <span className='engagement-step-badge'>Most clients start here</span>}
-              </div>
-
-              <article className='engagement-card'>
-                <div className='engagement-visual' aria-hidden='true'>
-                  {VISUALS[index]}
+              <li
+                key={tier.name}
+                className='engagement-step'
+                data-featured={tier.featured || undefined}
+                style={{ '--step-delay': `${index * 160}ms` } as CSSProperties}
+              >
+                <div className='engagement-step-head'>
+                  <span className='engagement-step-number'>{String(index + 1).padStart(2, '0')}</span>
+                  {tier.start && <span className='engagement-step-badge'>Most clients start here</span>}
                 </div>
 
-                <div className='engagement-card-body'>
-                  <p className='engagement-duration'>{tier.duration}</p>
-                  <h3 className='engagement-name' style={{ fontFamily: DISPLAY_FONT }}>
-                    {tier.name}
-                  </h3>
+                <article className='engagement-card'>
+                  <div className='engagement-visual' aria-hidden='true'>
+                    {VISUALS[index]}
+                  </div>
 
-                  <p className='engagement-price'>
-                    <strong style={{ fontFamily: DISPLAY_FONT }}>{tier.pricing}</strong>
-                    <span>{tier.pricingNote}</span>
-                  </p>
+                  <div className='engagement-card-body'>
+                    <p className='engagement-duration'>{tier.duration}</p>
+                    <h3 className='engagement-name' style={{ fontFamily: DISPLAY_FONT }}>
+                      {tier.name}
+                    </h3>
 
-                  <p className='engagement-for'>{tier.forWhen}</p>
+                    <p className='engagement-price'>
+                      <strong style={{ fontFamily: DISPLAY_FONT }}>{tier.pricing}</strong>
+                      <span>{tier.pricingNote}</span>
+                    </p>
 
-                  <ul className='engagement-includes'>
-                    {tier.includes.map(item => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
+                    <p className='engagement-for'>{tier.forWhen}</p>
 
-                  <p className='engagement-outcome'>
-                    <span>You leave with</span>
-                    {tier.outcome}
-                  </p>
+                    <ul className='engagement-includes'>
+                      {tier.includes.map(item => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
 
-                  <a href={href} className='engagement-cta'>
-                    {tier.cta}
-                    {href === contactHref ? <ArrowRight size={14} /> : <ArrowIcon />}
-                  </a>
-                </div>
-              </article>
-            </li>
+                    <p className='engagement-outcome'>
+                      <span>You leave with</span>
+                      {tier.outcome}
+                    </p>
+
+                    <a href={href} className='engagement-cta'>
+                      {tier.cta}
+                      {href === contactHref ? <ArrowRight size={14} /> : <ArrowIcon />}
+                    </a>
+                  </div>
+                </article>
+              </li>
             )
           })}
         </ol>
 
         <p className='engagement-reassure'>
-          Every engagement starts with a free 30-minute call. What is included and the price are agreed in writing before any
-          build starts.
+          Every engagement starts with a free 30-minute call. What is included and the price are agreed in writing
+          before any build starts.
         </p>
       </div>
     </section>

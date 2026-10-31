@@ -4,6 +4,10 @@ import { useEffect, useRef } from 'react'
 
 import { leafEdge, leafTone, type Rgb } from '@/lib/autumn-leaves'
 
+/** Leaves fade over this many px as they near the hero copy, after a margin. */
+const CLEAR_MARGIN = 16
+const CLEAR_FADE = 80
+
 type AmbientShard = {
   x: number
   y: number
@@ -92,15 +96,36 @@ export function ParticleField({ className = '' }: { className?: string }) {
       }))
     }
 
-    const drawAmbientShard = (shard: AmbientShard, index: number, now: number) => {
+    // The hero's headline and lead. A leaf drifting through a letter made the
+    // first line harder to read, so leaves fade out as they near this copy.
+    const clearOf = [...document.querySelectorAll<HTMLElement>('[data-leaf-clear]')]
+
+    /** 0 inside the copy (plus a margin), rising to 1 a short way outside it. */
+    const clearance = (x: number, y: number, rects: DOMRect[]) => {
+      let nearest = Infinity
+
+      for (const r of rects) {
+        const dx = Math.max(r.left - CLEAR_MARGIN - x, 0, x - r.right - CLEAR_MARGIN)
+        const dy = Math.max(r.top - CLEAR_MARGIN - y, 0, y - r.bottom - CLEAR_MARGIN)
+
+        nearest = Math.min(nearest, Math.hypot(dx, dy))
+      }
+
+      return Math.min(1, nearest / CLEAR_FADE)
+    }
+
+    const drawAmbientShard = (shard: AmbientShard, index: number, now: number, rects: DOMRect[], origin: DOMRect) => {
       const travel = reduced ? 0 : now * shard.speed
       const y = ((shard.y + travel + window.scrollY * (0.018 + (index % 3) * 0.006) + 60) % (h + 120)) - 60
       const x = shard.x + Math.sin(now * 0.42 + shard.phase) * shard.sway
       const rotation = shard.phase + (reduced ? 0 : now * shard.spin)
+      const fade = rects.length ? clearance(origin.left + x, origin.top + y, rects) : 1
+
+      if (fade <= 0) return
 
       // Faint: leaves drift behind body copy for most of the page, and at
       // 0.52-0.72 they competed with it.
-      const alpha = 0.4 + shard.tone * 0.18
+      const alpha = (0.4 + shard.tone * 0.18) * fade
       const edge = leafEdge(shard.color)
 
       ctx.save()
@@ -123,8 +148,13 @@ export function ParticleField({ className = '' }: { className?: string }) {
       ctx.clearRect(0, 0, w, h)
 
       const now = performance.now() * 0.001
+      const origin = box.getBoundingClientRect()
 
-      shards.forEach((shard, index) => drawAmbientShard(shard, index, now))
+      // Only the copy still on screen; past the hero this is empty and every
+      // leaf draws at full strength.
+      const rects = clearOf.map(el => el.getBoundingClientRect()).filter(r => r.bottom > 0 && r.top < origin.bottom)
+
+      shards.forEach((shard, index) => drawAmbientShard(shard, index, now, rects, origin))
 
       wrap.classList.add('is-canvas-ready')
     }

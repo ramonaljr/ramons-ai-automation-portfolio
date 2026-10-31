@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { motion, useScroll, useTransform } from 'motion/react'
+import { animate, motion, useScroll, useTransform } from 'motion/react'
 
 import { Download, Play } from 'lucide-react'
 
@@ -38,6 +38,39 @@ const FOCUS = [
     copy: 'A tested system, failure alerts, documentation and a practical handover.'
   }
 ] as const
+
+/**
+ * A figure that counts up from zero the first time it is shown. The server
+ * renders the final value, so it reads correctly without JavaScript and for
+ * reduced motion; the count writes straight to the text node rather than
+ * re-rendering on every frame. Only the leading number counts ("10+ yrs"
+ * runs 0 to 10, then keeps "+ yrs"); a value with none ("MBA") just shows.
+ */
+function CountUp({ value, run, reduced, delay }: { value: string; run: boolean; reduced: boolean; delay: number }) {
+  const ref = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    const match = value.match(/^(\d+)(.*)$/)
+
+    if (!el || !match || !run || reduced) return
+
+    const [, digits, rest] = match
+
+    const controls = animate(0, Number(digits), {
+      duration: 1.4,
+      delay,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: latest => {
+        el.textContent = `${Math.round(latest)}${rest}`
+      }
+    })
+
+    return () => controls.stop()
+  }, [value, run, reduced, delay])
+
+  return <span ref={ref}>{value}</span>
+}
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null)
@@ -153,15 +186,14 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
             </div>
             <IntroVideoDialog open={videoOpen} onClose={() => setVideoOpen(false)} />
 
-            <dl
-              className='about-credential-strip divide-rule border-rule bg-surface mt-5 grid grid-cols-3 divide-x overflow-hidden rounded-xl border'
-              data-visible={inView}
-            >
-              {proof.map(item => (
-                <div key={item.label} className='flex flex-col-reverse justify-end px-3 py-4 text-center'>
-                  <dt className='text-ink-2 mt-1 text-xs leading-tight'>{item.label}</dt>
-                  <dd className='text-ink text-xl font-light' style={{ fontFamily: DISPLAY_FONT }}>
-                    {item.value}
+            {/* The proof as plain figures under the portrait, no box: they
+                count up as they arrive. */}
+            <dl className='about-credential-strip about-proof' data-visible={inView}>
+              {proof.map((item, index) => (
+                <div key={item.label}>
+                  <dt>{item.label}</dt>
+                  <dd style={{ fontFamily: DISPLAY_FONT }}>
+                    <CountUp value={item.value} run={inView} reduced={reducedMotion} delay={0.52 + index * 0.14} />
                   </dd>
                 </div>
               ))}
@@ -190,7 +222,10 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
           {/* ── The story ───────────────────────────────────────────────── */}
           <div className={`${READABLE} lg:col-start-1 lg:row-start-2`}>
             <div className='max-w-[58ch] space-y-5' style={reveal(140)}>
-              <p className='about-cinema-lead' style={{ fontFamily: DISPLAY_FONT }}>
+              {/* A pull quote, not a second headline: the name above is the
+                  one heading, and this line now sits under a terracotta rule
+                  that draws down as the section arrives. */}
+              <p className='about-cinema-lead' data-visible={inView} style={{ fontFamily: DISPLAY_FONT }}>
                 I spent a decade inside the work I now automate.
               </p>
               <p className='text-ink-2 text-base leading-[1.7]'>
@@ -205,13 +240,15 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
               </p>
             </div>
 
-            {/* A compact buyer's summary in one block, not three cards: enough
-                to place the work without repeating Services or Experience. */}
-            <dl className='border-rule bg-surface divide-rule mt-10 divide-y rounded-xl border' style={reveal(190)}>
+            {/* A compact buyer's summary: enough to place the work without
+                repeating Services or Experience. Three open columns rather
+                than a bordered table, each under a hairline that sweeps in
+                from the left, one after another. */}
+            <dl className='about-focus' data-visible={inView}>
               {FOCUS.map(item => (
-                <div key={item.label} className='grid gap-1 px-5 py-4 sm:grid-cols-[7rem_1fr] sm:gap-4'>
-                  <dt className='text-ink text-sm font-medium sm:pt-0.5'>{item.label}</dt>
-                  <dd className='text-ink-2 text-sm leading-relaxed'>{item.copy}</dd>
+                <div key={item.label}>
+                  <dt>{item.label}</dt>
+                  <dd>{item.copy}</dd>
                 </div>
               ))}
             </dl>

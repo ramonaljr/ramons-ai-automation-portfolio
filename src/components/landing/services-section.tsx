@@ -240,7 +240,7 @@ export function ServicesSection() {
                   onClick={() => choose(index)}
                   onFocus={() => choose(index)}
                 >
-                  <span className='service-list-index'>{String(index + 1).padStart(2, '0')}</span>
+                  <span className='service-list-index' aria-hidden='true' />
                   <span className='service-list-title' style={{ fontFamily: DISPLAY_FONT }}>
                     {copy?.title ?? item.title}
                   </span>
@@ -271,9 +271,6 @@ export function ServicesSection() {
                   exit='gone'
                   variants={{ shown: { transition: { staggerChildren: 0.12 } } }}
                 >
-                  {/* A unit of work travelling the three steps, on a loop,
-                      while each step lights as it passes. */}
-                  <span className='service-flow-packet' />
                   <ol className='service-flow'>
                     {steps.map((step, index) => (
                       <motion.li
@@ -301,6 +298,14 @@ export function ServicesSection() {
                           </span>
                           <span className='service-flow-example'>{step.example}</span>
                         </span>
+                        {/* The connector to the next step. A unit of work, a
+                            glowing dot, crosses it on a loop and fills it as it
+                            goes; each step lifts and lights as the dot arrives. */}
+                        {index < steps.length - 1 && (
+                          <span className='service-flow-link'>
+                            <i />
+                          </span>
+                        )}
                       </motion.li>
                     ))}
                   </ol>
@@ -346,7 +351,7 @@ export function ServicesSection() {
               Not sure which you need?
             </p>
             <p className='text-fine text-ink-2 mt-1.5'>
-              Describe the process that eats your week and I will tell you where it fits.
+              Tell me what your team still does by hand, and I will tell you which of these fits.
             </p>
           </div>
           <Cta href={contactHref}>Book a free call</Cta>

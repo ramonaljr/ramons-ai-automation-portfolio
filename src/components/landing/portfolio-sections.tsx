@@ -63,15 +63,16 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
 
           <div className='story-content relative'>
             <div className='relative z-10'>
-              {/* The story sits between the promise and the person: what the
+              {/* The story sits between the promise and the proof: what the
                   problem feels like, what the system does, what comes back. */}
               <StorySection systemCount={caseStudies.length} />
 
-              {/* Introduce the person behind the work before the full eight-project
-              portfolio. This keeps the biography near the hero without asking
-              the visitor to scroll through a long project showcase first. */}
-              <IntroSection systemCount={caseStudies.length} />
+              {/* The work follows the story it sets up ("7 systems · See
+              examples"), then the person behind it. With the biography and
+              career first, the projects started more than halfway down a
+              long page, and visitors arriving from Upwork come for proof. */}
               <ProjectsSection caseStudies={caseStudies} />
+              <IntroSection systemCount={caseStudies.length} />
               <ServicesSection />
               <HowItWorksSection />
 

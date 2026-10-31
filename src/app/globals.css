@@ -1258,9 +1258,17 @@ body::after {
 .saas-section-intro h1,
 .saas-section-intro h2 {
   font-family: var(--font-editorial), Georgia, serif !important;
+  font-size: clamp(2.75rem, 4.6vw, 4.75rem) !important;
+  line-height: 0.92 !important;
+  letter-spacing: -0.05em !important;
+}
+
+/* Selected Work keeps the old display size, so the work is the one heading
+   that outranks the rest. When every section heading ran to ~108px nothing
+   led, and the sticky nav slid over each of them in turn. */
+#portfolio .saas-section-intro h2 {
   font-size: clamp(3rem, 6.4vw, 6.75rem) !important;
   line-height: 0.9 !important;
-  letter-spacing: -0.05em !important;
 }
 
 .saas-section-intro .eyebrow {
@@ -1394,8 +1402,9 @@ body::after {
   }
 
   .saas-section-intro h1,
-  .saas-section-intro h2 {
-    font-size: clamp(2.75rem, 14vw, 4.5rem) !important;
+  .saas-section-intro h2,
+  #portfolio .saas-section-intro h2 {
+    font-size: clamp(2.5rem, 11vw, 3.75rem) !important;
   }
 }
 
@@ -3133,8 +3142,8 @@ body::after {
 
 /* The tile's outline flashes the project's tone as it is placed, then settles
    back to its own colour. */
-.work-canvas[data-run='go'] svg [data-wc='step'] > rect,
-.work-canvas[data-run='go'] svg [data-wc='step'] > g[filter] > rect {
+.work-canvas[data-run='go'] svg [data-wc='step'] > rect:first-child,
+.work-canvas[data-run='go'] svg [data-wc='step'] > g[filter]:first-child > rect {
   animation: wc-ring 0.9s ease-out both;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.3s);
 }
@@ -3145,6 +3154,124 @@ body::after {
   stroke-dashoffset: 1;
   animation: wc-edge 0.45s cubic-bezier(0.65, 0, 0.35, 1) forwards;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
+}
+
+/* The trace: the first time a card is on screen. The drawing stays as it
+   is and the process runs through it: each connector is drawn again with a
+   bright dot at its head, and each step lifts and lights in the project's
+   tone as the dot reaches it. A little slower than the hover run, which has
+   the whole drawing to build. */
+.work-canvas[data-run='trace'] {
+  --wc-draw: 0.6s;
+}
+
+.work-canvas[data-run='trace'] svg [data-wc='edge'],
+.work-canvas[data-run='trace'] svg [data-wc='link'] {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: wc-edge var(--wc-draw) cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
+}
+
+.work-canvas[data-run='trace'] svg [data-wc='step'][data-wc-stage] {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wc-lift 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.3s);
+}
+
+.work-canvas[data-run='trace'] svg [data-wc='step'][data-wc-stage] > rect:first-child,
+.work-canvas[data-run='trace'] svg [data-wc='step'][data-wc-stage] > g[filter]:first-child > rect {
+  /* No backwards fill: the tiles are already on show, so every one would
+     sit in the flash colour until the run reached it. */
+  animation: wc-light 1.1s ease-in-out;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.3s);
+}
+
+@keyframes wc-lift {
+  35% {
+    transform: translateY(-3px) scale(1.035);
+  }
+}
+
+/* The tile only, not the tool chips inside it, in the step's own colour
+   (its badge's, set by work-canvas). */
+@keyframes wc-light {
+  30% {
+    stroke: var(--wc-stage, var(--work-tone, var(--accent)));
+    stroke-width: 3;
+  }
+}
+
+/* The dot. One dash a tenth of the connector long, so it reads as a dot on a
+   short arrow and a streak on a long one; it moves with the same easing and
+   length as the line being drawn, so it always sits at its head. */
+.work-canvas svg [data-wc='comet'],
+.work-canvas svg [data-wc='comet-halo'] {
+  opacity: 0;
+  fill: none;
+  stroke: color-mix(in oklch, var(--work-tone, var(--accent)) 62%, white);
+  stroke-linecap: round;
+  stroke-dasharray: 0.12 2;
+  stroke-dashoffset: 0.12;
+  pointer-events: none;
+}
+
+.work-canvas svg[data-light] [data-wc='comet'],
+.work-canvas svg[data-light] [data-wc='comet-halo'] {
+  stroke: var(--work-tone, var(--accent));
+}
+
+.work-canvas svg [data-wc='comet'] {
+  stroke-width: 7;
+}
+
+.work-canvas svg [data-wc='comet-halo'] {
+  stroke-width: 20;
+}
+
+.work-canvas[data-run='go'] svg [data-wc='comet'],
+.work-canvas[data-run='trace'] svg [data-wc='comet'] {
+  animation: wc-comet var(--wc-draw, 0.45s) cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
+}
+
+.work-canvas[data-run='go'] svg [data-wc='comet-halo'],
+.work-canvas[data-run='trace'] svg [data-wc='comet-halo'] {
+  animation: wc-comet-halo var(--wc-draw, 0.45s) cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
+}
+
+@keyframes wc-comet {
+  0%,
+  80% {
+    opacity: 1;
+  }
+
+  0% {
+    stroke-dashoffset: 0.12;
+  }
+
+  100% {
+    opacity: 0;
+    stroke-dashoffset: -0.88;
+  }
+}
+
+@keyframes wc-comet-halo {
+  0%,
+  80% {
+    opacity: 0.28;
+  }
+
+  0% {
+    stroke-dashoffset: 0.12;
+  }
+
+  100% {
+    opacity: 0;
+    stroke-dashoffset: -0.88;
+  }
 }
 
 @keyframes wc-lane {
@@ -3167,7 +3294,7 @@ body::after {
 
 @keyframes wc-ring {
   from {
-    stroke: var(--work-tone, var(--accent));
+    stroke: var(--wc-stage, var(--work-tone, var(--accent)));
     stroke-width: 3;
   }
 }
@@ -3249,17 +3376,19 @@ body::after {
   font-weight: 400;
 }
 
-.work-canvas:not([data-run='go']) .wc-running,
+.work-canvas:not([data-run='go'], [data-run='trace']) .wc-running,
 .work-canvas[data-run='idle'] .wc-done {
   visibility: hidden;
 }
 
-.work-canvas[data-run='go'] .wc-running {
+.work-canvas[data-run='go'] .wc-running,
+.work-canvas[data-run='trace'] .wc-running {
   animation: wc-hide 0s linear forwards;
   animation-delay: calc(var(--wc-lead) + var(--wc-span) + 0.9s);
 }
 
-.work-canvas[data-run='go'] .wc-done {
+.work-canvas[data-run='go'] .wc-done,
+.work-canvas[data-run='trace'] .wc-done {
   opacity: 0;
   animation: wc-show 0.35s ease forwards;
   animation-delay: calc(var(--wc-lead) + var(--wc-span) + 0.9s);
@@ -3289,6 +3418,11 @@ body::after {
     opacity: 1 !important;
     stroke-dashoffset: 0 !important;
     clip-path: none !important;
+  }
+
+  .work-canvas svg [data-wc='comet'],
+  .work-canvas svg [data-wc='comet-halo'] {
+    display: none;
   }
 }
 
@@ -3653,12 +3787,157 @@ a.work-aux-link:hover {
 }
 
 .about-cinema-lead {
-  max-width: 20ch;
+  position: relative;
+  max-width: 26ch;
+  padding-left: 1.25rem;
   color: var(--ink);
-  font-size: clamp(1.65rem, 3vw, 2.45rem);
+  font-size: clamp(1.3rem, 2.1vw, 1.7rem);
   font-weight: 300;
-  letter-spacing: -0.025em;
-  line-height: 1.08;
+  letter-spacing: -0.02em;
+  line-height: 1.22;
+}
+
+/* The pull quote's rule: drawn top to bottom as the section arrives. */
+.about-cinema-lead::before {
+  content: '';
+  position: absolute;
+  top: 0.15em;
+  bottom: 0.15em;
+  left: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.9s var(--ease-entrance) 0.35s;
+}
+
+.about-cinema-lead[data-visible='true']::before {
+  transform: scaleY(1);
+}
+
+/* The buyer's summary: three open columns, each under a hairline. The
+   accent part of the line sweeps in from the left, column by column, and
+   the column's text rises a beat behind it. */
+.about-focus {
+  display: grid;
+  gap: 1.75rem;
+  margin-top: 2.75rem;
+}
+
+.about-focus > div {
+  position: relative;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.about-focus > div::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 2.5rem;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s var(--ease-entrance);
+}
+
+.about-focus dt {
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.about-focus dd {
+  margin-top: 0.45rem;
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.about-focus dt,
+.about-focus dd {
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition:
+    opacity 0.6s ease,
+    transform 0.7s var(--ease-entrance);
+}
+
+.about-focus[data-visible='true'] > div::before {
+  transform: scaleX(1);
+}
+
+.about-focus[data-visible='true'] :is(dt, dd) {
+  opacity: 1;
+  transform: none;
+}
+
+.about-focus > div:nth-child(1)::before { transition-delay: 0.45s; }
+.about-focus > div:nth-child(2)::before { transition-delay: 0.6s; }
+.about-focus > div:nth-child(3)::before { transition-delay: 0.75s; }
+.about-focus > div:nth-child(1) :is(dt, dd) { transition-delay: 0.55s; }
+.about-focus > div:nth-child(2) :is(dt, dd) { transition-delay: 0.7s; }
+.about-focus > div:nth-child(3) :is(dt, dd) { transition-delay: 0.85s; }
+
+@media (min-width: 640px) {
+  .about-focus {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* The proof figures, open under the portrait: large light numerals over a
+   small label, split by hairlines rather than boxed. */
+.about-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.5rem;
+}
+
+.about-proof > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  padding: 0.25rem 0.75rem;
+  text-align: center;
+}
+
+.about-proof > div + div {
+  border-left: 1px solid var(--rule);
+}
+
+.about-proof dd {
+  color: var(--ink);
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  white-space: nowrap;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.about-proof dt {
+  margin-top: 0.35rem;
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-cinema-lead::before,
+  .about-focus > div::before {
+    transform: none;
+    transition: none;
+  }
+
+  .about-focus :is(dt, dd) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 .about-cinema-visual {
@@ -3918,6 +4197,22 @@ a.work-aux-link:hover {
   filter: saturate(0.82) contrast(1.04) drop-shadow(0 18px 28px oklch(0.22 0.018 255 / 0.22));
   transform-origin: center;
   will-change: transform;
+}
+
+/* Where the hero copy sits, the branches and big leaves thin out, so none
+   lies under the headline. The falling leaves do the same in particle-field.
+   Below 1024px the copy spans the screen, so the clear zone is a band across
+   its middle and the leaves keep the top and bottom. */
+.blossom-story-foreground {
+  -webkit-mask-image: linear-gradient(#000 28%, rgb(0 0 0 / 0.12) 40% 72%, #000 86%);
+  mask-image: linear-gradient(#000 28%, rgb(0 0 0 / 0.12) 40% 72%, #000 86%);
+}
+
+@media (min-width: 1024px) {
+  .blossom-story-foreground {
+    -webkit-mask-image: radial-gradient(ellipse 34% 28% at 28% 52%, rgb(0 0 0 / 0.1) 40%, #000 100%);
+    mask-image: radial-gradient(ellipse 34% 28% at 28% 52%, rgb(0 0 0 / 0.1) 40%, #000 100%);
+  }
 }
 
 /* The hero sits directly on the autumn scene. A ground wash on the copy side
@@ -4373,7 +4668,7 @@ a.work-aux-link:hover {
 
 .service-list-item {
   display: grid;
-  grid-template-columns: 2.25rem 1fr;
+  grid-template-columns: 1.25rem 1fr;
   gap: 0.2rem 0.5rem;
   width: 100%;
   padding: 1.05rem 1.25rem;
@@ -4403,16 +4698,19 @@ a.work-aux-link:hover {
   outline-offset: 2px;
 }
 
+/* A marker, not a number: the landing page carries no numbered labels. */
 .service-list-index {
   grid-row: span 2;
-  padding-top: 0.35rem;
-  color: var(--ink-3);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-top: 0.7rem;
+  border-radius: 999px;
+  background: var(--rule-strong);
+  transition: background 0.3s ease;
 }
 
 .service-list-item[aria-selected='true'] .service-list-index {
-  color: var(--accent);
+  background: var(--accent);
 }
 
 .service-list-title {
@@ -4464,9 +4762,11 @@ a.work-aux-link:hover {
 }
 
 .service-flow {
+  --flow-gap: clamp(1.75rem, 3vw, 2.75rem);
+
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1.75rem, 3vw, 2.75rem);
+  gap: var(--flow-gap);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -4487,21 +4787,60 @@ a.work-aux-link:hover {
   box-shadow: 0 0.2rem 0.5rem rgb(0 0 0 / 0.05);
 }
 
-/* The arrow to the next step, in the maps' indigo. */
-.service-flow-step:not(:last-child)::after {
-  content: '→';
+/* The connector to the next step, in the maps' indigo: a quiet line with
+   an arrowhead, and over it a bright fill and a dot that cross it in turn. */
+.service-flow-link {
   position: absolute;
   top: 50%;
-  left: calc(100% + 2px);
-  width: clamp(1.75rem, 3vw, 2.75rem);
-  color: #6366f1;
-  font-size: 1.3rem;
-  line-height: 1;
-  text-align: center;
-  transform: translateY(-50%);
+  left: calc(100% + 0.3rem);
+  width: calc(var(--flow-gap) - 0.6rem);
+  height: 2px;
+  border-radius: 1px;
+  background: color-mix(in oklab, #6366f1 32%, transparent);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+.service-flow-link::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-top: 2px solid #6366f1;
+  border-right: 2px solid #6366f1;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.service-flow-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, color-mix(in oklab, #6366f1 20%, transparent), #6366f1);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.service-flow-link i {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #6366f1;
+  box-shadow:
+    0 0 0 0.25rem color-mix(in oklab, #6366f1 22%, transparent),
+    0 0 1rem color-mix(in oklab, #6366f1 60%, transparent);
+  opacity: 0;
+  transform: translate(-50%, -50%);
 }
 
 .service-flow-tile {
+  position: relative;
   display: grid;
   flex-shrink: 0;
   place-items: center;
@@ -4558,13 +4897,10 @@ a.work-aux-link:hover {
   mask-position: center;
 }
 
-/* Live: one cycle is 3.6s. Each step lights for its third of it as the
-   packet passes; the packet runs left to right behind the cards, so it is
-   seen crossing the gaps along the arrows. */
-.service-flow-packet {
-  display: none;
-}
-
+/* Live: one cycle is 3.6s, one step every 1.2s. As a step's turn comes it
+   lifts, its outline and shadow take its colour, its tool pops and sends out
+   a ripple; then a dot leaves it along the connector, filling the line as it
+   goes, and arrives at the next step just as that one lights. */
 .service-flow-wrap[data-live] .service-flow-step {
   animation: service-step-lit 3.6s ease-in-out infinite;
   animation-delay: calc(var(--step) * 1.2s + 0.4s);
@@ -4575,36 +4911,49 @@ a.work-aux-link:hover {
   animation-delay: calc(var(--step) * 1.2s + 0.4s);
 }
 
-.service-flow-wrap[data-live] .service-flow-packet {
+.service-flow-tile::after {
+  content: '';
   position: absolute;
-  top: 50%;
-  left: 0;
-  /* Behind the cards: it shows only in the gaps, riding the arrows. */
-  z-index: 0;
-  display: block;
-  width: 0.85rem;
-  height: 0.85rem;
-  margin-top: -0.425rem;
-  border: 0.18rem solid #fff;
+  inset: -2px;
+  border: 2px solid var(--stage-accent);
   border-radius: 50%;
-  background: #6366f1;
-  box-shadow: 0 0 0 0.25rem color-mix(in oklab, #6366f1 22%, transparent);
-  animation: service-packet-run 3.6s cubic-bezier(0.45, 0, 0.55, 1) 0.4s infinite;
+  opacity: 0;
   pointer-events: none;
 }
 
+.service-flow-wrap[data-live] .service-flow-tile::after {
+  animation: service-ripple 3.6s ease-out infinite;
+  animation-delay: calc(var(--step) * 1.2s + 0.4s);
+}
+
+.service-flow-wrap[data-live] .service-flow-link::after {
+  animation: service-link-fill 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: calc(var(--step) * 1.2s + 0.4s);
+}
+
+.service-flow-wrap[data-live] .service-flow-link i {
+  animation: service-link-dot 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: calc(var(--step) * 1.2s + 0.4s);
+}
+
+/* `translate`, not `transform`: motion/react owns the step's transform for
+   its entrance, and the two would fight. */
 @keyframes service-step-lit {
   0%,
   40%,
   100% {
     border-color: var(--stage-border);
     box-shadow: 0 0.2rem 0.5rem rgb(0 0 0 / 0.05);
+    translate: 0 0;
   }
 
   12%,
   28% {
     border-color: var(--stage-accent);
-    box-shadow: 0 0.9rem 1.6rem -0.9rem color-mix(in oklab, var(--stage-accent) 55%, transparent);
+    box-shadow:
+      0 0 0 0.3rem color-mix(in oklab, var(--stage-accent) 12%, transparent),
+      0 1rem 1.8rem -0.9rem color-mix(in oklab, var(--stage-accent) 60%, transparent);
+    translate: 0 -4px;
   }
 }
 
@@ -4616,28 +4965,67 @@ a.work-aux-link:hover {
   }
 
   15% {
-    transform: scale(1.08);
+    transform: scale(1.1);
   }
 }
 
-@keyframes service-packet-run {
-  0% {
-    left: 16%;
+@keyframes service-ripple {
+  0%,
+  11% {
+    opacity: 0;
+    transform: scale(1);
+  }
+
+  13% {
+    opacity: 0.7;
+  }
+
+  32%,
+  100% {
+    opacity: 0;
+    transform: scale(1.75);
+  }
+}
+
+@keyframes service-link-fill {
+  0%,
+  27% {
+    opacity: 1;
+    transform: scaleX(0);
+  }
+
+  45%,
+  62% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  80%,
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes service-link-dot {
+  0%,
+  26% {
+    left: 0;
     opacity: 0;
   }
 
-  6% {
+  29% {
     opacity: 1;
   }
 
-  80% {
-    left: 84%;
+  44% {
+    left: 100%;
     opacity: 1;
   }
 
-  92%,
+  48%,
   100% {
-    left: 84%;
+    left: 100%;
     opacity: 0;
   }
 }
@@ -4746,47 +5134,20 @@ a.work-aux-link:hover {
     align-items: center;
   }
 
-  .service-flow-step:not(:last-child)::after {
-    top: calc(100% + 2px);
+  /* The connector turns to run down from the card's foot to the next. */
+  .service-flow-link {
+    top: calc(100% + 0.3rem);
     left: 50%;
-    width: auto;
-    transform: translateX(-50%) rotate(90deg);
-  }
-
-  .service-flow-wrap[data-live] .service-flow-packet {
-    top: 0;
-    left: auto;
-    right: -1.1rem;
-    margin-top: 0;
-    animation-name: service-packet-drop;
-  }
-}
-
-@keyframes service-packet-drop {
-  0% {
-    top: 12%;
-    opacity: 0;
-  }
-
-  6% {
-    opacity: 1;
-  }
-
-  80% {
-    top: 82%;
-    opacity: 1;
-  }
-
-  92%,
-  100% {
-    top: 82%;
-    opacity: 0;
+    transform: rotate(90deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .service-flow-step,
-  .service-flow-tile {
+  .service-flow-tile,
+  .service-flow-tile::after,
+  .service-flow-link::after,
+  .service-flow-link i {
     animation: none !important;
   }
 }
@@ -4794,12 +5155,28 @@ a.work-aux-link:hover {
 /* Homepage pricing row (EngagementSummary): the three ways to work together
    and how each is priced, as one frosted band after How it works. The full
    cards with what each includes are on /services. */
+/* The page's one dark band. Every other section is a light card on slate,
+   so the run from Selected Work to the FAQ read as one long block; pricing
+   is where a reader decides, so it is the moment that changes tone.
+
+   The tokens are redefined for the band, so everything inside, the featured
+   card included, inverts without its own rules: that card was the dark one
+   on a light band and is now the light one on a dark band. The accent is
+   lifted so small terracotta text keeps its contrast on slate. */
 .pricing-summary {
+  --ink: oklch(0.97 0.006 255);
+  --ink-2: oklch(0.8 0.012 255);
+  --ink-3: oklch(0.66 0.014 255);
+  --rule: oklch(1 0 0 / 0.12);
+  --rule-strong: oklch(1 0 0 / 0.24);
+  --ground: oklch(0.225 0.018 255);
+  --surface: oklch(1 0 0 / 0.05);
+  --accent: oklch(0.72 0.13 38);
+
   position: relative;
-  padding-block: 3.5rem;
-  border-block: 1px solid var(--rule);
-  background: color-mix(in oklab, var(--ground) 84%, transparent);
-  backdrop-filter: blur(12px);
+  padding-block: clamp(4rem, 8vw, 6.5rem);
+  background: var(--ground);
+  color: var(--ink);
 }
 
 .pricing-summary-head {
@@ -5215,15 +5592,6 @@ a.work-aux-link:hover {
   left: clamp(1.75rem, 4.5vw, 4.5rem);
   width: min(28rem, 33%);
   translate: 0 -55%;
-}
-
-.story-copy-tag {
-  margin-bottom: 1rem;
-  color: var(--accent);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
 }
 
 .story-copy-title {
@@ -5767,10 +6135,12 @@ a.work-aux-link:hover {
 
 /* ── About → the path here ───────────────────────────────────────────────
    The career history that used to be its own section, now closing About. */
+/* Close enough to read as About's second half, not a new section: the gap
+   was about 280px of bare background between the two cards. */
 .about-journey {
   position: relative;
   z-index: 2;
-  margin-top: clamp(5rem, 10vw, 9rem);
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
 }
 
 /* It keeps the old section's `experience` id so links still land here, which
@@ -5859,13 +6229,6 @@ div#experience.about-journey {
 .process-explorer-tab:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-}
-
-.process-explorer-tab-number {
-  color: var(--accent);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
 }
 
 .process-explorer-tab-title {
@@ -6105,7 +6468,6 @@ div#experience.about-journey {
 .experience-role-index,
 .experience-tenure-span,
 .about-how-label,
-.story-copy-tag,
 .work-card-context,
 .work-card-outcome em {
   font-size: 0.75rem;
@@ -6785,12 +7147,16 @@ div#experience.about-journey {
    fills toward now. Elsewhere the same roles are a plain list. */
 .experience-track {
   position: relative;
-  height: 380vh;
+  /* One screen pinned plus 1.2 screens of scroll, about 0.3 of a screen per
+     role. It was 380vh, nearly four screens for four roles. */
+  height: 220vh;
 }
 
 .experience-stage {
   position: sticky;
   top: 0;
+  display: grid;
+  align-content: center;
   height: 100svh;
   padding: 5.75rem clamp(1rem, 3vw, 3rem) clamp(1rem, 2.5vw, 2rem);
 }
@@ -6799,9 +7165,12 @@ div#experience.about-journey {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, max-content) auto;
   gap: 1.5rem clamp(2rem, 4vw, 4.5rem);
-  height: 100%;
+  width: 100%;
+  /* The stage's height less its padding, so a short screen squeezes the card
+     instead of pushing the timeline under the nav. */
+  max-height: calc(100svh - 5.75rem - clamp(1rem, 2.5vw, 2rem));
   max-width: 1600px;
   margin-inline: auto;
   padding: clamp(1.75rem, 3.5vh, 2.75rem) clamp(1.75rem, 4vw, 4rem) clamp(1.25rem, 3vh, 2rem);
@@ -6872,9 +7241,26 @@ div#experience.about-journey {
   box-shadow: 0 30px 60px -45px oklch(0.25 0.018 255 / 0.4);
 }
 
-.experience-main .experience-card {
-  flex: 1;
-  overflow: hidden;
+.experience-card-frame {
+  display: grid;
+  min-height: 0;
+}
+
+/* Only clipped where it can be squeezed: clipping everywhere would cut off
+   the card's shadow on screens with room to spare. */
+@media (max-height: 959px) {
+  .experience-card-frame {
+    overflow: hidden;
+  }
+}
+
+.experience-card-frame > * {
+  grid-area: 1 / 1;
+}
+
+.experience-card-sizer {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .experience-card-kicker {
@@ -7096,13 +7482,13 @@ div#experience.about-journey {
   backdrop-filter: blur(10px);
 }
 
+/* A plain heading for the panel; the spaced mono eyebrow is kept for the
+   three sections the brand rules allow. */
 .experience-how-label {
   margin-bottom: 1.1rem;
-  color: var(--ink-2);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .experience-how ul {
@@ -7173,8 +7559,16 @@ div#experience.about-journey {
 }
 
 /* Phones, narrow tablets and short laptop screens get the list: the pinned
-   card needs both the width and the height to hold a whole role. */
-@media (max-width: 1023px), (max-height: 759px), (prefers-reduced-motion: reduce) {
+   card needs both the width and the height to hold a whole role. The card
+   grows taller as the screen narrows (its text wraps more), so the height it
+   needs was measured at each width: 966px at 1024, 912 at 1280, 851 at 1440
+   and 789 from 1680 up. */
+@media (max-width: 1023px),
+  (max-height: 789px),
+  (max-width: 1279px) and (max-height: 965px),
+  (max-width: 1439px) and (max-height: 911px),
+  (max-width: 1679px) and (max-height: 850px),
+  (prefers-reduced-motion: reduce) {
   .experience-track {
     display: none;
   }
@@ -7241,14 +7635,22 @@ div#experience.about-journey {
   isolation: isolate;
 }
 
+/* A warm light falls on the panel from the top left, where the pitch
+   starts, and a hairline highlight runs along its top edge, so it reads as
+   a lit surface rather than a flat grey card. */
 .contact-panel {
   display: grid;
   gap: clamp(2.5rem, 5vw, 4.5rem);
   padding: clamp(1.75rem, 4vw, 3.5rem);
   border: 1px solid var(--rule);
   border-radius: 2rem;
-  background: color-mix(in oklab, var(--ground) 92%, white);
-  box-shadow: 0 50px 120px -70px oklch(0.25 0.018 255 / 0.4);
+  background:
+    radial-gradient(42rem 26rem at 0% 0%, color-mix(in oklab, var(--accent) 7%, transparent), transparent 70%),
+    linear-gradient(180deg, oklch(1 0 0 / 0.55), transparent 30%),
+    color-mix(in oklab, var(--ground) 92%, white);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.8),
+    0 50px 120px -70px oklch(0.25 0.018 255 / 0.45);
 }
 
 .contact-pitch {
@@ -7295,12 +7697,14 @@ div#experience.about-journey {
   background: var(--rule-strong);
 }
 
+/* A dot on the connecting line, centred on it, in place of a step number. */
 .contact-steps span {
   grid-row: span 2;
-  color: var(--accent);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-  padding-top: 0.25rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin: 0.5rem 0 0 0.125rem;
+  border-radius: 999px;
+  background: var(--accent);
 }
 
 .contact-steps strong {
@@ -7316,8 +7720,10 @@ div#experience.about-journey {
   line-height: 1.5;
 }
 
+/* Follows the steps rather than sinking to the foot of the column: pinned to
+   the bottom, it left a tall empty gap beside the calendar. */
 .contact-reach {
-  margin-top: auto;
+  margin-top: 0.5rem;
   padding-top: 1.5rem;
 }
 
@@ -7384,12 +7790,84 @@ div#experience.about-journey {
   font-size: 0.8125rem;
 }
 
+/* The booking card sits up off the panel: solid white, a soft lifted
+   shadow, the one surface on the page that asks for an action. */
 .contact-booking {
   min-width: 0;
   padding: clamp(1.25rem, 2.5vw, 2rem);
-  border: 1px solid var(--rule);
+  border: 1px solid color-mix(in oklab, var(--rule) 70%, transparent);
   border-radius: 1.5rem;
-  background: oklch(1 0 0 / 0.85);
+  background: #fff;
+  box-shadow:
+    0 1px 2px oklch(0.25 0.018 255 / 0.06),
+    0 24px 48px -28px oklch(0.25 0.018 255 / 0.3);
+}
+
+.contact-host {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.contact-host-avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+}
+
+.contact-host-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--rule);
+}
+
+/* The same green as "Next opening": open for bookings. */
+.contact-host-avatar i {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: oklch(0.7 0.16 150);
+}
+
+.contact-host-terms {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0 0 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-host-terms li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* The calendar sits on the card itself, under a rule, rather than in a
+   second bordered box inside it. */
+.contact-calendar {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+
+@media (max-width: 479px) {
+  .contact-host-terms {
+    display: none;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -7631,8 +8109,56 @@ div#experience.about-journey {
 
   .footer-identity {
     grid-column: auto;
-    text-align: right;
   }
+}
+
+/* ── Footer: the dark close ───────────────────────────────────────────────
+   The page ends on a dark slab, rounded at the top so it reads as a surface
+   rising under the booking form rather than a strip of leftover links. It
+   borrows the Pricing band's tokens, so every colour below it (the CTA, the
+   rules, the link greys) turns over on its own, and the autumn scene around
+   Contact shows past its corners. */
+.saas-footer.footer-scene,
+.blossom-story-root .footer-scene.saas-footer {
+  --ink: oklch(0.97 0.006 255);
+  --ink-2: oklch(0.78 0.012 255);
+  --ink-3: oklch(0.64 0.014 255);
+  --rule: oklch(1 0 0 / 0.1);
+  --rule-strong: oklch(1 0 0 / 0.22);
+  --ground: oklch(0.2 0.018 255);
+  --surface: oklch(1 0 0 / 0.05);
+  --accent: oklch(0.72 0.13 38);
+
+  border-top: 0;
+  border-radius: clamp(1.75rem, 3.5vw, 3rem) clamp(1.75rem, 3.5vw, 3rem) 0 0;
+  background:
+    radial-gradient(60rem 30rem at 88% -10%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 70%),
+    radial-gradient(48rem 26rem at -5% 105%, oklch(0.42 0.05 255 / 0.35), transparent 70%),
+    var(--ground);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.09);
+  color: var(--ink);
+}
+
+/* The mark, as in the nav, a little larger: the identity column leads with
+   it, aligned with the link columns rather than pushed to the right edge. */
+.footer-brand-mark {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--accent);
+}
+
+/* The signature on dark: a near-invisible base, and a terracotta fill that
+   glows up from the cropped edge and fades out toward the top of the
+   letters, rather than a flat block of orange. */
+.saas-footer.footer-scene .footer-signature .footer-word span {
+  color: oklch(1 0 0 / 0.045);
+  background-image: linear-gradient(
+    to top,
+    var(--accent),
+    color-mix(in oklab, var(--accent) 45%, transparent) 55%,
+    transparent 92%
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -7675,6 +8201,19 @@ div#experience.about-journey {
 
 .blossom-story-root[data-scene='calm'] .automation-field canvas {
   opacity: 0.4;
+}
+
+/* The close: at the booking form the branches, the leaves and their warm
+   glow come back, so the page ends on the scene it opened with. The video
+   stays out; moving footage behind a form is a distraction. Its opacity is
+   written inline by the scroll motion, hence the !important. */
+.blossom-story-root[data-scene='close'] .blossom-story-video {
+  opacity: 0 !important;
+}
+
+.blossom-story-root[data-scene='close'] .blossom-story-foreground {
+  opacity: 0.55;
+  filter: saturate(1) contrast(1.04) drop-shadow(0 18px 28px oklch(0.22 0.018 255 / 0.22));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -8096,4 +8635,31 @@ div#experience.about-journey {
 .split-line-mask {
   padding-block: 0.1em 0.2em;
   margin-block: -0.1em -0.2em;
+}
+
+/* ── Touch targets ────────────────────────────────────────────────────────
+   On touch screens, links that read as small text still take a 44px-tall
+   tap. They measured 21 to 27px on a phone. The hit area is an invisible
+   ::before grown to 44px around the link's middle, so nothing moves and the
+   ::after arrows these links carry are untouched. `min()` leaves anything
+   already 44px or taller as it is. */
+@media (pointer: coarse) {
+  .work-strip-all,
+  .about-career-link,
+  .experience-thesis a,
+  .work-aux-link {
+    position: relative;
+  }
+
+  .work-strip-all::before,
+  .about-career-link::before,
+  .experience-thesis a::before,
+  .work-aux-link::before {
+    content: '';
+    position: absolute;
+    top: min(0px, calc(50% - 22px));
+    right: 0;
+    bottom: min(0px, calc(50% - 22px));
+    left: 0;
+  }
 }

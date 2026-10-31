@@ -19,7 +19,7 @@ export const PROFILE = {
   name: 'Ramon Vallejera Jr.',
   legalName: 'Ramon A. Vallejera, Jr.',
   shortName: 'Ramon',
-  title: 'AI Automation Engineer',
+  title: 'AI Automation Specialist',
   audience: 'teams buried in repetitive work',
   credential: 'MBA',
   location: 'Philippines',

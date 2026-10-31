@@ -148,7 +148,9 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
 
   // The picture rests finished and each hover plays the run. It used to start
   // empty and draw itself in once scrolled to, which took about three seconds;
-  // anyone scrolling at a normal pace saw a row of blank white boxes.
+  // anyone scrolling at a normal pace saw a row of blank white boxes. Its
+  // first time on screen it traces itself instead: the tiles stay put and only
+  // the connectors and outlines play (WorkCanvas `trace`).
   const [replays, setReplays] = useState(0)
   const { frameRef, lensRef, artRef, move: moveLens, hide: hideLens } = useMagnifier()
 
@@ -203,6 +205,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
                 run={replays}
                 reduced={reduced}
                 rest='static'
+                trace={seen}
               />
             ) : (
               <img

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { CalendarDays, ChevronLeft, ChevronRight, Mail } from 'lucide-react'
+import { CalendarDays, ChevronLeft, ChevronRight, Clock, Mail } from 'lucide-react'
 
 import { formatSlotLocal, isManilaClock, manilaDateKey, MAX_BOOKING_DAYS, slotInstant } from '@/lib/booking-policy'
 
@@ -280,7 +280,7 @@ export function ContactSection() {
           <div className='contact-pitch'>
             <SectionIntro
               title={<>Book a free 30‑minute call.</>}
-              blurb='No charge, no deck. Bring the process that eats your week and I will tell you whether it is worth automating, and on which platform.'
+              blurb='No charge, no deck. Bring one task your team repeats every week, and I will tell you whether it is worth automating, and on which platform.'
               margin=''
             />
 
@@ -288,14 +288,14 @@ export function ContactSection() {
             <ol className='contact-steps'>
               {[
                 ['Pick a time', 'Any open weekday slot, shown in your own time zone.'],
-                ['30-minute call', 'Walk me through the process that eats your week.'],
+                ['30-minute call', 'Show me how the work gets done today, step by step.'],
                 [
                   'Summary and quote in 48 hours',
                   'Whether it is worth automating, on which platform, and a fixed quote, or the audit first if it needs mapping.'
                 ]
-              ].map(([title, copy], index) => (
+              ].map(([title, copy]) => (
                 <li key={title}>
-                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <span aria-hidden='true' />
                   <strong>{title}</strong>
                   <p>{copy}</p>
                 </li>
@@ -355,25 +355,35 @@ export function ContactSection() {
                 'opacity 0.7s cubic-bezier(0.16,1,0.3,1) 120ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) 120ms'
             }}
           >
-            <div className='flex items-start justify-between gap-4'>
-              <div>
+            {/* Who the call is with, like a booking page: the face, the
+                name and the terms in one line, before any dates. */}
+            <div className='contact-host'>
+              <span className='contact-host-avatar'>
+                <img src='/images/landing/ramon-avatar.webp' alt='' width={96} height={96} />
+                <i aria-hidden='true' />
+              </span>
+              <div className='min-w-0'>
+                <p className='text-ink-3 text-[13px]'>{PROFILE.name}</p>
                 <h3 className='text-ink text-2xl font-light tracking-tight' style={{ fontFamily: DISPLAY_FONT }}>
                   Book a slot
                 </h3>
-                <p className='text-ink-2 mt-1.5 text-[14px]'>
-                  Thirty minutes, free.{' '}
-                  {zone
-                    ? `Times shown in your time zone (${zone}); dates follow the Manila calendar.`
-                    : 'All times Philippine time (UTC+8).'}
-                </p>
               </div>
-              <span className='border-rule text-ink-2 hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border sm:flex'>
-                <CalendarDays size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
-              </span>
+              <ul className='contact-host-terms'>
+                <li>
+                  <Clock size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
+                  30 min
+                </li>
+                <li>Free</li>
+              </ul>
             </div>
+            <p className='text-ink-2 mt-4 text-[14px]'>
+              {zone
+                ? `Times shown in your time zone (${zone}); dates follow the Manila calendar.`
+                : 'All times Philippine time (UTC+8).'}
+            </p>
 
             {/* Calendar */}
-            <div className='border-rule bg-ink/1.5 mt-7 rounded-xl border p-4 sm:p-5'>
+            <div className='contact-calendar'>
               <div className='mb-4 flex items-center justify-between'>
                 <button
                   type='button'
@@ -441,7 +451,7 @@ export function ContactSection() {
                         weekend ? 'bg-ink/2' : ''
                       } ${
                         isPicked
-                          ? 'ring-ink text-ink bg-ink/6 font-medium ring-1'
+                          ? 'ring-accent text-ink bg-accent/10 font-medium ring-[1.5px]'
                           : ok
                             ? 'text-ink-2 hover:bg-ink/6'
                             : 'text-ink-4 cursor-default'
@@ -449,7 +459,7 @@ export function ContactSection() {
                     >
                       {d.getDate()}
                       {isToday && !isPicked && (
-                        <span className='bg-ink-4 absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full' />
+                        <span className='bg-accent absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full' />
                       )}
                     </button>
                   )
