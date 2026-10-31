@@ -8922,3 +8922,141 @@ div#experience.about-journey {
 .contact-next-link:hover {
   border-color: var(--accent);
 }
+
+/* ── Hero journey (2026-11-01) ────────────────────────────────────────────
+   Mountain ranges drifting behind the tree and a silhouette walking along
+   the foot of the hero (hero-journey.tsx). The ranges sit under the tree
+   footage; the ground and walker above the branches. Both fade out as the
+   hero scrolls away, and go with the rest of the scene in the calm middle. */
+.journey-ranges {
+  position: absolute;
+  inset: auto 0 8%;
+  height: 36%;
+  pointer-events: none;
+  /* Low and faint behind the copy, full height behind the tree. */
+  -webkit-mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.15) 25%, #000 66%);
+  mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.15) 25%, #000 66%);
+}
+
+.journey-range {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  will-change: transform;
+}
+
+.journey-range svg {
+  flex: none;
+  height: 100%;
+}
+
+/* Atmospheric depth: far ranges pale and blue, near ones deeper and warmer,
+   each fading into haze at its base. */
+.journey-range-far path { fill: oklch(0.8 0.022 255 / 0.55); }
+.journey-range-mid path { fill: oklch(0.7 0.026 258 / 0.55); }
+.journey-range-near path { fill: oklch(0.58 0.03 40 / 0.5); }
+
+.journey-range-far { top: 0; }
+.journey-range-mid { top: 18%; }
+.journey-range-near { top: 36%; }
+
+.journey-ground {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 6;
+  height: 15%;
+  pointer-events: none;
+}
+
+/* The path: a fine line that fades out at both ends, a little shade of
+   ground beneath it, and tufts that slide past underfoot. */
+.journey-ground::before,
+.journey-ground::after {
+  content: '';
+  position: absolute;
+  inset: 34% 0 auto;
+  -webkit-mask-image: linear-gradient(90deg, transparent 4%, #000 30% 72%, transparent 96%);
+  mask-image: linear-gradient(90deg, transparent 4%, #000 30% 72%, transparent 96%);
+}
+
+.journey-ground::before {
+  height: 1px;
+  background: oklch(0.42 0.025 60 / 0.3);
+}
+
+.journey-ground::after {
+  height: 2.5rem;
+  background: linear-gradient(oklch(0.55 0.025 60 / 0.12), transparent);
+}
+
+.journey-path {
+  position: absolute;
+  inset: 34% auto auto 0;
+  display: flex;
+  height: 0.9rem;
+  transform-origin: 0 0;
+  translate: 0 -100%;
+  will-change: transform;
+  -webkit-mask-image: linear-gradient(90deg, transparent 4%, #000 30% 72%, transparent 96%);
+  mask-image: linear-gradient(90deg, transparent 4%, #000 30% 72%, transparent 96%);
+}
+
+.journey-path svg {
+  flex: none;
+  height: 100%;
+}
+
+.journey-path path {
+  fill: none;
+  stroke: oklch(0.42 0.03 60 / 0.4);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.journey-walker {
+  position: absolute;
+  bottom: calc(66% - 0.06 * clamp(48px, 8.5vh, 84px));
+  left: 56%;
+  height: clamp(48px, 8.5vh, 84px);
+  overflow: visible;
+}
+
+.journey-walker line {
+  stroke: oklch(0.26 0.022 255);
+}
+
+.journey-walker circle {
+  fill: oklch(0.26 0.022 255);
+}
+
+/* The far arm and leg a step lighter, so the limbs read in depth. */
+.journey-walker .journey-far-side line {
+  stroke: oklch(0.38 0.02 255);
+}
+
+.journey-shadow {
+  fill: oklch(0.22 0.02 255 / 0.18);
+}
+
+@media (max-width: 1023px) {
+  .journey-ranges {
+    height: 34%;
+  }
+
+  .journey-walker {
+    left: 68%;
+  }
+}
+
+/* Phones: the buttons sit low in the hero, so the path drops to the foot of
+   the screen and the walker is smaller, clear of them. */
+@media (max-width: 767px) {
+  .journey-ground {
+    height: 10%;
+  }
+
+  .journey-walker {
+    bottom: calc(66% - 0.06 * 54px);
+    height: 54px;
+  }
+}

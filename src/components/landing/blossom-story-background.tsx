@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 
 import { usePrefersReducedMotion } from '@/components/landing/motion'
+import { JourneyRanges, JourneyWalker } from '@/components/landing/hero-journey'
 
 type Mood = 'golden' | 'calm' | 'close'
 
@@ -146,6 +147,10 @@ export function BlossomStoryBackground() {
       aria-hidden='true'
     >
       <div className='sticky top-0 h-screen overflow-hidden'>
+        {/* Under the tree footage: it is screen-blended, so the white tree
+            paints itself over the ranges and they read as behind it. */}
+        <JourneyRanges />
+
         {withVideo && (
           <motion.video
             ref={videoRef}
@@ -180,6 +185,9 @@ export function BlossomStoryBackground() {
           <i />
         </div>
         <div className='blossom-story-horizon absolute inset-x-0 bottom-0' />
+
+        {/* In front of the branches and the light, behind the falling leaves. */}
+        <JourneyWalker />
       </div>
     </div>
   )
