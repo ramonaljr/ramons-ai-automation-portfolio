@@ -5,6 +5,7 @@ import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
+import { PageScene } from '@/components/landing/page-scene'
 import { ServicesSection } from '@/components/landing/services-section'
 import { EngagementSection } from '@/components/landing/engagement-section'
 import { FaqSection } from '@/components/landing/faq-section'
@@ -68,36 +69,38 @@ const ServicesPage = () => {
     <div className={PAGE}>
       <SiteNav />
 
-      <header className='px-6 pt-36 pb-4 md:px-12 lg:px-20 lg:pt-44'>
-        <div className={CONTAINER}>
-          <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>
-            SERVICES
-          </span>
-
-          <h1
-            className='text-ink mt-7 max-w-[16ch] text-[clamp(2.25rem,5.5vw,4.5rem)] leading-[1.02] font-light tracking-tight'
-            style={{ fontFamily: DISPLAY_FONT }}
-          >
-            Services, pricing and questions.
-          </h1>
-
-          <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
-            What I build, how a project is priced and run, and straight answers about access, ownership and what happens
-            when something fails. Every price is agreed in writing before work starts.
-          </p>
-
-          <nav aria-label='On this page' className='services-page-jump'>
-            <a href='#services'>What I build</a>
-            <a href='#engagement'>Working together</a>
-            <a href='#faq'>Questions</a>
-          </nav>
-        </div>
-      </header>
-
       <div className='relative'>
         <ParticleField />
 
         <div className='relative z-10'>
+          <header className='relative isolate px-6 pt-36 pb-4 md:px-12 lg:px-20 lg:pt-44'>
+            <PageScene />
+            <div className={CONTAINER}>
+              <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>
+                SERVICES
+              </span>
+
+              <h1
+                data-leaf-clear
+                className='text-ink mt-7 max-w-[16ch] text-[clamp(2.25rem,5.5vw,4.5rem)] leading-[1.02] font-light tracking-tight'
+                style={{ fontFamily: DISPLAY_FONT }}
+              >
+                Services, pricing and questions.
+              </h1>
+
+              <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
+                What I build, how a project is priced and run, and straight answers about access, ownership and what
+                happens when something fails. Every price is agreed in writing before work starts.
+              </p>
+
+              <nav aria-label='On this page' className='services-page-jump'>
+                <a href='#services'>What I build</a>
+                <a href='#engagement'>Working together</a>
+                <a href='#faq'>Questions</a>
+              </nav>
+            </div>
+          </header>
+
           <ServicesSection />
           <EngagementSection />
           <FaqSection />

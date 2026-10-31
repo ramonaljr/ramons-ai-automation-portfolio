@@ -8,6 +8,7 @@ import { SiteFooter } from '@/components/landing/site-footer'
 import { CtaSection } from '@/components/landing/cta-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
+import { PageScene } from '@/components/landing/page-scene'
 import { ArrowRight, CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE, Reveal } from '@/components/landing/motion'
 import MDXContent from '@/components/mdx-content'
 import { ReadingRail } from '@/components/shared/prose/reading-rail'
@@ -199,7 +200,8 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
       <SiteNav />
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
-      <header className='px-6 pt-36 pb-20 md:px-12 lg:px-20 lg:pt-44'>
+      <header className='relative isolate px-6 pt-36 pb-20 md:px-12 lg:px-20 lg:pt-44'>
+        <PageScene leaves />
         <div className={CONTAINER}>
           <a
             href='/#portfolio'
@@ -220,6 +222,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
           </div>
 
           <h1
+            data-leaf-clear
             className='text-ink mt-7 max-w-[19ch] text-[clamp(2.1rem,5.2vw,4.5rem)] leading-[1.02] font-light tracking-tight'
             style={{ fontFamily: DISPLAY_FONT }}
           >

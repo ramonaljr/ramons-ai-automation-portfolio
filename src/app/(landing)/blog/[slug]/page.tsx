@@ -1,12 +1,14 @@
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import type { Metadata } from 'next'
+import Image from 'next/image'
 
 import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { CtaSection } from '@/components/landing/cta-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
+import { PageScene } from '@/components/landing/page-scene'
 import { ArrowRight, CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE, Reveal } from '@/components/landing/motion'
 import MDXContent from '@/components/mdx-content'
 import { ReadingRail } from '@/components/shared/prose/reading-rail'
@@ -195,11 +197,12 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
       {/* `article` rather than a bare div, so the byline, dates and body below
           are scoped to one authored work. */}
       <article>
-        <header className='px-6 pt-36 pb-16 md:px-12 lg:px-20 lg:pt-44'>
+        <header className='relative isolate px-6 pt-36 pb-16 md:px-12 lg:px-20 lg:pt-44'>
+          <PageScene leaves />
           <div className={CONTAINER}>
             <a
               href='/blog'
-              className='text-ink-3 hover:text-ink inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] transition-colors'
+              className='tap-area text-ink-3 hover:text-ink inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] transition-colors'
             >
               <ArrowLeft size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
               All articles
@@ -220,6 +223,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
             </div>
 
             <h1
+              data-leaf-clear
               className='text-ink mt-7 max-w-[20ch] text-[clamp(2.1rem,5.2vw,4.25rem)] leading-[1.02] font-light tracking-tight'
               style={{ fontFamily: DISPLAY_FONT }}
             >
@@ -233,7 +237,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
             {/* rel=author and a real <time datetime> — the visible date is
               formatted for a reader, the attribute for a crawler. */}
             <div className='border-rule text-ink-3 mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t pt-6 font-mono text-[11px] tracking-[0.18em]'>
-              <a href='/#about' rel='author' className='hover:text-ink transition-colors'>
+              <a href='/#about' rel='author' className='tap-area hover:text-ink transition-colors'>
                 {PROFILE.name.toUpperCase()}
               </a>
               {published && <time dateTime={metadata.publishedAt}>{published.toUpperCase()}</time>}
@@ -247,7 +251,15 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
                   {/* Decorative: it is an editorial cover sitting directly under an
                     h1 that already says the title, so repeating the title as
                     alt only makes a screen reader read it twice. */}
-                  <img src={metadata.coverImage} alt='' aria-hidden='true' className='w-full rounded-xl' />
+                  <Image
+                    src={metadata.coverImage}
+                    alt=''
+                    aria-hidden='true'
+                    width={1586}
+                    height={992}
+                    sizes='(min-width: 1280px) 1100px, 100vw'
+                    className='h-auto w-full rounded-xl'
+                  />
                 </div>
               </Reveal>
             )}

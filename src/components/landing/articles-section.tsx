@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+import Image from 'next/image'
+
 import { ArrowRight, Clock, User } from 'lucide-react'
 
 import type { PostMetadata } from '@/lib/posts'
@@ -84,13 +86,13 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
             >
               <a href={`/blog/${post.slug}`} className='border-rule bg-surface-raised block border-b'>
                 {post.coverImage && (
-                  <img
+                  <Image
                     src={post.coverImage}
                     alt=''
                     aria-hidden='true'
-                    width={1200}
-                    height={750}
-                    loading='lazy'
+                    width={1586}
+                    height={992}
+                    sizes='(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw'
                     className='h-[190px] w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]'
                   />
                 )}
@@ -137,7 +139,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
                 <div className='mt-auto pt-6'>
                   <a
                     href={`/blog/${post.slug}`}
-                    className='text-ink-2 hover:text-ink inline-flex items-center gap-2 font-mono text-[13px] tracking-wide transition-colors'
+                    className='tap-area text-ink-2 hover:text-ink inline-flex items-center gap-2 font-mono text-[13px] tracking-wide transition-colors'
                   >
                     Read article
                     <ArrowRight size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />

@@ -41,11 +41,12 @@ type ContactFormProps = {
   className?: string
 }
 
-// Landing-page field chrome: hairline on white, mono label above.
+// Landing-page field chrome: hairline on white, a plain sentence-case label
+// above (the mono caps labels went in the premium pass).
 const FIELD =
   'h-12 rounded-xl border-rule bg-surface text-[14px] text-ink placeholder:text-ink-4 focus-visible:border-rule-strong focus-visible:ring-0'
 
-const LABEL = 'font-mono text-[11px] tracking-[0.18em] text-ink-3'
+const LABEL = 'text-[13px] font-medium text-ink-2'
 
 const ContactForm = ({ className }: ContactFormProps) => {
   // A slot arriving in the query string is what separates a booking from a
@@ -190,7 +191,7 @@ const ContactForm = ({ className }: ContactFormProps) => {
           name='name'
           render={({ field }) => (
             <FormItem className='gap-2'>
-              <FormLabel className={LABEL}>YOUR NAME</FormLabel>
+              <FormLabel className={LABEL}>Your name</FormLabel>
               <FormControl>
                 <Input placeholder='Dana Whitfield' className={FIELD} {...field} />
               </FormControl>
@@ -204,7 +205,7 @@ const ContactForm = ({ className }: ContactFormProps) => {
           name='email'
           render={({ field }) => (
             <FormItem className='gap-2'>
-              <FormLabel className={LABEL}>EMAIL</FormLabel>
+              <FormLabel className={LABEL}>Email</FormLabel>
               <FormControl>
                 <Input type='email' placeholder='you@company.com' className={FIELD} {...field} />
               </FormControl>
@@ -218,7 +219,7 @@ const ContactForm = ({ className }: ContactFormProps) => {
           name='service'
           render={({ field }) => (
             <FormItem className='gap-2'>
-              <FormLabel className={LABEL}>WHAT YOU NEED</FormLabel>
+              <FormLabel className={LABEL}>What you need</FormLabel>
               {/* `null`, not `undefined`: Base UI decides controlled-ness from
                   the first render and treats only `undefined` as uncontrolled.
                   With `|| undefined` the prefill below flipped the Select from
@@ -249,7 +250,7 @@ const ContactForm = ({ className }: ContactFormProps) => {
           name='message'
           render={({ field }) => (
             <FormItem className='gap-2'>
-              <FormLabel className={LABEL}>THE PROCESS YOU WANT TO AUTOMATE</FormLabel>
+              <FormLabel className={LABEL}>The process you want to automate</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder='What happens today, who does it, and how often. Rough is fine.'

@@ -2,6 +2,8 @@
 
 import { useState, type CSSProperties } from 'react'
 
+import Image from 'next/image'
+
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { CaseStudyModal } from '@/components/landing/case-study-modal'
 import { workLabel } from '@/components/landing/projects-section'
@@ -49,14 +51,17 @@ export function WorkStrip({ caseStudies }: { caseStudies: CaseStudyMetadata[] })
             >
               <button type='button' className='work-strip-item' aria-haspopup='dialog' onClick={() => setSelected(cs)}>
                 <span className='work-strip-thumb'>
-                  <img
-                    src={cs.heroImage ?? cs.image}
-                    alt=''
-                    width={1176}
-                    height={735}
-                    loading='lazy'
-                    decoding='async'
-                  />
+                  {/* Shown at about 170px (240px on the widest screens); the
+                      source is up to 1,700px wide, so it is resized to fit. */}
+                  {(cs.heroImage ?? cs.image) && (
+                    <Image
+                      src={(cs.heroImage ?? cs.image)!}
+                      alt=''
+                      width={1176}
+                      height={735}
+                      sizes='(min-width: 1536px) 240px, 180px'
+                    />
+                  )}
                 </span>
                 <span className='work-strip-label'>{workLabel(cs)}</span>
                 {cs.keyOutcome && (

@@ -334,7 +334,7 @@ export function ServicesSection() {
                       <li key={outcome}>{outcome}</li>
                     ))}
                   </ul>
-                  <a href={`/services/${item.slug}`} className='service-detail-link'>
+                  <a href={`/services/${item.slug}`} className='service-detail-link tap-area'>
                     See how it works
                     <ArrowIcon />
                   </a>
