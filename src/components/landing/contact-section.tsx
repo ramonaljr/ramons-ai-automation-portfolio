@@ -70,6 +70,15 @@ function useInView(threshold = 0.1) {
 const iso = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 
+/** The first weekday on or after `from`: the earliest day a call can be booked. */
+const firstWeekday = (from: Date) => {
+  const day = new Date(from)
+
+  while (day.getDay() === 0 || day.getDay() === 6) day.setDate(day.getDate() + 1)
+
+  return day
+}
+
 export function ContactSection() {
   const { ref, inView } = useInView(0.06)
 
@@ -128,9 +137,15 @@ export function ContactSection() {
     const now = new Date(year, month - 1, day)
 
     now.setHours(0, 0, 0, 0)
+
+    // Open on the month of the first bookable day, not today's: on the last
+    // weekend of a month, today's month has nothing left to pick, and the
+    // calendar opened on a grid of greyed-out days.
+    const first = firstWeekday(now)
+
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setToday(now)
-    setCursor({ y: now.getFullYear(), m: now.getMonth() })
+    setCursor({ y: first.getFullYear(), m: first.getMonth() })
   }, [])
 
   // Choosing a date owns the reset. Doing it here rather than in the effect
@@ -174,11 +189,7 @@ export function ContactSection() {
   useEffect(() => {
     if (!inView || !today) return
 
-    const day = new Date(today)
-
-    while (day.getDay() === 0 || day.getDay() === 6) day.setDate(day.getDate() + 1)
-
-    const key = iso(day)
+    const key = iso(firstWeekday(today))
     let live = true
 
     fetch(`/api/availability?date=${encodeURIComponent(key)}`)
