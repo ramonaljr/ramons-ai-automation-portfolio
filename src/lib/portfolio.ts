@@ -31,7 +31,18 @@ export const PROFILE = {
   ],
 
   /** Served from public/. Swap the file, keep the path. */
-  cv: '/ramon-vallejera-cv.pdf'
+  cv: '/ramon-vallejera-cv.pdf',
+
+  /**
+   * The intro video behind the About portrait, loaded only when someone presses
+   * play. `src` is any embed URL: to move to YouTube, replace it with
+   * `https://www.youtube-nocookie.com/embed/<id>?autoplay=1&rel=0`. The Loom
+   * flags hide its title bar, which shows the auto-generated title.
+   */
+  introVideo: {
+    src: 'https://www.loom.com/embed/ee6a52afa0e64432812870ef08186c91?autoplay=1&hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true',
+    length: '2 min'
+  }
 } as const
 
 // ─── Services ────────────────────────────────────────────────────────────────

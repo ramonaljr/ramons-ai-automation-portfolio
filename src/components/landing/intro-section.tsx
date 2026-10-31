@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from 'react'
 
 import { motion, useScroll, useTransform } from 'motion/react'
 
-import { Download } from 'lucide-react'
+import { Download, Play } from 'lucide-react'
 
 import { GreetingWord } from '@/components/landing/greeting-word'
+import { IntroVideoDialog } from '@/components/landing/intro-video'
 import { ICON_STROKE, READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
 import { EXPERIENCE, financeYears, PROFILE } from '@/lib/portfolio'
 import { introStep } from '@/components/landing/section-intro'
@@ -64,6 +65,7 @@ function useInView(threshold = 0.15) {
 
 export function IntroSection({ systemCount }: { systemCount: number }) {
   const { ref, inView } = useInView(0.1)
+  const [videoOpen, setVideoOpen] = useState(false)
   const reducedMotion = usePrefersReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const portraitY = useTransform(scrollYProgress, [0, 1], [54, -42])
@@ -119,21 +121,37 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
             style={reducedMotion ? reveal(180) : { ...reveal(180), y: portraitY, rotate: portraitRotate }}
           >
             {/* The casual, smiling portrait; the hero carries the office one,
-                and the same photo twice would read as filler. */}
+                and the same photo twice would read as filler. It doubles as
+                the cover of the intro video, which opens in a pop-up. */}
             <div
               className='saas-portrait-frame about-film-frame bg-surface-raised border-rule overflow-hidden rounded-2xl border'
               data-visible={inView}
             >
-              <img
-                src='/images/landing/ramon-portrait-casual.webp'
-                alt={PROFILE.name}
-                width={880}
-                height={1100}
-                loading='lazy'
-                className='h-auto w-full object-cover'
-              />
+              <button
+                type='button'
+                onClick={() => setVideoOpen(true)}
+                aria-label={`Play intro video, ${PROFILE.introVideo.length}`}
+                className='about-video-cover group block w-full cursor-pointer'
+              >
+                <img
+                  src='/images/landing/ramon-portrait-casual.webp'
+                  alt={PROFILE.name}
+                  width={880}
+                  height={1100}
+                  loading='lazy'
+                  className='h-auto w-full object-cover'
+                />
+                <span className='about-video-play' aria-hidden='true'>
+                  <span className='about-video-play-icon'>
+                    <Play size={18} strokeWidth={ICON_STROKE} fill='currentColor' />
+                  </span>
+                  <span>Watch my intro</span>
+                  <span className='text-ink-3'>{PROFILE.introVideo.length}</span>
+                </span>
+              </button>
               <div className='about-film-scan' aria-hidden='true' />
             </div>
+            <IntroVideoDialog open={videoOpen} onClose={() => setVideoOpen(false)} />
 
             <dl
               className='about-credential-strip divide-rule border-rule bg-surface mt-5 grid grid-cols-3 divide-x overflow-hidden rounded-xl border'

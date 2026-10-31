@@ -3710,6 +3710,60 @@ a.work-aux-link:hover {
   animation: about-film-scan 2s var(--ease-entrance) 0.45s both;
 }
 
+/* The portrait is also the intro video's cover: one pill, bottom left, so the
+   photo still reads as a photo. */
+.about-video-cover {
+  position: relative;
+}
+
+.about-video-cover:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+  border-radius: 1rem;
+}
+
+.about-video-play {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.35rem 1rem 0.35rem 0.35rem;
+  background: color-mix(in oklab, var(--surface-raised) 92%, transparent);
+  color: var(--ink);
+  font-size: 13px;
+  box-shadow: 0 12px 28px -14px color-mix(in oklab, var(--ink) 55%, transparent);
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s var(--ease-entrance);
+}
+
+.about-video-play-icon {
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  transition: transform 0.3s var(--ease-entrance);
+}
+
+.about-video-play-icon svg {
+  margin-left: 2px;
+}
+
+.about-video-cover:hover .about-video-play {
+  transform: translateY(-2px);
+}
+
+.about-video-cover:hover .about-video-play-icon {
+  transform: scale(1.08);
+}
+
 /* The career snapshot under the About portrait: one line per role, the
    current work in accent. Read from the same data as the full history. */
 .about-career {
