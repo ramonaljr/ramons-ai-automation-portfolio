@@ -222,7 +222,7 @@ export function ChatWidget() {
         aria-expanded={open}
         aria-controls='chat-panel'
         aria-label={open ? 'Close chat' : "Chat with Ramon's assistant"}
-        className={`bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 w-12 items-center justify-center rounded-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-[transform,opacity] duration-300 hover:scale-105 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:w-14 ${
+        className={`bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 w-12 items-center justify-center rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.16),0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-[transform,opacity] duration-300 hover:scale-105 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:w-14 ${
           scrolling && !open ? 'max-sm:pointer-events-none max-sm:translate-y-20 max-sm:opacity-0' : ''
         }`}
       >

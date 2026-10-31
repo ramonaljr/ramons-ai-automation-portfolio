@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { motion, useScroll, useTransform, type MotionValue, type Variants } from 'motion/react'
 
+import { BrandMark } from '@/components/landing/brand-mark'
 import { CONTAINER, DISPLAY_FONT, READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
 import { PROFILE, SERVICES } from '@/lib/portfolio'
 
@@ -19,9 +20,9 @@ import { PROFILE, SERVICES } from '@/lib/portfolio'
  * contents. Hashes are rewritten to `/#section` away from the landing page.
  */
 const EXPLORE: { label: string; hash?: string; href?: string }[] = [
+  { label: 'Portfolio', hash: '#portfolio' },
   { label: 'About', hash: '#about' },
   { label: 'Career history', hash: '#experience' },
-  { label: 'Portfolio', hash: '#portfolio' },
   { label: 'How it works', hash: '#process' },
 
   // These two moved to /services with their sections.
@@ -217,6 +218,9 @@ export function SiteFooter() {
           </motion.nav>
 
           <motion.div className='footer-identity' variants={ITEM}>
+            <span className='nav-brand-mark footer-brand-mark relative block' aria-hidden='true'>
+              <BrandMark />
+            </span>
             <p className='text-ink text-[0.95rem] font-medium tracking-[-0.01em]'>{PROFILE.name}</p>
             <p className='text-ink-2 mt-2 text-[14px]'>
               {PROFILE.title} · {PROFILE.location}

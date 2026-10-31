@@ -29,6 +29,9 @@ const CHECK = '#16a34a'
 /** Header text (title and platform line) sits above this and stays still. */
 const HEADER_LINE = 110
 
+/** Connectors shorter than this (in drawing units) are arrowheads: no dot rides them. */
+const MIN_COMET = 20
+
 const requests = new Map<string, Promise<string>>()
 
 /** Cached per URL, so the card and the dialog share one request. */
@@ -61,7 +64,7 @@ function isLane(width: number, fill: string, viewWidth: number) {
   return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 > 0.6
 }
 
-type Role = 'lane' | 'step' | 'edge' | 'link' | 'check' | 'node'
+type Role = 'lane' | 'step' | 'edge' | 'link' | 'check' | 'node' | 'comet' | 'comet-halo'
 
 function roleOf(el: Element, viewWidth: number): Role {
   const tag = el.tagName.toLowerCase()
@@ -142,6 +145,35 @@ function choreograph(svg: SVGSVGElement) {
     const placed = el.getAttribute('data-t')
 
     el.style.setProperty('--t', placed ?? ((lefts[index] - first) / range).toFixed(3))
+
+    // A step lights in its own stage colour, read from its numbered badge.
+    if (role === 'step') {
+      const badge = [...el.querySelectorAll('circle')].find(c =>
+        /^#(?!f{3}\b|f{6}\b)[0-9a-f]{3,6}$/i.test(c.getAttribute('fill') ?? '')
+      )
+
+      if (badge) {
+        el.style.setProperty('--wc-stage', badge.getAttribute('fill'))
+
+        // Only numbered stages take part in the trace; a tool chip drawn as
+        // its own tile would otherwise flash in the fallback tone.
+        el.setAttribute('data-wc-stage', '')
+      }
+    }
+
+    // A bright dot rides the head of each connector as it is drawn: a copy of
+    // the line carrying one short dash, timed with the line it sits on, plus
+    // a wider, fainter copy under it for the glow. Arrowheads are skipped.
+    if ((role === 'edge' || role === 'link') && (el as unknown as SVGPathElement).getTotalLength() > MIN_COMET) {
+      for (const kind of ['comet', 'comet-halo'] as const) {
+        const comet = el.cloneNode(false) as SVGPathElement
+
+        comet.removeAttribute('marker-start')
+        comet.removeAttribute('marker-end')
+        comet.setAttribute('data-wc', kind)
+        el.after(comet)
+      }
+    }
   })
 }
 
@@ -152,7 +184,8 @@ export function WorkCanvas({
   run,
   reduced,
   lead = 0,
-  rest = 'idle'
+  rest = 'idle',
+  trace = false
 }: {
   src: string
   label: string
@@ -172,6 +205,13 @@ export function WorkCanvas({
    * 'static' shows the finished drawing and only plays when asked.
    */
   rest?: 'idle' | 'static'
+
+  /**
+   * While `run` is 0, true traces the finished drawing once: the connectors
+   * draw in step order and each tile's outline lights as it is reached. The
+   * tiles never leave, so a card scrolled past mid-trace is never blank.
+   */
+  trace?: boolean
 }) {
   const hostRef = useRef<HTMLDivElement>(null)
   const artRef = useRef<HTMLDivElement>(null)
@@ -236,7 +276,7 @@ export function WorkCanvas({
     }
 
     if (run === 0) {
-      host.dataset.run = rest
+      host.dataset.run = trace ? 'trace' : rest
 
       return
     }
@@ -248,7 +288,7 @@ export function WorkCanvas({
     host.dataset.run = 'idle'
     void host.offsetWidth
     host.dataset.run = 'go'
-  }, [run, markup, reduced, lead, rest])
+  }, [run, markup, reduced, lead, rest, trace])
 
   // A summary drawing shows fewer tiles than the build has nodes, so it can
   // carry the real count on its root as `data-nodes`.

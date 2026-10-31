@@ -373,7 +373,6 @@ export function HowItWorksSection() {
                           onClick={() => choose(index)}
                           onKeyDown={onKeyDown}
                         >
-                          <span className='process-explorer-tab-number'>{item.step}</span>
                           <span className='process-explorer-tab-title' style={{ fontFamily: DISPLAY_FONT }}>
                             <span className='sr-only'>{item.label}</span>
                             <RollingTitle text={item.label} active={isActive} />

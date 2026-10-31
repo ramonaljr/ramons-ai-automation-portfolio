@@ -186,6 +186,7 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
 
           <h1
             data-hero='title'
+            data-leaf-clear
             aria-label='Let automation handle data entry, new leads, follow-ups, and reporting.'
             className='hero-reveal display-xl text-ink text-left text-[clamp(2.6rem,4.6vw,5rem)] leading-[0.92] font-light'
             style={{ fontFamily: DISPLAY_FONT }}
@@ -231,12 +232,19 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
           {/* Supporting line + actions. The hero previously ran headline →
               stats with no call to action anywhere above the fold, so the
               first thing a visitor could act on was ten sections down. */}
-          <p data-hero='copy' className='hero-reveal text-lead text-ink-2 mt-9 max-w-[53ch] hero-delay-1'>
+          <p
+            data-hero='copy'
+            data-leaf-clear
+            className='hero-reveal text-lead text-ink-2 hero-delay-1 mt-9 max-w-[53ch]'
+          >
             For any team buried in repetitive work: I connect your tools and add AI, so the busywork runs on its own.
             Built by a former accountant.
           </p>
 
-          <div data-hero='actions' className='hero-reveal mt-10 flex flex-wrap items-center gap-x-3 gap-y-3 hero-delay-2'>
+          <div
+            data-hero='actions'
+            className='hero-reveal hero-delay-2 mt-10 flex flex-wrap items-center gap-x-3 gap-y-3'
+          >
             <Cta href='#contact'>Book a free call</Cta>
             <Cta href='#portfolio' tone='secondary'>
               See examples
@@ -284,7 +292,9 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
               className='hero-portrait-blueprint'
             />
           </div>
-          <figcaption className='hero-portrait-hint' aria-hidden='true'>Hover to see the blueprint</figcaption>
+          <figcaption className='hero-portrait-hint' aria-hidden='true'>
+            Hover to see the blueprint
+          </figcaption>
         </figure>
       </div>
     </section>

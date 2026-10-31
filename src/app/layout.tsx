@@ -41,7 +41,7 @@ const satoshi = localFont({
 export const metadata: Metadata = {
   title: {
     template: '%s - Ramon Vallejera Jr.',
-    default: 'AI Automation Engineer | n8n, Zapier & Make | Ramon Vallejera Jr.'
+    default: 'AI Automation Specialist | n8n, Zapier & Make | Ramon Vallejera Jr.'
   },
   description:
     'AI automation for any team buried in repetitive work, from a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier and Make.',
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
 
   // Search engines ignore this list; it stays for the few tools that read it.
   keywords: [
-    'AI Automation Engineer',
+    'AI Automation Specialist',
     'AI Automation Specialist',
     'n8n developer',
     'Zapier expert',
@@ -112,7 +112,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: {
       template: '%s - Ramon Vallejera Jr.',
-      default: 'AI Automation Engineer | n8n, Zapier & Make | Ramon Vallejera Jr.'
+      default: 'AI Automation Specialist | n8n, Zapier & Make | Ramon Vallejera Jr.'
     },
     description:
       'AI automation for any team buried in repetitive work, from a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier and Make.',
@@ -125,7 +125,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: {
       template: '%s - Ramon Vallejera Jr.',
-      default: 'AI Automation Engineer | n8n, Zapier & Make | Ramon Vallejera Jr.'
+      default: 'AI Automation Specialist | n8n, Zapier & Make | Ramon Vallejera Jr.'
     },
     description:
       'AI automation for any team buried in repetitive work, from a former accountant with an MBA. Invoices, follow-ups and reporting on n8n, Zapier and Make.',

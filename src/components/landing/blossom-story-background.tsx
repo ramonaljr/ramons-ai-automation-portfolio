@@ -6,15 +6,23 @@ import { motion, useScroll, useTransform } from 'motion/react'
 
 import { usePrefersReducedMotion } from '@/components/landing/motion'
 
-type Mood = 'golden' | 'calm'
+type Mood = 'golden' | 'calm' | 'close'
 
 /**
  * The scene per section, in DOM order. The hero and the story own the autumn
- * scene; from About down it fades to the plain slate ground, so the work,
- * the offer and the booking form are read against something quiet rather
- * than competing with a tree for attention. Anything above About is golden.
+ * scene; from the work down it fades to the plain slate ground, so the
+ * projects, the services and the pricing are read against something quiet
+ * rather than competing with a tree for attention. Anything above the work
+ * is golden. (This keyed on About until the work moved above it.)
+ *
+ * At the booking form the scene comes back, without the video: the branches
+ * and leaves frame the close the way they framed the opening, so the page
+ * ends where it began.
  */
-const SECTION_MOODS: readonly (readonly [id: string, mood: Mood])[] = [['about', 'calm']]
+const SECTION_MOODS: readonly (readonly [id: string, mood: Mood])[] = [
+  ['portfolio', 'calm'],
+  ['contact', 'close']
+]
 
 /** The mood changes when a section crosses the middle of the viewport. */
 const LINE = 0.5
@@ -91,14 +99,28 @@ export function BlossomStoryBackground() {
 
     update()
 
-    const observer = new IntersectionObserver(update, {
-      rootMargin: `-${LINE * 100}% 0px -${100 - LINE * 100 - 1}% 0px`,
-      threshold: 0
-    })
+    // Checked on scroll, once a frame, rather than by an IntersectionObserver
+    // on the mid-screen line: a jump that skips a section entirely (an anchor
+    // link, or the browser restoring the scroll on reload) never crosses the
+    // line, so the observer never fired and the autumn scene stayed up behind
+    // the work and About.
+    let frame = 0
 
-    targets.forEach(target => observer.observe(target.element))
+    const onScroll = () => {
+      if (frame) return
 
-    return () => observer.disconnect()
+      frame = requestAnimationFrame(() => {
+        frame = 0
+        update()
+      })
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(frame)
+    }
   }, [])
 
   useEffect(() => {
