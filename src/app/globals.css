@@ -8642,25 +8642,35 @@ div#experience.about-journey {
    tap. They measured 21 to 27px on a phone. The hit area is an invisible
    ::before grown to 44px around the link's middle, so nothing moves and the
    ::after arrows these links carry are untouched. `min()` leaves anything
-   already 44px or taller as it is. */
+   already 44px or taller as it is. `.tap-area` opts any other small text
+   link in (blog cards, back links, "See how it works"). The footer lists
+   open up on touch so neighbouring links' areas barely meet. */
 @media (pointer: coarse) {
   .work-strip-all,
   .about-career-link,
   .experience-thesis a,
-  .work-aux-link {
+  .work-aux-link,
+  .footer-columns a,
+  .tap-area {
     position: relative;
   }
 
   .work-strip-all::before,
   .about-career-link::before,
   .experience-thesis a::before,
-  .work-aux-link::before {
+  .work-aux-link::before,
+  .footer-columns a::before,
+  .tap-area::before {
     content: '';
     position: absolute;
     top: min(0px, calc(50% - 22px));
     right: 0;
     bottom: min(0px, calc(50% - 22px));
     left: 0;
+  }
+
+  .footer-columns ul {
+    gap: 1.1rem;
   }
 }
 
@@ -8842,4 +8852,73 @@ div#experience.about-journey {
   .field-aura i:nth-child(n) {
     animation: none;
   }
+}
+
+/* ── Sub-page headers (2026-11-01) ────────────────────────────────────────
+   /services, /blog, /contact and the articles open on the homepage's autumn
+   scene, scaled down: branches at the top right, the same light shafts, a
+   warm glow, all fading out down the header and away from the copy on the
+   left (page-scene.tsx). */
+.page-scene {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: min(100%, 100svh);
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(#000 45%, transparent 98%);
+  mask-image: linear-gradient(#000 45%, transparent 98%);
+}
+
+.page-scene::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(48rem 30rem at 88% 0%, oklch(0.74 0.09 50 / 0.16), transparent 70%);
+}
+
+.page-scene-branches {
+  object-fit: cover;
+  object-position: right top;
+  opacity: 0.6;
+  -webkit-mask-image: linear-gradient(to left, #000 22%, transparent 62%);
+  mask-image: linear-gradient(to left, #000 22%, transparent 62%);
+}
+
+.page-scene .page-scene-rays {
+  position: absolute;
+  inset: 0;
+  z-index: auto;
+}
+
+@media (min-width: 1024px) {
+  .page-scene .page-scene-rays {
+    -webkit-mask-image: linear-gradient(to left, #000 25%, transparent 72%);
+    mask-image: linear-gradient(to left, #000 25%, transparent 72%);
+  }
+}
+
+@media (max-width: 1023px) {
+  /* The copy spans the screen: the branches keep to the top corner. */
+  .page-scene-branches {
+    opacity: 0.4;
+    object-position: 72% top;
+    -webkit-mask-image: linear-gradient(205deg, #000 12%, transparent 34%);
+    mask-image: linear-gradient(205deg, #000 12%, transparent 34%);
+  }
+}
+
+/* /contact: the link from the message form to the booking calendar. */
+.contact-next-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-bottom: 1px solid var(--rule-strong);
+  color: var(--ink);
+  font-weight: 500;
+  transition: border-color 0.3s ease;
+}
+
+.contact-next-link:hover {
+  border-color: var(--accent);
 }

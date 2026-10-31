@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 
 import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { CtaSection } from '@/components/landing/cta-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
+import { PageScene } from '@/components/landing/page-scene'
 import { ArrowRight, CONTAINER, DISPLAY_FONT, PAGE, Reveal } from '@/components/landing/motion'
 
 import { getPosts } from '@/lib/posts'
@@ -68,30 +70,32 @@ const BlogPage = async () => {
     <div className={PAGE}>
       <SiteNav />
 
-      <header className='px-6 pt-36 pb-20 md:px-12 lg:px-20 lg:pt-44'>
-        <div className={CONTAINER}>
-          <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>
-            WRITING
-          </span>
-
-          <h1
-            className='text-ink mt-7 text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] font-light tracking-tight'
-            style={{ fontFamily: DISPLAY_FONT }}
-          >
-            Notes on automation
-          </h1>
-
-          <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
-            Working notes on n8n, Zapier, Make and GoHighLevel: architecture decisions, failure modes, and what actually
-            holds up in production.
-          </p>
-        </div>
-      </header>
-
       <div className='relative'>
         <ParticleField />
 
         <div className='relative z-10'>
+          <header className='relative isolate px-6 pt-36 pb-20 md:px-12 lg:px-20 lg:pt-44'>
+            <PageScene />
+            <div className={CONTAINER}>
+              <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>
+                WRITING
+              </span>
+
+              <h1
+                data-leaf-clear
+                className='text-ink mt-7 text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] font-light tracking-tight'
+                style={{ fontFamily: DISPLAY_FONT }}
+              >
+                Notes on automation
+              </h1>
+
+              <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
+                Working notes on n8n, Zapier, Make and GoHighLevel: architecture decisions, failure modes, and what
+                actually holds up in production.
+              </p>
+            </div>
+          </header>
+
           <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
             <div className={CONTAINER}>
               {posts.length === 0 ? (
@@ -118,13 +122,13 @@ const BlogPage = async () => {
                       <article className='group border-rule bg-surface hover:border-rule hover:bg-surface-raised flex h-full flex-col overflow-hidden rounded-2xl border transition-all duration-300'>
                         {post.coverImage && (
                           <a href={`/blog/${post.slug}`} className='border-rule bg-surface-raised block border-b'>
-                            <img
+                            <Image
                               src={post.coverImage}
                               alt=''
                               aria-hidden='true'
-                              width={1200}
-                              height={750}
-                              loading='lazy'
+                              width={1586}
+                              height={992}
+                              sizes='(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw'
                               className='h-[190px] w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]'
                             />
                           </a>
@@ -162,7 +166,7 @@ const BlogPage = async () => {
                           <div className='mt-auto flex items-center justify-between gap-3 pt-6'>
                             <a
                               href={`/blog/${post.slug}`}
-                              className='text-ink-3 hover:text-ink inline-flex items-center gap-2 font-mono text-[12px] tracking-wide transition-colors'
+                              className='tap-area text-ink-3 hover:text-ink inline-flex items-center gap-2 font-mono text-[12px] tracking-wide transition-colors'
                             >
                               Read article
                               <ArrowRight />

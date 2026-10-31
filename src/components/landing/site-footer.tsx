@@ -242,7 +242,7 @@ export function SiteFooter() {
           </p>
           <a
             href={onLanding ? '#top' : '/#top'}
-            className='text-ink-2 hover:text-ink group inline-flex items-center gap-2 transition-colors'
+            className='tap-area text-ink-2 hover:text-ink group inline-flex items-center gap-2 transition-colors'
           >
             Back to top
             <span className='transition-transform duration-300 group-hover:-translate-y-1' aria-hidden='true'>

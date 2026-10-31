@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 
 // Component Imports
 import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
+import { PageScene } from '@/components/landing/page-scene'
 import { ArrowRight, CONTAINER, DISPLAY_FONT, PAGE, Reveal } from '@/components/landing/motion'
 import ContactForm from '@/components/contact/contact-form/contact-form'
 
@@ -59,101 +61,107 @@ const ContactUsPage = async () => {
       <SiteNav />
 
       {/* ── Hero and form ───────────────────────────────────────────────── */}
-      <header className='px-6 pt-36 pb-24 md:px-12 lg:px-20 lg:pt-44'>
-        <div className={CONTAINER}>
-          <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>
-            CONTACT
-          </span>
-
-          <h1
-            className='text-ink mt-7 max-w-[16ch] text-[clamp(2.25rem,5.5vw,4.5rem)] leading-[1.02] font-light tracking-tight'
-            style={{ fontFamily: DISPLAY_FONT }}
-          >
-            Tell me what eats your week.
-          </h1>
-
-          <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
-            Describe the process as it runs today: what happens, who does it, how often. I will tell you whether it is
-            worth automating, which platform fits, and roughly what it takes.
-          </p>
-
-          <div className='mt-16 grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:gap-8'>
-            {/* Form */}
-            <div className='border-rule bg-surface rounded-2xl border p-7 sm:p-9'>
-              <ContactForm />
-            </div>
-
-            {/* Details rail */}
-            <div className='flex flex-col gap-5'>
-              <div className='border-rule bg-surface rounded-2xl border p-7 sm:p-9'>
-                <span className='border-rule bg-surface text-ink-3 inline-flex items-center gap-2 rounded-full border px-4 py-2 font-mono text-[11px] tracking-wide'>
-                  <span className='h-1.5 w-1.5 rounded-full bg-emerald-500' />
-                  AVAILABLE FOR NEW WORK
-                </span>
-
-                <p
-                  className='text-ink mt-7 text-[22px] leading-snug font-light tracking-tight'
-                  style={{ fontFamily: DISPLAY_FONT }}
-                >
-                  {PROFILE.name}
-                </p>
-                <p className='text-ink-3 mt-2 text-[13px]'>
-                  {PROFILE.title} · {PROFILE.location}
-                </p>
-
-                <dl className='border-rule mt-8 space-y-5 border-t pt-7'>
-                  <div>
-                    <dt className='text-ink-3 font-mono text-[11px] tracking-[0.18em]'>EMAIL</dt>
-                    <dd className='mt-1.5'>
-                      <a
-                        href={`mailto:${PROFILE.email}`}
-                        className='text-ink decoration-ink/25 hover:decoration-ink text-[14px] underline underline-offset-4 transition-colors'
-                      >
-                        {PROFILE.email}
-                      </a>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className='text-ink-3 font-mono text-[11px] tracking-[0.18em]'>TYPICAL REPLY</dt>
-                    <dd className='text-ink-2 mt-1.5 text-[14px]'>Within one business day</dd>
-                  </div>
-                  <div>
-                    <dt className='text-ink-3 font-mono text-[11px] tracking-[0.18em]'>FIRST STEP</dt>
-                    <dd className='text-ink-2 mt-1.5 text-[14px]'>A free 30-minute call. No deck, just your process</dd>
-                  </div>
-                </dl>
-
-                <div className='border-rule mt-8 flex flex-wrap gap-2 border-t pt-7'>
-                  {PROFILE.socials.map(s => (
-                    <a
-                      key={s.label}
-                      href={s.href}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='border-rule text-ink-3 hover:border-rule-strong hover:bg-ink/3 hover:text-ink rounded-full border px-3.5 py-2 text-[11px] transition-all'
-                    >
-                      {s.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              <div className='border-rule rounded-2xl border border-dashed p-7 sm:p-9'>
-                <p className='text-ink-3 font-mono text-[11px] tracking-[0.18em]'>NOT SURE YET?</p>
-                <p className='text-ink-3 mt-4 text-[14px] leading-relaxed'>
-                  Send the rough version. Half of what I build starts as one sentence about a spreadsheet somebody
-                  updates by hand every Monday.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <div className='relative'>
         <ParticleField />
 
         <div className='relative z-10'>
+          <header className='relative isolate px-6 pt-36 pb-24 md:px-12 lg:px-20 lg:pt-44'>
+            <PageScene />
+            <div className={CONTAINER}>
+              <span className='text-ink-3 inline-flex items-center gap-3 font-mono text-[12px] tracking-[0.25em]'>
+                CONTACT
+              </span>
+
+              <h1
+                data-leaf-clear
+                className='text-ink mt-7 max-w-[16ch] text-[clamp(2.25rem,5.5vw,4.5rem)] leading-[1.02] font-light tracking-tight'
+                style={{ fontFamily: DISPLAY_FONT }}
+              >
+                Tell me what eats your week.
+              </h1>
+
+              <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
+                Describe the process as it runs today: what happens, who does it, how often. I will tell you whether it
+                is worth automating, which platform fits, and roughly what it takes.
+              </p>
+
+              {/* The same panel as the homepage's booking section, mirrored:
+                  what happens next and the other ways to reach me on the
+                  left, the form on the lifted white card on the right. */}
+              <div className='contact-panel mt-16'>
+                <div className='contact-pitch'>
+                  <h2 className='text-ink text-[15px] font-medium'>What happens next</h2>
+
+                  <ol className='contact-steps mt-6!'>
+                    {[
+                      [
+                        'Send the rough version',
+                        'Half of what I build starts as one sentence about a spreadsheet somebody updates by hand every Monday.'
+                      ],
+                      ['A reply within one business day', 'Whether it is worth automating, and which platform fits.'],
+                      ['A free 30-minute call', 'No deck. You show me how the work runs today, step by step.']
+                    ].map(([title, copy]) => (
+                      <li key={title}>
+                        <span aria-hidden='true' />
+                        <strong>{title}</strong>
+                        <p>{copy}</p>
+                      </li>
+                    ))}
+                  </ol>
+
+                  <div className='contact-reach'>
+                    <p className='contact-next'>
+                      <i aria-hidden='true' />
+                      Rather talk first?{' '}
+                      <a href='/#contact' className='contact-next-link tap-area'>
+                        Pick a time on the calendar
+                        <ArrowRight />
+                      </a>
+                    </p>
+
+                    <ul className='contact-links'>
+                      <li>
+                        <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
+                      </li>
+                      {PROFILE.socials.map(s => (
+                        <li key={s.label}>
+                          <a href={s.href} target='_blank' rel='noopener noreferrer'>
+                            {s.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className='contact-response'>
+                      {PROFILE.title} · {PROFILE.location}
+                    </p>
+                  </div>
+                </div>
+
+                <div className='contact-booking'>
+                  <div className='contact-host'>
+                    <span className='contact-host-avatar'>
+                      <Image src='/images/landing/ramon-avatar.webp' alt='' width={96} height={96} />
+                      <i aria-hidden='true' />
+                    </span>
+                    <div className='min-w-0'>
+                      <p className='text-ink-3 text-[13px]'>{PROFILE.name}</p>
+                      <p className='text-ink text-2xl font-light tracking-tight' style={{ fontFamily: DISPLAY_FONT }}>
+                        Send a message
+                      </p>
+                    </div>
+                    <ul className='contact-host-terms'>
+                      <li>Reply in 1 business day</li>
+                    </ul>
+                  </div>
+
+                  <div className='contact-calendar'>
+                    <ContactForm />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+
           {/* ── Recent work ───────────────────────────────────────────────── */}
           {caseStudies.length > 0 && (
             <section className='border-rule border-t px-6 py-32 md:px-12 lg:px-20'>
