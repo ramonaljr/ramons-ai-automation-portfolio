@@ -580,9 +580,17 @@ export type Role = {
   company: string
   role: string
 
-  /** The role in two or three words, for the career snapshot beside the About portrait. */
+  /** The job title, shortened where the full one runs long, for the timeline tabs and the career snapshot beside the About portrait. */
   short: string
   period: string
+
+  /**
+   * Start and end month from the CV, as YYYY-MM, so the timeline can draw each
+   * role to scale. `period` is the same span rounded to years; keep the two in
+   * step. No `to` means the role is current.
+   */
+  from: string
+  to?: string
 
   /**
    * Work arrangement only — never a department or function, which the role
@@ -623,8 +631,9 @@ export const EXPERIENCE: Role[] = [
     index: '01',
     company: 'My Mountain Mover',
     role: 'Financial Analyst',
-    short: 'Financial analysis',
+    short: 'Financial Analyst',
     period: '2022 - Present',
+    from: '2022-06',
     arrangement: 'US Remote',
     stack: ['Claude', 'Valuation Models', 'Financial Analysis', 'Forecasting', 'Excel'],
     achievement: 'Build company valuation models and forecasts for US stock portfolios',
@@ -640,8 +649,10 @@ export const EXPERIENCE: Role[] = [
     index: '02',
     company: 'Johndorf Ventures Corporation',
     role: 'Branch Accountant',
-    short: 'Branch accounting',
+    short: 'Branch Accountant',
     period: '2020 - 2021',
+    from: '2020-04',
+    to: '2021-03',
     stack: ['Team Leadership', 'Payables & Receivables', 'Account Reconciliation', 'SAP', 'Process Mapping'],
     achievement: 'Led a 10-person accounting team closing the books every month and year',
     employer: 'Real estate developer · Cagayan de Oro',
@@ -656,8 +667,10 @@ export const EXPERIENCE: Role[] = [
     index: '03',
     company: 'Johndorf Ventures Corporation',
     role: 'Project Cost Accountant',
-    short: 'Project costing',
+    short: 'Cost Accountant',
     period: '2016 - 2020',
+    from: '2016-08',
+    to: '2020-04',
     stack: ['Cost Accounting', 'Budget vs Actual', 'QuickBooks', 'Workbooks'],
     achievement: 'Checked multi-million project costs against the books, with automated reports',
     employer: 'Real estate developer · Cagayan de Oro',
@@ -671,8 +684,10 @@ export const EXPERIENCE: Role[] = [
     index: '04',
     company: 'Johndorf Ventures Corporation',
     role: 'Accounts Payable Supervisor & Tax Compliance Analyst',
-    short: 'Payables & tax',
+    short: 'Accounts Payable & Tax Analyst',
     period: '2015 - 2018',
+    from: '2015-07',
+    to: '2018-10',
     stack: ['Tax Compliance', 'Invoicing', 'Supplier Reconciliation', 'Payment Approvals'],
     achievement: 'Ran supplier invoices from receipt to payment and kept every tax filing on time',
     employer: 'Real estate developer · Cagayan de Oro',

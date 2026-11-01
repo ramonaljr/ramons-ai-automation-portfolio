@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 
-import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from 'motion/react'
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
 
 import { EXPERIENCE, type Role } from '@/lib/portfolio'
 
@@ -14,25 +14,42 @@ const ROLES = [...EXPERIENCE].reverse()
 const startYear = (role: Role) => Number(role.period.split(' - ')[0])
 const endLabel = (role: Role) => role.period.split(' - ').at(-1)?.trim() ?? ''
 
-/** The axis: 2015 to now, one tick a year. */
+/** Months since year 0, so a YYYY-MM date becomes a point on a straight line. */
+const monthOf = (date: string) => {
+  const [year, month] = date.split('-').map(Number)
+
+  return year * 12 + month - 1
+}
+
+/** The axis: January of the first role's year to this month. */
 const FIRST_YEAR = startYear(ROLES[0])
-const NOW_YEAR = new Date().getFullYear()
+const NOW = new Date()
+const NOW_YEAR = NOW.getFullYear()
+const AXIS_START = FIRST_YEAR * 12
+const AXIS_END = NOW_YEAR * 12 + NOW.getMonth() + 1
+const at = (month: number) => (month - AXIS_START) / (AXIS_END - AXIS_START)
+
 const TICKS = Array.from({ length: NOW_YEAR - FIRST_YEAR + 1 }, (_, i) => FIRST_YEAR + i)
 
 /**
- * Where the axis stands for a given scroll progress. Each role owns an equal
- * share of the scroll, and across its share the year runs from its own start
- * to the next role's start (or to now), so the marker lands on each role's
- * first year as that role comes into view.
+ * Each role as a bar spanning its real months, to scale. Roles that overlap
+ * (the payables job ran on two years into project costing) take a second row:
+ * each bar goes on the first row whose last bar has already ended.
  */
-function yearAt(progress: number) {
-  const span = progress * ROLES.length
-  const index = Math.min(ROLES.length - 1, Math.floor(span))
-  const from = startYear(ROLES[index])
-  const to = index + 1 < ROLES.length ? startYear(ROLES[index + 1]) : NOW_YEAR
+const laneEnds: number[] = []
 
-  return from + (to - from) * Math.min(1, span - index)
-}
+const BARS = ROLES.map(role => {
+  const start = monthOf(role.from)
+  const end = role.to ? monthOf(role.to) + 1 : AXIS_END
+  const free = laneEnds.findIndex(laneEnd => laneEnd <= start)
+  const lane = free === -1 ? laneEnds.length : free
+
+  laneEnds[lane] = end
+
+  return { role, lane, left: at(start), width: at(end) - at(start) }
+})
+
+const LANES = laneEnds.length
 
 /**
  * How the work is run, stated once. Every line repeats a commitment made
@@ -61,7 +78,8 @@ const BLURB =
  *
  * On wide, tall-enough screens it is a pinned timeline like the Story section:
  * the year runs forward from 2015 as the reader scrolls, the role card swaps
- * to the job held then, and an axis along the foot fills toward now. Everywhere
+ * to the job held then, and an axis along the foot draws every role to scale
+ * with the one on show lit. Everywhere
  * else (phones, short screens, reduced motion) the same roles are a plain
  * list. Only one of the two is ever displayed, so screen readers meet the
  * roles once.
@@ -106,13 +124,6 @@ function PinnedTimeline() {
 
     if (next !== active) setActive(next)
   })
-
-  const fill = useTransform(
-    scrollYProgress,
-    p => (yearAt(Math.min(0.9999, Math.max(0, p))) - FIRST_YEAR) / (NOW_YEAR - FIRST_YEAR)
-  )
-
-  const marker = useTransform(fill, f => `${(f * 100).toFixed(3)}%`)
 
   // Jumps the scroll to the middle of a role's share, so the tabs work as
   // navigation as well as a legend.
@@ -202,17 +213,25 @@ function PinnedTimeline() {
             </ol>
           </div>
 
+          {/* Decorative: the tabs above carry the same dates, and the list
+              version carries them for screen readers. */}
           <div className='experience-axis' aria-hidden='true'>
-            <div className='experience-axis-line'>
-              <motion.i style={{ scaleX: fill }} />
-              <motion.b style={{ left: marker }} />
+            <div className='experience-axis-bars' style={{ height: `calc(${LANES} * 0.75rem - 0.3rem)` }}>
+              {BARS.map(({ role: item, lane, left, width }, index) => (
+                <i
+                  key={item.index}
+                  data-active={index === active}
+                  style={{ top: `${lane * 0.75}rem`, left: `${left * 100}%`, width: `${width * 100}%` }}
+                />
+              ))}
             </div>
             <ol>
               {TICKS.map(year => (
-                <li key={year} data-start={ROLES.some(r => startYear(r) === year) || undefined}>
-                  {year === NOW_YEAR ? 'Now' : year}
+                <li key={year} style={{ left: `${at(year * 12) * 100}%` }}>
+                  {year}
                 </li>
               ))}
+              <li style={{ left: '100%' }}>Now</li>
             </ol>
           </div>
         </div>
