@@ -1,19 +1,20 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { type SyntheticEvent, useEffect, useRef, useState } from 'react'
 
 /**
  * The hero's journey: a figure walking along the foot of the hero while
- * mountain ranges drift past behind the tree.
+ * mountain ranges drift past behind the tree, under a snow-capped volcano.
  *
  * The walker stays in place and the world moves, as in a side-scrolling game.
  * The ground pans at exactly his stride speed so his feet never slide; each
- * range pans at a fraction of it by depth. He walks calmly on his own, and
- * scrolling makes him stride faster, settling again when the page stops.
- * Both layers fade out as the hero scrolls away.
+ * range pans at a fraction of it by depth. The volcano is far enough away
+ * that it holds still. He walks calmly on his own, and scrolling makes him
+ * stride faster, settling again when the page stops. Both layers fade out as
+ * the hero scrolls away.
  *
  * Two components because they sit at different depths in the background:
- * the ranges under the tree footage, the ground and walker above the branch
+ * the scenery over the tree footage, the ground and walker above the branch
  * overlay. Each runs its own clock from the same rules, so they agree.
  */
 
@@ -28,63 +29,16 @@ const CADENCE_MAX = 2.1
 const STRIDE = 66
 const FIGURE_HEIGHT = 86
 
-/** How fast each range moves relative to the ground. */
+/**
+ * How fast each range moves relative to the ground. The tiles and the volcano
+ * are rendered offline (lit ridged noise, seamless across a tile) and baked to
+ * WebP, about 200 KB together, so they load after the page rather than with it.
+ */
 const RANGES = [
-  {
-    depth: 0.04,
-    base: 0.42,
-    peaks: [
-      [2, 0.34],
-      [5, 0.2],
-      [11, 0.08]
-    ],
-    className: 'journey-range-far'
-  },
-  {
-    depth: 0.1,
-    base: 0.6,
-    peaks: [
-      [3, 0.32],
-      [7, 0.16],
-      [13, 0.07]
-    ],
-    className: 'journey-range-mid'
-  },
-  {
-    depth: 0.2,
-    base: 0.82,
-    peaks: [
-      [4, 0.22],
-      [9, 0.12],
-      [17, 0.05]
-    ],
-    className: 'journey-range-near'
-  }
+  { depth: 0.04, src: '/images/landing/hero-range-far.webp', className: 'journey-range-far' },
+  { depth: 0.1, src: '/images/landing/hero-range-mid.webp', className: 'journey-range-mid' },
+  { depth: 0.2, src: '/images/landing/hero-range-near.webp', className: 'journey-range-near' }
 ] as const
-
-/** A seamless ridge line: every wave fits a whole number of times in a tile. */
-function ridgePath(base: number, peaks: readonly (readonly [number, number])[], seed: number) {
-  const h = 400
-  const points: string[] = []
-
-  for (let x = 0; x <= TILE; x += 12) {
-    let lift = 0
-
-    peaks.forEach(([waves, amp], i) => {
-      const phase = Math.sin((seed + i) * 12.9898) * 43758.5453
-      const wave = (1 + Math.sin((x / TILE) * Math.PI * 2 * waves + phase)) / 2
-
-      // Raised to a power so the waves read as peaks rather than rolling hills.
-      lift += amp * Math.pow(wave, 2.1)
-    })
-
-    points.push(`${x},${(h * (base - lift)).toFixed(1)}`)
-  }
-
-  return `M0,${h} L${points.join(' L')} L${TILE},${h} Z`
-}
-
-const RIDGES = RANGES.map((range, i) => ridgePath(range.base, range.peaks, i * 3 + 1))
 
 /** Small tufts along the ground tile, so the path visibly moves underfoot. */
 const TUFTS = Array.from({ length: 26 }, (_, i) => {
@@ -183,10 +137,37 @@ let figurePx = 70
 /** Ground covered per second at a cadence, in px. */
 const groundSpeed = (cadence: number) => cadence * STRIDE * (figurePx / FIGURE_HEIGHT)
 
-/** The mountain ranges, drawn behind the tree footage. */
+/** Shown once decoded, so a tile never paints in halfway down. */
+const reveal = (event: SyntheticEvent<HTMLImageElement>) => {
+  event.currentTarget.dataset.loaded = ''
+}
+
+/** The volcano and the mountain ranges, over the tree footage. */
 export function JourneyRanges() {
   const rootRef = useRef<HTMLDivElement>(null)
   const offset = useRef(0)
+
+  // Mounted after the page has loaded, as the video is, so the scenery never
+  // competes with the hero for bandwidth; skipped when data is being saved.
+  const [withScenery, setWithScenery] = useState(false)
+
+  useEffect(() => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+
+    if (connection?.saveData) return
+
+    const mount = () => setWithScenery(true)
+
+    if (document.readyState === 'complete') {
+      const id = window.setTimeout(mount, 300)
+
+      return () => window.clearTimeout(id)
+    }
+
+    window.addEventListener('load', mount, { once: true })
+
+    return () => window.removeEventListener('load', mount)
+  }, [])
 
   useJourney((dt, cadence, fade) => {
     const root = rootRef.current
@@ -207,16 +188,30 @@ export function JourneyRanges() {
   })
 
   return (
-    <div ref={rootRef} aria-hidden='true' className='journey-ranges'>
-      {RANGES.map((range, i) => (
-        <div key={range.className} data-depth={range.depth} className={`journey-range ${range.className}`}>
-          {[0, 1].map(copy => (
-            <svg key={copy} width={TILE} viewBox={`0 0 ${TILE} 400`} preserveAspectRatio='none'>
-              <path d={RIDGES[i]} />
-            </svg>
-          ))}
-        </div>
-      ))}
+    <div ref={rootRef} aria-hidden='true' className='journey-scenery'>
+      {withScenery && (
+        <>
+          <img
+            src='/images/landing/hero-fuji.webp'
+            alt=''
+            width={1800}
+            height={400}
+            decoding='async'
+            onLoad={reveal}
+            className='journey-fuji'
+          />
+
+          <div className='journey-ranges'>
+            {RANGES.map(range => (
+              <div key={range.className} data-depth={range.depth} className={`journey-range ${range.className}`}>
+                {[0, 1].map(copy => (
+                  <img key={copy} src={range.src} alt='' width={TILE} height={400} decoding='async' onLoad={reveal} />
+                ))}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }

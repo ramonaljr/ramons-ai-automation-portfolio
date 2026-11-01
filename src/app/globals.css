@@ -8806,15 +8806,48 @@ div#experience.about-journey {
 }
 
 /* ── Hero journey (2026-11-01) ────────────────────────────────────────────
-   Mountain ranges drifting behind the tree and a silhouette walking along
-   the foot of the hero (hero-journey.tsx). The ranges sit under the tree
-   footage; the ground and walker above the branches. Both fade out as the
-   hero scrolls away, and go with the rest of the scene in the calm middle. */
+   A snow-capped volcano and mountain ranges drifting over the tree footage,
+   and a silhouette walking along the foot of the hero (hero-journey.tsx).
+   The scenery sits under the tone and veil, which haze it into the distance;
+   the ground and walker above the branches. Both fade out as the hero
+   scrolls away, and go with the rest of the scene in the calm middle. */
+.journey-scenery {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Baked images, shown once decoded (hero-journey.tsx sets data-loaded). */
+.journey-scenery img {
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.journey-scenery img[data-loaded] {
+  opacity: 1;
+}
+
+/* The volcano's summit stands between the copy and the portrait, clear of
+   the headline; its long flanks run off both edges, as Fuji's do, and fade
+   out towards the copy. The ranges stay low, as foothills, so the dark cone
+   under the snow still shows. */
+.journey-fuji {
+  position: absolute;
+  left: -9%;
+  bottom: 12%;
+  width: 130%;
+  max-width: none;
+  height: 50%;
+  object-fit: contain;
+  object-position: 50% 100%;
+  -webkit-mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.3) 22%, #000 42%);
+  mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.3) 22%, #000 42%);
+}
+
 .journey-ranges {
   position: absolute;
-  inset: auto 0 8%;
-  height: 36%;
-  pointer-events: none;
+  inset: auto 0 6%;
+  height: 26%;
   /* Low and faint behind the copy, full height behind the tree. */
   -webkit-mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.15) 25%, #000 66%);
   mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.15) 25%, #000 66%);
@@ -8827,16 +8860,15 @@ div#experience.about-journey {
   will-change: transform;
 }
 
-.journey-range svg {
+.journey-range img {
   flex: none;
+  width: 1800px;
   height: 100%;
 }
 
-/* Atmospheric depth: far ranges pale and blue, near ones deeper and warmer,
-   each fading into haze at its base. */
-.journey-range-far path { fill: oklch(0.8 0.022 255 / 0.55); }
-.journey-range-mid path { fill: oklch(0.7 0.026 258 / 0.55); }
-.journey-range-near path { fill: oklch(0.58 0.03 40 / 0.5); }
+.journey-scenery .journey-range img[data-loaded] {
+  opacity: 0.95;
+}
 
 .journey-range-far { top: 0; }
 .journey-range-mid { top: 18%; }
@@ -8922,7 +8954,7 @@ div#experience.about-journey {
 
 @media (max-width: 1023px) {
   .journey-ranges {
-    height: 34%;
+    height: 24%;
   }
 
   .journey-walker {
@@ -8940,5 +8972,28 @@ div#experience.about-journey {
   .journey-walker {
     bottom: calc(66% - 0.06 * 54px);
     height: 54px;
+  }
+
+  /* The copy spans the screen, so the volcano rises on the right, beside the
+     buttons rather than behind the lead, and the ridges stay quiet under the
+     text. */
+  .journey-fuji {
+    left: -31%;
+    bottom: 14%;
+    width: 200%;
+    height: 30%;
+    -webkit-mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.2) 20%, #000 42%);
+    mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.2) 20%, #000 42%);
+  }
+
+  .journey-ranges {
+    height: 22%;
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-scenery img {
+    transition: none;
   }
 }
