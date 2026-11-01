@@ -227,14 +227,14 @@ export function JourneyRanges() {
 
 /**
  * The walker's colours: slate-blue clothes in two tones, the far limbs a step
- * darker so they read in depth, silver hair and thin dark line art.
+ * darker so they read in depth, black hair and thin dark line art.
  */
 const C = {
   ink: 'oklch(0.17 0.02 250)',
-  hair: 'oklch(0.94 0.008 250)',
-  hairShade: 'oklch(0.8 0.02 250)',
-  hairStrand: 'oklch(0.7 0.02 250)',
-  brow: 'oklch(0.55 0.02 250)',
+  hair: 'oklch(0.2 0.015 255)',
+  hairShade: 'oklch(0.13 0.012 258)',
+  hairStrand: 'oklch(0.4 0.025 250)',
+  brow: 'oklch(0.2 0.015 255)',
   skin: 'oklch(0.9 0.035 70)',
   skinShade: 'oklch(0.79 0.05 55)',
   jacket: 'oklch(0.33 0.035 235)',
@@ -295,7 +295,7 @@ const HEAD = (
     <path d='M-1.2 8.8 C0 9.6 1.4 10 3.9 10.1 C2.4 9.4 1.4 8.4 1 7 C0.4 7.6 -0.4 8.2 -1.2 8.8 Z' fill={C.skinShade} />
     <path d='M-0.9 4.8 C-0.2 4.6 0.4 5.2 0.4 6.2 C0.4 7.2 -0.2 7.6 -0.8 7.4 Z' {...inked(C.skinShade)} />
     <path d='M2.5 5.7 C3.1 5.4 3.7 5.35 4.2 5.5' {...line(C.ink, 0.45)} />
-    <path d='M2.6 6.05 C3.1 6.2 3.6 6.2 3.95 6.05' {...line(C.hairShade, 0.25)} />
+    <path d='M2.6 6.05 C3.1 6.2 3.6 6.2 3.95 6.05' {...line(C.skinShade, 0.25)} />
     <path d='M2.3 4.5 C3 4.15 3.7 4.05 4.4 4.2' {...line(C.brow, 0.4)} />
     <path d='M4.7 8.25 L4.2 8.3' {...line(C.skinShade, 0.25)} />
     <path d={HAIR} {...inked(C.hair)} />
