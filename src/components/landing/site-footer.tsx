@@ -24,9 +24,9 @@ const EXPLORE: { label: string; hash?: string; href?: string }[] = [
   { label: 'About', hash: '#about' },
   { label: 'Career history', hash: '#experience' },
   { label: 'How it works', hash: '#process' },
+  { label: 'Working together', hash: '#engagement' },
 
-  // These two moved to /services with their sections.
-  { label: 'Working together', href: '/services#engagement' },
+  // The homepage keeps four of the questions; all of them are on /services.
   { label: 'FAQ', href: '/services#faq' }
 ]
 

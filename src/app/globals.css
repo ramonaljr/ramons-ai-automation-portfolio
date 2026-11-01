@@ -5152,18 +5152,17 @@ a.work-aux-link:hover {
   }
 }
 
-/* Homepage pricing row (EngagementSummary): the three ways to work together
-   and how each is priced, as one frosted band after How it works. The full
-   cards with what each includes are on /services. */
-/* The page's one dark band. Every other section is a light card on slate,
-   so the run from Selected Work to the FAQ read as one long block; pricing
-   is where a reader decides, so it is the moment that changes tone.
+/* The homepage's pricing (EngagementSection with `band`): the page's one
+   dark band. Every other section is a light card on slate, so the run from
+   Selected Work to the FAQ read as one long block; pricing is where a reader
+   decides, so it is the moment that changes tone.
 
-   The tokens are redefined for the band, so everything inside, the featured
-   card included, inverts without its own rules: that card was the dark one
-   on a light band and is now the light one on a dark band. The accent is
-   lifted so small terracotta text keeps its contrast on slate. */
-.pricing-summary {
+   The tokens are redefined for the band, so everything inside inverts
+   without its own rules, the section intro and the button included. The
+   featured card flips the other way below: the dark one on the light page
+   is the light one on the band. The accent is lifted so small terracotta
+   text keeps its contrast on slate. */
+.pricing-band {
   --ink: oklch(0.97 0.006 255);
   --ink-2: oklch(0.8 0.012 255);
   --ink-3: oklch(0.66 0.014 255);
@@ -5173,144 +5172,19 @@ a.work-aux-link:hover {
   --surface: oklch(1 0 0 / 0.05);
   --accent: oklch(0.72 0.13 38);
 
-  position: relative;
-  padding-block: clamp(4rem, 8vw, 6.5rem);
-  background: var(--ground);
   color: var(--ink);
 }
 
-.pricing-summary-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-  margin-bottom: 2rem;
+/* On the homepage every section's own background is cleared with an id-level
+   !important (see the story-content rule further down); the band is the one
+   that keeps a surface, so it needs the same weight and a little more. */
+.blossom-story-root .story-content section#engagement.pricing-band,
+section#engagement.pricing-band {
+  background: var(--ground) !important;
 }
 
-.pricing-summary-title {
-  margin-top: 0.85rem;
-  color: var(--ink);
-  font-size: clamp(1.75rem, 3vw, 2.6rem);
-  font-weight: 300;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-}
-
-.pricing-summary-link {
-  color: var(--ink);
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-bottom: 1px solid var(--rule-strong);
-  transition: border-color 0.3s ease;
-}
-
-.pricing-summary-link::after {
-  content: ' →';
-  color: var(--accent);
-}
-
-.pricing-summary-link:hover {
-  border-color: var(--accent);
-}
-
-.pricing-summary-list {
-  display: grid;
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.pricing-summary-list > li {
-  padding: 1.35rem 1.5rem 1.5rem;
-  border: 1px solid var(--rule);
-  border-radius: 1.1rem;
-  background: var(--surface);
-  opacity: 0;
-  transform: translateY(14px);
-  transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--step-delay),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--step-delay);
-}
-
-.pricing-summary-list[data-visible='true'] > li {
-  opacity: 1;
-  transform: none;
-}
-
-.pricing-summary-list > li[data-featured] {
-  border-color: transparent;
-  background: var(--ink);
-  color: var(--ground);
-}
-
-.pricing-summary-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem 0.75rem;
-  color: var(--ink-2);
-  font-size: 0.8125rem;
-}
-
-.pricing-summary-meta span {
-  color: var(--accent);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-}
-
-.pricing-summary-meta em {
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--accent) 12%, var(--ground));
-  color: var(--accent);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.625rem;
-  font-style: normal;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.pricing-summary-name {
-  margin-top: 0.8rem;
-  font-size: 1.5rem;
-  font-weight: 300;
-  letter-spacing: -0.02em;
-}
-
-.pricing-summary-price {
-  margin-top: 0.35rem;
-  color: var(--ink-2);
-  font-size: 0.875rem;
-}
-
-.pricing-summary-price strong {
-  color: var(--ink);
-  font-weight: 500;
-}
-
-.pricing-summary-list > li[data-featured] .pricing-summary-meta,
-.pricing-summary-list > li[data-featured] .pricing-summary-price {
-  color: color-mix(in oklab, var(--ground) 70%, transparent);
-}
-
-.pricing-summary-list > li[data-featured] .pricing-summary-price strong {
-  color: var(--ground);
-}
-
-@media (min-width: 48rem) {
-  .pricing-summary-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pricing-summary-list > li {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
+.pricing-band::after {
+  display: none;
 }
 
 /* The homepage FAQ ends with the way to the full list on /services. */
@@ -6809,8 +6683,8 @@ div#experience.about-journey {
 }
 
 /* ── Working together: one path, three steps ─────────────────────────────
-   See engagement-section.tsx. A rule runs through the step numbers and
-   draws in when the section arrives; the build (featured) is the dark card. */
+   See engagement-section.tsx. A rule runs through the step dots and draws
+   in when the section arrives; the build (featured) is the inverted card. */
 .engagement-path {
   --path-ease: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -6841,26 +6715,24 @@ div#experience.about-journey {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  min-height: 1.75rem;
 }
 
-.engagement-step-number {
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid var(--rule-strong);
+/* A dot on the path for each step, not a number: the order already reads
+   left to right, and the page uses dots for list markers. */
+.engagement-step-dot {
+  flex-shrink: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-left: 0.25rem;
+  border: 1px solid var(--accent);
   border-radius: 50%;
   background: var(--ground);
-  color: var(--accent);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
+  box-shadow: 0 0 0 0.3rem var(--ground);
 }
 
-.engagement-step[data-featured] .engagement-step-number {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--ground);
+.engagement-step[data-featured] .engagement-step-dot {
+  background: var(--accent);
 }
 
 .engagement-step-badge {
@@ -6972,26 +6844,23 @@ div#experience.about-journey {
 }
 
 .engagement-includes li {
-  position: relative;
-  padding-left: 1.6rem;
+  display: flex;
+  gap: 0.6rem;
   color: var(--ink-2);
   font-size: 0.875rem;
   line-height: 1.45;
 }
 
-.engagement-includes li::before {
-  content: '✓';
-  position: absolute;
-  top: 0.05rem;
-  left: 0;
-  display: grid;
-  place-items: center;
-  width: 1.1rem;
-  height: 1.1rem;
+.engagement-includes svg {
+  flex-shrink: 0;
+  box-sizing: content-box;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-top: 0.05rem;
+  padding: 0.175rem;
   border-radius: 50%;
   background: color-mix(in oklab, var(--accent) 14%, transparent);
   color: var(--accent);
-  font-size: 0.65rem;
 }
 
 .engagement-outcome {
@@ -7014,85 +6883,52 @@ div#experience.about-journey {
   text-transform: uppercase;
 }
 
-.engagement-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: auto;
-  padding: 0.8rem 1.25rem;
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
-  color: var(--ink);
-  font-size: 0.875rem;
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.engagement-card-body > .engagement-outcome + .engagement-cta {
-  margin-top: 1.4rem;
-}
-
-.engagement-cta:hover {
-  border-color: var(--ink);
-  background: color-mix(in oklab, var(--ink) 5%, transparent);
-}
-
-/* The build: the dark card the path leads towards. */
+/* The build: the card the path leads towards, inverted against whatever
+   it sits on. Its tokens are redefined, so everything inside follows: dark
+   on the light /services page, light on the homepage's dark band. */
 .engagement-step[data-featured] .engagement-card {
+  --ink: oklch(0.96 0.007 255);
+  --ink-2: oklch(0.96 0.007 255 / 0.84);
+  --rule: oklch(1 0 0 / 0.12);
+  --ground: oklch(0.21 0.013 255);
+  --accent: oklch(0.76 0.12 40);
+
   border-color: oklch(0.3 0.018 255);
-  background: oklch(0.21 0.013 255);
-  color: oklch(0.96 0.007 255);
+  background: var(--ground);
   box-shadow: 0 40px 90px -46px oklch(0.2 0.018 255 / 0.8);
 }
 
+.pricing-band .engagement-step[data-featured] .engagement-card {
+  --ink: oklch(0.24 0.018 255);
+  --ink-2: oklch(0.42 0.016 255);
+  --rule: oklch(0.24 0.018 255 / 0.12);
+  --ground: oklch(0.965 0.006 255);
+  --accent: oklch(0.58 0.14 38);
+
+  border-color: transparent;
+  box-shadow: 0 40px 90px -46px oklch(0 0 0 / 0.7);
+}
+
 .engagement-step[data-featured] .engagement-visual {
-  border-bottom-color: oklch(1 0 0 / 0.1);
-  background: oklch(0.25 0.013 255);
-}
-
-.engagement-step[data-featured] :is(.engagement-name, .engagement-price strong, .engagement-for, .engagement-outcome) {
-  color: oklch(0.96 0.007 255);
-}
-
-.engagement-step[data-featured] :is(.engagement-duration, .engagement-price span, .engagement-includes li) {
-  color: oklch(0.96 0.007 255 / 0.84);
-}
-
-.engagement-step[data-featured] .engagement-price {
-  border-bottom-color: oklch(1 0 0 / 0.12);
-}
-
-.engagement-step[data-featured] .engagement-includes li::before {
-  background: oklch(0.72 0.14 50 / 0.25);
-  color: oklch(0.82 0.12 60);
+  background: color-mix(in oklab, var(--ink) 4%, var(--ground));
 }
 
 .engagement-step[data-featured] .engagement-outcome {
-  background: oklch(1 0 0 / 0.07);
+  background: color-mix(in oklab, var(--ink) 7%, transparent);
 }
 
-.engagement-step[data-featured] .engagement-outcome span {
-  color: oklch(0.82 0.12 60);
-}
-
-/* One primary button colour on the page: espresso on light ground, and its
-   inverse (cream, espresso text) on this dark card, as the story's outcome
-   link does. Red is kept for small accents only. */
-.engagement-step[data-featured] .engagement-cta {
-  border-color: oklch(0.96 0.007 255);
-  background: oklch(0.96 0.007 255);
-  color: var(--ink);
-}
-
-.engagement-step[data-featured] .engagement-cta:hover {
-  background: oklch(0.9 0.01 255);
+/* One way forward for every tier: they all start with the free call. */
+.engagement-close {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
 }
 
 .engagement-reassure {
   max-width: 60ch;
-  margin: 2rem auto 0;
+  margin: 0;
   color: var(--ink-2);
   font-size: 0.9375rem;
   line-height: 1.6;
@@ -7105,15 +6941,15 @@ div#experience.about-journey {
     align-items: stretch;
   }
 
-  /* The path: a rule through the three step numbers. */
+  /* The path: a rule through the three step dots. */
   .engagement-path::before {
     content: '';
     position: absolute;
-    top: 1.25rem;
-    left: 1.25rem;
-    right: 1.25rem;
+    top: 0.875rem;
+    left: 0.625rem;
+    right: 0.625rem;
     height: 1px;
-    background: linear-gradient(90deg, var(--accent), color-mix(in oklch, var(--accent) 30%, var(--rule)));
+    background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 30%, var(--rule)));
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 1.4s var(--path-ease) 0.2s;

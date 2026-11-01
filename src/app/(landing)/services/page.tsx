@@ -60,9 +60,9 @@ const jsonLd = graph(
 
 /**
  * Everything a buyer checks before booking a call, on one page: the offer,
- * how it is priced and run, and the questions. Engagement and the FAQ used to
- * close the homepage, adding about 3,000px between the work and the contact
- * form; the homepage keeps the offer and one line pointing here.
+ * how it is priced and run, and the questions. The homepage shows the same
+ * pricing path on its dark band and four of the questions; this page keeps
+ * all of them, with the FAQPage markup.
  */
 const ServicesPage = () => {
   return (

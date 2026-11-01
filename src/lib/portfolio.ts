@@ -735,8 +735,6 @@ export const ENGAGEMENTS = [
       'Which tool to build it on',
       'A plan in order of priority'
     ],
-    cta: 'Book the audit',
-    href: '#contact',
     pricing: 'Fixed fee',
     pricingNote: 'quoted on the free call',
     outcome: 'A prioritised plan and which tool to build it on.',
@@ -753,7 +751,6 @@ export const ENGAGEMENTS = [
       'Testing with your unusual cases',
       'Documentation and handover'
     ],
-    cta: 'Request a quote',
     featured: true,
     pricing: 'Fixed quote',
     pricingNote: 'per workflow, agreed before work starts',
@@ -770,7 +767,6 @@ export const ENGAGEMENTS = [
       'New workflows as they come up',
       'Faster replies when you need me'
     ],
-    cta: 'Request a quote',
     pricing: 'Flat monthly fee',
     pricingNote: 'scope agreed up front',
     outcome: 'Workflows that keep working as your tools change.'
