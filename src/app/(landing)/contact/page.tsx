@@ -8,7 +8,7 @@ import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
 import { PageScene } from '@/components/landing/page-scene'
 import { ArrowRight, CONTAINER, DISPLAY_FONT, PAGE, Reveal } from '@/components/landing/motion'
-import ContactForm from '@/components/contact/contact-form/contact-form'
+import { ContactBooking } from '@/components/contact/contact-booking'
 
 // Data Imports
 import { getCaseStudies } from '@/lib/case-studies'
@@ -81,24 +81,26 @@ const ContactUsPage = async () => {
               </h1>
 
               <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
-                Describe the process as it runs today: what happens, who does it, how often. I will tell you whether it
-                is worth automating, which platform fits, and roughly what it takes.
+                Book a call and walk me through the process as it runs today: what happens, who does it, how often. I
+                will tell you whether it is worth automating, which platform fits, and roughly what it takes.
               </p>
 
               {/* The same panel as the homepage's booking section, mirrored:
                   what happens next and the other ways to reach me on the
-                  left, the form on the lifted white card on the right. */}
+                  left, the booking on the lifted white card on the right:
+                  Calendly, or the form when the landing page's calendar has
+                  handed over a slot. */}
               <div className='contact-panel mt-16'>
                 <div className='contact-pitch'>
                   <h2 className='text-ink text-[15px] font-medium'>What happens next</h2>
 
                   <ol className='contact-steps mt-6!'>
                     {[
+                      ['Pick a time', 'Any open slot, shown in your own time zone.'],
                       [
                         'Send the rough version',
-                        'Half of what I build starts as one sentence about a spreadsheet somebody updates by hand every Monday.'
+                        'A few questions when you book. Half of what I build starts as one sentence about a spreadsheet somebody updates by hand every Monday.'
                       ],
-                      ['A reply within one business day', 'Whether it is worth automating, and which platform fits.'],
                       ['A free 30-minute call', 'No deck. You show me how the work runs today, step by step.']
                     ].map(([title, copy]) => (
                       <li key={title}>
@@ -112,9 +114,9 @@ const ContactUsPage = async () => {
                   <div className='contact-reach'>
                     <p className='contact-next'>
                       <i aria-hidden='true' />
-                      Rather talk first?{' '}
-                      <a href='/#contact' className='contact-next-link tap-area'>
-                        Pick a time on the calendar
+                      Rather write first?{' '}
+                      <a href={`mailto:${PROFILE.email}`} className='contact-next-link tap-area'>
+                        Email me instead
                         <ArrowRight />
                       </a>
                     </p>
@@ -146,16 +148,16 @@ const ContactUsPage = async () => {
                     <div className='min-w-0'>
                       <p className='text-ink-3 text-[13px]'>{PROFILE.name}</p>
                       <p className='text-ink text-2xl font-light tracking-tight' style={{ fontFamily: DISPLAY_FONT }}>
-                        Send a message
+                        Book a free call
                       </p>
                     </div>
                     <ul className='contact-host-terms'>
-                      <li>Reply in 1 business day</li>
+                      <li>30 min</li>
                     </ul>
                   </div>
 
                   <div className='contact-calendar'>
-                    <ContactForm />
+                    <ContactBooking />
                   </div>
                 </div>
               </div>
@@ -244,7 +246,7 @@ const ContactUsPage = async () => {
               <SectionHead
                 tag='WHAT I DO'
                 title='Five ways I can help'
-                blurb='Pick the closest fit in the form above, or describe the problem and I will place it.'
+                blurb='Name the closest fit when you book, or describe the problem and I will place it.'
               />
 
               <div className='border-rule border-t'>

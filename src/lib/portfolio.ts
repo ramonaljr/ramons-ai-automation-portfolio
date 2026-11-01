@@ -34,6 +34,12 @@ export const PROFILE = {
   cv: '/ramon-vallejera-cv.pdf',
 
   /**
+   * The 30-minute call on Calendly, embedded on /contact. Its description and
+   * intake questions are edited in Calendly, not here.
+   */
+  calendly: 'https://calendly.com/ramonvallejerajr/30min',
+
+  /**
    * The intro video behind the About portrait, loaded only when someone presses
    * play. `src` is any embed URL: to move to YouTube, replace it with
    * `https://www.youtube-nocookie.com/embed/<id>?autoplay=1&rel=0`. The Loom
