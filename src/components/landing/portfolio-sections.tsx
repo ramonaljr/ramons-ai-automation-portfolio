@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { IntroAnimation } from '@/components/landing/intro-animation'
 import { BlossomStoryBackground } from '@/components/landing/blossom-story-background'
@@ -12,7 +12,7 @@ import { ProofStrip } from '@/components/landing/proof-strip'
 import { IntroSection } from '@/components/landing/intro-section'
 import { ProjectsSection } from '@/components/landing/projects-section'
 import { ServicesSection } from '@/components/landing/services-section'
-import { EngagementSummary } from '@/components/landing/engagement-section'
+import { EngagementSection } from '@/components/landing/engagement-section'
 import { FaqSection } from '@/components/landing/faq-section'
 import { StorySection } from '@/components/landing/story-section'
 import { HowItWorksSection } from '@/components/landing/how-it-works-section'
@@ -24,25 +24,11 @@ import { PAGE } from '@/components/landing/motion'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 
-/**
- * Section anchors that now live only on /services. `#faq` stays: the homepage
- * keeps the essential questions under that id.
- */
-const MOVED_TO_SERVICES = ['#engagement']
-
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
   const [heroReady, setHeroReady] = useState(false)
   const handleIntroDone = useCallback(() => setHeroReady(true), [])
-
-  // Links shared before Engagement moved still say /#engagement. Without
-  // this they land at the top of the homepage instead.
-  useEffect(() => {
-    if (MOVED_TO_SERVICES.includes(window.location.hash)) {
-      window.location.replace(`/services${window.location.hash}`)
-    }
-  }, [])
 
   return (
     <div id='top' className={PAGE}>
@@ -76,9 +62,9 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
               <ServicesSection />
               <HowItWorksSection />
 
-              {/* How work is priced, in one band; what each includes is on
-              /services. */}
-              <EngagementSummary />
+              {/* The full pricing path, on the page's one dark band. /services
+              shows the same section on the light page. */}
+              <EngagementSection band />
 
               {/* Corroboration immediately before the offer. Clearly labelled
               layout placeholders remain until approved client words arrive. */}
