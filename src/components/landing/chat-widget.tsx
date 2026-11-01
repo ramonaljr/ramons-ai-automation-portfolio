@@ -2,13 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { MessageCircle, Send, X } from 'lucide-react'
+import { ArrowUp, ArrowUpRight, CalendarDays, Mail, X } from 'lucide-react'
 
 import { PROFILE } from '@/lib/portfolio'
 
+import { BrandMark } from '@/components/landing/brand-mark'
 import { DISPLAY_FONT, ICON_STROKE } from '@/components/landing/motion'
 
-type Message = { id: number; role: 'user' | 'bot'; text: string }
+// `error` marks the fallback reply, so it can carry the email and booking
+// links as buttons instead of leaving them buried in a sentence.
+type Message = { id: number; role: 'user' | 'bot'; text: string; kind?: 'error' }
 
 // Deliberately not a list of platform names: it went stale the moment a
 // fourth one was added, and the answer is the same question either way.
@@ -115,9 +118,20 @@ export function ChatWidget() {
   // top of the text being read, and returns once scrolling stops.
   const [scrolling, setScrolling] = useState(false)
 
+  // While a Calendly calendar is on screen the launcher keeps off it: on
+  // desktop the pill folds back to the mark, on phones it steps aside, since
+  // even the bare mark would sit on the calendar's last column there.
+  const [nearCalendar, setNearCalendar] = useState(false)
+
   const listRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
+  const launcherRef = useRef<HTMLButtonElement>(null)
   const nextId = useRef(1)
+
+  // Closing hands focus back to the launcher. A frame later, because on phones
+  // the launcher is hidden while the panel is open and cannot take focus yet.
+  const restoreFocus = () => requestAnimationFrame(() => launcherRef.current?.focus())
 
   // Keep the newest message in view as the thread grows.
   useEffect(() => {
@@ -157,6 +171,31 @@ export function ChatWidget() {
     }
   }, [])
 
+  useEffect(() => {
+    const onScreen = new Set<Element>()
+
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) onScreen.add(entry.target)
+        else onScreen.delete(entry.target)
+      }
+
+      setNearCalendar(onScreen.size > 0)
+    })
+
+    const attach = () => document.querySelectorAll('.calendly-frame').forEach(frame => observer.observe(frame))
+
+    // /contact mounts its calendar one render after the page (it first checks
+    // the URL for a picked slot), so look again shortly after.
+    attach()
+    const retry = window.setTimeout(attach, 1000)
+
+    return () => {
+      window.clearTimeout(retry)
+      observer.disconnect()
+    }
+  }, [])
+
   // Other parts of the page (the FAQ's "Ask the assistant") open the chat by
   // event rather than by prop, so the widget stays self-contained.
   useEffect(() => {
@@ -171,14 +210,19 @@ export function ChatWidget() {
     if (!open) return
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key !== 'Escape') return
+
+      setOpen(false)
+      requestAnimationFrame(() => launcherRef.current?.focus())
     }
 
     document.addEventListener('keydown', onKey)
-    inputRef.current?.focus()
+
+    // Offline there is no input to type into, so focus lands on the close button.
+    ;(offline ? closeRef : inputRef).current?.focus()
 
     return () => document.removeEventListener('keydown', onKey)
-  }, [open])
+  }, [open, offline])
 
   const submit = async (text: string) => {
     const value = text.trim()
@@ -203,6 +247,7 @@ export function ChatWidget() {
         {
           id: nextId.current++,
           role: 'bot',
+          kind: 'error',
           text: `I can't reach my backend right now. Email ${PROFILE.email} or book a free call from the contact section and Ramon will pick it up directly.`
         }
       ])
@@ -211,44 +256,56 @@ export function ChatWidget() {
     }
   }
 
+  const fresh = messages.length === 1 && !offline
+  const labelled = !open && !nearCalendar
+
   return (
     <>
       {/* Launcher. Always shown: when the health check fails, the panel offers
           email and a call instead of a dead chat, rather than the icon simply
-          vanishing (it did, and read as a broken page). */}
+          vanishing (it did, and read as a broken page). On phones it steps out
+          of the way while the panel is open, since the panel has its own close. */}
       <button
+        ref={launcherRef}
         type='button'
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
         aria-controls='chat-panel'
-        aria-label={open ? 'Close chat' : "Chat with Ramon's assistant"}
-        className={`bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 w-12 items-center justify-center rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.16),0_8px_28px_-6px_rgba(0,0,0,0.45)] transition-[transform,opacity] duration-300 hover:scale-105 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:w-14 ${
-          scrolling && !open ? 'max-sm:pointer-events-none max-sm:translate-y-20 max-sm:opacity-0' : ''
+        aria-label={open ? 'Close chat' : "Ask about automation, chat with Ramon's assistant"}
+        className={`chat-launcher bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 items-center gap-2.5 rounded-full p-1.5 transition-[transform,opacity] duration-300 hover:-translate-y-0.5 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:p-[7px] ${
+          open ? 'max-sm:hidden' : ''
+        } ${labelled ? 'sm:pr-5' : ''} ${
+          (scrolling || nearCalendar) && !open
+            ? 'max-sm:pointer-events-none max-sm:translate-y-20 max-sm:opacity-0'
+            : ''
         }`}
       >
-        {open ? (
-          <X size={22} strokeWidth={ICON_STROKE} aria-hidden='true' />
-        ) : (
-          <MessageCircle size={22} strokeWidth={ICON_STROKE} aria-hidden='true' />
-        )}
+        <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.07] sm:h-[42px] sm:w-[42px]'>
+          {open ? (
+            <X size={20} strokeWidth={ICON_STROKE} aria-hidden='true' />
+          ) : (
+            <BrandMark className='chat-mark h-[22px] w-[22px] sm:h-[26px] sm:w-[26px]' />
+          )}
+        </span>
+        {labelled && <span className='hidden text-[14.5px] font-medium sm:inline'>Ask about automation</span>}
       </button>
 
-      {/* Panel */}
+      {/* Panel. A floating card on desktop, a sheet below the nav on phones. */}
       <div
         id='chat-panel'
         role='dialog'
         aria-label="Chat with Ramon's assistant"
         hidden={!open}
-        className='border-rule bg-ground fixed right-5 bottom-24 z-[110] flex w-[calc(100vw-2.5rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border shadow-[0_24px_60px_-16px_rgba(0,0,0,0.35)]'
-        style={{ height: 'min(560px, calc(100vh - 8rem))' }}
+        className='chat-panel fixed z-[110] flex flex-col overflow-hidden rounded-[22px] max-sm:inset-x-2 max-sm:top-24 max-sm:bottom-2 sm:right-5 sm:bottom-24 sm:h-[min(610px,calc(100dvh-8rem))] sm:w-[404px]'
       >
         {/* Header */}
-        <div className='border-rule bg-surface flex items-start justify-between gap-3 border-b px-5 py-4'>
-          <div>
-            <p className='text-ink text-[15px] font-medium' style={{ fontFamily: DISPLAY_FONT }}>
-              Ask about automation
+        <div className='flex items-center gap-3 py-3.5 pr-3.5 pl-5'>
+          <BrandMark className='chat-mark-header h-7 w-7 shrink-0' />
+          <div className='min-w-0'>
+            <p className='text-ink text-[14.5px] font-medium' style={{ fontFamily: DISPLAY_FONT }}>
+              Ramon&apos;s assistant <span className='text-ink-4 ml-0.5 text-[12px] font-normal'>AI</span>
             </p>
-            <p className='text-ink-2 mt-0.5 flex items-center gap-1.5 text-[12px]'>
+            <p className='text-ink-3 mt-0.5 flex items-center gap-1.5 text-[12px]'>
               <span
                 className={`h-1.5 w-1.5 rounded-full ${
                   status === 'ok' ? 'bg-emerald-500' : status === 'down' || offline ? 'bg-amber-500' : 'bg-ink/25'
@@ -264,83 +321,123 @@ export function ChatWidget() {
             </p>
           </div>
           <button
+            ref={closeRef}
             type='button'
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false)
+              restoreFocus()
+            }}
             aria-label='Close chat'
-            className='border-rule text-ink-2 hover:border-rule-strong hover:text-ink flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all'
+            className='text-ink-3 hover:bg-ink/5 hover:text-ink ml-auto flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors'
           >
-            <X size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
+            <X size={16} strokeWidth={ICON_STROKE} aria-hidden='true' />
           </button>
         </div>
 
         {/* Offline: the health check failed, so offer the two ways that do
             not depend on the assistant instead of a chat that cannot answer. */}
         {offline && (
-          <div className='flex flex-1 flex-col justify-center gap-4 px-6 py-8'>
-            <p className='text-ink text-[15px] leading-relaxed'>The assistant is offline right now.</p>
-            <p className='text-ink-2 text-[13.5px] leading-relaxed'>
-              You can still reach me directly by email or by booking a call.
-            </p>
-            <div className='flex flex-col gap-2 pt-1'>
-              <a
-                href={`mailto:${PROFILE.email}`}
-                className='bg-ink text-ground hover:bg-ink/90 rounded-full px-4 py-2.5 text-center text-[13.5px] transition-colors'
+          <>
+            <div className='flex-1 px-6 pt-5'>
+              <h2
+                className='text-ink text-[26px] leading-[1.1] font-medium tracking-[-0.025em]'
+                style={{ fontFamily: DISPLAY_FONT }}
               >
+                The assistant is offline right now.
+              </h2>
+              <p className='text-ink-3 mt-3 text-[14px] leading-relaxed'>
+                You can still reach me directly by email or by booking a call.
+              </p>
+            </div>
+            <div className='px-3 pb-3'>
+              <a href={`mailto:${PROFILE.email}`} className='chat-row group'>
+                <Mail size={16} strokeWidth={ICON_STROKE} className='text-accent' aria-hidden='true' />
                 Email Ramon
+                <ArrowUpRight size={16} strokeWidth={ICON_STROKE} className='chat-row-arrow' aria-hidden='true' />
               </a>
-              <a
-                href='#contact'
-                onClick={() => setOpen(false)}
-                className='border-rule-strong text-ink hover:bg-ink/3 rounded-full border px-4 py-2.5 text-center text-[13.5px] transition-colors'
-              >
+              <a href='#contact' onClick={() => setOpen(false)} className='chat-row group'>
+                <CalendarDays size={16} strokeWidth={ICON_STROKE} className='text-accent' aria-hidden='true' />
                 Book a free call
+                <ArrowUpRight size={16} strokeWidth={ICON_STROKE} className='chat-row-arrow' aria-hidden='true' />
               </a>
             </div>
-          </div>
+          </>
         )}
 
-        {/* Thread */}
-        <div ref={listRef} className='flex-1 space-y-3 overflow-y-auto px-5 py-5' hidden={offline}>
-          {messages.map(m => (
-            <div key={m.id} className={m.role === 'user' ? 'flex justify-end' : 'flex justify-start'}>
-              <p
-                className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-[13.5px] leading-relaxed ${
-                  m.role === 'user'
-                    ? 'bg-ink text-ground rounded-br-sm'
-                    : 'border-rule bg-surface-raised text-ink-2 rounded-bl-sm border'
-                }`}
+        {/* Thread. Untouched, it opens on a question rather than a lone bubble;
+            once a message is sent it reads as a transcript. */}
+        <div
+          ref={listRef}
+          role='log'
+          aria-label='Conversation'
+          className='chat-scroll flex-1 overflow-y-auto'
+          hidden={offline}
+        >
+          {fresh ? (
+            <div className='px-6 pt-5 pb-4'>
+              <h2
+                className='text-ink text-[28px] leading-[1.08] font-medium tracking-[-0.025em]'
+                style={{ fontFamily: DISPLAY_FONT }}
               >
-                {m.text}
-              </p>
+                What should come off your desk?
+              </h2>
+              <p className='text-ink-3 mt-3 text-[14px] leading-relaxed'>{GREETING}</p>
             </div>
-          ))}
+          ) : (
+            <ol className='space-y-5 px-6 pt-3 pb-5'>
+              {messages.map(m => (
+                <li key={m.id} className='chat-turn'>
+                  <p className='text-ink-4 mb-1 text-[12px]'>{m.role === 'user' ? 'You' : 'Assistant'}</p>
+                  <p
+                    className={`text-[14.5px] leading-[1.6] whitespace-pre-line ${
+                      m.role === 'user' ? 'text-ink font-medium' : 'text-ink-2'
+                    }`}
+                  >
+                    {m.text}
+                  </p>
+                  {m.kind === 'error' && (
+                    <div className='mt-3 flex flex-wrap gap-2'>
+                      <a href={`mailto:${PROFILE.email}`} className='chat-chip'>
+                        <Mail size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
+                        Email Ramon
+                      </a>
+                      <a href='#contact' onClick={() => setOpen(false)} className='chat-chip'>
+                        <CalendarDays size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
+                        Book a free call
+                      </a>
+                    </div>
+                  )}
+                </li>
+              ))}
 
-          {pending && (
-            <div className='flex justify-start' aria-live='polite'>
-              <p className='border-rule bg-surface-raised flex gap-1.5 rounded-2xl rounded-bl-sm border px-4 py-3.5'>
-                {[0, 1, 2].map(i => (
-                  <span
-                    key={i}
-                    className='bg-ink/35 h-1.5 w-1.5 rounded-full'
-                    style={{ animation: `pulse-dot 1.2s ease-in-out ${i * 0.15}s infinite` }}
-                  />
-                ))}
-              </p>
-            </div>
+              {/* Waiting on n8n, drawn as a three-node workflow running. */}
+              {pending && (
+                <li className='chat-turn'>
+                  <p className='text-ink-4 mb-2 text-[12px]'>Assistant</p>
+                  <div className='flex items-center gap-3'>
+                    <span className='chat-run' aria-hidden='true'>
+                      <i />
+                      <b />
+                      <i />
+                      <b />
+                      <i />
+                    </span>
+                    <span className='text-ink-3 text-[12.5px]'>Working on it</span>
+                  </div>
+                </li>
+              )}
+            </ol>
           )}
         </div>
 
-        {/* Suggestions — only while the thread is untouched */}
-        {messages.length === 1 && !offline && (
-          <div className='flex flex-wrap gap-1.5 px-5 pb-3'>
+        {/* Suggestions, only while the thread is untouched */}
+        {fresh && (
+          <div className='px-3 pb-1'>
             {SUGGESTIONS.map(s => (
-              <button
-                key={s}
-                type='button'
-                onClick={() => submit(s)}
-                className='border-rule bg-surface text-ink-2 hover:border-rule-strong hover:text-ink rounded-full border px-3 py-1.5 text-[11.5px] transition-all'
-              >
+              <button key={s} type='button' onClick={() => submit(s)} className='chat-row group'>
+                <span className='bg-accent h-1.5 w-1.5 shrink-0 rounded-full' />
                 {s}
+                <ArrowUpRight size={16} strokeWidth={ICON_STROKE} className='chat-row-arrow' aria-hidden='true' />
               </button>
             ))}
           </div>
@@ -353,28 +450,31 @@ export function ChatWidget() {
             e.preventDefault()
             submit(draft)
           }}
-          className='border-rule bg-surface flex items-center gap-2 border-t px-4 py-3'
+          className='px-3 pt-1.5 pb-3'
         >
-          <label htmlFor='chat-input' className='sr-only'>
-            Message
-          </label>
-          <input
-            id='chat-input'
-            ref={inputRef}
-            value={draft}
-            onChange={e => setDraft(e.target.value)}
-            placeholder='Ask a question…'
-            autoComplete='off'
-            className='text-ink placeholder:text-ink-3 flex-1 bg-transparent px-1 text-[13.5px] focus:outline-none'
-          />
-          <button
-            type='submit'
-            disabled={!draft.trim() || pending}
-            aria-label='Send message'
-            className='bg-ink text-ground hover:bg-ink/90 flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-opacity disabled:opacity-30'
-          >
-            <Send size={15} strokeWidth={ICON_STROKE} aria-hidden='true' />
-          </button>
+          <div className='chat-composer flex items-center gap-2 rounded-2xl bg-white py-[7px] pr-[7px] pl-4'>
+            <label htmlFor='chat-input' className='sr-only'>
+              Message
+            </label>
+            {/* 16px on phones: iOS zooms the page into any smaller input. */}
+            <input
+              id='chat-input'
+              ref={inputRef}
+              value={draft}
+              onChange={e => setDraft(e.target.value)}
+              placeholder='Ask a question…'
+              autoComplete='off'
+              className='text-ink placeholder:text-ink-4 min-w-0 flex-1 bg-transparent text-base focus:outline-none sm:text-[14px]'
+            />
+            <button
+              type='submit'
+              disabled={!draft.trim() || pending}
+              aria-label='Send message'
+              className='bg-ink text-ground hover:bg-ink/90 flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] transition-opacity disabled:opacity-25'
+            >
+              <ArrowUp size={17} strokeWidth={ICON_STROKE} aria-hidden='true' />
+            </button>
+          </div>
         </form>
       </div>
     </>
