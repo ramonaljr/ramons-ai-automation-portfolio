@@ -8923,6 +8923,52 @@ div#experience.about-journey {
   border-color: var(--accent);
 }
 
+/* /contact: the Calendly frame. Its height is set inline from the height
+   Calendly reports (calendly-embed.tsx); the transition keeps each step's
+   resize from snapping. */
+.calendly-frame {
+  overflow: hidden;
+  border-radius: 1rem;
+  transition: height 0.35s ease;
+}
+
+/* On a phone the panel and card padding nest, leaving Calendly 227px of a
+   375px screen. The frame runs out to the card's edges instead (the card's
+   own padding, negated). */
+@media (max-width: 639px) {
+  .calendly-frame {
+    margin-inline: calc(-1 * clamp(1.25rem, 2.5vw, 2rem));
+    border-radius: 0;
+  }
+}
+
+.calendly-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.calendly-fallback {
+  margin-top: 0.75rem;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.calendly-fallback a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.calendly-fallback a:hover {
+  color: var(--accent);
+}
+
 /* ── Hero journey (2026-11-01) ────────────────────────────────────────────
    Mountain ranges drifting behind the tree and a silhouette walking along
    the foot of the hero (hero-journey.tsx). The ranges sit under the tree
