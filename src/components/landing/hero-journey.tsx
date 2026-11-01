@@ -25,9 +25,18 @@ const TILE = 1800
 const CADENCE = 0.85
 const CADENCE_MAX = 2.1
 
-/** Ground covered per stride, in walker-drawing units (figure is 86 tall). */
-const STRIDE = 66
-const FIGURE_HEIGHT = 86
+const TAU = Math.PI * 2
+
+/** The leg's swing either side of upright, and hip to sole in drawing units. */
+const SWING = (24 * Math.PI) / 180
+const LEG = 40.3
+
+/**
+ * Ground covered per stride, in walker-drawing units (the viewBox is 88 tall):
+ * each foot sweeps back its full reach, twice a stride.
+ */
+const STRIDE = 4 * LEG * Math.sin(SWING)
+const FIGURE_HEIGHT = 88
 
 /**
  * How fast each range moves relative to the ground. The tiles and the volcano
@@ -216,7 +225,92 @@ export function JourneyRanges() {
   )
 }
 
-/** The ground path and the walking silhouette, above the branch overlay. */
+/**
+ * The walker's colours: slate-blue clothes in two tones, the far limbs a step
+ * darker so they read in depth, silver hair and thin dark line art.
+ */
+const C = {
+  ink: 'oklch(0.17 0.02 250)',
+  hair: 'oklch(0.94 0.008 250)',
+  hairShade: 'oklch(0.8 0.02 250)',
+  hairStrand: 'oklch(0.7 0.02 250)',
+  brow: 'oklch(0.55 0.02 250)',
+  skin: 'oklch(0.9 0.035 70)',
+  skinShade: 'oklch(0.79 0.05 55)',
+  jacket: 'oklch(0.33 0.035 235)',
+  jacketShade: 'oklch(0.245 0.03 240)',
+  jacketLight: 'oklch(0.44 0.035 228)',
+  trousers: 'oklch(0.31 0.026 232)',
+  trousersShade: 'oklch(0.235 0.022 238)',
+  farJacket: 'oklch(0.22 0.026 242)',
+  farTrousers: 'oklch(0.21 0.02 240)',
+  shoe: 'oklch(0.21 0.015 245)',
+  shoeLight: 'oklch(0.36 0.02 240)'
+}
+
+/** Outlined shape, and a bare stroke for creases and strands. */
+const inked = (fill: string) => ({ fill, stroke: C.ink, strokeWidth: 0.32, strokeLinejoin: 'round' as const })
+
+const line = (stroke: string, strokeWidth: number) => ({
+  fill: 'none',
+  stroke,
+  strokeWidth,
+  strokeLinecap: 'round' as const
+})
+
+/**
+ * Locks of hair swept up and back, a fringe over the brow and short tips at
+ * the nape. Generated once (tips round the skull, each edge bowed outward)
+ * and kept as a path.
+ */
+const HAIR =
+  'M1.6 3.8 Q2.57 4.92 2.4 6.4 Q2.25 5.39 2.9 4.6 Q4.06 5.46 4.2 6.9 Q3.70 5.63 4.3 4.4 Q5.24 4.64 5.7 5.5 Q4.88 4.73 4.9 3.6 Q5.17 2.65 6.05 2.21 Q5.05 2.49 4.17 1.94 Q3.95 -0.06 5.28 -1.58 Q4.46 -0.15 2.85 0.21 Q1.86 -0.99 2.08 -2.53 Q1.88 -1.32 0.86 -0.65 Q-0.55 -1.17 -1.11 -2.56 Q-0.74 -1.45 -1.31 -0.43 Q-3.18 -0.26 -4.57 -1.53 Q-3.31 -0.68 -3.08 0.82 Q-4.49 1.83 -6.19 1.47 Q-4.82 1.65 -4.02 2.78 Q-4.66 4.24 -6.16 4.75 Q-4.98 4.35 -3.88 4.95 Q-3.79 6.85 -5.12 8.2 Q-4.61 7.02 -3.4 6.6 Q-3.17 7.81 -3.9 8.8 Q-3.59 7.89 -2.7 7.5 Q-2.04 8.05 -2 8.9 Q-2.08 7.09 -0.8 5.8 Q-0.51 4.84 0.4 4.4 Q0.87 3.84 1.6 3.8 Z'
+
+/** High stand collar, cropped at the hip, a placket down the front. */
+const JACKET = (
+  <>
+    <path
+      d='M-2.2 9.8 L2.6 9.4 L3 12.6 C4.4 13 5.4 14.8 5.6 18.5 C5.6 22 4.8 27 4.6 31 C4.6 35 4.8 39 5.2 42.6 Q0 43.4 -5.5 43.1 C-5.2 38 -4.9 34 -4.8 30 C-5 25 -5.8 21 -5.7 17.6 C-5.6 15.4 -5 14.2 -3.2 13.4 Z'
+      {...inked(C.jacket)}
+    />
+    <path
+      d='M-3.2 13.4 C-5 14.2 -5.6 15.4 -5.7 17.6 C-5.8 21 -5 25 -4.8 30 C-4.9 34 -5.2 38 -5.5 43.1 L-1.6 43.3 C-1.8 36 -1.4 26 -1 13.2 Z'
+      fill={C.jacketShade}
+    />
+    <path d='M3.6 13.6 C4.8 15 5.1 17 5 19.6' {...line(C.jacketLight, 0.55)} />
+    <path d='M2.9 12.8 C3.4 22 3.6 33 3.9 42.8' {...line(C.jacketShade, 0.35)} />
+    <path d='M-4.2 31.6 C-2.4 32.4 0.6 32.4 3.8 31.4' {...line(C.jacketShade, 0.3)} />
+    <path d='M-2.6 9.4 L2.9 9 L3.2 13.2 Q0.2 14.2 -2.9 13.7 Z' {...inked(C.jacket)} />
+    <path d='M-2.6 9.4 L-0.4 9.2 L-0.5 14 Q-1.8 13.9 -2.9 13.7 Z' fill={C.jacketShade} />
+  </>
+)
+
+/** In profile: brow, nose, lips and a pointed chin, the eyes half-lidded. */
+const HEAD = (
+  <>
+    <path
+      d='M-1.2 8.8 C-3.4 7.8 -4 4.6 -3.4 2.6 C-2.4 0.4 1.4 -0.4 3.4 1.2 C4.2 2 4.4 3.4 4.6 4.6 L4.3 5.3 C4.9 5.9 5.5 6.4 5.9 6.9 L4.9 7.4 L5.05 7.9 L4.65 8.25 L4.85 8.65 C4.7 9.4 4.4 9.9 3.9 10.1 C2.6 10.4 1.4 10.2 0.4 9.8 Z'
+      {...inked(C.skin)}
+    />
+    <path d='M-1.2 8.8 C0 9.6 1.4 10 3.9 10.1 C2.4 9.4 1.4 8.4 1 7 C0.4 7.6 -0.4 8.2 -1.2 8.8 Z' fill={C.skinShade} />
+    <path d='M-0.9 4.8 C-0.2 4.6 0.4 5.2 0.4 6.2 C0.4 7.2 -0.2 7.6 -0.8 7.4 Z' {...inked(C.skinShade)} />
+    <path d='M2.5 5.7 C3.1 5.4 3.7 5.35 4.2 5.5' {...line(C.ink, 0.45)} />
+    <path d='M2.6 6.05 C3.1 6.2 3.6 6.2 3.95 6.05' {...line(C.hairShade, 0.25)} />
+    <path d='M2.3 4.5 C3 4.15 3.7 4.05 4.4 4.2' {...line(C.brow, 0.4)} />
+    <path d='M4.7 8.25 L4.2 8.3' {...line(C.skinShade, 0.25)} />
+    <path d={HAIR} {...inked(C.hair)} />
+    <path
+      d='M-0.8 5.8 C0 4.6 1 3.9 2 3.9 C3 3.9 3.9 4.2 4.8 4.4 L5.2 5.2 C4 4.9 3 4.8 2 5 C0.9 5.2 0 5.5 -0.8 5.8 Z'
+      fill={C.hairShade}
+    />
+    <path
+      d='M-3.6 0.6 C-2.2 -0.6 -0.2 -0.8 1.6 0 M-4.4 3.2 C-3.2 2.4 -1.8 2.2 -0.6 2.6 M2.4 0.8 C3.4 1.2 4.4 1.8 5 2.6 M0.2 -0.6 C0.6 0.6 1.2 1.6 2 2.2'
+      {...line(C.hairStrand, 0.3)}
+    />
+  </>
+)
+
+/** The ground path and the walker, above the branch overlay. */
 export function JourneyWalker() {
   const rootRef = useRef<HTMLDivElement>(null)
   const groundRef = useRef<HTMLDivElement>(null)
@@ -234,23 +328,32 @@ export function JourneyWalker() {
       ['back', phase + Math.PI]
     ].forEach(([side, p]) => {
       const s = Math.sin(p as number)
-      const c = Math.cos(p as number)
 
-      set(`${side}-thigh`, -26 * s, 0, 42)
+      // From heel strike the planted foot must keep pace with the ground, so
+      // it slides back at a steady rate (a sine would skate it at mid-stance);
+      // in the air it swings forward again on the sine.
+      const sinceStrike = ((((p as number) - Math.PI / 2) % TAU) + TAU) % TAU
+      const reach = sinceStrike < Math.PI ? 1 - (2 * sinceStrike) / Math.PI : s
+      const thigh = (-Math.asin(reach * Math.sin(SWING)) * 180) / Math.PI
 
-      // The knee folds while the leg swings through.
-      set(`${side}-shin`, 5 + 40 * Math.max(0, c), 0, 61)
+      // The knee folds most just after push-off, as the leg swings through.
+      const knee = 4 + 42 * Math.max(0, Math.cos((p as number) + 0.35)) ** 1.2
 
-      // Arms swing against the leg on their side.
-      set(`${side}-arm`, 20 * s, 0, 16)
-      set(`${side}-forearm`, -(10 + 18 * Math.max(0, -s)), 0, 29)
+      // The foot's angle to the ground: toes up at heel strike, flat through
+      // the stance, the heel lifting at push-off.
+      const foot = -12 * s + 24 * Math.max(0, -Math.sin((p as number) + 0.25)) ** 2
+
+      set(`${side}-thigh`, thigh, 0.4, 41)
+      set(`${side}-shin`, knee, 0.1, 60.4)
+      set(`${side}-foot`, foot - thigh - knee, 0.2, 78.6)
+
+      // Hands in the pockets: the arms only sway a little with the stride.
+      set(`${side}-arm`, 20 + 3 * s, 0, 14.8)
+      set(`${side}-forearm`, -48 - 2 * s, 0, 29.6)
     })
 
     // Highest as the legs pass each other, lowest at full stride.
-    bodyRef.current?.setAttribute(
-      'transform',
-      `translate(0 ${(-1.6 * (Math.cos(phase * 2) + 1)) / 2 + 1.6}) rotate(4 0 42)`
-    )
+    bodyRef.current?.setAttribute('transform', `translate(0 ${(-1.2 * (Math.cos(phase * 2) + 1)) / 2 + 1.2})`)
   }
 
   useJourney((dt, cadence, fade) => {
@@ -275,26 +378,67 @@ export function JourneyWalker() {
     pose(state.current.phase)
   })
 
-  const limb = (side: 'front' | 'back') => (
-    <>
+  const leg = (side: 'front' | 'back') => {
+    const far = side === 'back'
+    const cloth = far ? C.farTrousers : C.trousers
+    const shade = far ? C.farTrousers : C.trousersShade
+
+    return (
       <g ref={el => void (limbs.current[`${side}-thigh`] = el)}>
-        <line x1='0' y1='42' x2='0' y2='61' strokeWidth='6' />
+        <path d='M-2.8 39.8 C-3 46 -2.5 54 -1.9 60.8 L2 60.8 C2.6 54 3 46 3 39.8 Z' {...inked(cloth)} />
+        <path d='M-2.8 39.8 C-3 46 -2.5 54 -1.9 60.8 L-0.6 60.8 C-1 54 -1.2 46 -1 39.8 Z' fill={shade} />
         <g ref={el => void (limbs.current[`${side}-shin`] = el)}>
-          <line x1='0' y1='61' x2='0' y2='79' strokeWidth='5' />
-          <line x1='0' y1='80' x2='4.5' y2='80' strokeWidth='4' />
+          <path d='M-1.9 60 C-1.7 66 -1.6 72 -1.7 78.6 L1.8 78.6 C1.7 72 1.8 66 2 60 Z' {...inked(cloth)} />
+          <path d='M-1.9 60 C-1.7 66 -1.6 72 -1.7 78.6 L-0.4 78.6 C-0.5 72 -0.6 66 -0.6 60 Z' fill={shade} />
+          {!far && (
+            <path
+              d='M-1.6 61.6 C-0.6 62.4 0.8 62.4 1.8 61.4 M-1.4 76.2 C-0.4 76.9 0.9 76.9 1.8 76.1'
+              {...line(C.trousersShade, 0.35)}
+            />
+          )}
+          <g ref={el => void (limbs.current[`${side}-foot`] = el)}>
+            <path
+              d='M-2 77.6 C-2.5 79 -2.5 80.4 -2.2 81.3 L6.1 81.3 C6.8 81 6.9 80 6.3 79.4 C5 78.5 3.4 78 2.2 77.6 Z'
+              {...inked(C.shoe)}
+            />
+            <path d='M-2.2 80.6 L6.4 80.6' {...line(C.shoeLight, 0.35)} />
+          </g>
         </g>
       </g>
-    </>
-  )
+    )
+  }
 
-  const arm = (side: 'front' | 'back') => (
-    <g ref={el => void (limbs.current[`${side}-arm`] = el)}>
-      <line x1='0' y1='16' x2='0' y2='29' strokeWidth='4.6' />
-      <g ref={el => void (limbs.current[`${side}-forearm`] = el)}>
-        <line x1='0' y1='29' x2='0' y2='40' strokeWidth='4' />
+  const arm = (side: 'front' | 'back') => {
+    const far = side === 'back'
+    const cloth = far ? C.farJacket : C.jacket
+
+    return (
+      <g ref={el => void (limbs.current[`${side}-arm`] = el)}>
+        <path d='M-2.6 13.6 C-3 18 -2.9 24 -2.3 29.9 L2.2 30 C2.6 24 2.8 18 2.6 13.8 Z' {...inked(cloth)} />
+        {!far && (
+          <>
+            <path d='M-2.6 13.6 C-3 18 -2.9 24 -2.3 29.9 L-0.6 29.9 C-1 24 -1.2 18 -0.8 13.6 Z' fill={C.jacketShade} />
+            <path d='M-1.6 27.4 C-0.4 28.4 1 28.4 2 27.6' {...line(C.jacketShade, 0.35)} />
+          </>
+        )}
+        <g ref={el => void (limbs.current[`${side}-forearm`] = el)}>
+          <path
+            d='M-2.2 29.2 L2.1 29.4 C2.3 34 2.1 38.5 1.8 42.4 L-1.7 42.6 C-2 38.5 -2.2 34 -2.2 29.2 Z'
+            {...inked(cloth)}
+          />
+          {!far && (
+            <>
+              <path d='M-1.9 41.2 L1.9 41.1 L1.8 42.4 L-1.7 42.6 Z' fill={C.jacketShade} />
+              <path
+                d='M-1.4 42.6 L1.5 42.4 C1.6 43.2 1.3 43.8 0.2 44 C-0.8 43.9 -1.3 43.4 -1.4 42.6 Z'
+                {...inked(C.skin)}
+              />
+            </>
+          )}
+        </g>
       </g>
-    </g>
-  )
+    )
+  }
 
   return (
     <div ref={rootRef} aria-hidden='true' className='journey-ground'>
@@ -312,17 +456,20 @@ export function JourneyWalker() {
         ))}
       </div>
 
+      {/* Tall and slim, hands in his pockets, leaning back a little with his
+          head bowed: the far arm and leg first, then the near leg, the
+          jacket, the head and the near arm over them. */}
       <svg className='journey-walker' viewBox='-22 -4 44 88'>
-        <ellipse className='journey-shadow' cx='1' cy='81' rx='13' ry='2.2' />
-        <g ref={bodyRef} strokeLinecap='round'>
-          <g className='journey-far-side'>
-            {arm('back')}
-            {limb('back')}
+        <ellipse className='journey-shadow' cx='1.5' cy='81.4' rx='11' ry='1.8' />
+        <g ref={bodyRef}>
+          <g transform='rotate(-3 0.4 41)'>{arm('back')}</g>
+          {leg('back')}
+          {leg('front')}
+          <g transform='rotate(-3 0.4 41)'>
+            {JACKET}
+            <g transform='rotate(9 0.6 10) translate(0.6 10) scale(0.84) translate(-0.6 -10)'>{HEAD}</g>
+            {arm('front')}
           </g>
-          <line x1='0' y1='17' x2='0' y2='41' strokeWidth='10' />
-          <circle cx='1' cy='7' r='6' />
-          {limb('front')}
-          {arm('front')}
         </g>
       </svg>
     </div>

@@ -8927,25 +8927,14 @@ div#experience.about-journey {
   stroke-linecap: round;
 }
 
+/* Drawn in colour now, so a little larger than the old stick figure for the
+   face and hair to read. */
 .journey-walker {
   position: absolute;
-  bottom: calc(66% - 0.06 * clamp(48px, 8.5vh, 84px));
+  bottom: calc(66% - 0.06 * clamp(64px, 12vh, 118px));
   left: 56%;
-  height: clamp(48px, 8.5vh, 84px);
+  height: clamp(64px, 12vh, 118px);
   overflow: visible;
-}
-
-.journey-walker line {
-  stroke: oklch(0.26 0.022 255);
-}
-
-.journey-walker circle {
-  fill: oklch(0.26 0.022 255);
-}
-
-/* The far arm and leg a step lighter, so the limbs read in depth. */
-.journey-walker .journey-far-side line {
-  stroke: oklch(0.38 0.02 255);
 }
 
 .journey-shadow {
@@ -8970,8 +8959,8 @@ div#experience.about-journey {
   }
 
   .journey-walker {
-    bottom: calc(66% - 0.06 * 54px);
-    height: 54px;
+    bottom: calc(66% - 0.06 * 72px);
+    height: 72px;
   }
 
   /* The copy spans the screen, so the volcano rises on the right, beside the
