@@ -7243,35 +7243,39 @@ div#experience.about-journey {
   grid-column: 1 / -1;
 }
 
-.experience-axis-line {
+.experience-axis-bars {
   position: relative;
-  height: 2px;
   margin: 0 0.5rem;
+}
+
+/* Each role, to scale. A faint rail behind every bar keeps the gaps between
+   jobs readable as gaps rather than missing ink. */
+.experience-axis-bars::before {
+  position: absolute;
+  inset: auto 0 -0.55rem;
+  height: 1px;
   background: color-mix(in oklab, var(--ink) 10%, transparent);
+  content: '';
 }
 
-.experience-axis-line i {
+.experience-axis-bars i {
   position: absolute;
-  inset: 0;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--ink) 16%, transparent);
+  transition: background 0.35s ease;
+}
+
+.experience-axis-bars i[data-active='true'] {
   background: var(--accent);
-  transform-origin: left;
 }
 
-.experience-axis-line b {
-  position: absolute;
-  top: 50%;
-  width: 0.8rem;
-  height: 0.8rem;
-  border: 2px solid var(--accent);
-  border-radius: 50%;
-  background: var(--ground);
-  transform: translate(-50%, -50%);
-}
-
+/* Each year sits under its own January, not spaced evenly, so the labels and
+   the bars share one scale. */
 .experience-axis ol {
-  display: flex;
-  justify-content: space-between;
-  margin: 0.7rem 0 0;
+  position: relative;
+  height: 1em;
+  margin: 1.1rem 0.5rem 0;
   padding: 0;
   color: var(--ink-3);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
@@ -7280,8 +7284,10 @@ div#experience.about-journey {
   list-style: none;
 }
 
-.experience-axis li[data-start] {
-  color: var(--ink);
+.experience-axis li {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
 }
 
 /* The list version. */
