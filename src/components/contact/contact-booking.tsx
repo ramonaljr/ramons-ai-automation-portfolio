@@ -8,10 +8,10 @@ import ContactForm from '@/components/contact/contact-form/contact-form'
 import { CalendlyEmbed } from '@/components/contact/calendly-embed'
 
 /**
- * The booking card on /contact. Arriving from the landing page's calendar, the
- * URL carries the slot already picked there (`?date=&time=`), and the form
- * books exactly that slot through n8n; showing Calendly instead would drop it.
- * Everyone else gets Calendly.
+ * The booking card on /contact. Links made by the landing page's old calendar
+ * (before it moved to Calendly on 2026-11-01) carry a picked slot
+ * (`?date=&time=`), and the form books exactly that slot through n8n; showing
+ * Calendly instead would drop it. Everyone else gets Calendly.
  *
  * Read from location rather than useSearchParams so /contact stays static,
  * the same as the form itself.
