@@ -8997,3 +8997,195 @@ div#experience.about-journey {
     transition: none;
   }
 }
+
+/* ── Chat widget ─────────────────────────────────────────────────────────────
+   A paper panel rather than a bubble kit: an opening question, suggestion rows
+   with dots, a transcript once the visitor writes, and the wait for n8n drawn
+   as a three-node workflow running. The R mark is the assistant's face. */
+.chat-launcher {
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.1),
+    0 16px 36px -12px rgb(20 28 45 / 0.5);
+}
+
+.chat-mark {
+  color: oklch(0.72 0.13 38);
+}
+
+.chat-mark .intro-mark-node {
+  fill: color-mix(in oklab, var(--ink) 93%, white);
+}
+
+.chat-panel {
+  --chat-paper: oklch(0.985 0.003 250);
+  background: var(--chat-paper);
+  box-shadow:
+    0 0 0 1px var(--rule-strong),
+    0 40px 90px -30px rgb(20 28 45 / 0.4);
+  transform-origin: bottom right;
+  animation: chat-panel-in 0.32s var(--ease-entrance);
+}
+
+@keyframes chat-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+.chat-mark-header {
+  color: var(--accent);
+}
+
+.chat-mark-header .intro-mark-node {
+  fill: var(--chat-paper);
+}
+
+/* Text fades under the header and above the composer instead of being cut. */
+.chat-scroll {
+  mask-image: linear-gradient(to bottom, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+}
+
+.chat-turn {
+  animation: chat-turn-in 0.36s var(--ease-entrance) both;
+}
+
+@keyframes chat-turn-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.chat-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  border-top: 1px solid var(--rule);
+  padding: 0.8rem 0.75rem;
+  text-align: left;
+  font-size: 14.5px;
+  color: var(--ink);
+  outline-offset: -2px;
+}
+
+.chat-row-arrow {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--ink-4);
+  transition:
+    color 0.2s,
+    transform 0.25s var(--ease-entrance);
+}
+
+.chat-row:hover .chat-row-arrow {
+  color: var(--ink);
+  transform: translate(2px, -2px);
+}
+
+.chat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 0.375rem 0.75rem;
+  font-size: 12.5px;
+  color: var(--ink);
+  transition: background-color 0.2s;
+}
+
+.chat-chip:hover {
+  background: color-mix(in oklab, var(--ink) 4%, transparent);
+}
+
+.chat-composer {
+  box-shadow: 0 0 0 1px var(--rule-strong);
+  transition: box-shadow 0.2s;
+}
+
+.chat-composer:focus-within {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--ink) 45%, transparent),
+    0 0 0 4px color-mix(in oklab, var(--accent) 14%, transparent);
+}
+
+/* Waiting state: node, link, node, link, node light in turn, hold, reset. */
+.chat-run {
+  display: inline-flex;
+  align-items: center;
+}
+
+.chat-run i {
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  background: var(--chat-paper);
+}
+
+.chat-run b {
+  position: relative;
+  width: 20px;
+  height: 1.5px;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--accent) 22%, transparent);
+}
+
+.chat-run b::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.chat-run i:nth-of-type(1) { animation: chat-run-node-1 1.8s linear infinite; }
+.chat-run b:nth-of-type(1)::after { animation: chat-run-link-1 1.8s linear infinite; }
+.chat-run i:nth-of-type(2) { animation: chat-run-node-2 1.8s linear infinite; }
+.chat-run b:nth-of-type(2)::after { animation: chat-run-link-2 1.8s linear infinite; }
+.chat-run i:nth-of-type(3) { animation: chat-run-node-3 1.8s linear infinite; }
+
+@keyframes chat-run-node-1 {
+  6%, 82% { background: var(--accent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 16%, transparent); }
+}
+
+@keyframes chat-run-link-1 {
+  0%, 6% { transform: scaleX(0); }
+  26%, 82% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+
+@keyframes chat-run-node-2 {
+  0%, 26% { background: var(--chat-paper); box-shadow: 0 0 0 0 transparent; }
+  32%, 82% { background: var(--accent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 16%, transparent); }
+}
+
+@keyframes chat-run-link-2 {
+  0%, 32% { transform: scaleX(0); }
+  52%, 82% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+
+@keyframes chat-run-node-3 {
+  0%, 52% { background: var(--chat-paper); box-shadow: 0 0 0 0 transparent; }
+  58%, 82% { background: var(--accent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 16%, transparent); }
+}
+
+/* Reduced motion: a still workflow, first step done, instead of the loop. */
+@media (prefers-reduced-motion: reduce) {
+  .chat-run i,
+  .chat-run b::after {
+    animation: none !important;
+  }
+
+  .chat-run i:first-of-type {
+    background: var(--accent);
+  }
+
+  .chat-run b:first-of-type::after {
+    transform: scaleX(1);
+  }
+}
