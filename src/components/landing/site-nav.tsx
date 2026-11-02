@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { usePathname } from 'next/navigation'
 import { motion, useMotionValueEvent, useScroll, useSpring } from 'motion/react'
@@ -138,6 +138,8 @@ const PILL_SPRING = { type: 'spring', stiffness: 520, damping: 42, mass: 0.7 } a
 export function SiteNav() {
   const [open, setOpen] = useState(false)
   const [compact, setCompact] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const burgerRef = useRef<HTMLButtonElement>(null)
   const pathname = usePathname()
   const reduced = usePrefersReducedMotion()
   const { scrollY, scrollYProgress } = useScroll()
@@ -166,6 +168,31 @@ export function SiteNav() {
   const contactHref = onLanding ? '#contact' : '/#contact'
   const close = () => setOpen(false)
 
+  // The open menu is a disclosure, so it gets the usual ways out: Escape
+  // (which hands focus back to the burger, or it would fall to <body> once
+  // the panel goes inert) and a tap anywhere outside the bar and panel.
+  useEffect(() => {
+    if (!open) return
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      setOpen(false)
+      burgerRef.current?.focus()
+    }
+
+    const onPointer = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointer)
+
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointer)
+    }
+  }, [open])
+
   // Over the hero the bar shares the sections' container and gutters, so its
   // edges line up with the content under it. Once the page scrolls it lets go
   // of those edges and tightens into a centred pill (`data-compact`, styled in
@@ -175,7 +202,7 @@ export function SiteNav() {
       layoutRoot
       className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4 md:px-12 lg:px-20'
     >
-      <div className={`pointer-events-auto w-full ${CONTAINER}`}>
+      <div ref={rootRef} className={`pointer-events-auto w-full ${CONTAINER}`}>
         {/* Main bar */}
         <nav
           data-compact={compact || undefined}
@@ -183,7 +210,7 @@ export function SiteNav() {
         >
           <a
             href={onLanding ? '#top' : '/'}
-            className='nav-brand text-ink inline-flex shrink-0 items-center text-[0.95rem] font-medium tracking-[-0.01em] transition-opacity hover:opacity-70'
+            className='nav-brand text-ink inline-flex shrink-0 items-center rounded-lg text-[0.95rem] font-medium tracking-[-0.01em] transition-opacity hover:opacity-70'
             aria-label={`${PROFILE.name}, back to top`}
           >
             <span
@@ -237,10 +264,12 @@ export function SiteNav() {
 
             {/* Burger — mobile only */}
             <button
+              ref={burgerRef}
               onClick={() => setOpen(v => !v)}
               className='hover:bg-ink/5 -mr-2 flex h-11 w-11 flex-col items-center justify-center gap-[5px] rounded-lg transition-colors md:hidden'
               aria-label={open ? 'Close menu' : 'Open menu'}
               aria-expanded={open}
+              aria-controls='site-nav-menu'
             >
               <span
                 className='bg-ink/60 block h-px origin-center transition-all duration-300'
@@ -266,31 +295,42 @@ export function SiteNav() {
           />
         </nav>
 
-        {/* Mobile dropdown */}
+        {/* Mobile dropdown.
+            The row animates 0fr → 1fr, so it opens to whatever the panel
+            measures; a fixed max-height had drifted 15px short and sliced off
+            the panel's bottom edge. `inert` takes the closed panel out of the
+            tab order: opacity alone left six invisible links focusable. */}
         <div
-          className='mt-2 overflow-hidden transition-all duration-300 ease-in-out md:hidden'
-          style={{ maxHeight: open ? '320px' : '0px', opacity: open ? 1 : 0 }}
+          id='site-nav-menu'
+          inert={!open}
+          className='site-nav-menu grid transition-[grid-template-rows,opacity] duration-300 ease-in-out md:hidden'
+          style={{ gridTemplateRows: open ? '1fr' : '0fr', opacity: open ? 1 : 0 }}
         >
-          <div className='site-nav-glass border-rule flex flex-col rounded-3xl border p-2' style={NAV_STYLE}>
-            {NAV_LINKS.map(l => (
-              <a
-                key={l.label}
-                href={resolve(l)}
-                onClick={close}
-                aria-current={current(l)}
-                className='site-nav-link-mobile text-fine text-ink-2 hover:bg-ink/4 hover:text-ink rounded-2xl px-4 py-3 transition-colors'
-              >
-                {l.label}
-              </a>
-            ))}
-            <div className='mt-1 px-2 pb-1'>
-              <a
-                href={contactHref}
-                onClick={close}
-                className='bg-ink text-fine text-ground hover:bg-ink/90 block w-full rounded-full px-4 py-3 text-center transition-colors duration-300'
-              >
-                Book a free call
-              </a>
+          {/* The gap is the panel's margin, not this wrapper's padding: padding
+              cannot collapse inside a 0fr row and left an invisible 8px strip
+              under the bar that swallowed taps. */}
+          <div className='min-h-0 overflow-hidden'>
+            <div className='site-nav-glass border-rule mt-2 flex flex-col rounded-3xl border p-2' style={NAV_STYLE}>
+              {NAV_LINKS.map(l => (
+                <a
+                  key={l.label}
+                  href={resolve(l)}
+                  onClick={close}
+                  aria-current={current(l)}
+                  className='site-nav-link-mobile text-fine text-ink-2 hover:bg-ink/4 hover:text-ink rounded-2xl px-4 py-3 transition-colors'
+                >
+                  {l.label}
+                </a>
+              ))}
+              <div className='mt-1 px-2 pb-1'>
+                <a
+                  href={contactHref}
+                  onClick={close}
+                  className='bg-ink text-fine text-ground hover:bg-ink/90 block w-full rounded-full px-4 py-3 text-center transition-colors duration-300'
+                >
+                  Book a free call
+                </a>
+              </div>
             </div>
           </div>
         </div>
