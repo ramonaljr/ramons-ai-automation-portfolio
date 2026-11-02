@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 
 import { usePathname } from 'next/navigation'
-import { motion, useScroll, useSpring } from 'motion/react'
+import { motion, useMotionValueEvent, useScroll, useSpring } from 'motion/react'
 
 import { BrandMark } from '@/components/landing/brand-mark'
-import { CONTAINER } from '@/components/landing/motion'
+import { ArrowRight, CONTAINER, usePrefersReducedMotion } from '@/components/landing/motion'
 
 import { PROFILE } from '@/lib/portfolio'
 
@@ -120,11 +120,27 @@ const NAV_STYLE = {
   WebkitBackdropFilter: 'blur(20px) saturate(1.7)'
 } as const
 
+/**
+ * How far the page scrolls before the bar tightens into the floating pill.
+ * Far enough that a trackpad nudge on the hero does not toggle it, near enough
+ * that it has settled before the first section arrives.
+ */
+const COMPACT_AFTER = 48
+
+/** The active-link pill glides rather than snaps; tuned to settle without overshoot. */
+const PILL_SPRING = { type: 'spring', stiffness: 520, damping: 42, mass: 0.7 } as const
+
 export function SiteNav() {
   const [open, setOpen] = useState(false)
+  const [compact, setCompact] = useState(false)
   const pathname = usePathname()
-  const { scrollYProgress } = useScroll()
+  const reduced = usePrefersReducedMotion()
+  const { scrollY, scrollYProgress } = useScroll()
   const progress = useSpring(scrollYProgress, { stiffness: 130, damping: 28, mass: 0.4 })
+
+  // React bails out of same-value updates, so this only re-renders on the
+  // two crossings, not on every scroll frame.
+  useMotionValueEvent(scrollY, 'change', y => setCompact(y > COMPACT_AFTER))
 
   const onLanding = pathname === '/'
   const active = useActiveHash(onLanding)
@@ -145,20 +161,24 @@ export function SiteNav() {
   const contactHref = onLanding ? '#contact' : '/#contact'
   const close = () => setOpen(false)
 
-  // The bar shares the sections' container and desktop gutters, so its edges
-  // line up with the content under it. It was a narrower 1280px bar over
-  // 1600px content on wide screens.
+  // Over the hero the bar shares the sections' container and gutters, so its
+  // edges line up with the content under it. Once the page scrolls it lets go
+  // of those edges and tightens into a centred pill (`data-compact`, styled in
+  // globals.css), since by then there is no hero edge left to align with.
   return (
-    <div className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4 md:px-12 lg:px-20'>
+    <motion.div
+      layoutRoot
+      className='pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4 md:px-12 lg:px-20'
+    >
       <div className={`pointer-events-auto w-full ${CONTAINER}`}>
         {/* Main bar */}
         <nav
-          className='site-nav-glass koisei-nav border-rule relative flex items-center justify-between overflow-hidden rounded-2xl border px-5 py-3'
-          style={NAV_STYLE}
+          data-compact={compact || undefined}
+          className='site-nav site-nav-glass relative mx-auto flex items-center justify-between overflow-hidden rounded-full border'
         >
           <a
             href={onLanding ? '#top' : '/'}
-            className='nav-brand text-ink inline-flex items-center gap-2.5 text-[0.95rem] font-medium tracking-[-0.01em] transition-opacity hover:opacity-70'
+            className='nav-brand text-ink inline-flex shrink-0 items-center text-[0.95rem] font-medium tracking-[-0.01em] transition-opacity hover:opacity-70'
             aria-label={`${PROFILE.name}, back to top`}
           >
             <span
@@ -168,29 +188,46 @@ export function SiteNav() {
             >
               <BrandMark className='block h-full w-full overflow-visible' />
             </span>
-            <span>{PROFILE.name}</span>
+            <span className='nav-brand-name'>{PROFILE.name}</span>
           </a>
 
           {/* Desktop links */}
-          <div className='hidden items-center gap-2 md:flex lg:gap-3'>
-            {NAV_LINKS.map(l => (
-              <a
-                key={l.label}
-                href={resolve(l)}
-                aria-current={current(l)}
-                className='site-nav-link text-fine text-ink-2 hover:bg-ink/5 hover:text-ink relative rounded-md px-2.5 py-2 transition-colors duration-200'
-              >
-                {l.label}
-              </a>
-            ))}
+          <div className='hidden items-center gap-0.5 md:flex lg:gap-1'>
+            {NAV_LINKS.map(l => {
+              const here = current(l)
+
+              return (
+                <a
+                  key={l.label}
+                  href={resolve(l)}
+                  aria-current={here}
+                  className='site-nav-link text-fine text-ink-2 hover:bg-ink/5 hover:text-ink relative isolate rounded-full px-3.5 py-2 transition-colors duration-200'
+                >
+                  {/* One shared layoutId, so the pill glides from the link
+                      that lost "here" to the one that gained it. */}
+                  {here && (
+                    <motion.span
+                      layoutId='site-nav-active'
+                      className='site-nav-pill absolute inset-0 -z-10 rounded-full'
+                      transition={reduced ? { duration: 0 } : PILL_SPRING}
+                      aria-hidden='true'
+                    />
+                  )}
+                  {l.label}
+                </a>
+              )
+            })}
           </div>
 
-          <div className='flex items-center gap-2'>
+          <div className='flex shrink-0 items-center gap-2'>
             <a
               href={contactHref}
-              className='bg-ink text-fine text-ground hover:bg-ink/90 relative z-10 hidden min-w-[9.75rem] rounded-full px-5 py-2 text-center whitespace-nowrap transition-[background-color,transform] duration-300 active:scale-[0.97] motion-reduce:active:scale-100 md:block'
+              className='group bg-ink text-fine text-ground hover:bg-ink/90 relative z-10 hidden items-center gap-2 rounded-full py-2 pr-4 pl-5 whitespace-nowrap transition-[background-color,transform] duration-300 active:scale-[0.97] motion-reduce:active:scale-100 md:inline-flex'
             >
               Book a free call
+              <span className='transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0'>
+                <ArrowRight size={14} />
+              </span>
             </a>
 
             {/* Burger — mobile only */}
@@ -215,8 +252,10 @@ export function SiteNav() {
             </button>
           </div>
 
+          {/* Inset past the pill's rounded ends, where a full-width line would
+              be clipped into two hooks by the curve. */}
           <motion.span
-            className='bg-accent absolute inset-x-0 bottom-0 h-[2px] origin-left'
+            className='bg-accent absolute inset-x-7 bottom-0 h-[2px] origin-left rounded-full'
             style={{ scaleX: progress }}
             aria-hidden='true'
           />
@@ -227,14 +266,14 @@ export function SiteNav() {
           className='mt-2 overflow-hidden transition-all duration-300 ease-in-out md:hidden'
           style={{ maxHeight: open ? '320px' : '0px', opacity: open ? 1 : 0 }}
         >
-          <div className='site-nav-glass border-rule flex flex-col rounded-2xl border px-2 py-2' style={NAV_STYLE}>
+          <div className='site-nav-glass border-rule flex flex-col rounded-3xl border p-2' style={NAV_STYLE}>
             {NAV_LINKS.map(l => (
               <a
                 key={l.label}
                 href={resolve(l)}
                 onClick={close}
                 aria-current={current(l)}
-                className='site-nav-link-mobile text-fine text-ink-2 hover:bg-ink/4 hover:text-ink rounded-xl px-4 py-3 transition-colors'
+                className='site-nav-link-mobile text-fine text-ink-2 hover:bg-ink/4 hover:text-ink rounded-2xl px-4 py-3 transition-colors'
               >
                 {l.label}
               </a>
@@ -251,6 +290,6 @@ export function SiteNav() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
