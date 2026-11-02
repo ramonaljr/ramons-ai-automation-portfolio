@@ -46,6 +46,7 @@ const CustomCursor = () => {
   const target = useRef({ x: -100, y: -100 })
   const ring = useRef({ x: -100, y: -100 })
   const frame = useRef<number | null>(null)
+  const surface = useRef<Element | null>(null)
 
   useEffect(() => {
     if (!window.matchMedia('(pointer: fine)').matches) return
@@ -92,6 +93,20 @@ const CustomCursor = () => {
       const interactive = Boolean(el?.closest(CURSOR_INTERACTIVE_SELECTOR)) || isIdCardHover()
 
       root.dataset.interactive = interactive ? 'true' : 'false'
+
+      // The cursor is mounted at the root, so it inherits the page's tokens,
+      // not those of the surface it is over: on the dark footer or the
+      // pricing band it drew dark ink on a dark ground and vanished. Those
+      // surfaces turn over by redefining `--ink`/`--accent`, so the cursor
+      // borrows whatever the element under it resolves. Only re-read when
+      // the element changes; `getComputedStyle` per move would be wasteful.
+      if (el && el !== surface.current) {
+        surface.current = el
+        const style = getComputedStyle(el)
+
+        root.style.setProperty('--ink', style.getPropertyValue('--ink'))
+        root.style.setProperty('--accent', style.getPropertyValue('--accent'))
+      }
     }
 
     const onLeave = () => {
