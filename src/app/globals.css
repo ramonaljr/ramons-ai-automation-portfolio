@@ -6562,10 +6562,13 @@ div#experience.about-journey {
   object-fit: contain;
 }
 
-/* The dialog's frame takes the canvas files' own aspect, capped so the body
-   still has room below it. */
+/* The dialog's frame takes the canvas files' own aspect and grows with the
+   window: its height is what the 92vh panel leaves after the header, toggle and
+   pinned footer (26.5rem together), so the view thumbnails on its bottom edge
+   are never tucked under the footer. A fixed 400px cap left a large screen
+   reading a 620px diagram; 400px stays as the floor for short windows. */
 .work-dialog-frame {
-  width: min(100%, calc(400px * 14 / 9));
+  width: min(100%, max(calc(400px * 14 / 9), calc((92vh - 26.5rem) * 14 / 9)));
   margin-inline: auto;
   aspect-ratio: 14 / 9;
   background: var(--ground);
