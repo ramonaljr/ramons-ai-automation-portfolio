@@ -36,8 +36,8 @@ This split keeps each half simple. You can change how the agent talks without to
 The build uses five n8n workflows:
 
 1. **Check availability.** Looks up the requested time in Google Calendar.
-2. **Book.** Creates the calendar event and records the booking in Airtable.
-3. **Reschedule.** Finds the original appointment and moves it.
+2. **Book.** Checks the time is still free, then creates the calendar event and records the booking in Airtable.
+3. **Reschedule.** Finds the original appointment, checks the new time is free and moves it.
 4. **Cancel.** Finds the appointment and removes it.
 5. **Call results.** Saves what happened on every call.
 
@@ -53,7 +53,7 @@ This matters more than it sounds. A phone call has no screen. A caller who hears
 
 The rule that protects the calendar is simple: **a time is only booked once the calendar shows it is free.** Confirm at the moment of booking, not only at the moment of offering: a caller may take a minute to decide, and a slot offered earlier can be gone by the time they say yes.
 
-It also checks that the caller has given everything needed before it does anything. If something is missing, the workflow does not guess. It tells the agent what to ask for. Then it converts the time to the business's time zone, creates the Google Calendar event and records the booking in Airtable.
+It also checks that the caller has given everything needed before it does anything. If something is missing, the workflow does not guess. It tells the agent what to ask for. Then it converts the time to the business's time zone, reads the calendar again for that exact time, and only if it is still free creates the Google Calendar event and records the booking in Airtable.
 
 Time zones deserve their own warning. A caller says "three o'clock", and the agent has to know which three o'clock. The conversion to the business's time zone happens in one place inside the workflow, so different parts of the system cannot work it out differently.
 

@@ -29,7 +29,7 @@ keyOutcome:
   label: 'Booking line open'
 integrations: ['n8n', 'VAPI', 'Google Calendar', 'Airtable']
 problem: 'Calls that came in after hours or while the team was busy went unanswered, and most callers never left a voicemail. The calls that were answered meant reading out free times, typing bookings into the calendar by hand, and doing it again whenever someone needed to reschedule or cancel, with the calendar and the records often out of step.'
-solution: 'Built five n8n flows that a VAPI voice agent calls during the conversation: one checks free times in Google Calendar, one books the slot and logs it in Airtable, one finds and moves an existing appointment, one finds and cancels it, and one saves the result of every call.'
+solution: 'Built five n8n flows that a VAPI voice agent calls during the conversation: one checks free times in Google Calendar, one checks the slot is still free, books it and logs it in Airtable, one finds an existing appointment and moves it once the new time is confirmed free, one finds and cancels it, and one saves the result of every call.'
 stepCount: 5
 impactHighlight: 'Callers book, move or cancel appointments at any hour, without waiting for a person.'
 impactHighlightDesc: 'Every change lands in Google Calendar and Airtable together, so the calendar and the records always agree.'
@@ -41,8 +41,10 @@ roi:
   - value: '2'
     label: 'Systems kept in step'
 failsafeHeadline: 'Checks before it commits'
-failsafeDesc: 'Nothing is booked, moved or cancelled until the details are complete and the time is confirmed free.'
+failsafeDesc: 'Nothing is booked, moved or cancelled until the details are complete, and nothing is booked or moved until the calendar confirms the time is free.'
 failsafes:
+  - title: 'Checked again before writing'
+    desc: 'Right before booking or moving, the workflow reads the calendar again for that exact time, so a slot taken since it was offered is never double-booked.'
   - title: 'Missing details caught'
     desc: 'If the caller has not given everything needed, the agent is told what is missing and asks again instead of guessing.'
   - title: 'Friendly errors'
@@ -62,16 +64,16 @@ Appointments came in by phone, and the phone was not always answered.
 
 A VAPI voice agent that holds the conversation, and five n8n flows it uses during the call to act on the real calendar and records.
 
-1. **Check availability.** Looks up the requested time in Google Calendar. If it is taken, it returns the free time ranges so the agent can offer alternatives.
-2. **Book.** Checks the caller has given everything needed, converts the time to the business's time zone, creates the Google Calendar event and logs the booking in Airtable.
-3. **Reschedule.** Finds the original appointment in Airtable, moves the calendar event and updates the record.
+1. **Check availability.** Reads the calendar for the requested time and checks it against the booking rules: a weekday, 9 AM to 6 PM Central, in the future and clear of other events. If the time does not fit, it says why and lists the open 30-minute times that day so the agent can offer alternatives.
+2. **Book.** Checks the caller has given everything needed and converts the time to the business's time zone. It then reads the calendar again for that exact time, and only if it is still free does it create the Google Calendar event and log the booking in Airtable.
+3. **Reschedule.** Finds the original appointment in Airtable and checks the new time is free, ignoring the appointment being moved. Only then does it move the calendar event and update the record.
 4. **Cancel.** Finds the appointment, deletes the calendar event and marks the record as cancelled.
 5. **Call results.** Saves the outcome of every call in Airtable, creating or updating the caller's record.
 
 ## Safeguards
 
 - **Missing details caught.** Each workflow checks the details first. If something is missing, the agent is told what to ask for instead of guessing.
-- **Confirmed free before booking.** A time is only booked once the calendar shows it is free.
+- **Confirmed free before booking.** A time is only booked or moved once the calendar shows it is free, checked again at the moment of writing rather than only when it was offered. If it has been taken, nothing changes and the agent is told why.
 - **Friendly errors.** If a booking fails, the agent gets a plain message to pass on, so the caller always knows what happened.
 - **Calendar and records together.** Bookings, changes and cancellations update Google Calendar and Airtable in the same run.
 
