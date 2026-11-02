@@ -29,7 +29,7 @@ keyOutcome:
   label: 'Hiring stages automated'
 integrations: ['n8n', 'Airtable', 'Gmail', 'Google Drive', 'Google Calendar', 'Groq', 'OpenAI']
 problem: 'Every application meant opening a CV, comparing it with the job post and deciding by hand. Good applicants waited days for a reply, shortlisted ones got generic emails, interviews took rounds of back-and-forth to schedule, and interviewers walked in without questions prepared for the person in front of them.'
-solution: 'Built an n8n workflow with five AI steps. The application form saves the CV to Google Drive and the applicant to Airtable, AI reads the CV against the matching job posting and shortlists or declines, shortlisted applicants answer questions written for that role, AI writes a personal interview invite sent from Gmail, books the interview in Google Calendar, and prepares screening questions for the interviewer.'
+solution: 'Built an n8n workflow with five AI steps. The application form saves the CV to Google Drive and the applicant to Airtable, AI reads the CV against the matching job posting and shortlists or declines, shortlisted applicants answer questions written for that role, AI writes a personal interview invite sent from Gmail, AI proposes an interview time that the workflow confirms is free before booking it in Google Calendar, and AI prepares screening questions for the interviewer.'
 stepCount: 5
 impactHighlight: 'From application to booked interview without anyone reading a CV first.'
 impactHighlightDesc: 'Every applicant is screened against the role the moment they apply, and the hiring team sees every decision in Airtable.'
@@ -47,6 +47,8 @@ failsafes:
     desc: 'The AI scores each CV against the job posting stored in Airtable, not a generic idea of a good candidate.'
   - title: 'Fixed-format answers'
     desc: 'Every AI step must return its answer in a set format, so a vague or broken reply cannot slip into the records or an email.'
+  - title: 'Interview time confirmed by the workflow'
+    desc: 'The AI only proposes a time. The workflow checks it against the interviewer calendar and working hours, and picks the first free slot itself if the proposal does not fit.'
 ---
 
 ## The problem
@@ -66,7 +68,7 @@ An n8n workflow that takes an applicant from the application form to a booked in
 1. **Receive and screen.** The application form uploads the CV to Google Drive and logs the applicant in Airtable. The CV text is extracted and an AI agent (Groq) reads it against the matching job posting in Airtable, then marks the applicant as a potential hire or declined. Both outcomes are recorded.
 2. **Role-specific questionnaire.** For shortlisted applicants, AI (OpenAI) writes questions for that role, shown as the next page of the same form. The answers are saved to Airtable.
 3. **Personal interview invite.** AI (Groq) reads the applicant's record and the job posting, writes a personal email and sends it from Gmail.
-4. **Interview booked.** An AI step creates the interview in Google Calendar and records the schedule in Airtable.
+4. **Interview booked.** An AI step (Groq) reads the interviewer's calendar and proposes the earliest free 30-minute slot. The workflow then reads the interviewer's next week itself and confirms the slot is a weekday, within 8 AM to 5 PM Central and clear of other events. If the proposal does not fit, it picks the first free slot instead. Only then is the interview created in Google Calendar and the schedule recorded in Airtable.
 5. **Screening questions for the interviewer.** AI (OpenAI) uses the applicant's CV and answers to prepare screening questions and saves them to the applicant's record.
 
 ## Safeguards
@@ -74,6 +76,7 @@ An n8n workflow that takes an applicant from the application form to a booked in
 - **Every decision is recorded.** Shortlisted and declined applicants are both written to Airtable, so the team can check any decision.
 - **Judged against the real job.** The AI looks up the actual job posting before scoring, so applicants are measured against the role they applied for.
 - **Fixed-format AI answers.** Each AI step must return a set structure, so a vague or broken reply cannot reach a record or an email.
+- **The workflow books, not the AI.** The AI suggests an interview time, but plain workflow rules confirm it is free and within working hours before anything is written to the calendar.
 
 ## Outcomes
 

@@ -2,14 +2,14 @@
 FILM={type:'before-after',protag:'myk',
   title:'HR Evaluation Assistant',
   sub:'A hand-drawn explainer of the HR Evaluation and Job Posting Assistant case study. Myk plays the hiring team, Samantha an applicant and Carlos the interviewer.',
-  aria:'Animated film: hiring ran on inboxes and spreadsheets, with CVs read by hand, slow replies, generic emails, scheduling back-and-forth and unprepared interviewers. The n8n build is shown lane by lane as on its process map: receive and filter applicants with an AI agent reading each CV against the real job posting, a questionnaire for potential hires, a personalised interview email, booking the interview, and screening questions for the interviewer.',
+  aria:'Animated film: hiring ran on inboxes and spreadsheets, with CVs read by hand, slow replies, generic emails, scheduling back-and-forth and unprepared interviewers. The n8n build is shown lane by lane as on its process map: receive and filter applicants with an AI agent reading each CV against the real job posting, a questionnaire for potential hires, a personalised interview email, booking the interview at a time the workflow confirms is free, and screening questions for the interviewer.',
   cardTitle:'Hiring, before and after five AI steps',
   intro:['Every application means reading a CV against the job post.',
          'Strong applicants wait days, and interviewers walk in unprepared.',
          'Every lane, from application form to prepared interview.']};
 
 const WF=workflow({token:'cv',maxX:960,
-  overview:'The whole build: five lanes, fifteen steps.',
+  overview:'The whole build: five lanes, seventeen steps.',
   ovChapter:{ring:'the build',chip:'The build',title:'after · the whole build',mood:'turn'},
   running:'Every applicant runs through these lanes.',
   runChapter:{ring:'running',chip:'Running',title:'after · running',mood:'finale'},
@@ -35,10 +35,14 @@ const WF=workflow({token:'cv',maxX:960,
       {n:11,name:'Personalized Email',icon:'robot',say:'AI writes a personal invite from Samantha’s record and the job.',desc:'AI (Groq) writes a personal interview invite from the applicant record and job posting.'},
       {n:12,name:'Send a message',title:'Send a message (Gmail)',icon:'mail',say:'It goes out from Gmail. No templates, no copy and paste.',desc:'The invite goes out from Gmail. No templates, no copy and paste.'}]},
     {name:'Book the interview',color:'purple',chapter:'lane 4 · book it',intro:'Lane four: book the interview.',nodes:[
-      {n:13,name:'Book Meeting',icon:'cal',say:'An AI step books the interview in Google Calendar.',desc:'An AI step creates the interview in Google Calendar.'},
-      {n:14,name:'Update Interview Schedule',icon:'db',say:'The date and time go on Samantha’s record.',desc:'The interview date and time are recorded on the applicant record.'}]},
+      {n:13,name:'Book Meeting (proposes a time)',icon:'robot',say:'AI reads Carlos’s calendar and proposes a time.',desc:'AI (Groq) reads the interviewer calendar and proposes the earliest free 30-minute slot.'},
+      {name:'Get Interviewer Week',icon:'cal'},
+      {n:14,name:'Confirm Interview Slot',icon:'code',branch:'no fit → first free slot',say:'The workflow checks that time is really free.',
+        desc:'Confirms a weekday, 8 AM to 5 PM Central and clear. If the proposal does not fit, it picks the first free slot.'},
+      {n:15,name:'Book Interview',icon:'cal',say:'Only then is the interview booked in Google Calendar.',desc:'The confirmed slot is booked in Google Calendar.'},
+      {n:16,name:'Update Interview Schedule',icon:'db',say:'The date and time go on Samantha’s record.',desc:'The interview date and time are recorded on the applicant record.'}]},
     {name:'Screening questions',color:'yellow',chapter:'lane 5 · screening Qs',intro:'Lane five: help for the interviewer.',nodes:[
-      {n:15,name:'Screening Questions',icon:'robot',who:'carlos',say:'And I get questions prepared from Samantha’s CV and answers.',
+      {n:17,name:'Screening Questions',icon:'robot',who:'carlos',say:'And I get questions prepared from Samantha’s CV and answers.',
         desc:'AI (OpenAI) prepares interview questions from the CV and answers, saved for the interviewer.'},
       {name:'Update record',icon:'db'}]}]});
 
@@ -91,5 +95,5 @@ STATS={t0:T('result',.05),t1:T('ready',.95),title:'every applicant',stats:[
 RECAP={opener:"Let's recap what happened.",points:[
   {c:AMBER,h:'Before · inbox and spreadsheet',x:'CVs read by hand, slow replies, generic emails, scheduling back-and-forth, unprepared interviews.'},
   {c:TEAL,h:'Turning point · five AI steps',x:'One n8n workflow takes an applicant from the application form to a booked interview.'},
-  {c:TEAL,h:'After · five lanes, fifteen steps',x:'Screened against the real job, recorded either way, asked role questions, invited, booked and prepared for.'}],
+  {c:TEAL,h:'After · five lanes, seventeen steps',x:'Screened against the real job, recorded either way, asked role questions, invited, booked at a confirmed time and prepared for.'}],
   ending:'Every applicant gets an answer fast, and every interviewer walks in ready.'};
