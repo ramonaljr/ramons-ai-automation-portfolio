@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
+import { type MotionValue, AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from 'motion/react'
 
 import { EXPERIENCE, type Role } from '@/lib/portfolio'
 
@@ -14,42 +14,13 @@ const ROLES = [...EXPERIENCE].reverse()
 const startYear = (role: Role) => Number(role.period.split(' - ')[0])
 const endLabel = (role: Role) => role.period.split(' - ').at(-1)?.trim() ?? ''
 
-/** Months since year 0, so a YYYY-MM date becomes a point on a straight line. */
-const monthOf = (date: string) => {
-  const [year, month] = date.split('-').map(Number)
-
-  return year * 12 + month - 1
-}
-
-/** The axis: January of the first role's year to this month. */
-const FIRST_YEAR = startYear(ROLES[0])
-const NOW = new Date()
-const NOW_YEAR = NOW.getFullYear()
-const AXIS_START = FIRST_YEAR * 12
-const AXIS_END = NOW_YEAR * 12 + NOW.getMonth() + 1
-const at = (month: number) => (month - AXIS_START) / (AXIS_END - AXIS_START)
-
-const TICKS = Array.from({ length: NOW_YEAR - FIRST_YEAR + 1 }, (_, i) => FIRST_YEAR + i)
-
 /**
- * Each role as a bar spanning its real months, to scale. Roles that overlap
- * (the payables job ran on two years into project costing) take a second row:
- * each bar goes on the first row whose last bar has already ended.
+ * The axis is one equal step per role, not a calendar: a step is the same
+ * share of the scroll that shows that role, so the fill tracks the reader.
+ * Each boundary is labelled with the year the next role began, and the last
+ * with "Now".
  */
-const laneEnds: number[] = []
-
-const BARS = ROLES.map(role => {
-  const start = monthOf(role.from)
-  const end = role.to ? monthOf(role.to) + 1 : AXIS_END
-  const free = laneEnds.findIndex(laneEnd => laneEnd <= start)
-  const lane = free === -1 ? laneEnds.length : free
-
-  laneEnds[lane] = end
-
-  return { role, lane, left: at(start), width: at(end) - at(start) }
-})
-
-const LANES = laneEnds.length
+const AXIS_LABELS = [...ROLES.map(startYear), 'Now']
 
 /**
  * How the work is run, stated once. Every line repeats a commitment made
@@ -78,8 +49,8 @@ const BLURB =
  *
  * On wide, tall-enough screens it is a pinned timeline like the Story section:
  * the year runs forward from 2015 as the reader scrolls, the role card swaps
- * to the job held then, and an axis along the foot draws every role to scale
- * with the one on show lit. Everywhere
+ * to the job held then, and an axis along the foot gives each role an equal
+ * step that fills as the reader scrolls through it. Everywhere
  * else (phones, short screens, reduced motion) the same roles are a plain
  * list. Only one of the two is ever displayed, so screen readers meet the
  * roles once.
@@ -216,27 +187,49 @@ function PinnedTimeline() {
           {/* Decorative: the tabs above carry the same dates, and the list
               version carries them for screen readers. */}
           <div className='experience-axis' aria-hidden='true'>
-            <div className='experience-axis-bars' style={{ height: `calc(${LANES} * 0.75rem - 0.3rem)` }}>
-              {BARS.map(({ role: item, lane, left, width }, index) => (
-                <i
+            <div className='experience-axis-steps'>
+              {ROLES.map((item, index) => (
+                <AxisStep
                   key={item.index}
-                  data-active={index === active}
-                  style={{ top: `${lane * 0.75}rem`, left: `${left * 100}%`, width: `${width * 100}%` }}
+                  index={index}
+                  progress={scrollYProgress}
+                  state={index < active ? 'past' : index === active ? 'active' : 'next'}
                 />
               ))}
             </div>
             <ol>
-              {TICKS.map(year => (
-                <li key={year} style={{ left: `${at(year * 12) * 100}%` }}>
-                  {year}
+              {AXIS_LABELS.map((label, index) => (
+                <li key={label} data-active={index === active} style={{ left: `${(index / ROLES.length) * 100}%` }}>
+                  {label}
                 </li>
               ))}
-              <li style={{ left: '100%' }}>Now</li>
             </ol>
           </div>
         </div>
       </div>
     </div>
+  )
+}
+
+/**
+ * One role's step on the axis. Its fill runs from empty to full across that
+ * role's share of the scroll, so earlier steps sit full and later ones empty.
+ */
+function AxisStep({
+  index,
+  progress,
+  state
+}: {
+  index: number
+  progress: MotionValue<number>
+  state: 'past' | 'active' | 'next'
+}) {
+  const fill = useTransform(progress, value => Math.min(Math.max(value * ROLES.length - index, 0), 1))
+
+  return (
+    <span data-state={state}>
+      <motion.i style={{ scaleX: fill }} />
+    </span>
   )
 }
 
