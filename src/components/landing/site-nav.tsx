@@ -17,11 +17,14 @@ import { PROFILE } from '@/lib/portfolio'
  * to `/#section` and navigate home first.
  */
 
+// Services carries both: `href` is where the click goes (its own page) and
+// `hash` is the landing section that lights it while being read. Blog has no
+// landing section, so it only lights on /blog.
 const NAV_LINKS = [
   { label: 'Home', hash: '#top' },
   { label: 'Portfolio', hash: '#portfolio' },
   { label: 'About', hash: '#about' },
-  { label: 'Services', href: '/services' },
+  { label: 'Services', href: '/services', hash: '#services' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contact', hash: '#contact' }
 ]
@@ -29,21 +32,23 @@ const NAV_LINKS = [
 /**
  * Which nav link owns which section, in DOM order.
  *
- * Only sections a link actually names own it. The rest map to `null`, which
+ * Each section a link stands for owns it; the story is the hero's own
+ * continuation, so Home stays lit through it. The rest map to `null`, which
  * clears the highlight: "Services" used to stay lit through How it works and
  * Platforms, and "Contact" through testimonials, pricing and the FAQ, which
  * read as the bar being stuck rather than as a choice. The full index lives
  * in the footer.
  *
- * `#top` is not listed because it is the id of the page wrapper — it contains
- * every other section, so it can never be observed as a distinct region. Home
- * is the fallback state instead: nothing has crossed the line yet.
+ * `#top` is not listed as a section because it is the id of the page wrapper
+ * — it contains every other section, so it can never be observed as a
+ * distinct region. Home is also the fallback state: nothing has crossed the
+ * line yet.
  */
 const SECTION_OWNERS: readonly (readonly [id: string, owner: string | null])[] = [
-  ['story', null],
+  ['story', '#top'],
   ['portfolio', '#portfolio'],
   ['about', '#about'],
-  ['services', null],
+  ['services', '#services'],
   ['process', null],
   ['testimonials', null],
   ['contact', '#contact']
@@ -150,12 +155,12 @@ export function SiteNav() {
   const resolve = (link: (typeof NAV_LINKS)[number]) => link.href ?? (onLanding ? link.hash : `/${link.hash}`)
 
   // A page link is "here" on its own page and the pages under it (Services on
-  // /services and each /services/<slug>); an in-page link only while the
-  // section it names is the one being read.
+  // /services and each /services/<slug>); on the landing page, any link with a
+  // `hash` while the section it names is the one being read.
   const current = (link: (typeof NAV_LINKS)[number]) => {
-    if (link.href) return pathname === link.href || pathname.startsWith(`${link.href}/`) ? 'page' : undefined
+    if (link.href && (pathname === link.href || pathname.startsWith(`${link.href}/`))) return 'page'
 
-    return onLanding && link.hash === active ? 'location' : undefined
+    return onLanding && link.hash !== undefined && link.hash === active ? 'location' : undefined
   }
 
   const contactHref = onLanding ? '#contact' : '/#contact'
