@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 
 import { getCaseStudies } from '@/lib/case-studies'
+import { PRIVACY, TERMS } from '@/lib/legal'
 import { getPosts } from '@/lib/posts'
 import { abs } from '@/lib/site'
 import { SERVICES } from '@/lib/portfolio'
@@ -42,6 +43,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1
     },
     { url: abs('/contact'), changeFrequency: 'yearly', priority: 0.8 },
+    { url: abs('/privacy'), lastModified: new Date(PRIVACY.updated), changeFrequency: 'yearly', priority: 0.2 },
+    { url: abs('/terms'), lastModified: new Date(TERMS.updated), changeFrequency: 'yearly', priority: 0.2 },
 
     // The index changes whenever its newest post does.
     {
