@@ -1154,6 +1154,15 @@ body::after {
   letter-spacing: 0.01em;
 }
 
+/* The global focus ring sets `border-radius: 4px` unlayered, which beats every
+   Tailwind `rounded-*` and squared off the pill links and CTA under keyboard
+   focus. `revert-layer` hands the radius back to the element's own utility
+   class, so the ring follows each control's shape. */
+.site-nav a:focus-visible,
+.site-nav-menu a:focus-visible {
+  border-radius: revert-layer;
+}
+
 /* The name gives way to the mark in the pill, which is what lets the pill be
    narrow. Tablets drop it too: from md the six links and the CTA join the bar,
    and below lg there is no room left for the name. Phones always keep it,
