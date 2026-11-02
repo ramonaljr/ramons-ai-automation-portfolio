@@ -63,6 +63,7 @@ export const P = {
   stack: 'M12 2l9 5-9 5-9-5 9-5zM3 17l9 5 9-5M3 12l9 5 9-5',
   arrow: 'M4 12h14M13 6l6 6-6 6',
   close: 'M6 18L18 6M6 6l12 12',
+  expand: 'M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7',
   external: 'M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3'
 }
 

@@ -7,10 +7,11 @@ import { createPortal } from 'react-dom'
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
 import { DISPLAY_FONT, usePrefersReducedMotion } from '@/components/landing/motion'
-import { filmOf, WORK_TONES, workViews } from '@/lib/work-views'
+import { filmOf, WORK_TONES, workViews, type WorkView } from '@/lib/work-views'
 import { WorkCanvas } from '@/components/landing/work-canvas'
 import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 import { ViewStage } from '@/components/landing/view-stage'
+import { WorkFullscreen } from '@/components/landing/work-fullscreen'
 
 /** Everything inside the dialog a keyboard can land on, in document order. */
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
@@ -34,6 +35,9 @@ export function CaseStudyModal({
    * and entry point, so this starts fresh on every open.
    */
   const [showFilm, setShowFilm] = useState(startOnFilm)
+
+  /** The views fitted to the whole window, over this dialog. */
+  const [fullscreen, setFullscreen] = useState(false)
   const reduced = usePrefersReducedMotion()
   const { frameRef, lensRef, artRef, move: moveLens, hide: hideLens } = useMagnifier()
 
@@ -132,6 +136,22 @@ export function CaseStudyModal({
     setShowFilm(true)
     requestAnimationFrame(() => bodyRef.current?.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }))
   }
+
+  // The dialog and the full-screen layer are mounted together, so each canvas
+  // needs its own id suffix or the two SVGs would share gradient and clip ids.
+  const viewOf = (place: string) => (item: WorkView) =>
+    item.key === 'canvas' ? (
+      <WorkCanvas
+        src={item.src}
+        label={item.alt}
+        idSuffix={`${study.slug}-${place}`}
+        run={1}
+        reduced={reduced}
+        lead={0.2}
+      />
+    ) : (
+      <img src={item.src} alt={item.alt} className='work-card-image' />
+    )
 
   const toggle = (on: boolean) =>
     `inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 font-mono text-xs tracking-wide transition-colors ${
@@ -271,8 +291,19 @@ export function CaseStudyModal({
               <div className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'>
                 <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-xs tracking-wide uppercase'>
                   <span>{view.label}</span>
-                  {/* Stage count describes the canvas, so it goes when the canvas does. */}
-                  {view.key === 'canvas' && study.stepCount && <span>{study.stepCount} STAGES</span>}
+                  <span className='flex items-center gap-4'>
+                    {/* Stage count describes the canvas, so it goes when the canvas does. */}
+                    {view.key === 'canvas' && study.stepCount && <span>{study.stepCount} STAGES</span>}
+                    <button
+                      type='button'
+                      onClick={() => setFullscreen(true)}
+                      aria-haspopup='dialog'
+                      className='border-rule text-ink-2 hover:border-rule-strong hover:text-ink inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1 tracking-wide normal-case transition-colors'
+                    >
+                      <Ico d={P.expand} size={12} />
+                      Full screen
+                    </button>
+                  </span>
                 </div>
 
                 {/* The canvas runs here too, dark like the card that opened it,
@@ -291,20 +322,7 @@ export function CaseStudyModal({
                     onSelect={index => setPicked({ slug: study.slug, index })}
                     reduced={reduced}
                     label={study.title ?? study.slug}
-                    renderView={item =>
-                      item.key === 'canvas' ? (
-                        <WorkCanvas
-                          src={item.src}
-                          label={item.alt}
-                          idSuffix={`${study.slug}-dialog`}
-                          run={1}
-                          reduced={reduced}
-                          lead={0.2}
-                        />
-                      ) : (
-                        <img src={item.src} alt={item.alt} className='work-card-image' />
-                      )
-                    }
+                    renderView={viewOf('dialog')}
                   />
 
                   <MagnifierLens lensRef={lensRef} artRef={artRef} />
@@ -315,6 +333,18 @@ export function CaseStudyModal({
                     <span className='text-ink-4'>FLOW:</span>
                     <span className='truncate'>{study.logicSummary}</span>
                   </div>
+                )}
+
+                {fullscreen && (
+                  <WorkFullscreen
+                    views={views}
+                    index={viewIndex}
+                    onSelect={index => setPicked({ slug: study.slug, index })}
+                    renderView={viewOf('fullscreen')}
+                    reduced={reduced}
+                    label={study.title ?? study.slug}
+                    onClose={() => setFullscreen(false)}
+                  />
                 )}
               </div>
             )}
