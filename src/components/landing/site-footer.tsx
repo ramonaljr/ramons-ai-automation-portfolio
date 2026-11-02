@@ -229,8 +229,6 @@ export function SiteFooter() {
           </motion.div>
         </motion.div>
 
-        {/* TODO: privacy + terms links belong here — the routes do not exist
-            yet, and linking them before they do would only ship two 404s. */}
         {/* ink-2, not ink-3: the lighter tone was unreadable on the footer's
             darkened ground. The name already ends in a full stop ("Jr."), so
             one is only added when it does not. */}
@@ -240,15 +238,24 @@ export function SiteFooter() {
             © {new Date().getFullYear()} {PROFILE.name.endsWith('.') ? PROFILE.name : `${PROFILE.name}.`} Designed and
             built by me, running on Next.js and n8n.
           </p>
-          <a
-            href={onLanding ? '#top' : '/#top'}
-            className='tap-area text-ink-2 hover:text-ink group inline-flex items-center gap-2 transition-colors'
-          >
-            Back to top
-            <span className='transition-transform duration-300 group-hover:-translate-y-1' aria-hidden='true'>
-              ↑
-            </span>
-          </a>
+          <div className='flex flex-wrap items-center gap-x-6 gap-y-2'>
+            {/* Google's OAuth consent screen links to both, so they stay at these paths. */}
+            <a href='/privacy' className='tap-area text-ink-2 hover:text-ink transition-colors'>
+              Privacy
+            </a>
+            <a href='/terms' className='tap-area text-ink-2 hover:text-ink transition-colors'>
+              Terms
+            </a>
+            <a
+              href={onLanding ? '#top' : '/#top'}
+              className='tap-area text-ink-2 hover:text-ink group inline-flex items-center gap-2 transition-colors'
+            >
+              Back to top
+              <span className='transition-transform duration-300 group-hover:-translate-y-1' aria-hidden='true'>
+                ↑
+              </span>
+            </a>
+          </div>
         </div>
       </div>
 
