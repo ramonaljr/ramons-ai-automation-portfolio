@@ -161,7 +161,7 @@ export function CaseStudyModal({
         ref={panelRef}
         tabIndex={-1}
         style={{ '--work-tone': WORK_TONES[study.slug] ?? 'var(--accent)' } as React.CSSProperties}
-        className='bg-surface-raised border-rule animate-in zoom-in-95 relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border shadow-2xl duration-200 focus:outline-none'
+        className='bg-surface-raised border-rule animate-in zoom-in-95 relative flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl border shadow-2xl duration-200 focus:outline-none'
         onClick={e => e.stopPropagation()}
       >
         {/* ── Modal Top Header (Fixed inside modal) ────────────────────────── */}
