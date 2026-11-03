@@ -8234,8 +8234,9 @@ div#experience.about-journey {
 
 /* Work strip: every project, one scroll below the hero (work-strip.tsx).
    Same frosted band as the proof strip beneath it, so the two read as one
-   ledge between the promise and the story. Seven columns fit from 1280px;
-   narrower screens scroll the row sideways and snap to each thumbnail. */
+   ledge between the promise and the story. One column per project, however
+   many there are; when they do not fit, the row scrolls sideways and snaps to
+   each thumbnail. */
 .work-strip {
   position: relative;
   border-top: 1px solid var(--rule);
@@ -8274,7 +8275,8 @@ div#experience.about-journey {
 
 .work-strip-list {
   display: grid;
-  grid-template-columns: repeat(7, minmax(10.5rem, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(8.75rem, 1fr);
   gap: 0.85rem;
   margin: 0 -1.5rem;
   padding: 0.35rem 1.5rem 0.6rem;
@@ -8530,40 +8532,12 @@ div#experience.about-journey {
   fill: oklch(0.25 0.012 255);
 }
 
-/* Seven projects never fill a three-column grid. The first one takes the
-   full row, which leaves six for two clean rows (three at 2-up). */
-@media (min-width: 48rem) {
+/* Nine projects fill three columns as three clean rows. Two columns would
+   leave the last one alone, so there the first card takes the full row and
+   the other eight pair up. */
+@media (min-width: 48rem) and (max-width: 74.99rem) {
   .work-gallery > .work-card:first-child {
     grid-column: 1 / -1;
-  }
-}
-
-@media (min-width: 75rem) {
-  .work-gallery > .work-card:first-child {
-    flex-direction: row;
-  }
-
-  .work-gallery > .work-card:first-child .work-card-frame {
-    flex: 0 0 58%;
-  }
-
-  .work-gallery > .work-card:first-child .work-card-body {
-    justify-content: center;
-    gap: 0.8rem;
-    padding: clamp(1.5rem, 2.6vw, 2.75rem);
-  }
-
-  .work-gallery > .work-card:first-child .work-card-title {
-    font-size: clamp(1.45rem, 1.9vw, 2rem);
-    letter-spacing: -0.02em;
-  }
-
-  .work-gallery > .work-card:first-child .work-card-summary {
-    font-size: 1rem;
-  }
-
-  .work-gallery > .work-card:first-child .work-card-stack {
-    margin-top: 0.5rem;
   }
 }
 
