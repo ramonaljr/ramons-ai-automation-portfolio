@@ -9,6 +9,8 @@ import { CaseStudyModal } from '@/components/landing/case-study-modal'
 import { workLabel } from '@/components/landing/projects-section'
 import { useInView, usePrefersReducedMotion } from '@/components/landing/motion'
 import { orderWork, WORK_TONES } from '@/lib/work-views'
+import { ToolMark } from '@/components/landing/tool-stack-section'
+import { toolNamed } from '@/lib/portfolio'
 
 /**
  * The work, one scroll below the promise.
@@ -51,6 +53,12 @@ export function WorkStrip({ caseStudies }: { caseStudies: CaseStudyMetadata[] })
             >
               <button type='button' className='work-strip-item' aria-haspopup='dialog' onClick={() => setSelected(cs)}>
                 <span className='work-strip-thumb'>
+                  {cs.platform && (
+                    <span className='work-strip-platform'>
+                      <ToolMark tool={toolNamed(cs.platform)} size={11} />
+                      {cs.platform}
+                    </span>
+                  )}
                   {/* Shown at about 170px (240px on the widest screens); the
                       source is up to 1,700px wide, so it is resized to fit. */}
                   {(cs.heroImage ?? cs.image) && (
