@@ -8335,6 +8335,7 @@ div#experience.about-journey {
 }
 
 .work-strip-thumb {
+  position: relative;
   display: block;
   overflow: hidden;
   aspect-ratio: 16 / 10;
@@ -8362,6 +8363,34 @@ div#experience.about-journey {
   border-color: var(--work-tone);
   box-shadow: 0 16px 30px -18px color-mix(in oklab, var(--work-tone) 70%, transparent);
   transform: translateY(-3px);
+}
+
+/* Which platform each build runs on, read before the picture is. Seven of the
+   thumbnails are dark n8n canvases and the rest light Make and Zapier ones, so
+   the chip is near-white with a hairline: it holds on both. Unlike the marks
+   elsewhere it keeps its brand colour at rest, because here the colour is
+   the label. It stays put while the screenshot zooms on hover. */
+.work-strip-platform {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.45rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem 0.2rem 0.4rem;
+  border: 1px solid oklch(0.28 0.018 255 / 0.12);
+  border-radius: 999px;
+  color: var(--ink);
+  background: oklch(0.99 0.003 255 / 0.94);
+  box-shadow: 0 4px 10px -6px oklch(0.2 0.018 255 / 0.5);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.work-strip-platform .tool-mark {
+  background-color: var(--tool-color);
 }
 
 .work-strip-item:hover .work-strip-thumb img {
