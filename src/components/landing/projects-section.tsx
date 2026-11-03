@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
 
+import { LayoutGrid } from 'lucide-react'
 import { animate, motion, useInView as useMotionInView, useMotionValue, useTransform } from 'motion/react'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
@@ -10,6 +11,7 @@ import {
   CONTAINER,
   countupSpring,
   DISPLAY_FONT,
+  ICON_STROKE,
   SECTION_ANCHOR,
   snappySpring,
   useInView,
@@ -314,10 +316,35 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
   // Delivered work first, then sample clients, then labs (see `orderWork`).
   const shown = useMemo(() => orderWork(caseStudies), [caseStudies])
 
-  // No platform filter: with one project on Make and one on Zapier, two of
-  // the three buttons filtered down to a single card. It can come back once
-  // each platform has enough work to be worth narrowing to.
-  const visible = shown
+  /** `null` is "all platforms" rather than a sentinel string. */
+  const [platform, setPlatform] = useState<string | null>(null)
+
+  /**
+   * Counts come from the data rather than a hand-kept list, so a new case study
+   * joins the filter the moment its MDX lands. The platform with the most work
+   * leads. Counts are shown because a platform can hold a single project, and
+   * it is better to say so than to let a reader click into a near-empty grid.
+   * (Removed in September when two of three buttons led to one card each;
+   * back now that only one does.)
+   */
+  const platforms = shown
+    .reduce<{ name: string; count: number }[]>((all, cs) => {
+      const name = cs.platform?.trim()
+
+      if (!name) return all
+
+      const seen = all.find(entry => entry.name === name)
+
+      return seen ? all.map(e => (e === seen ? { ...e, count: e.count + 1 } : e)) : [...all, { name, count: 1 }]
+    }, [])
+    .sort((a, b) => b.count - a.count)
+
+  const visible = platform ? shown.filter(cs => cs.platform?.trim() === platform) : shown
+
+  // At three columns the first card can take a full row. That only leaves
+  // clean rows when the rest divide by three; with one or two cards left,
+  // each takes a row of its own instead (see `.work-gallery` in globals.css).
+  const layout = visible.length <= 2 ? 'wide' : (visible.length - 1) % 3 === 0 ? 'feature' : 'grid'
 
   /**
    * A per-card badge only means something when it separates one card from
@@ -340,6 +367,34 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
         />
 
         <div className='work-toolbar'>
+          {/* Hidden when there is only one platform, where it could only
+              ever show the same grid. */}
+          {platforms.length > 1 && (
+            <div className='work-filters' role='group' aria-label='Filter projects by automation platform'>
+              <button
+                type='button'
+                className='work-filter'
+                aria-pressed={platform === null}
+                onClick={() => setPlatform(null)}
+              >
+                <LayoutGrid size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
+                All <b>{shown.length}</b>
+              </button>
+              {platforms.map(entry => (
+                <button
+                  key={entry.name}
+                  type='button'
+                  className='work-filter'
+                  aria-pressed={platform === entry.name}
+                  onClick={() => setPlatform(entry.name)}
+                >
+                  <ToolMark tool={toolNamed(entry.name)} size={14} />
+                  {entry.name} <b>{entry.count}</b>
+                </button>
+              ))}
+            </div>
+          )}
+
           {allLabs && (
             <p className='work-lab-note'>
               Every system below is a demo project, designed, built and run end to end. The figures are targets, not
@@ -350,7 +405,7 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
         {/* Six cards, all six visible and all the same size, each canvas
             running its own workflow as it arrives and again on hover. */}
-        <ul ref={ref} className='work-gallery'>
+        <ul ref={ref} className='work-gallery' data-layout={layout}>
           {visible.map((cs, index) => (
             <WorkCard
               key={cs.slug}
