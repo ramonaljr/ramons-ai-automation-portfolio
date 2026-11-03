@@ -24,6 +24,7 @@ import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/la
 
 const WORK_LABELS: Record<string, string> = {
   'hr-evaluation-assistant': 'Applicant screening',
+  'order-stock-check': 'Order stock check',
   'ai-appointment-setter': 'Appointment booking',
   'ai-prospecting-apollo': 'Sales prospecting',
   'ai-invoice-processing-approval': 'Invoice approval',
@@ -35,6 +36,8 @@ const WORK_LABELS: Record<string, string> = {
 const WORK_USE_CASES: Record<string, string> = {
   'hr-evaluation-assistant':
     'Every applicant screened against the job the moment they apply, with tailored questions, invites and interviews booked for you.',
+  'order-stock-check':
+    'Every new order checked against stock before it is promised: confirmed and reserved, flagged for restock, or held with the customer told why.',
   'ai-appointment-setter':
     'Callers book, move or cancel appointments with an AI voice agent at any hour, while Google Calendar and Airtable stay in step.',
   'ai-prospecting-apollo':
