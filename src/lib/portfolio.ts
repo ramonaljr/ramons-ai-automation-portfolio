@@ -493,6 +493,31 @@ export const TOOLS_ROW_2: Tool[] = [
   { name: 'GitHub', slug: 'github', color: '#181717' }
 ]
 
+/**
+ * Tools the case studies name that are not in the marquee. None has a logo
+ * file, so each renders as a monogram badge; "AI by Zapier" borrows Zapier's.
+ */
+const CASE_STUDY_TOOLS: Tool[] = [
+  { name: 'Google Calendar', color: '#4285F4' },
+  { name: 'Pipedrive', color: '#017737' },
+  { name: 'Apollo', color: '#F5B700' },
+  { name: 'Groq', color: '#F55036' },
+  { name: 'Gemini', color: '#8E75B2' },
+  { name: 'AI by Zapier', slug: 'zapier', color: '#FF4F00' }
+]
+
+const TOOLS_BY_NAME = new Map(
+  [...TOOLS_ROW_1, ...TOOLS_ROW_2, ...CASE_STUDY_TOOLS].map(tool => [tool.name.toLowerCase(), tool])
+)
+
+/**
+ * The registry entry for a tool as a case study's frontmatter spells it,
+ * ignoring case. An unknown name still gets a monogram in ink, so a new tool
+ * in the frontmatter never renders without a mark.
+ */
+export const toolNamed = (name: string): Tool =>
+  TOOLS_BY_NAME.get(name.toLowerCase()) ?? { name, color: 'var(--ink-3)' }
+
 // ─── Principles ──────────────────────────────────────────────────────────────
 
 export const PRINCIPLES = [
