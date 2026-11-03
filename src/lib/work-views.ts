@@ -11,6 +11,7 @@ import type { CaseStudyMetadata } from '@/lib/case-studies'
  */
 export const WORK_TONES: Record<string, string> = {
   'hr-evaluation-assistant': 'oklch(0.55 0.12 300)',
+  'order-stock-check': 'oklch(0.55 0.11 112)',
   'ai-appointment-setter': 'oklch(0.571 0.13 326)',
   'ai-prospecting-apollo': 'oklch(0.562 0.13 274)',
   'ai-invoice-processing-approval': 'oklch(0.572 0.14 24)',
