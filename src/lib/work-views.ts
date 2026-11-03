@@ -83,15 +83,27 @@ export function workViews(cs: CaseStudyMetadata): WorkView[] {
 
 /**
  * Delivered work leads, then complete builds for sample clients, then labs.
+ * Within each group the n8n builds come first and the Zapier and Make ones
+ * follow, so the newest Make scenario never jumps ahead of the core n8n work.
  *
  * `getCaseStudies` orders by `publishedAt`, which would otherwise interleave
  * them by date alone. The sort is stable, so within each group the date order
  * is preserved. Shared so the strip under the hero and Selected Work agree.
+ *
+ * The Zapier and Make builds run in the order they were built, oldest first.
+ * Several share a date, and `getCaseStudies` reverses equal dates, so ties
+ * fall back to the slug rather than to that.
  */
 export function orderWork(caseStudies: CaseStudyMetadata[]) {
   const rank = (cs: CaseStudyMetadata) => (cs.sample ? 2 : cs.sampleClient ? 1 : 0)
+  const platform = (cs: CaseStudyMetadata) => (cs.platform === 'n8n' ? 0 : 1)
 
-  return [...caseStudies].sort((a, b) => rank(a) - rank(b))
+  const built = (a: CaseStudyMetadata, b: CaseStudyMetadata) =>
+    (a.publishedAt ?? '').localeCompare(b.publishedAt ?? '') || a.slug.localeCompare(b.slug)
+
+  return [...caseStudies].sort(
+    (a, b) => rank(a) - rank(b) || platform(a) - platform(b) || (platform(a) ? built(a, b) : 0)
+  )
 }
 
 /**
