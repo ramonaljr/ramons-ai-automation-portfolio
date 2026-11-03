@@ -3812,11 +3812,30 @@ a.work-aux-link:hover {
 }
 
 .work-card-stack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 1.1rem;
   margin-top: auto;
   padding-top: 0.6rem;
   border-top: 1px solid var(--rule);
   color: var(--ink-2);
   font-size: 0.8125rem;
+}
+
+.work-card-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+/* The marks take their brand colours with the card, as the Tool stack's do
+   with their pill; a keyboard reaching the card gets the same. */
+.work-card:hover .work-card-tool .tool-mark,
+.work-card:focus-within .work-card-tool .tool-mark,
+.work-tool-chip:hover .tool-mark {
+  background-color: var(--tool-color);
 }
 
 /* The change plays rather than simply appearing: THEN settles, the hinge

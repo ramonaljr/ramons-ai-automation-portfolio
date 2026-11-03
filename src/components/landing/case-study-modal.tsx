@@ -12,6 +12,8 @@ import { WorkCanvas } from '@/components/landing/work-canvas'
 import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 import { ViewStage } from '@/components/landing/view-stage'
 import { WorkFullscreen } from '@/components/landing/work-fullscreen'
+import { ToolMark } from '@/components/landing/tool-stack-section'
+import { toolNamed } from '@/lib/portfolio'
 
 /** Everything inside the dialog a keyboard can land on, in document order. */
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
@@ -394,8 +396,9 @@ export function CaseStudyModal({
                 {(study.integrations || study.tools)?.map(tool => (
                   <span
                     key={tool}
-                    className='border-rule bg-surface-raised text-ink-2 rounded-lg border px-3.5 py-1.5 font-mono text-[12px] shadow-xs'
+                    className='work-tool-chip border-rule bg-surface-raised text-ink-2 inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5 font-mono text-[12px] shadow-xs'
                   >
+                    <ToolMark tool={toolNamed(tool)} size={13} />
                     {tool}
                   </span>
                 ))}

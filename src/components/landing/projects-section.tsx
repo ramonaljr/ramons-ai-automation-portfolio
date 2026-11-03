@@ -21,9 +21,12 @@ import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 import { ViewStage } from '@/components/landing/view-stage'
 import { filmOf, orderWork, WORK_TONES, workViews } from '@/lib/work-views'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
+import { ToolMark } from '@/components/landing/tool-stack-section'
+import { toolNamed } from '@/lib/portfolio'
 
 const WORK_LABELS: Record<string, string> = {
   'hr-evaluation-assistant': 'Applicant screening',
+  'order-stock-check': 'Order stock check',
   'ai-appointment-setter': 'Appointment booking',
   'ai-prospecting-apollo': 'Sales prospecting',
   'ai-invoice-processing-approval': 'Invoice approval',
@@ -37,6 +40,8 @@ const WORK_LABELS: Record<string, string> = {
 const WORK_USE_CASES: Record<string, string> = {
   'hr-evaluation-assistant':
     'Every applicant screened against the job the moment they apply, with tailored questions, invites and interviews booked for you.',
+  'order-stock-check':
+    'Every new order checked against stock before it is promised: confirmed and reserved, flagged for restock, or held with the customer told why.',
   'ai-appointment-setter':
     'Callers book, move or cancel appointments with an AI voice agent at any hour, while Google Calendar and Airtable stay in step.',
   'ai-prospecting-apollo':
@@ -259,7 +264,19 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
 
         <p className='work-card-summary'>{WORK_USE_CASES[cs.slug] ?? cs.description}</p>
 
-        <p className='work-card-stack'>{[tags.platform, ...tags.tools.slice(0, 2)].filter(Boolean).join(', ')}</p>
+        {/* Each name keeps its mark beside it. The marks sit in ink until the
+            card is hovered, like the Tool stack's, so three brand colours do
+            not compete with the card's own tone at rest. */}
+        <p className='work-card-stack'>
+          {[tags.platform, ...tags.tools.slice(0, 2)]
+            .filter((name): name is string => Boolean(name))
+            .map(name => (
+              <span key={name} className='work-card-tool'>
+                <ToolMark tool={toolNamed(name)} size={14} />
+                {name}
+              </span>
+            ))}
+        </p>
 
         {/* Above the card's stretched hit area, like the thumbnails. A film
             hosted here opens the dialog already playing it; any other
