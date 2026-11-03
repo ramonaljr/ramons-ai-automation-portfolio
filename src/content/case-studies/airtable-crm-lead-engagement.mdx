@@ -62,7 +62,7 @@ Built on Zapier for **Kestrel Digital, a fictional sample client**, a small agen
 ## What I built
 
 1. **Catch the stage change.** Airtable triggers the Zap when a lead's stage changes. A filter lets it through only for the five stages with an automation, and only if that stage is not already in the lead's Handled Stages.
-2. **Claim the stage.** The stage is added to Handled Stages before anything is sent, so the same change can never run twice. A code step prepares the greeting and the lead owner's name, then Paths sends the lead down the route for its stage. A lead with no email address goes down its own path, where it is logged and skipped.
+2. **Claim the stage.** A code step prepares the greeting and the lead owner's name. The stage is then added to Handled Stages before anything is sent, so the same change can never run twice, and Paths sends the lead down the route for its stage. A lead with no email address goes down its own path, where it is logged and skipped.
 3. **Ready to Start.** A Google Drive folder is created for the client, a Social Media Content task is added in Airtable, and the folder link is saved on the lead.
 4. **No Response and Quoted.** A follow-up email goes out from Gmail and is logged. Two days later the lead is looked up again, and if it is still at the same stage, a second nudge is sent and logged.
 5. **Approved.** AI writes a short welcome email covering the kickoff call and the shared project folder, which is sent and logged.

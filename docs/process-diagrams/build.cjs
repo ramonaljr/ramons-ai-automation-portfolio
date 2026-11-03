@@ -115,13 +115,20 @@ const toolColours = Object.fromEntries(
 
 function toolIcon(name) {
   if (name === 'Google Calendar') return CALENDAR
+  // A badge wins over a borrowed logo: AI by Zapier shares Zapier's file in
+  // portfolio.ts, and two identical marks would read as one tool.
+  const own = BADGES[name]
+  if (own) return badgeIcon(own)
   const known = toolColours[name]
   const file = known && path.join(ROOT, 'public/images/tools', `${known.slug}.svg`)
   if (file && fs.existsSync(file)) {
     const d = [...fs.readFileSync(file, 'utf8').matchAll(/<path[^>]*\sd="([^"]+)"/g)].map(m => m[1])
     return `<svg viewBox="0 0 24 24">${d.map(p => `<path fill="${known.color}" d="${p}"/>`).join('')}</svg>`
   }
-  const badge = BADGES[name] || { letter: name[0], color: '#55556a' }
+  return badgeIcon({ letter: name[0], color: '#55556a' })
+}
+
+function badgeIcon(badge) {
   return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="${badge.color}"/><text x="12" y="16.6" font-size="13" font-weight="700" text-anchor="middle" fill="#fff" font-family="Inter">${badge.letter}</text></svg>`
 }
 
