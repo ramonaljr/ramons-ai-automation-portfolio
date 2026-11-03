@@ -8551,12 +8551,36 @@ div#experience.about-journey {
   fill: oklch(0.25 0.012 255);
 }
 
-/* Nine projects fill three columns as three clean rows. Two columns would
-   leave the last one alone, so there the first card takes the full row and
-   the other eight pair up. */
-@media (min-width: 48rem) and (max-width: 74.99rem) {
+/* Ten projects pair up as five clean rows at two columns. At three, the
+   first one takes the full row, laid out wide, which leaves nine for three
+   clean rows. */
+@media (min-width: 75rem) {
   .work-gallery > .work-card:first-child {
     grid-column: 1 / -1;
+    flex-direction: row;
+  }
+
+  .work-gallery > .work-card:first-child .work-card-frame {
+    flex: 0 0 58%;
+  }
+
+  .work-gallery > .work-card:first-child .work-card-body {
+    justify-content: center;
+    gap: 0.8rem;
+    padding: clamp(1.5rem, 2.6vw, 2.75rem);
+  }
+
+  .work-gallery > .work-card:first-child .work-card-title {
+    font-size: clamp(1.45rem, 1.9vw, 2rem);
+    letter-spacing: -0.02em;
+  }
+
+  .work-gallery > .work-card:first-child .work-card-summary {
+    font-size: 1rem;
+  }
+
+  .work-gallery > .work-card:first-child .work-card-stack {
+    margin-top: 0.5rem;
   }
 }
 
