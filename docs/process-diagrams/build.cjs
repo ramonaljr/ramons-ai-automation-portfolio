@@ -68,7 +68,9 @@ const BADGES = {
   VAPI: { letter: 'V', color: '#0A6F63' },
   Apollo: { letter: 'A', color: '#1F2A44' },
   Pipedrive: { letter: 'p', color: '#1A1A1A' },
-  Groq: { letter: 'g', color: '#F55036' }
+  Groq: { letter: 'g', color: '#F55036' },
+  Gemini: { letter: 'G', color: '#1A73E8' },
+  'AI by Zapier': { letter: 'AI', color: '#FF4F00' }
 }
 const CALENDAR =
   '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="#fff" stroke="#4285F4" stroke-width="2"/><rect x="3" y="3" width="18" height="5" rx="2" fill="#4285F4"/><text x="12" y="18.2" font-size="9" font-weight="700" text-anchor="middle" fill="#4285F4" font-family="Inter">31</text></svg>'

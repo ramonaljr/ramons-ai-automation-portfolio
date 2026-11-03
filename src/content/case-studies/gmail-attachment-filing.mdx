@@ -1,0 +1,80 @@
+---
+slug: 'gmail-attachment-filing'
+title: 'Gmail Attachment Filing'
+description: 'Label a client email To File, and every real attachment is read and named by AI, saved to Google Drive, logged in Google Sheets, and confirmed to the sender in one receipt.'
+organisation: 'Bookkeeping Document Intake'
+role: 'AI Automation Specialist'
+tools: ['Make', 'Gmail', 'Gemini', 'Google Drive', 'Google Sheets']
+publishedAt: '2026-11-03'
+image: '/images/workflows/gmail-attachment-filing-build.webp'
+heroImage: '/images/workflows/gmail-attachment-filing-build.webp'
+heroLabel: 'Make build'
+sample: false
+sampleClient: true
+videoUrl: '/films/gmail-attachment-filing.mp4'
+videoPoster: '/films/gmail-attachment-filing.jpg'
+
+platform: 'Make'
+categories: ['Finance', 'AI Agents']
+workflowImage: '/images/workflows/gmail-attachment-filing-map.svg'
+canvasLabel: 'Process map'
+canvasTheme: 'light'
+logicSummary: 'Every 15 minutes → emails labelled To File → keep real attachments → Gemini names each file → Drive upload → Sheets log → one receipt to the sender.'
+keyOutcome:
+  value: '15 min'
+  label: 'Inbox check'
+integrations: ['Make', 'Gmail', 'Gemini', 'Google Drive', 'Google Sheets']
+problem: 'Clients emailed receipts, statements and scans every day. Someone downloaded each attachment by hand, saved it under names like scan001.pdf, and nobody could say later what had arrived, from whom, or where it went.'
+solution: 'Built a Make scenario that checks Gmail every 15 minutes for emails labelled To File. It keeps only real attachments, has Gemini read each file and give it a short, descriptive name, saves it to the client documents folder in Google Drive, logs it in Google Sheets, and sends the sender one receipt listing every file saved.'
+stepCount: 5
+impactHighlight: 'Label it once. It is named, filed and logged.'
+impactHighlightDesc: 'Every file arrives under a name that says what it is, with a log row and a receipt to prove it.'
+roi:
+  - value: '15 min'
+    label: 'Between inbox checks'
+  - value: '5'
+    label: 'Details logged per file'
+  - value: '1'
+    label: 'Receipt per email'
+failsafeHeadline: 'Only real files, and a second try'
+failsafeDesc: 'Signature logos and empty parts are skipped, and a failed AI or Drive step tries again before it stops.'
+failsafes:
+  - title: 'Real attachments only'
+    desc: 'Files of 20 KB or less, such as signature logos, are skipped, along with Office documents and empty parts.'
+  - title: 'Retries before it stops'
+    desc: 'If Gemini or Google Drive fails, that step is retried up to 3 times, 15 minutes apart.'
+  - title: 'No empty receipts'
+    desc: 'A receipt is sent only when at least one file from the email was saved.'
+---
+
+## About this build
+
+Built on Make for **Fernhill Bookkeeping, a fictional sample client** that receives receipts, statements and scans from its clients by email. The scenario itself is real and complete, and has filed real attachments end to end.
+
+## The problem
+
+- **Filing by hand.** Every attachment was downloaded and saved one at a time.
+- **Names that say nothing.** Files like scan001.pdf had to be opened to find out what they were.
+- **No record.** Nobody could say what had arrived, from whom, or where it was saved.
+- **Silence for the client.** Senders never knew whether their documents had been received.
+
+## What I built
+
+1. **Find new attachments.** Every 15 minutes, Gmail is checked for emails labelled To File that have attachments, up to 10 emails per run.
+2. **Keep real attachments.** Each attachment is listed, and only real files go on: no Office documents, no empty parts, and nothing 20 KB or smaller, such as signature logos.
+3. **Name it with AI.** Each file is uploaded to Gemini, which reads it and returns a short, descriptive name, keeping the original extension.
+4. **File and log.** The file is saved to the client documents folder in Google Drive, and a row is added to the Google Sheets log with the date, original name, new name, file type and link.
+5. **Confirm once.** The new names from that email are gathered into one list, and the sender gets a single receipt showing each file as its new name, sent as the old one.
+
+## Safeguards
+
+- **Original extension kept,** so a PDF stays a PDF whatever Gemini calls it.
+- **Retries on failure:** a failed Gemini or Drive step is retried up to 3 times, 15 minutes apart.
+- **One receipt, only when something was saved,** never one per file and never an empty one.
+- **Inbox untouched:** emails are not marked as read or moved.
+
+## Outcomes
+
+- Every attachment is saved under a name that says what it is.
+- A running log shows what arrived, when, and where it went.
+- Clients get confirmation that their documents arrived.

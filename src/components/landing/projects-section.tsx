@@ -32,7 +32,9 @@ const WORK_LABELS: Record<string, string> = {
   'ai-invoice-processing-approval': 'Invoice approval',
   'solar-lead-scoring-follow-up': 'Lead follow-up',
   'hotel-employee-onboarding': 'Employee onboarding',
-  'ai-unpaid-invoice-reminders': 'Payment reminders'
+  'ai-unpaid-invoice-reminders': 'Payment reminders',
+  'airtable-crm-lead-engagement': 'Client pipeline',
+  'gmail-attachment-filing': 'Document filing'
 }
 
 const WORK_USE_CASES: Record<string, string> = {
@@ -51,7 +53,11 @@ const WORK_USE_CASES: Record<string, string> = {
   'hotel-employee-onboarding':
     'One HR form sets up each new hire, then tasks, documents and check-ins are followed up for their first 30 days.',
   'ai-unpaid-invoice-reminders':
-    'Overdue invoices chased by your own policy, every reply read, and all reminders stopped the moment a customer disputes.'
+    'Overdue invoices chased by your own policy, every reply read, and all reminders stopped the moment a customer disputes.',
+  'airtable-crm-lead-engagement':
+    'Move a client card to a new stage, and its folder, follow-ups, nudges and emails happen on their own, exactly once.',
+  'gmail-attachment-filing':
+    'Label a client email once, and every attachment is named by AI, filed in Drive, logged, and confirmed to the sender.'
 }
 
 export const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title

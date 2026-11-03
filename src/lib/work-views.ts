@@ -17,7 +17,9 @@ export const WORK_TONES: Record<string, string> = {
   'ai-invoice-processing-approval': 'oklch(0.572 0.14 24)',
   'solar-lead-scoring-follow-up': 'oklch(0.562 0.12 68)',
   'hotel-employee-onboarding': 'oklch(0.538 0.095 218)',
-  'ai-unpaid-invoice-reminders': 'oklch(0.542 0.11 158)'
+  'ai-unpaid-invoice-reminders': 'oklch(0.542 0.11 158)',
+  'airtable-crm-lead-engagement': 'oklch(0.555 0.13 352)',
+  'gmail-attachment-filing': 'oklch(0.545 0.09 192)'
 }
 
 export type WorkView = {

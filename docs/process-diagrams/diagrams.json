@@ -1403,5 +1403,312 @@
     "concept": "alert"
    }
   ]
+ },
+ {
+  "slug": "airtable-crm-lead-engagement",
+  "title": "Client Pipeline Emails",
+  "tools": [
+   "Zapier",
+   "Airtable",
+   "Gmail",
+   "Google Drive",
+   "AI by Zapier"
+  ],
+  "outcome": {
+   "value": "5",
+   "label": "Pipeline stages automated"
+  },
+  "caption": "Move a client card to a new stage, and its folder, follow-ups, nudges and emails happen on their own, once. A failed step is retried, then flagged.",
+  "nodes": 58,
+  "stages": [
+   {
+    "title": "Catch the stage change",
+    "tiles": [
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#18BFFF\" d=\"M11.992 1.966c-.434 0-.87.086-1.28.257L1.779 5.917c-.503.208-.49.908.012 1.116l8.982 3.558a3.266 3.266 0 0 0 2.454 0l8.982-3.558c.503-.196.503-.908.012-1.116l-8.957-3.694a3.255 3.255 0 0 0-1.272-.257zM23.4 8.056a.589.589 0 0 0-.222.045l-10.012 3.877a.612.612 0 0 0-.38.564v8.896a.6.6 0 0 0 .821.552L23.62 18.1a.583.583 0 0 0 .38-.551V8.653a.6.6 0 0 0-.6-.596zM.676 8.095a.644.644 0 0 0-.48.19C.086 8.396 0 8.53 0 8.69v8.355c0 .442.515.737.908.54l6.27-3.006.307-.147 2.969-1.436c.466-.22.43-.908-.061-1.092L.883 8.138a.57.57 0 0 0-.207-.044z\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F8A7E\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h6\"/><path d=\"M9 12c3 0 4-6 8-6h3\"/><path d=\"M9 12c3 0 4 6 8 6h3\"/><path d=\"M17.5 3.5L20 6l-2.5 2.5\"/><path d=\"M17.5 15.5L20 18l-2.5 2.5\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+    ],
+    "steps": [
+     {
+      "name": "New or Updated Record",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#18BFFF\" d=\"M11.992 1.966c-.434 0-.87.086-1.28.257L1.779 5.917c-.503.208-.49.908.012 1.116l8.982 3.558a3.266 3.266 0 0 0 2.454 0l8.982-3.558c.503-.196.503-.908.012-1.116l-8.957-3.694a3.255 3.255 0 0 0-1.272-.257zM23.4 8.056a.589.589 0 0 0-.222.045l-10.012 3.877a.612.612 0 0 0-.38.564v8.896a.6.6 0 0 0 .821.552L23.62 18.1a.583.583 0 0 0 .38-.551V8.653a.6.6 0 0 0-.6-.596zM.676 8.095a.644.644 0 0 0-.48.19C.086 8.396 0 8.53 0 8.69v8.355c0 .442.515.737.908.54l6.27-3.006.307-.147 2.969-1.436c.466-.22.43-.908-.061-1.092L.883 8.138a.57.57 0 0 0-.207-.044z\"/></svg>"
+     },
+     {
+      "name": "Stage Not Yet Handled?",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F8A7E\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h6\"/><path d=\"M9 12c3 0 4-6 8-6h3\"/><path d=\"M9 12c3 0 4 6 8 6h3\"/><path d=\"M17.5 3.5L20 6l-2.5 2.5\"/><path d=\"M17.5 15.5L20 18l-2.5 2.5\"/></svg>"
+     },
+     {
+      "name": "Claim The Stage",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#18BFFF\" d=\"M11.992 1.966c-.434 0-.87.086-1.28.257L1.779 5.917c-.503.208-.49.908.012 1.116l8.982 3.558a3.266 3.266 0 0 0 2.454 0l8.982-3.558c.503-.196.503-.908.012-1.116l-8.957-3.694a3.255 3.255 0 0 0-1.272-.257zM23.4 8.056a.589.589 0 0 0-.222.045l-10.012 3.877a.612.612 0 0 0-.38.564v8.896a.6.6 0 0 0 .821.552L23.62 18.1a.583.583 0 0 0 .38-.551V8.653a.6.6 0 0 0-.6-.596zM.676 8.095a.644.644 0 0 0-.48.19C.086 8.396 0 8.53 0 8.69v8.355c0 .442.515.737.908.54l6.27-3.006.307-.147 2.969-1.436c.466-.22.43-.908-.061-1.092L.883 8.138a.57.57 0 0 0-.207-.044z\"/></svg>"
+     },
+     {
+      "name": "Set Greeting And Owner",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+     },
+     {
+      "name": "Split Into Paths By Stage",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F8A7E\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h6\"/><path d=\"M9 12c3 0 4-6 8-6h3\"/><path d=\"M9 12c3 0 4 6 8 6h3\"/><path d=\"M17.5 3.5L20 6l-2.5 2.5\"/><path d=\"M17.5 15.5L20 18l-2.5 2.5\"/></svg>"
+     },
+     {
+      "name": "Email Missing → Log It",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+     }
+    ],
+    "concept": "zap"
+   },
+   {
+    "title": "Ready to Start",
+    "tiles": [
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#1FA463\" d=\"M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#18BFFF\" d=\"M11.992 1.966c-.434 0-.87.086-1.28.257L1.779 5.917c-.503.208-.49.908.012 1.116l8.982 3.558a3.266 3.266 0 0 0 2.454 0l8.982-3.558c.503-.196.503-.908.012-1.116l-8.957-3.694a3.255 3.255 0 0 0-1.272-.257zM23.4 8.056a.589.589 0 0 0-.222.045l-10.012 3.877a.612.612 0 0 0-.38.564v8.896a.6.6 0 0 0 .821.552L23.62 18.1a.583.583 0 0 0 .38-.551V8.653a.6.6 0 0 0-.6-.596zM.676 8.095a.644.644 0 0 0-.48.19C.086 8.396 0 8.53 0 8.69v8.355c0 .442.515.737.908.54l6.27-3.006.307-.147 2.969-1.436c.466-.22.43-.908-.061-1.092L.883 8.138a.57.57 0 0 0-.207-.044z\"/></svg>"
+    ],
+    "steps": [
+     {
+      "name": "Create Client Drive Folder",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#1FA463\" d=\"M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z\"/></svg>"
+     },
+     {
+      "name": "Create Social Media Content Task",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#18BFFF\" d=\"M11.992 1.966c-.434 0-.87.086-1.28.257L1.779 5.917c-.503.208-.49.908.012 1.116l8.982 3.558a3.266 3.266 0 0 0 2.454 0l8.982-3.558c.503-.196.503-.908.012-1.116l-8.957-3.694a3.255 3.255 0 0 0-1.272-.257zM23.4 8.056a.589.589 0 0 0-.222.045l-10.012 3.877a.612.612 0 0 0-.38.564v8.896a.6.6 0 0 0 .821.552L23.62 18.1a.583.583 0 0 0 .38-.551V8.653a.6.6 0 0 0-.6-.596zM.676 8.095a.644.644 0 0 0-.48.19C.086 8.396 0 8.53 0 8.69v8.355c0 .442.515.737.908.54l6.27-3.006.307-.147 2.969-1.436c.466-.22.43-.908-.061-1.092L.883 8.138a.57.57 0 0 0-.207-.044z\"/></svg>"
+     },
+     {
+      "name": "Save Folder Link And Log",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#18BFFF\" d=\"M11.992 1.966c-.434 0-.87.086-1.28.257L1.779 5.917c-.503.208-.49.908.012 1.116l8.982 3.558a3.266 3.266 0 0 0 2.454 0l8.982-3.558c.503-.196.503-.908.012-1.116l-8.957-3.694a3.255 3.255 0 0 0-1.272-.257zM23.4 8.056a.589.589 0 0 0-.222.045l-10.012 3.877a.612.612 0 0 0-.38.564v8.896a.6.6 0 0 0 .821.552L23.62 18.1a.583.583 0 0 0 .38-.551V8.653a.6.6 0 0 0-.6-.596zM.676 8.095a.644.644 0 0 0-.48.19C.086 8.396 0 8.53 0 8.69v8.355c0 .442.515.737.908.54l6.27-3.006.307-.147 2.969-1.436c.466-.22.43-.908-.061-1.092L.883 8.138a.57.57 0 0 0-.207-.044z\"/></svg>"
+     }
+    ],
+    "concept": "clipboard"
+   },
+   {
+    "title": "No Response &amp; Quoted follow-ups",
+    "tiles": [
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#7C5CDB\" stroke-width=\"2.1\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#18BFFF\" d=\"M11.992 1.966c-.434 0-.87.086-1.28.257L1.779 5.917c-.503.208-.49.908.012 1.116l8.982 3.558a3.266 3.266 0 0 0 2.454 0l8.982-3.558c.503-.196.503-.908.012-1.116l-8.957-3.694a3.255 3.255 0 0 0-1.272-.257zM23.4 8.056a.589.589 0 0 0-.222.045l-10.012 3.877a.612.612 0 0 0-.38.564v8.896a.6.6 0 0 0 .821.552L23.62 18.1a.583.583 0 0 0 .38-.551V8.653a.6.6 0 0 0-.6-.596zM.676 8.095a.644.644 0 0 0-.48.19C.086 8.396 0 8.53 0 8.69v8.355c0 .442.515.737.908.54l6.27-3.006.307-.147 2.969-1.436c.466-.22.43-.908-.061-1.092L.883 8.138a.57.57 0 0 0-.207-.044z\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F8A7E\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h6\"/><path d=\"M9 12c3 0 4-6 8-6h3\"/><path d=\"M9 12c3 0 4 6 8 6h3\"/><path d=\"M17.5 3.5L20 6l-2.5 2.5\"/><path d=\"M17.5 15.5L20 18l-2.5 2.5\"/></svg>"
+    ],
+    "steps": [
+     {
+      "name": "Send Follow-Up Email",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>"
+     },
+     {
+      "name": "Log Follow-Up",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+     },
+     {
+      "name": "Wait 2 Days",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#7C5CDB\" stroke-width=\"2.1\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/></svg>"
+     },
+     {
+      "name": "Recheck Lead Stage",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#18BFFF\" d=\"M11.992 1.966c-.434 0-.87.086-1.28.257L1.779 5.917c-.503.208-.49.908.012 1.116l8.982 3.558a3.266 3.266 0 0 0 2.454 0l8.982-3.558c.503-.196.503-.908.012-1.116l-8.957-3.694a3.255 3.255 0 0 0-1.272-.257zM23.4 8.056a.589.589 0 0 0-.222.045l-10.012 3.877a.612.612 0 0 0-.38.564v8.896a.6.6 0 0 0 .821.552L23.62 18.1a.583.583 0 0 0 .38-.551V8.653a.6.6 0 0 0-.6-.596zM.676 8.095a.644.644 0 0 0-.48.19C.086 8.396 0 8.53 0 8.69v8.355c0 .442.515.737.908.54l6.27-3.006.307-.147 2.969-1.436c.466-.22.43-.908-.061-1.092L.883 8.138a.57.57 0 0 0-.207-.044z\"/></svg>"
+     },
+     {
+      "name": "Still The Same Stage?",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F8A7E\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h6\"/><path d=\"M9 12c3 0 4-6 8-6h3\"/><path d=\"M9 12c3 0 4 6 8 6h3\"/><path d=\"M17.5 3.5L20 6l-2.5 2.5\"/><path d=\"M17.5 15.5L20 18l-2.5 2.5\"/></svg>"
+     },
+     {
+      "name": "Send Nudge Email",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>"
+     },
+     {
+      "name": "Log Second Follow-Up",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+     }
+    ],
+    "concept": "timer"
+   },
+   {
+    "title": "Approved, Paid and Closed",
+    "tiles": [
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#333\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"4\" y=\"8\" width=\"16\" height=\"11\" rx=\"5\"/><path d=\"M12 8V4.5\"/><circle cx=\"12\" cy=\"3.5\" r=\"1\"/><circle cx=\"9\" cy=\"13.5\" r=\"1.2\" fill=\"#333\"/><circle cx=\"15\" cy=\"13.5\" r=\"1.2\" fill=\"#333\"/><path d=\"M2 12.5v2.5M22 12.5v2.5\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+    ],
+    "steps": [
+     {
+      "name": "AI Writes Welcome Email",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#333\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"4\" y=\"8\" width=\"16\" height=\"11\" rx=\"5\"/><path d=\"M12 8V4.5\"/><circle cx=\"12\" cy=\"3.5\" r=\"1\"/><circle cx=\"9\" cy=\"13.5\" r=\"1.2\" fill=\"#333\"/><circle cx=\"15\" cy=\"13.5\" r=\"1.2\" fill=\"#333\"/><path d=\"M2 12.5v2.5M22 12.5v2.5\"/></svg>"
+     },
+     {
+      "name": "Send Welcome Email",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>"
+     },
+     {
+      "name": "AI Writes Thank-You Email",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#333\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"4\" y=\"8\" width=\"16\" height=\"11\" rx=\"5\"/><path d=\"M12 8V4.5\"/><circle cx=\"12\" cy=\"3.5\" r=\"1\"/><circle cx=\"9\" cy=\"13.5\" r=\"1.2\" fill=\"#333\"/><circle cx=\"15\" cy=\"13.5\" r=\"1.2\" fill=\"#333\"/><path d=\"M2 12.5v2.5M22 12.5v2.5\"/></svg>"
+     },
+     {
+      "name": "Send Thank-You Email",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>"
+     },
+     {
+      "name": "Log Each Email",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+     }
+    ],
+    "concept": "mail"
+   },
+   {
+    "title": "If something breaks",
+    "tiles": [
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#DC2626\" stroke-width=\"2.1\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3L2 20h20z\"/><path d=\"M12 10v4.5M12 17.2v.3\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#7C5CDB\" stroke-width=\"2.1\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>"
+    ],
+    "steps": [
+     {
+      "name": "Folder Or Email Step Fails",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#DC2626\" stroke-width=\"2.1\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3L2 20h20z\"/><path d=\"M12 10v4.5M12 17.2v.3\"/></svg>"
+     },
+     {
+      "name": "Wait 15 Minutes",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#7C5CDB\" stroke-width=\"2.1\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/></svg>"
+     },
+     {
+      "name": "Retry Once",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+     },
+     {
+      "name": "Log It As Sent On Retry",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+     },
+     {
+      "name": "Still Failing → Alert Email",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>"
+     }
+    ],
+    "concept": "alert"
+   }
+  ]
+ },
+ {
+  "slug": "gmail-attachment-filing",
+  "title": "Gmail Attachment Filing",
+  "tools": [
+   "Make",
+   "Gmail",
+   "Gemini",
+   "Google Drive",
+   "Google Sheets"
+  ],
+  "outcome": {
+   "value": "15 min",
+   "label": "Inbox check"
+  },
+  "caption": "Label an email To File, and each real attachment is named by AI, filed in Drive, logged in Sheets, and confirmed to the sender.",
+  "nodes": 12,
+  "stages": [
+   {
+    "title": "Find new attachments",
+    "tiles": [
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#7C5CDB\" stroke-width=\"2.1\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F8A7E\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h6\"/><path d=\"M9 12c3 0 4-6 8-6h3\"/><path d=\"M9 12c3 0 4 6 8 6h3\"/><path d=\"M17.5 3.5L20 6l-2.5 2.5\"/><path d=\"M17.5 15.5L20 18l-2.5 2.5\"/></svg>"
+    ],
+    "steps": [
+     {
+      "name": "Every 15 Minutes",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#7C5CDB\" stroke-width=\"2.1\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/></svg>"
+     },
+     {
+      "name": "Watch Emails Labelled To File",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>"
+     },
+     {
+      "name": "List Attachments",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>"
+     },
+     {
+      "name": "Keep Real Attachments",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F8A7E\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h6\"/><path d=\"M9 12c3 0 4-6 8-6h3\"/><path d=\"M9 12c3 0 4 6 8 6h3\"/><path d=\"M17.5 3.5L20 6l-2.5 2.5\"/><path d=\"M17.5 15.5L20 18l-2.5 2.5\"/></svg>"
+     }
+    ],
+    "concept": "inbox"
+   },
+   {
+    "title": "Name it with AI",
+    "tiles": [
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#444\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5\"/><path d=\"M9 14h7M13.5 11.5L16 14l-2.5 2.5\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#333\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"4\" y=\"8\" width=\"16\" height=\"11\" rx=\"5\"/><path d=\"M12 8V4.5\"/><circle cx=\"12\" cy=\"3.5\" r=\"1\"/><circle cx=\"9\" cy=\"13.5\" r=\"1.2\" fill=\"#333\"/><circle cx=\"15\" cy=\"13.5\" r=\"1.2\" fill=\"#333\"/><path d=\"M2 12.5v2.5M22 12.5v2.5\"/></svg>"
+    ],
+    "steps": [
+     {
+      "name": "Upload File To Gemini",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#444\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5\"/><path d=\"M9 14h7M13.5 11.5L16 14l-2.5 2.5\"/></svg>"
+     },
+     {
+      "name": "Gemini Names The File",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#333\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"4\" y=\"8\" width=\"16\" height=\"11\" rx=\"5\"/><path d=\"M12 8V4.5\"/><circle cx=\"12\" cy=\"3.5\" r=\"1\"/><circle cx=\"9\" cy=\"13.5\" r=\"1.2\" fill=\"#333\"/><circle cx=\"15\" cy=\"13.5\" r=\"1.2\" fill=\"#333\"/><path d=\"M2 12.5v2.5M22 12.5v2.5\"/></svg>"
+     }
+    ],
+    "concept": "pen"
+   },
+   {
+    "title": "File and log",
+    "tiles": [
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#1FA463\" d=\"M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#1FA463\" d=\"M11.318 12.545H7.91v-1.909h3.41v1.91zM14.728 0v6h6l-6-6zm1.363 10.636h-3.41v1.91h3.41v-1.91zm0 3.273h-3.41v1.91h3.41v-1.91zM20.727 6.5v15.864c0 .904-.732 1.636-1.636 1.636H4.909a1.636 1.636 0 0 1-1.636-1.636V1.636C3.273.732 4.005 0 4.909 0h9.318v6.5h6.5zm-3.273 2.773H6.545v7.909h10.91v-7.91zm-6.136 4.636H7.91v1.91h3.41v-1.91z\"/></svg>"
+    ],
+    "steps": [
+     {
+      "name": "Upload To Drive Folder",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#1FA463\" d=\"M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z\"/></svg>"
+     },
+     {
+      "name": "Add Row To Sheets Log",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#1FA463\" d=\"M11.318 12.545H7.91v-1.909h3.41v1.91zM14.728 0v6h6l-6-6zm1.363 10.636h-3.41v1.91h3.41v-1.91zm0 3.273h-3.41v1.91h3.41v-1.91zM20.727 6.5v15.864c0 .904-.732 1.636-1.636 1.636H4.909a1.636 1.636 0 0 1-1.636-1.636V1.636C3.273.732 4.005 0 4.909 0h9.318v6.5h6.5zm-3.273 2.773H6.545v7.909h10.91v-7.91zm-6.136 4.636H7.91v1.91h3.41v-1.91z\"/></svg>"
+     }
+    ],
+    "concept": "upload"
+   },
+   {
+    "title": "Confirm once",
+    "tiles": [
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F8A7E\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h6\"/><path d=\"M9 12c3 0 4-6 8-6h3\"/><path d=\"M9 12c3 0 4 6 8 6h3\"/><path d=\"M17.5 3.5L20 6l-2.5 2.5\"/><path d=\"M17.5 15.5L20 18l-2.5 2.5\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>"
+    ],
+    "steps": [
+     {
+      "name": "Gather New File Names",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+     },
+     {
+      "name": "Any Files Saved?",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0F8A7E\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h6\"/><path d=\"M9 12c3 0 4-6 8-6h3\"/><path d=\"M9 12c3 0 4 6 8 6h3\"/><path d=\"M17.5 3.5L20 6l-2.5 2.5\"/><path d=\"M17.5 15.5L20 18l-2.5 2.5\"/></svg>"
+     },
+     {
+      "name": "Send Receipt To Sender",
+      "icon": "<svg viewBox=\"0 0 24 24\"><path fill=\"#EA4335\" d=\"M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z\"/></svg>"
+     }
+    ],
+    "concept": "send"
+   },
+   {
+    "title": "If something breaks",
+    "tiles": [
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#DC2626\" stroke-width=\"2.1\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3L2 20h20z\"/><path d=\"M12 10v4.5M12 17.2v.3\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#7C5CDB\" stroke-width=\"2.1\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/></svg>",
+     "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+    ],
+    "steps": [
+     {
+      "name": "Gemini Or Drive Step Fails",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#DC2626\" stroke-width=\"2.1\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3L2 20h20z\"/><path d=\"M12 10v4.5M12 17.2v.3\"/></svg>"
+     },
+     {
+      "name": "Wait 15 Minutes",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#7C5CDB\" stroke-width=\"2.1\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/></svg>"
+     },
+     {
+      "name": "Retry Up To 3 Times",
+      "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4F6BED\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"5\" width=\"15\" height=\"15\" rx=\"2.5\"/><path d=\"M20 3.5l-8 8-1 3 3-1 8-8z\"/></svg>"
+     }
+    ],
+    "concept": "alert"
+   }
+  ]
  }
 ]
