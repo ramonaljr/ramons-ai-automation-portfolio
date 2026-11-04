@@ -6810,7 +6810,7 @@ div#experience.about-journey {
 }
 
 /* ── Services: where I build it ──────────────────────────────────────────
-   The four platforms as one line each, replacing the old Platforms section. */
+   The platforms as one line each, replacing the old Platforms section. */
 .service-platforms {
   margin-top: 2.5rem;
 }
@@ -6872,15 +6872,11 @@ div#experience.about-journey {
   line-height: 1.45;
 }
 
-@media (min-width: 640px) {
+/* Three platforms: one row of three from tablet up. Two columns would leave
+   the third card alone on its own row. */
+@media (min-width: 768px) {
   .service-platforms ul {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  .service-platforms ul {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

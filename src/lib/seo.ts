@@ -59,7 +59,7 @@ export function countWords(mdx: string): number {
 
 /** One description for the blog index: the page metadata and the Blog node must not drift. */
 export const BLOG_DESCRIPTION =
-  'Working notes on AI automation: n8n, Zapier, Make and GoHighLevel, LLM and RAG integrations, error handling, and what actually holds up in production.'
+  'Working notes on AI automation: n8n, Zapier and Make, LLM and RAG integrations, error handling, and what actually holds up in production.'
 
 /**
  * Question and answer pairs from a post's own "Frequently asked questions"
