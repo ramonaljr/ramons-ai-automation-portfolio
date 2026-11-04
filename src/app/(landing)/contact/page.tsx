@@ -116,15 +116,12 @@ const ContactUsPage = async () => {
                       <i aria-hidden='true' />
                       Rather write first?{' '}
                       <a href={`mailto:${PROFILE.email}`} className='contact-next-link tap-area'>
-                        Email me instead
+                        {PROFILE.email}
                         <ArrowRight />
                       </a>
                     </p>
 
                     <ul className='contact-links'>
-                      <li>
-                        <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
-                      </li>
                       {PROFILE.socials.map(s => (
                         <li key={s.label}>
                           <a href={s.href} target='_blank' rel='noopener noreferrer'>
