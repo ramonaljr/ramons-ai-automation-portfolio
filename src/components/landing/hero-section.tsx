@@ -17,7 +17,7 @@ const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
  * the headline on one line down to 360px; `LONGEST_WORK` below is the
  * belt-and-braces guarantee for widths and fallback fonts we have not measured.
  */
-const ROTATING_WORK = ['data entry.', 'new leads.', 'follow-ups.', 'reporting.']
+const ROTATING_WORK = ['data entry.', 'chasing leads.', 'follow-ups.', 'reporting.']
 
 /**
  * Reserves the line box in normal flow. The rotating word itself is absolutely
@@ -187,12 +187,16 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
           <h1
             data-hero='title'
             data-leaf-clear
-            aria-label='Let automation handle data entry, new leads, follow-ups, and reporting.'
+            aria-label='Stop losing hours to data entry, chasing leads, follow-ups, and reporting.'
             className='hero-reveal display-xl text-ink text-left text-[clamp(2.6rem,4.6vw,5rem)] leading-[0.92] font-light'
             style={{ fontFamily: DISPLAY_FONT }}
           >
+            {/* The outcome first, the work it costs second: the line names
+                what the reader gets back, the rotating word names where the
+                hours go. It replaced "Let automation handle", which named
+                tasks rather than a result. */}
             <span data-hero-line className='block'>
-              Let automation handle
+              Stop losing hours to
             </span>
             {/* At leading 0.88 the line box ends ~0.03em below the baseline,
                 but g/y/p descend ~0.18em, so `overflow-hidden` cut their tails
@@ -210,8 +214,8 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
                 <span className='hero-sizer invisible block' data-text={LONGEST_WORK} />
                 {/* The words cross over each other rather than taking turns. With
                   `mode='wait'` the old word left before the new one arrived,
-                  so for over a second of every cycle the headline read "Let
-                  automation handle" with nothing after it. The first word is
+                  so for over a second of every cycle the headline read "Stop
+                  losing hours to" with nothing after it. The first word is
                   on screen from the first frame (`initial={false}`). */}
                 <AnimatePresence initial={false}>
                   <motion.span
