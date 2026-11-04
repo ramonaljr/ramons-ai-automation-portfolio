@@ -54,8 +54,6 @@ export const metadata: Metadata = {
     'n8n developer',
     'Zapier expert',
     'Make.com automation',
-    'GoHighLevel automation',
-    'GoHighLevel developer',
     'workflow automation consultant',
     'Claude API integration',
     'OpenAI automation',

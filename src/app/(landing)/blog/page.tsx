@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   // so this reads as "Notes on automation - Ramon Vallejera Jr." in a SERP.
   title: INDEX_TITLE,
   description: INDEX_DESCRIPTION,
-  keywords: ['n8n', 'Zapier', 'Make.com', 'GoHighLevel', 'workflow automation', 'RAG', 'AI agents', 'error handling'],
+  keywords: ['n8n', 'Zapier', 'Make.com', 'workflow automation', 'RAG', 'AI agents', 'error handling'],
   alternates: {
     canonical: abs('/blog'),
 
@@ -90,8 +90,8 @@ const BlogPage = async () => {
               </h1>
 
               <p className='text-ink-3 mt-7 max-w-2xl text-[16px] leading-relaxed'>
-                Working notes on n8n, Zapier, Make and GoHighLevel: architecture decisions, failure modes, and what
-                actually holds up in production.
+                Working notes on n8n, Zapier and Make: architecture decisions, failure modes, and what actually holds up
+                in production.
               </p>
             </div>
           </header>

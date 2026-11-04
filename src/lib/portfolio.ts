@@ -295,7 +295,7 @@ export type Platform = {
   name: string
 
   /** Logo file in public/images/tools and its brand colour, as on `Tool`.
-   *  GoHighLevel has no file there, so it renders as a monogram badge. */
+   *  A platform without a file renders as a monogram badge. */
   slug?: string
   color: string
   primary?: boolean
@@ -344,19 +344,11 @@ export const PLATFORMS: Platform[] = [
       'Balancing flexibility with a visual builder'
     ],
     note: 'A useful middle ground when the process is visual but needs more flexibility than a simple app connection.'
-  },
-  {
-    name: 'GoHighLevel',
-    color: '#2F7DF6',
-    tagline: 'Customer follow-up, sales tracking and campaigns in one place',
-    bestFor: [
-      'Capturing and following up with leads',
-      'Email, text and voice campaigns',
-      'Agencies managing several client accounts',
-      'Keeping the customer journey in one system'
-    ],
-    note: 'Best when the customer relationship system is the centre of the work, rather than one tool among many.'
   }
+
+  // GoHighLevel was a fourth entry here (added in 9f9335a). It came out on
+  // 2026-11-04 because no case study is built on it yet; restore it from git
+  // history once one is, along with the `repeat(3)` grid in globals.css.
 ]
 
 // ─── Process ─────────────────────────────────────────────────────────────────
@@ -772,7 +764,7 @@ export const ENGAGEMENTS = [
     summary: 'One automation, built, tested on your real data and documented.',
     includes: [
       'System design, including what happens on errors',
-      'Build on n8n, Zapier, Make or GoHighLevel',
+      'Build on n8n, Zapier or Make',
       'Testing with your unusual cases',
       'Documentation and handover'
     ],
@@ -859,7 +851,7 @@ export const FAQS = [
     icon: 'tools',
     question: 'Which platform will you build on?',
     answer:
-      'Usually n8n: it can run on your own servers for sensitive data, handles processes with many decisions and custom steps, and does not charge per task as volume grows. Zapier suits simple handoffs between familiar apps, especially if your team already uses it. Make fits processes with several routes that move larger amounts of data. GoHighLevel is the choice when your customer list, sales tracking and marketing campaigns are the centre of the work. I recommend one after the audit, based on your tools, volume and who maintains it afterwards.'
+      'Usually n8n: it can run on your own servers for sensitive data, handles processes with many decisions and custom steps, and does not charge per task as volume grows. Zapier suits simple handoffs between familiar apps, especially if your team already uses it. Make fits processes with several routes that move larger amounts of data. I recommend one after the audit, based on your tools, volume and who maintains it afterwards.'
   },
   {
     icon: 'handshake',
