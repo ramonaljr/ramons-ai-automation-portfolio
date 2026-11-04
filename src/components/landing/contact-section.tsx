@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { Clock, Mail } from 'lucide-react'
+import { Clock } from 'lucide-react'
 
 import { PROFILE } from '@/lib/portfolio'
 import { SectionIntro } from '@/components/landing/section-intro'
@@ -83,18 +83,12 @@ export function ContactSection() {
                 <i aria-hidden='true' />
                 Rather write first?{' '}
                 <a href={`mailto:${PROFILE.email}`} className='contact-next-link tap-area'>
-                  Email me instead
+                  {PROFILE.email}
                   <ArrowRight />
                 </a>
               </p>
 
               <ul className='contact-links'>
-                <li>
-                  <a href={`mailto:${PROFILE.email}`}>
-                    <Mail size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
-                    {PROFILE.email}
-                  </a>
-                </li>
                 {PROFILE.socials.map(s => (
                   <li key={s.label}>
                     <a href={s.href} target='_blank' rel='noopener noreferrer'>
