@@ -8374,6 +8374,39 @@ div#experience.about-journey {
   transform: none;
 }
 
+/* Every second thumbnail sits lower, so the row reads as a staggered run of
+   work rather than a toolbar. Padding rather than a transform, because the
+   entrance above already owns each item's transform. */
+.work-strip-list > li:nth-child(even) {
+  padding-top: clamp(1rem, 2vw, 2rem);
+}
+
+/* A mouse can drag the row when it overflows (work-strip.tsx useDragScroll).
+   While it does, snapping steps aside and the thumbnails stop lifting, so the
+   row moves as one piece under the pointer. The grab cursors only show when
+   the site cursor is not running (it hides every native cursor); with it on,
+   its own pressed state covers the drag. */
+@media (hover: hover) and (pointer: fine) {
+  .work-strip-list[data-draggable='true'] {
+    cursor: grab;
+  }
+}
+
+.work-strip-list[data-dragging] {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.work-strip-list[data-dragging] .work-strip-item {
+  cursor: grabbing;
+}
+
+.work-strip-list[data-dragging] .work-strip-thumb,
+.work-strip-list[data-dragging] .work-strip-thumb img {
+  transform: none;
+}
+
 .work-strip-item {
   display: flex;
   width: 100%;
