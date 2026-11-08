@@ -643,14 +643,13 @@ export const EXPERIENCE: Role[] = [
     short: 'Financial Analyst',
     period: '2022 - Present',
     arrangement: 'US Remote',
-    stack: ['Claude', 'Valuation Models', 'Financial Analysis', 'Forecasting', 'Excel'],
+    stack: ['Valuation Models', 'Financial Analysis', 'Forecasting', 'Excel'],
     achievement: 'Build company valuation models and forecasts for US stock portfolios',
     employer: 'Independent contractor · United States, remote',
     highlights: [
       'Maintain discounted cash flow valuation models and financial statement forecasts across a portfolio of US-listed companies.',
       'Turn earnings calls and investor guidance into revised assumptions every quarter, so each model reflects the latest numbers.',
-      'Research filings and market data and turn them into structured reports.',
-      'Use Claude and other AI tools daily to speed up research, analysis and reporting.'
+      'Research filings and market data and turn them into structured reports.'
     ]
   },
   {
