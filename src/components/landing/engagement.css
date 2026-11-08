@@ -191,10 +191,16 @@
   line-height: 1.45;
 }
 
+/* A drawn tick: what the step includes, not a row that opens (a "+" read as
+   an expand control). */
 .eng-includes li::before {
-  content: '+';
-  color: var(--ink-3);
-  font-family: var(--eng-mono);
+  content: '';
+  width: 0.62em;
+  height: 0.34em;
+  margin-top: 0.42em;
+  border-bottom: 1.5px solid var(--ink-3);
+  border-left: 1.5px solid var(--ink-3);
+  transform: rotate(-45deg);
 }
 
 .eng-outcome {

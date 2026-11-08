@@ -75,7 +75,7 @@ export const OPEN_CHAT_EVENT = 'portfolio:open-chat'
  * Whether the assistant answered its health check. `null` until it has, so
  * nothing is hidden on a guess. Module state plus an event rather than a
  * context provider: the widget mounts once at the layout level and the FAQ's
- * "Ask the assistant" box is the only other reader.
+ * "Ask my assistant" box is the only other reader.
  */
 const CHAT_STATUS_EVENT = 'portfolio:chat-status'
 let chatAvailable: boolean | null = null
@@ -118,6 +118,11 @@ export function ChatWidget() {
   // top of the text being read, and returns once scrolling stops.
   const [scrolling, setScrolling] = useState(false)
 
+  // Past the hero the labelled pill folds back to the round mark, so it no
+  // longer sits on the text, figures and stats it floated over. Hovering or
+  // focusing it opens the label again.
+  const [atTop, setAtTop] = useState(true)
+
   // While a Calendly calendar is on screen the launcher keeps off it: on
   // desktop the pill folds back to the mark, on phones it steps aside, since
   // even the bare mark would sit on the calendar's last column there.
@@ -158,6 +163,7 @@ export function ChatWidget() {
     let timer = 0
 
     const onScroll = () => {
+      setAtTop(window.scrollY < window.innerHeight * 0.5)
       setScrolling(true)
       window.clearTimeout(timer)
       timer = window.setTimeout(() => setScrolling(false), 700)
@@ -196,7 +202,7 @@ export function ChatWidget() {
     }
   }, [])
 
-  // Other parts of the page (the FAQ's "Ask the assistant") open the chat by
+  // Other parts of the page (the FAQ's "Ask my assistant") open the chat by
   // event rather than by prop, so the widget stays self-contained.
   useEffect(() => {
     const openChat = () => setOpen(true)
@@ -271,10 +277,11 @@ export function ChatWidget() {
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
         aria-controls='chat-panel'
-        aria-label={open ? 'Close chat' : "Ask about automation, chat with Ramon's assistant"}
-        className={`chat-launcher bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 items-center gap-2.5 rounded-full p-1.5 transition-[transform,opacity] duration-300 hover:-translate-y-0.5 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:p-[7px] ${
+        aria-label={open ? 'Close chat' : 'Ask my assistant'}
+        data-compact={(labelled && !atTop) || undefined}
+        className={`chat-launcher bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 items-center rounded-full p-1.5 transition-[transform,opacity] duration-300 hover:-translate-y-0.5 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:p-[7px] ${
           open ? 'max-sm:hidden' : ''
-        } ${labelled ? 'sm:pr-5' : ''} ${
+        } ${
           (scrolling || nearCalendar) && !open
             ? 'max-sm:pointer-events-none max-sm:translate-y-20 max-sm:opacity-0'
             : ''
@@ -287,7 +294,9 @@ export function ChatWidget() {
             <BrandMark className='chat-mark h-[22px] w-[22px] sm:h-[26px] sm:w-[26px]' />
           )}
         </span>
-        {labelled && <span className='hidden text-[14.5px] font-medium sm:inline'>Ask about automation</span>}
+        {labelled && (
+          <span className='chat-label hidden text-[14.5px] font-medium sm:inline-block'>Ask my assistant</span>
+        )}
       </button>
 
       {/* Panel. A floating card on desktop, a sheet below the nav on phones. */}

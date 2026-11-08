@@ -5983,6 +5983,37 @@ div#experience.about-journey {
     0 16px 36px -12px rgb(20 28 45 / 0.5);
 }
 
+/* The label folds away past the hero (data-compact) and opens again on
+   hover or focus, so the launcher stays a small round mark over the page. */
+.chat-label {
+  max-width: 12rem;
+  overflow: hidden;
+  padding: 0 calc(1.25rem - 7px) 0 0.625rem;
+  white-space: nowrap;
+  transition:
+    max-width 0.45s var(--ease-entrance),
+    padding 0.45s var(--ease-entrance),
+    opacity 0.3s ease;
+}
+
+.chat-launcher[data-compact] .chat-label {
+  max-width: 0;
+  padding: 0;
+  opacity: 0;
+}
+
+.chat-launcher[data-compact]:is(:hover, :focus-visible) .chat-label {
+  max-width: 12rem;
+  padding: 0 calc(1.25rem - 7px) 0 0.625rem;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-label {
+    transition: none;
+  }
+}
+
 .chat-mark {
   color: oklch(0.72 0.13 38);
 }
