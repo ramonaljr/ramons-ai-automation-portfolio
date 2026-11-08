@@ -12,6 +12,7 @@ import { ICON_STROKE, READABLE, usePrefersReducedMotion } from '@/components/lan
 import { EXPERIENCE, financeYears, PROFILE } from '@/lib/portfolio'
 import { introStep } from '@/components/landing/section-intro'
 import { ExperienceJourney } from '@/components/landing/experience-section'
+import { SheetHeader } from '@/components/landing/sheet'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 
@@ -125,6 +126,8 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
       className='about-cinema saas-section border-rule relative overflow-clip border-t px-6 py-16 md:px-12 md:py-24 lg:px-20'
     >
       <div ref={ref} className='relative z-2 mx-auto max-w-[1240px]'>
+        <SheetHeader number={1} title='About · Ramon Vallejera Jr., AI Automation Specialist' />
+
         {/* Three areas rather than two columns, so phones can put the face
             straight after the name: heading, then portrait and proof, then the
             story. On wide screens the portrait column spans both left rows. */}

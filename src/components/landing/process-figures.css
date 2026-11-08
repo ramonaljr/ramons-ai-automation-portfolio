@@ -1,0 +1,568 @@
+/* ── Process figures: each step's deliverable, as a document ──────────────
+   See process-figures.tsx. Drawn finished; `.proc-visual[data-on]` plays it
+   in. All sizes in em, from a font size that follows the frame. */
+
+.pf {
+  --pf-ink: var(--ink);
+  --pf-line: color-mix(in oklab, var(--ink) 14%, transparent);
+  --pf-mono: var(--font-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  position: relative;
+  display: grid;
+  gap: 1.35em;
+  align-content: start;
+  width: min(88cqw, 52em);
+  padding: 1.5em 1.75em 1.6em;
+  border: 1px solid var(--pf-line);
+  border-radius: 0.3em;
+  background: #fbfcfd;
+
+  /* A second sheet under the first, and the shadow both cast. */
+  box-shadow:
+    0.45em 0.45em 0 -1px #f0f3f6,
+    0.45em 0.45em 0 0 var(--pf-line),
+    0 1.6em 3em -1.6em oklch(0.25 0.018 255 / 0.28);
+  color: var(--pf-ink);
+  font-size: clamp(9px, min(2cqw, 3.1cqh), 18px);
+  line-height: 1.35;
+}
+
+.pf-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1em;
+  padding-bottom: 0.7em;
+  border-bottom: 1px solid var(--pf-ink);
+}
+
+.pf-kind {
+  font-family: var(--font-editorial);
+  font-size: 1.45em;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.pf-ref,
+.pf dt,
+.pf-tag,
+.pf-tile-name,
+.pf-edge,
+.pf-sub,
+.pf-map-legend,
+.pf-foot,
+.pf-live,
+.pf-runs-note,
+.pf-score,
+.pf-cases,
+.pf-log,
+.pf-rank-value {
+  font-family: var(--pf-mono);
+}
+
+.pf-ref {
+  color: var(--ink-3);
+  font-size: 0.68em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pf-foot {
+  padding-top: 0.75em;
+  border-top: 1px solid var(--pf-line);
+  color: var(--ink-3);
+  font-size: 0.72em;
+  letter-spacing: 0.04em;
+}
+
+.pf-foot b {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ── 01 Problem statement ── */
+.pf-quote {
+  max-width: 20em;
+  font-family: var(--font-editorial);
+  font-size: 1.85em;
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.pf-fields {
+  display: grid;
+  margin: 0;
+}
+
+.pf-fields > div {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr);
+  align-items: baseline;
+  padding: 0.6em 0;
+  border-top: 1px solid var(--pf-line);
+}
+
+.pf dt {
+  color: var(--ink-3);
+  font-size: 0.66em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pf dd {
+  margin: 0;
+  font-size: 0.95em;
+}
+
+.pf-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+}
+
+.pf-chips span {
+  padding: 0.15em 0.7em;
+  border: 1px solid var(--pf-line);
+  border-radius: 99em;
+  font-size: 0.92em;
+}
+
+.pf-success dd {
+  position: relative;
+  padding-left: 0.9em;
+}
+
+.pf-success dd::before {
+  content: '';
+  position: absolute;
+  top: 0.45em;
+  left: 0;
+  width: 0.45em;
+  height: 0.45em;
+  background: var(--accent);
+}
+
+/* ── 02 Opportunity list ── */
+.pf-rank {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pf-rank li {
+  display: grid;
+  grid-template-columns: 10.5em minmax(0, 1fr) 6.5em 7.6em;
+  column-gap: 1em;
+  align-items: center;
+  padding: 0.75em 0;
+  border-bottom: 1px solid var(--pf-line);
+}
+
+.pf-rank-label {
+  font-size: 0.95em;
+}
+
+.pf-bar {
+  position: relative;
+  height: 0.5em;
+  background: color-mix(in oklab, var(--ink) 6%, transparent);
+}
+
+.pf-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--share) * 100%);
+  background: var(--ink);
+  transform-origin: 0 50%;
+}
+
+.pf-rank-value {
+  font-size: 0.78em;
+  text-align: right;
+}
+
+.pf-tag {
+  justify-self: end;
+  padding: 0.2em 0.6em;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 0.62em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pf-rank li[data-keep] .pf-bar i {
+  background: var(--ink-4);
+}
+
+.pf-rank li[data-keep] .pf-tag {
+  border-color: var(--pf-line);
+  color: var(--ink-3);
+}
+
+/* ── 03 System map ── */
+.pf-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.pf-map path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-opacity: 0.4;
+  stroke-width: 1.4;
+}
+
+.pf-map .pf-dash {
+  /* In fractions of the path: its pathLength is 1, so 0.045 is about 5px. */
+  stroke-dasharray: 0.045 0.045;
+}
+
+.pf-node rect {
+  fill: #fff;
+  stroke: var(--ink);
+  stroke-opacity: 0.18;
+}
+
+.pf-node text {
+  fill: var(--ink);
+  font-family: var(--font-editorial);
+  font-size: 15px;
+}
+
+.pf-node .pf-sub {
+  fill: var(--ink-3);
+  font-size: 10.5px;
+}
+
+.pf-core rect {
+  fill: color-mix(in oklab, var(--accent) 12%, white);
+  stroke: var(--accent);
+  stroke-opacity: 0.6;
+}
+
+.pf-edge {
+  fill: var(--ink-3);
+  font-size: 10.5px;
+}
+
+.pf-end {
+  fill: var(--ink);
+}
+
+.pf-map-legend {
+  display: grid;
+  gap: 0.35em;
+  color: var(--ink-2);
+  font-size: 0.74em;
+}
+
+.pf-stamp {
+  position: absolute;
+  right: 1.6em;
+  bottom: 1.4em;
+  padding: 0.35em 0.8em;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--pf-mono);
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+}
+
+/* ── 04 Build log ── */
+.pf-chain {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0.4em 0 0;
+  list-style: none;
+}
+
+.pf-chain li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.55em;
+}
+
+.pf-tile {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 3.4em;
+  height: 3.4em;
+  border: 1px solid var(--pf-line);
+  border-radius: 0.8em;
+  background: #fff;
+  color: #2f6fd6;
+}
+
+.pf-tile svg {
+  width: 1.6em;
+  height: 1.6em;
+}
+
+.pf-logo {
+  display: block;
+  width: 1.6em;
+  height: 1.6em;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.pf-tile-name {
+  color: var(--ink-2);
+  font-size: 0.7em;
+  letter-spacing: 0.04em;
+}
+
+/* The connector from this tool to the next, across the gap between tiles. */
+.pf-link {
+  position: absolute;
+  top: 1.7em;
+  left: calc(50% + 1.7em);
+  width: calc(100% - 3.4em);
+  height: 1px;
+  background: var(--ink);
+  transform-origin: 0 50%;
+}
+
+.pf-log {
+  display: grid;
+  gap: 0.15em;
+  margin: 0;
+  padding: 0.85em 1em;
+  border-radius: 0.4em;
+  background: #f0f3f6;
+  list-style: none;
+  font-size: 0.78em;
+}
+
+.pf-log li,
+.pf-cases li {
+  display: flex;
+  gap: 0.7em;
+  align-items: baseline;
+}
+
+.pf-log b,
+.pf-cases b {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── 05 Test report ── */
+.pf-score {
+  color: var(--ink-3);
+  font-size: 0.8em;
+  letter-spacing: 0.04em;
+}
+
+.pf-score b {
+  margin-right: 0.4em;
+  color: var(--ink);
+  font-family: var(--font-editorial);
+  font-size: 2.6em;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.pf-cases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55em 1.2em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.76em;
+}
+
+.pf-cases li {
+  padding-bottom: 0.45em;
+  border-bottom: 1px solid var(--pf-line);
+}
+
+.pf-handover span {
+  margin-right: 0.8em;
+  color: var(--ink);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── 06 Run monitor ── */
+.pf-live {
+  display: flex;
+  gap: 0.6em;
+  align-items: center;
+  font-size: 0.78em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pf-live i {
+  width: 0.7em;
+  height: 0.7em;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0.3em color-mix(in oklab, var(--accent) 18%, transparent);
+}
+
+.pf-live span {
+  color: var(--ink-3);
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.pf-runs {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(14, minmax(0, 1fr));
+  gap: 0.45em;
+  align-items: end;
+  height: 9em;
+  margin-top: 1.6em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--pf-ink);
+}
+
+.pf-runs > span:not(.pf-runs-note) {
+  height: calc(var(--h) * 100%);
+  background: color-mix(in oklab, var(--ink) 75%, transparent);
+  transform-origin: 50% 100%;
+}
+
+.pf-runs > span[data-failed] {
+  background: var(--accent);
+}
+
+.pf-runs-note {
+  position: absolute;
+  bottom: calc(100% + 0.3em);
+  left: calc(var(--x) * 100%);
+  padding-left: 0.6em;
+  border-left: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 0.66em;
+  white-space: nowrap;
+  transform: translateX(-1px);
+}
+
+/* ── Playing in: only the step on show, only where motion is welcome ──── */
+@media (prefers-reduced-motion: no-preference) {
+  .proc-visual[data-on] .pf-in {
+    animation: pf-in 0.7s var(--ease-entrance) both;
+    animation-delay: calc(var(--d, 0) * 110ms + 120ms);
+  }
+
+  .proc-visual[data-on] .pf-bar i {
+    animation: pf-grow-x 1s var(--ease-entrance) both;
+    animation-delay: calc(var(--d, 0) * 110ms + 300ms);
+  }
+
+  .proc-visual[data-on] .pf-link {
+    animation: pf-grow-x 0.6s var(--ease-entrance) both;
+    animation-delay: calc(var(--d, 0) * 110ms + 200ms);
+  }
+
+  .proc-visual[data-on] .pf-draw {
+    stroke-dasharray: 1;
+    animation: pf-draw 0.9s var(--ease-entrance) both;
+    animation-delay: calc(var(--d, 0) * 160ms + 250ms);
+  }
+
+  /* A dashed path draws in solid, then settles into its dashes. */
+  .proc-visual[data-on] .pf-draw.pf-dash {
+    animation-name: pf-draw-dashed;
+  }
+
+  .proc-visual[data-on] .pf-stamp {
+    animation: pf-stamp 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+    animation-delay: calc(var(--d, 0) * 160ms + 300ms);
+  }
+
+  .proc-visual[data-on] .pf-runs > span:not(.pf-runs-note) {
+    animation: pf-grow-y 0.8s var(--ease-entrance) both;
+    animation-delay: calc(var(--d, 0) * 110ms + 120ms);
+  }
+
+  .proc-visual[data-on] .pf-runs-note {
+    animation: pf-in 0.6s var(--ease-entrance) 1.3s both;
+  }
+
+  .proc-visual[data-on] .pf-live i {
+    animation: pf-pulse 2.4s ease-in-out 1s infinite;
+  }
+}
+
+@keyframes pf-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em);
+  }
+}
+
+@keyframes pf-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes pf-grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes pf-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pf-draw-dashed {
+  0% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  99% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dasharray: 0.045 0.045;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pf-stamp {
+  from {
+    opacity: 0;
+    transform: rotate(-7deg) scale(1.6);
+  }
+}
+
+@keyframes pf-pulse {
+  50% {
+    box-shadow: 0 0 0 0.6em color-mix(in oklab, var(--accent) 0%, transparent);
+  }
+}
