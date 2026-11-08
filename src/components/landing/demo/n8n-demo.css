@@ -32,7 +32,7 @@
 }
 
 .n8n-world[data-glide] {
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform var(--glide, 0.6s) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .n8n-world {
@@ -479,19 +479,47 @@
   top: 56px;
   right: 12px;
   z-index: 3;
-  max-width: 60%;
+  display: grid;
+  gap: 2px;
+  max-width: min(60%, 26rem);
   margin: 0;
   padding: 0;
-  color: #d6d6db;
-  font-size: 12.5px;
+  overflow: hidden;
+  color: #ececf0;
+  font-size: 14px;
+  font-weight: 500;
   text-align: right;
 }
 
 .n8n-status:not(:empty) {
-  padding: 6px 10px;
+  padding: 8px 14px 10px;
   border: 1px solid #45454a;
-  border-radius: 6px;
-  background: rgb(35 35 35 / 0.88);
+  border-radius: 8px;
+  background: rgb(35 35 35 / 0.92);
+  box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.6);
+}
+
+/* Where the run is: "Step 5 of 14" over the node's name. */
+.n8n-status-step {
+  color: #9a9aa2;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* How far through the run, along the pill's foot. */
+.n8n-status-bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--n8n-success);
+  transform: scaleX(var(--p, 0));
+  transform-origin: 0 50%;
+  transition: transform 0.4s ease;
 }
 
 .n8n-status[data-tone='done'] {
@@ -627,4 +655,16 @@
   .n8n-edges path {
     transition: none;
   }
+}
+
+/* ── After a run: the path it took stays lit, the rest falls back ─────── */
+
+.n8n-demo :is(.n8n-node, .make-module, .zap-step),
+.n8n-demo :is(.n8n-edges, .make-links, .zap-links) g {
+  transition: opacity 0.6s ease;
+}
+
+.n8n-demo[data-ran] :is(.n8n-node, .make-module, .zap-step)[data-state='idle'],
+.n8n-demo[data-ran] :is(.n8n-edges, .make-links, .zap-links) g:not([data-lit]) {
+  opacity: 0.28;
 }
