@@ -21,7 +21,7 @@ const FIGURES: ReactNode[] = [<AuditFigure key='audit' />, <BuildFigure key='bui
 /**
  * Working together, as a ruled schedule rather than three pricing cards.
  *
- * Audit, build and retainer read left to right in the order most clients take
+ * Audit, build and retainer read left to right in the order I recommend taking
  * them, as three columns under one rule that draws in as the section arrives.
  * Every column carries the same rows (when, name, price, who it is for, the
  * document you are left with, what is included), aligned across the three
@@ -50,7 +50,7 @@ export function EngagementSection({ band = false }: { band?: boolean }) {
               three steps.
             </>
           }
-          blurb='Most clients start with the audit, build what it finds, and keep it running on a retainer. Start wherever you are.'
+          blurb='I recommend the audit first, then a build for what it finds, then a retainer to keep it running. Start wherever you are.'
         />
 
         <ol ref={ref} className='eng-cols' data-in={inView || undefined}>
@@ -63,7 +63,7 @@ export function EngagementSection({ band = false }: { band?: boolean }) {
             >
               <p className='eng-when'>
                 <span>{tier.duration}</span>
-                {tier.start && <span className='eng-start'>Most clients start here</span>}
+                {tier.start && <span className='eng-start'>Recommended start</span>}
               </p>
 
               <h3 className='eng-name' style={{ fontFamily: DISPLAY_FONT }}>
