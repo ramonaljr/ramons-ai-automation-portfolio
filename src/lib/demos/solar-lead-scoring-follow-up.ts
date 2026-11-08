@@ -312,7 +312,8 @@ function scenarios(now: Date): DemoScenario[] {
         originalRep: overdue.assignedRep,
         escalatedTo: manager.repName,
         reason: 'Rep did not follow up',
-        ackDueAt: overdue.ackDueAt
+        ackDueAt: overdue.ackDueAt,
+        executionId: '20977'
       }
     },
     outcomes: [
@@ -344,6 +345,40 @@ function scenarios(now: Date): DemoScenario[] {
           [overdue.name, overdue.company, overdue.score, overdue.tier, manager.repName, 'escalated']
         ],
         highlight: 2
+      },
+      {
+        kind: 'sheets',
+        node: 'Save To Escalation Log',
+        file: 'Lead Automation',
+        table: 'Escalation Log',
+        columns: ['escalatedAt', 'company', 'tier', 'score', 'originalRep', 'escalatedTo', 'reason', 'ackDueAt'],
+        rows: [
+          [
+            minutesFrom(now, -3 * 24 * 60)
+              .slice(0, 16)
+              .replace('T', ' '),
+            'Coastal Self Storage',
+            'smb',
+            52,
+            'Ben Carter',
+            manager.repName,
+            'Rep did not follow up',
+            minutesFrom(now, -3 * 24 * 60 - 20)
+              .slice(0, 16)
+              .replace('T', ' ')
+          ],
+          [
+            receivedAt.slice(0, 16).replace('T', ' '),
+            overdue.company,
+            overdue.tier,
+            overdue.score,
+            overdue.assignedRep,
+            manager.repName,
+            'Rep did not follow up',
+            String(overdue.ackDueAt).slice(0, 16).replace('T', ' ')
+          ]
+        ],
+        highlight: 1
       }
     ]
   }

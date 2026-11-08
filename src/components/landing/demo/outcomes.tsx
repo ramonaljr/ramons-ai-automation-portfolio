@@ -2,7 +2,22 @@
 
 import { Fragment, type ReactNode } from 'react'
 
-import { CalendarDays, ClipboardList, Hourglass, MapPin, MessageCircle, Phone, Reply, Star, Video } from 'lucide-react'
+import {
+  CalendarDays,
+  ChevronRight,
+  ClipboardList,
+  FileImage,
+  FileText,
+  FileType,
+  Folder,
+  Hourglass,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Reply,
+  Star,
+  Video
+} from 'lucide-react'
 
 import { ToolMark } from '@/components/landing/tool-stack-section'
 import type { DemoOutcome } from '@/lib/demos/types'
@@ -26,6 +41,7 @@ const APP_LABEL: Record<DemoOutcome['kind'], string> = {
   airtable: 'Airtable',
   sheets: 'Google Sheets',
   calendar: 'Google Calendar',
+  drive: 'Google Drive',
   form: 'n8n form',
   record: '',
   chat: ''
@@ -166,7 +182,7 @@ function Grid({ outcome }: { outcome: Extract<DemoOutcome, { kind: 'airtable' | 
           </thead>
           <tbody>
             {outcome.rows.map((row, rowIndex) => (
-              <tr key={rowIndex} data-new={rowIndex === outcome.highlight || undefined}>
+              <tr key={rowIndex} data-new={[outcome.highlight].flat().includes(rowIndex) || undefined}>
                 <td className='oc-grid-index'>{rowIndex + (sheets ? 2 : 1)}</td>
                 {row.map((cell, cellIndex) => (
                   <td key={cellIndex} title={String(cell)}>
@@ -190,9 +206,14 @@ function Grid({ outcome }: { outcome: Extract<DemoOutcome, { kind: 'airtable' | 
 
 function Calendar({ outcome }: { outcome: Extract<DemoOutcome, { kind: 'calendar' }> }) {
   return (
-    <div className='oc-calendar'>
+    <div className='oc-calendar' data-cancelled={outcome.cancelled || undefined}>
       <span className='oc-calendar-bar' aria-hidden='true' />
       <div>
+        {outcome.cancelled && (
+          <span className='oc-pill' data-value='cancelled'>
+            Cancelled · guests notified
+          </span>
+        )}
         <p className='oc-calendar-title'>{outcome.title}</p>
         <p className='oc-calendar-when'>
           {outcome.date} · {outcome.time}
@@ -221,6 +242,57 @@ function Calendar({ outcome }: { outcome: Extract<DemoOutcome, { kind: 'calendar
         </ul>
         {outcome.note && <p className='oc-calendar-note'>{outcome.note}</p>}
       </div>
+    </div>
+  )
+}
+
+/** Drive's own file-type icons, in the colours it draws them. */
+const DRIVE_ICON = {
+  folder: { Icon: Folder, color: '#5f6368' },
+  pdf: { Icon: FileType, color: '#ea4335' },
+  image: { Icon: FileImage, color: '#ea4335' },
+  doc: { Icon: FileText, color: '#4285f4' },
+  text: { Icon: FileText, color: '#5f6368' }
+}
+
+function Drive({ outcome }: { outcome: Extract<DemoOutcome, { kind: 'drive' }> }) {
+  return (
+    <div className='oc-drive'>
+      <p className='oc-drive-path'>
+        {outcome.path.map((part, index) => (
+          <Fragment key={part}>
+            {index > 0 && <ChevronRight size={15} aria-hidden='true' />}
+            <span data-current={index === outcome.path.length - 1 || undefined}>{part}</span>
+          </Fragment>
+        ))}
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Last modified</th>
+            <th>File size</th>
+          </tr>
+        </thead>
+        <tbody>
+          {outcome.files.map((file, index) => {
+            const { Icon, color } = DRIVE_ICON[file.type]
+
+            return (
+              <tr key={file.name} data-new={outcome.added?.includes(index) || undefined}>
+                <td>
+                  <span className='oc-drive-name'>
+                    <Icon size={17} color={color} fill={file.type === 'folder' ? color : 'none'} aria-hidden='true' />
+                    <span title={file.name}>{file.name}</span>
+                  </span>
+                </td>
+                <td>{file.modified}</td>
+                <td>{file.size ?? '—'}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
     </div>
   )
 }
@@ -297,6 +369,8 @@ function Body({ outcome }: { outcome: DemoOutcome }) {
       return <Calendar outcome={outcome} />
     case 'form':
       return <Form outcome={outcome} />
+    case 'drive':
+      return <Drive outcome={outcome} />
     case 'record':
       return <Record outcome={outcome} />
     case 'chat':
@@ -316,6 +390,7 @@ function AppMark({ outcome }: { outcome: DemoOutcome }): ReactNode {
   if (kind === 'airtable') return <ToolMark tool={MARK.airtable} size={14} />
   if (kind === 'sheets') return <ToolMark tool={MARK.sheets} size={14} />
   if (kind === 'calendar') return <CalendarDays size={14} color='#4C8BF5' aria-hidden='true' />
+  if (kind === 'drive') return <ToolMark tool={MARK['Google Drive']} size={14} />
 
   return <ClipboardList size={14} color='#3b8fb5' aria-hidden='true' />
 }
@@ -352,6 +427,9 @@ export function DemoOutcomes({
   const halves = outcomes.filter(outcome => !isWide(outcome))
   const tall = halves.length >= 3 && halves.length % 2 === 1 ? halves[0] : undefined
 
+  // A half-width card on its own would leave the other half empty.
+  const lone = halves.length === 1 ? halves[0] : undefined
+
   return (
     <section className='oc-section' aria-label='Results of the run'>
       <div className='oc-head'>
@@ -367,7 +445,7 @@ export function DemoOutcomes({
             <figure
               key={`${outcome.kind}-${index}`}
               className='oc-card'
-              data-wide={isWide(outcome) || undefined}
+              data-wide={isWide(outcome) || outcome === lone || undefined}
               data-tall={outcome === tall || undefined}
               data-ready={ready || undefined}
             >

@@ -1,5 +1,5 @@
 import layout from '@/content/demos/ai-unpaid-invoice-reminders.layout.json'
-import { clock, dayFrom } from '@/lib/demos/sample'
+import { CENTRAL, clock, dayFrom } from '@/lib/demos/sample'
 import type { DemoBundle, DemoLayout, DemoScenario } from '@/lib/demos/types'
 
 /**
@@ -195,6 +195,9 @@ function scenarios(now: Date): DemoScenario[] {
     openDealsCount: 1
   }
 
+  const finalSubject = `Final notice sent - invoice ${harbor.invoiceNumber} (${harbor.daysOverdue} days overdue)`
+  const finalNote = `Invoice ${harbor.invoiceNumber} for USD ${harbor.amountDue} is ${harbor.daysOverdue} days overdue. A final notice has been emailed automatically. Call the client before taking it further.`
+
   const finalNotice: DemoScenario = {
     id: 'final',
     label: 'Daily 8:00 · final notice',
@@ -205,8 +208,11 @@ function scenarios(now: Date): DemoScenario[] {
       'Slack - Alert Owner Before Final Notice': { ok: true, channel: 'collections', ts: '1762652101.000300' },
       'Pipedrive - Log Final Notice': {
         id: 55301,
-        subject: `Final notice sent: ${harbor.invoiceNumber}`,
-        type: 'email'
+        subject: finalSubject,
+        type: 'call',
+        due_date: dayFrom(now, 1),
+        note: finalNote,
+        org_name: harbor.customerName
       },
       'AI Model - Write Email': { model: 'gpt-4o-mini', tokenUsage: { promptTokens: 655, completionTokens: 131 } },
       'AI Writes Reminder Email': { text: reminderBody(harbor, dayFrom(now, -34), true) },
@@ -251,6 +257,19 @@ function scenarios(now: Date): DemoScenario[] {
         time: sent
       },
       {
+        kind: 'record',
+        node: 'Pipedrive - Log Final Notice',
+        app: 'Pipedrive',
+        title: finalSubject,
+        badge: 'Call · due tomorrow',
+        fields: [
+          { label: 'Organisation', value: harbor.customerName },
+          { label: 'Assigned to', value: harbor.accountOwner },
+          { label: 'Due', value: dayFrom(now, 1) },
+          { label: 'Note', value: finalNote }
+        ]
+      },
+      {
         kind: 'airtable',
         node: 'Airtable - Update Dashboard',
         ...DASHBOARD,
@@ -283,6 +302,9 @@ function scenarios(now: Date): DemoScenario[] {
     dispute_status: 'none'
   }
 
+  const disputeNote = `Customer disputed invoice ${northgate.invoiceNumber}.\n\nReason given: ${reason}\n\nReminders have been STOPPED for this invoice. They won't restart until dispute_status is cleared in the collection_state table.`
+  const disputeFile = `dispute_${northgate.invoiceNumber}_${today.replaceAll('-', '')}-${now.toLocaleTimeString('en-GB', { timeZone: CENTRAL, hour12: false }).replaceAll(':', '')}.txt`
+
   const dispute: DemoScenario = {
     id: 'dispute',
     label: 'Reply · disputes the hours',
@@ -306,13 +328,16 @@ function scenarios(now: Date): DemoScenario[] {
       'Postgres - STOP REMINDERS (Dispute)': { ...state, dispute_status: 'open', collection_stage: 'disputed' },
       'Pipedrive - Create Dispute Activity': {
         id: 55318,
-        subject: `Invoice dispute: ${northgate.invoiceNumber}`,
-        type: 'task'
+        subject: `Invoice dispute raised - ${northgate.invoiceNumber}`,
+        type: 'task',
+        due_date: today,
+        note: disputeNote
       },
       'Slack - Dispute Alert': { ok: true, channel: 'collections', ts: '1762652544.000500' },
       'Drive - Save Dispute Emails': {
         id: '1dispNorthgateTB1204',
-        name: `Dispute - ${northgate.invoiceNumber} - ${northgate.customerName}.txt`
+        name: disputeFile,
+        mimeType: 'text/plain'
       },
       'Postgres - Log Reply': {
         invoice_id: northgate.invoiceId,
@@ -357,6 +382,32 @@ function scenarios(now: Date): DemoScenario[] {
           { label: 'next_action_date', value: 'NULL (reminders stopped)' },
           { label: 'last_response', value: today }
         ]
+      },
+      {
+        kind: 'record',
+        node: 'Pipedrive - Create Dispute Activity',
+        app: 'Pipedrive',
+        title: `Invoice dispute raised - ${northgate.invoiceNumber}`,
+        badge: 'Task · due today',
+        fields: [
+          { label: 'Organisation', value: northgate.customerName },
+          { label: 'Assigned to', value: northgate.accountOwner },
+          { label: 'Reason given', value: reason },
+          {
+            label: 'Note',
+            value: 'Reminders have been STOPPED for this invoice. They won’t restart until dispute_status is cleared.'
+          }
+        ]
+      },
+      {
+        kind: 'drive',
+        node: 'Drive - Save Dispute Emails',
+        path: ['My Drive'],
+        files: [
+          { name: disputeFile, type: 'text', modified: `${clock(now)} me`, size: '1 KB' },
+          { name: 'dispute_TB-1088_20261021-143212.txt', type: 'text', modified: 'Oct 21 me', size: '1 KB' }
+        ],
+        added: [0]
       },
       {
         kind: 'airtable',

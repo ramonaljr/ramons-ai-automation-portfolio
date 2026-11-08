@@ -343,6 +343,17 @@ function scenarios(now: Date): DemoScenario[] {
         ]
       },
       {
+        kind: 'calendar',
+        node: 'Delete an event',
+        title: 'Primary consultation – Luis Ortega',
+        date: when,
+        time: '10:30 – 11:00am (Central)',
+        meet: true,
+        cancelled: true,
+        guests: ['you@example.com (organizer)', 'luis.ortega@example.com'],
+        note: 'Cancel note: Travelling that week.'
+      },
+      {
         kind: 'airtable',
         node: 'Update Record to Cancel',
         file: appointments.file,

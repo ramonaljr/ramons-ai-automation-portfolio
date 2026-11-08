@@ -161,16 +161,35 @@ function scenarios(now: Date): DemoScenario[] {
     },
     outcomes: [
       {
-        kind: 'record',
+        kind: 'drive',
         node: '7. Create Folder',
-        app: 'Google Drive',
-        title: harbor.company,
-        badge: 'Folder created',
-        fields: [
-          { label: 'Location', value: 'My Drive › Clients' },
-          { label: 'Link', value: folder.replace('https://', '') },
-          { label: 'Task added', value: 'Social Media Content, linked to the lead' }
-        ]
+        path: ['My Drive', 'Clients'],
+        files: [
+          { name: harbor.company, type: 'folder', modified: `${time} me` },
+          { name: 'Blue Fern Studio', type: 'folder', modified: 'Oct 14 me' },
+          { name: 'Ridgeway Builders', type: 'folder', modified: 'Oct 2 me' }
+        ],
+        added: [0]
+      },
+      {
+        kind: 'airtable',
+        node: '13. Create Record',
+        ...LEADS,
+        table: 'Tasks',
+        columns: ['Task', 'Lead', 'Notes'],
+        rows: [
+          [
+            'Social Media Content',
+            'Blue Fern Studio',
+            'Save drafts and final assets in the client folder: drive.google.com/drive/folders/1Bf…'
+          ],
+          [
+            'Social Media Content',
+            harbor.company,
+            `Save drafts and final assets in the client folder: ${folder.replace('https://', '')}`
+          ]
+        ],
+        highlight: 1
       },
       leadsTable(harbor, '14. Update Record', 'Ready to Start', [...harbor.handled, 'Ready to Start'], readyLog)
     ]
