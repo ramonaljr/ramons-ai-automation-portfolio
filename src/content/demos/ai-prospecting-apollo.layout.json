@@ -1,0 +1,687 @@
+{
+  "platform": "n8n",
+  "name": "Harbourline Payroll Services - AI Prospecting with Apollo",
+  "bounds": {
+    "x": -64,
+    "y": 128,
+    "x2": 4720,
+    "y2": 2048
+  },
+  "stickies": [
+    {
+      "x": -64,
+      "y": 128,
+      "w": 1404,
+      "h": 600,
+      "color": 7,
+      "title": "1 · Find new prospects - free"
+    },
+    {
+      "x": 1360,
+      "y": 128,
+      "w": 450,
+      "h": 600,
+      "color": 4,
+      "title": "2 · Enrich - uses credits"
+    },
+    {
+      "x": 1824,
+      "y": 128,
+      "w": 700,
+      "h": 600,
+      "color": 5,
+      "title": "3 · Score by rules, read the website"
+    },
+    {
+      "x": 2528,
+      "y": 128,
+      "w": 640,
+      "h": 600,
+      "color": 6,
+      "title": "4 · AI researches & drafts - grounded only"
+    },
+    {
+      "x": 3200,
+      "y": 128,
+      "w": 930,
+      "h": 600,
+      "color": 2,
+      "title": "5 · Review queue"
+    },
+    {
+      "x": -64,
+      "y": 752,
+      "w": 3480,
+      "h": 832,
+      "color": 4,
+      "title": "6 · Approved → Pipedrive"
+    },
+    {
+      "x": -64,
+      "y": 1600,
+      "w": 1100,
+      "h": 448,
+      "color": 3,
+      "title": "7 · If something breaks"
+    },
+    {
+      "x": 4160,
+      "y": 128,
+      "w": 560,
+      "h": 820,
+      "color": 3,
+      "title": "Sample client: Harbourline Payroll Services (fictional)"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Prospecting Request Form",
+      "type": "formTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 352,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Clean Up Request",
+      "type": "set",
+      "shape": "default",
+      "x": 224,
+      "y": 352,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Apollo - Search People",
+      "type": "httpRequest",
+      "shape": "default",
+      "x": 448,
+      "y": 352,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Load Known Prospects",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 672,
+      "y": 352,
+      "w": 100,
+      "h": 100,
+      "subtitle": "append: sheet"
+    },
+    {
+      "name": "Shortlist New Prospects",
+      "type": "code",
+      "shape": "default",
+      "x": 896,
+      "y": 352,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Anything To Enrich?",
+      "type": "if",
+      "shape": "default",
+      "x": 1120,
+      "y": 352,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Apollo - Enrich Contacts",
+      "type": "httpRequest",
+      "shape": "default",
+      "x": 1520,
+      "y": 336,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Slack - No New Prospects",
+      "type": "slack",
+      "shape": "default",
+      "x": 1520,
+      "y": 560,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Flatten & Score Leads",
+      "type": "code",
+      "shape": "default",
+      "x": 1888,
+      "y": 336,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Fetch Company Website",
+      "type": "httpRequest",
+      "shape": "default",
+      "x": 2096,
+      "y": 336,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Prepare Website Text",
+      "type": "code",
+      "shape": "default",
+      "x": 2304,
+      "y": 336,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "AI Researches & Drafts Email",
+      "type": "informationExtractor",
+      "shape": "root",
+      "x": 2704,
+      "y": 336,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "AI Model - Write Email",
+      "type": "lmChatOpenAi",
+      "shape": "sub",
+      "x": 2704,
+      "y": 576,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Set Final Status",
+      "type": "code",
+      "shape": "default",
+      "x": 3280,
+      "y": 336,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Save To Prospects Sheet",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 3488,
+      "y": 336,
+      "w": 100,
+      "h": 100,
+      "subtitle": "appendOrUpdate: sheet"
+    },
+    {
+      "name": "Build Review Digest",
+      "type": "code",
+      "shape": "default",
+      "x": 3696,
+      "y": 336,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Slack - Review Digest",
+      "type": "slack",
+      "shape": "default",
+      "x": 3888,
+      "y": 336,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Every 15 Minutes",
+      "type": "scheduleTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 1200,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Find Approved Prospects",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 224,
+      "y": 1200,
+      "w": 100,
+      "h": 100,
+      "subtitle": "append: sheet"
+    },
+    {
+      "name": "Slack - Added To CRM",
+      "type": "slack",
+      "shape": "default",
+      "x": 672,
+      "y": 1040,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Find Org In Pipedrive",
+      "type": "pipedrive",
+      "shape": "default",
+      "x": 896,
+      "y": 1200,
+      "w": 100,
+      "h": 100,
+      "subtitle": "search: organization"
+    },
+    {
+      "name": "Loop Over Prospects",
+      "type": "splitInBatches",
+      "shape": "default",
+      "x": 448,
+      "y": 1200,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "done",
+        "loop"
+      ]
+    },
+    {
+      "name": "Org Exists?",
+      "type": "if",
+      "shape": "default",
+      "x": 1120,
+      "y": 1200,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Remember Org ID",
+      "type": "set",
+      "shape": "default",
+      "x": 1568,
+      "y": 1184,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Create Org In Pipedrive",
+      "type": "pipedrive",
+      "shape": "default",
+      "x": 1344,
+      "y": 1360,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: organization"
+    },
+    {
+      "name": "Find Person In Pipedrive",
+      "type": "pipedrive",
+      "shape": "default",
+      "x": 1792,
+      "y": 1184,
+      "w": 100,
+      "h": 100,
+      "subtitle": "search: person"
+    },
+    {
+      "name": "Person Exists?",
+      "type": "if",
+      "shape": "default",
+      "x": 2032,
+      "y": 1184,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Remember Person ID",
+      "type": "set",
+      "shape": "default",
+      "x": 2464,
+      "y": 1168,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Create Person In Pipedrive",
+      "type": "pipedrive",
+      "shape": "default",
+      "x": 2240,
+      "y": 1360,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: person"
+    },
+    {
+      "name": "Create Deal",
+      "type": "pipedrive",
+      "shape": "default",
+      "x": 2688,
+      "y": 1168,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: deal"
+    },
+    {
+      "name": "Pin Research & Email To Deal",
+      "type": "pipedrive",
+      "shape": "default",
+      "x": 3136,
+      "y": 1168,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: note"
+    },
+    {
+      "name": "Mark As In CRM",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 2912,
+      "y": 1168,
+      "w": 100,
+      "h": 100,
+      "subtitle": "update: sheet"
+    },
+    {
+      "name": "When Workflow Fails",
+      "type": "errorTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 1824,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Build Error Summary",
+      "type": "set",
+      "shape": "default",
+      "x": 224,
+      "y": 1824,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Slack - Workflow Failed",
+      "type": "slack",
+      "shape": "default",
+      "x": 448,
+      "y": 1824,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Row Ready For CRM?",
+      "type": "if",
+      "shape": "default",
+      "x": 672,
+      "y": 1216,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Flag Row For Fixing",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 896,
+      "y": 1360,
+      "w": 100,
+      "h": 100,
+      "subtitle": "update: sheet"
+    }
+  ],
+  "edges": [
+    {
+      "from": "Prospecting Request Form",
+      "to": "Clean Up Request",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Clean Up Request",
+      "to": "Apollo - Search People",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Apollo - Search People",
+      "to": "Load Known Prospects",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Load Known Prospects",
+      "to": "Shortlist New Prospects",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Shortlist New Prospects",
+      "to": "Anything To Enrich?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Anything To Enrich?",
+      "to": "Apollo - Enrich Contacts",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Anything To Enrich?",
+      "to": "Slack - No New Prospects",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Apollo - Enrich Contacts",
+      "to": "Flatten & Score Leads",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Flatten & Score Leads",
+      "to": "Fetch Company Website",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Fetch Company Website",
+      "to": "Prepare Website Text",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Prepare Website Text",
+      "to": "AI Researches & Drafts Email",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "AI Researches & Drafts Email",
+      "to": "Set Final Status",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "AI Model - Write Email",
+      "to": "AI Researches & Drafts Email",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Set Final Status",
+      "to": "Save To Prospects Sheet",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Save To Prospects Sheet",
+      "to": "Build Review Digest",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Build Review Digest",
+      "to": "Slack - Review Digest",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Every 15 Minutes",
+      "to": "Find Approved Prospects",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Approved Prospects",
+      "to": "Loop Over Prospects",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Org In Pipedrive",
+      "to": "Org Exists?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Loop Over Prospects",
+      "to": "Slack - Added To CRM",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Loop Over Prospects",
+      "to": "Row Ready For CRM?",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Org Exists?",
+      "to": "Remember Org ID",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Org Exists?",
+      "to": "Create Org In Pipedrive",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Remember Org ID",
+      "to": "Find Person In Pipedrive",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Create Org In Pipedrive",
+      "to": "Remember Org ID",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Person In Pipedrive",
+      "to": "Person Exists?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Person Exists?",
+      "to": "Remember Person ID",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Person Exists?",
+      "to": "Create Person In Pipedrive",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Remember Person ID",
+      "to": "Create Deal",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Create Person In Pipedrive",
+      "to": "Remember Person ID",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "When Workflow Fails",
+      "to": "Build Error Summary",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Build Error Summary",
+      "to": "Slack - Workflow Failed",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Create Deal",
+      "to": "Mark As In CRM",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Mark As In CRM",
+      "to": "Pin Research & Email To Deal",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Pin Research & Email To Deal",
+      "to": "Loop Over Prospects",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Row Ready For CRM?",
+      "to": "Find Org In Pipedrive",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Row Ready For CRM?",
+      "to": "Flag Row For Fixing",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Flag Row For Fixing",
+      "to": "Loop Over Prospects",
+      "kind": "main",
+      "output": 0
+    }
+  ]
+}

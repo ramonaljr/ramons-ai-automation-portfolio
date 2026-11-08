@@ -1,0 +1,894 @@
+{
+  "platform": "n8n",
+  "name": "Braewick Construction Group - AI Invoice Processing & Approval",
+  "bounds": {
+    "x": -64,
+    "y": -64,
+    "x2": 7672,
+    "y2": 1476
+  },
+  "stickies": [
+    {
+      "x": 7152,
+      "y": -64,
+      "w": 520,
+      "h": 620,
+      "color": 3,
+      "title": "Sample client: Braewick Construction Group (fictional)"
+    },
+    {
+      "x": 7152,
+      "y": 608,
+      "w": 520,
+      "h": 440,
+      "color": 4,
+      "title": "How invoices are checked"
+    },
+    {
+      "x": -64,
+      "y": -64,
+      "w": 1424,
+      "h": 980,
+      "color": 7,
+      "title": "1 · Receive the invoice"
+    },
+    {
+      "x": 1376,
+      "y": -64,
+      "w": 950,
+      "h": 980,
+      "color": 4,
+      "title": "2 · Skip duplicates"
+    },
+    {
+      "x": 2336,
+      "y": -64,
+      "w": 560,
+      "h": 980,
+      "color": 6,
+      "title": "3 · AI reads the invoice"
+    },
+    {
+      "x": 2912,
+      "y": -64,
+      "w": 1830,
+      "h": 980,
+      "color": 5,
+      "title": "4 · Compare with records"
+    },
+    {
+      "x": 4752,
+      "y": -64,
+      "w": 930,
+      "h": 980,
+      "color": 2,
+      "title": "5 · Approval"
+    },
+    {
+      "x": 5680,
+      "y": -64,
+      "w": 1400,
+      "h": 980,
+      "color": 4,
+      "title": "6 · Add to QuickBooks & log"
+    },
+    {
+      "x": -64,
+      "y": 928,
+      "w": 1100,
+      "h": 548,
+      "color": 3,
+      "title": "7 · If something breaks"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "New Invoice Email",
+      "type": "gmailTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 320,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Has PDF Attachment?",
+      "type": "if",
+      "shape": "default",
+      "x": 448,
+      "y": 528,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Ignore - Not An Invoice",
+      "type": "noOp",
+      "shape": "default",
+      "x": 672,
+      "y": 704,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Extract PDF Text",
+      "type": "extractFromFile",
+      "shape": "default",
+      "x": 672,
+      "y": 512,
+      "w": 100,
+      "h": 100,
+      "subtitle": "Extract from PDF"
+    },
+    {
+      "name": "Text Extracted?",
+      "type": "if",
+      "shape": "default",
+      "x": 896,
+      "y": 512,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Create Invoice ID",
+      "type": "set",
+      "shape": "default",
+      "x": 1424,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Alert - Scanned PDF, Enter Manually",
+      "type": "slack",
+      "shape": "default",
+      "x": 1120,
+      "y": 592,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Seen This Invoice Before?",
+      "type": "if",
+      "shape": "default",
+      "x": 1872,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Alert - Duplicate Invoice",
+      "type": "slack",
+      "shape": "default",
+      "x": 1872,
+      "y": 704,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "AI Reads Invoice",
+      "type": "informationExtractor",
+      "shape": "root",
+      "x": 2400,
+      "y": 512,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "OpenAI Chat Model",
+      "type": "lmChatOpenAi",
+      "shape": "sub",
+      "x": 2400,
+      "y": 704,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "AI Sure Of The Details?",
+      "type": "if",
+      "shape": "default",
+      "x": 2960,
+      "y": 512,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Find Purchase Order Record",
+      "type": "airtable",
+      "shape": "default",
+      "x": 3952,
+      "y": 512,
+      "w": 100,
+      "h": 100,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Ask Team To Check Details",
+      "type": "slack",
+      "shape": "default",
+      "x": 3168,
+      "y": 720,
+      "w": 100,
+      "h": 100,
+      "subtitle": "sendAndWait: message"
+    },
+    {
+      "name": "Find Delivery Record (Airtable)",
+      "type": "airtable",
+      "shape": "default",
+      "x": 4304,
+      "y": 512,
+      "w": 100,
+      "h": 100,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Check Invoice & Flag Issues",
+      "type": "code",
+      "shape": "default",
+      "x": 4480,
+      "y": 720,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Any Issues Found?",
+      "type": "switch",
+      "shape": "default",
+      "x": 4784,
+      "y": 512,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "exception",
+        "clean"
+      ]
+    },
+    {
+      "name": "Review Invoice With Issues",
+      "type": "slack",
+      "shape": "default",
+      "x": 5008,
+      "y": 320,
+      "w": 100,
+      "h": 100,
+      "subtitle": "sendAndWait: message"
+    },
+    {
+      "name": "Approve Clean Invoice",
+      "type": "slack",
+      "shape": "default",
+      "x": 5008,
+      "y": 704,
+      "w": 100,
+      "h": 100,
+      "subtitle": "sendAndWait: message"
+    },
+    {
+      "name": "Approved?",
+      "type": "if",
+      "shape": "default",
+      "x": 5456,
+      "y": 512,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Add Bill To QuickBooks",
+      "type": "quickbooks",
+      "shape": "default",
+      "x": 6400,
+      "y": 288,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: bill"
+    },
+    {
+      "name": "Alert - Invoice Rejected",
+      "type": "slack",
+      "shape": "default",
+      "x": 5728,
+      "y": 720,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Mark Email As Read",
+      "type": "gmail",
+      "shape": "default",
+      "x": 6848,
+      "y": 704,
+      "w": 100,
+      "h": 100,
+      "subtitle": "markAsRead: message"
+    },
+    {
+      "name": "Search Invoice Log",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 1648,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "subtitle": "append: sheet"
+    },
+    {
+      "name": "Save To Invoice Log",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 6608,
+      "y": 704,
+      "w": 100,
+      "h": 100,
+      "subtitle": "append: sheet"
+    },
+    {
+      "name": "When Workflow Fails",
+      "type": "errorTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 1200,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Build Error Summary",
+      "type": "set",
+      "shape": "default",
+      "x": 224,
+      "y": 1200,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Alert - Workflow Failed",
+      "type": "slack",
+      "shape": "default",
+      "x": 448,
+      "y": 1168,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Log Error To Sheet",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 448,
+      "y": 1312,
+      "w": 100,
+      "h": 100,
+      "subtitle": "append: sheet"
+    },
+    {
+      "name": "Team Confirmed?",
+      "type": "if",
+      "shape": "default",
+      "x": 3392,
+      "y": 720,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Stopped - Enter Manually",
+      "type": "noOp",
+      "shape": "default",
+      "x": 3616,
+      "y": 736,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Find PDF Attachment",
+      "type": "code",
+      "shape": "default",
+      "x": 224,
+      "y": 528,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Search Log By Invoice Number",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 3584,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "subtitle": "append: sheet"
+    },
+    {
+      "name": "Invoice Number Already Posted?",
+      "type": "if",
+      "shape": "default",
+      "x": 3760,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Find QuickBooks Vendor",
+      "type": "quickbooks",
+      "shape": "default",
+      "x": 5952,
+      "y": 304,
+      "w": 100,
+      "h": 100,
+      "subtitle": "getAll: vendor"
+    },
+    {
+      "name": "Vendor In QuickBooks?",
+      "type": "if",
+      "shape": "default",
+      "x": 6176,
+      "y": 304,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Alert - Vendor Not In QuickBooks",
+      "type": "slack",
+      "shape": "default",
+      "x": 6400,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Mark Skipped Email As Read",
+      "type": "gmail",
+      "shape": "default",
+      "x": 2096,
+      "y": 704,
+      "w": 100,
+      "h": 100,
+      "subtitle": "markAsRead: message"
+    },
+    {
+      "name": "Hand Each Email To Its Own Run",
+      "type": "executeWorkflow",
+      "shape": "default",
+      "x": 224,
+      "y": 320,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Process One Invoice Email",
+      "type": "executeWorkflowTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 528,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Answered In Time?",
+      "type": "if",
+      "shape": "default",
+      "x": 5232,
+      "y": 528,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Alert - No Decision In Time",
+      "type": "slack",
+      "shape": "default",
+      "x": 5456,
+      "y": 704,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Expense Account Known?",
+      "type": "if",
+      "shape": "default",
+      "x": 5728,
+      "y": 320,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Alert - No Expense Account",
+      "type": "slack",
+      "shape": "default",
+      "x": 5952,
+      "y": 528,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Find Purchase Order",
+      "type": "code",
+      "shape": "default",
+      "x": 4128,
+      "y": 512,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Find Delivery Record",
+      "type": "code",
+      "shape": "default",
+      "x": 4480,
+      "y": 512,
+      "w": 100,
+      "h": 100
+    }
+  ],
+  "edges": [
+    {
+      "from": "Has PDF Attachment?",
+      "to": "Extract PDF Text",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Has PDF Attachment?",
+      "to": "Ignore - Not An Invoice",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Extract PDF Text",
+      "to": "Text Extracted?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Text Extracted?",
+      "to": "Create Invoice ID",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Text Extracted?",
+      "to": "Alert - Scanned PDF, Enter Manually",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "OpenAI Chat Model",
+      "to": "AI Reads Invoice",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Approved?",
+      "to": "Expense Account Known?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Approved?",
+      "to": "Alert - Invoice Rejected",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Build Error Summary",
+      "to": "Alert - Workflow Failed",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Build Error Summary",
+      "to": "Log Error To Sheet",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Seen This Invoice Before?",
+      "to": "Alert - Duplicate Invoice",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Seen This Invoice Before?",
+      "to": "AI Reads Invoice",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "AI Sure Of The Details?",
+      "to": "Search Log By Invoice Number",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "AI Sure Of The Details?",
+      "to": "Ask Team To Check Details",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Any Issues Found?",
+      "to": "Review Invoice With Issues",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Any Issues Found?",
+      "to": "Approve Clean Invoice",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Add Bill To QuickBooks",
+      "to": "Save To Invoice Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Alert - Invoice Rejected",
+      "to": "Save To Invoice Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Search Invoice Log",
+      "to": "Seen This Invoice Before?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Save To Invoice Log",
+      "to": "Mark Email As Read",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "When Workflow Fails",
+      "to": "Build Error Summary",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Create Invoice ID",
+      "to": "Search Invoice Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "AI Reads Invoice",
+      "to": "AI Sure Of The Details?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Check Invoice & Flag Issues",
+      "to": "Any Issues Found?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Ask Team To Check Details",
+      "to": "Team Confirmed?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Team Confirmed?",
+      "to": "Search Log By Invoice Number",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Team Confirmed?",
+      "to": "Stopped - Enter Manually",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Find PDF Attachment",
+      "to": "Has PDF Attachment?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Search Log By Invoice Number",
+      "to": "Invoice Number Already Posted?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Invoice Number Already Posted?",
+      "to": "Alert - Duplicate Invoice",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Invoice Number Already Posted?",
+      "to": "Find Purchase Order Record",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Find QuickBooks Vendor",
+      "to": "Vendor In QuickBooks?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Vendor In QuickBooks?",
+      "to": "Add Bill To QuickBooks",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Vendor In QuickBooks?",
+      "to": "Alert - Vendor Not In QuickBooks",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Alert - Vendor Not In QuickBooks",
+      "to": "Save To Invoice Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Ignore - Not An Invoice",
+      "to": "Mark Skipped Email As Read",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Alert - Scanned PDF, Enter Manually",
+      "to": "Mark Skipped Email As Read",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Alert - Duplicate Invoice",
+      "to": "Mark Skipped Email As Read",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Stopped - Enter Manually",
+      "to": "Mark Skipped Email As Read",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "New Invoice Email",
+      "to": "Hand Each Email To Its Own Run",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Process One Invoice Email",
+      "to": "Find PDF Attachment",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Review Invoice With Issues",
+      "to": "Answered In Time?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Approve Clean Invoice",
+      "to": "Answered In Time?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Answered In Time?",
+      "to": "Approved?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Answered In Time?",
+      "to": "Alert - No Decision In Time",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Alert - No Decision In Time",
+      "to": "Save To Invoice Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Expense Account Known?",
+      "to": "Find QuickBooks Vendor",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Expense Account Known?",
+      "to": "Alert - No Expense Account",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Alert - No Expense Account",
+      "to": "Save To Invoice Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Purchase Order Record",
+      "to": "Find Purchase Order",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Purchase Order",
+      "to": "Find Delivery Record (Airtable)",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Delivery Record (Airtable)",
+      "to": "Find Delivery Record",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Delivery Record",
+      "to": "Check Invoice & Flag Issues",
+      "kind": "main",
+      "output": 0
+    }
+  ]
+}

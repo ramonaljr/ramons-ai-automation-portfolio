@@ -1,0 +1,630 @@
+/* The interactive n8n build (n8n-demo.tsx).
+   Colours are taken from the build screenshots, which are the n8n editor in
+   its dark theme: a #232323 canvas, #363636 nodes with a hairline border,
+   brown sticky-note groups. Sizes are n8n's canvas units; the whole world is
+   scaled, so text and strokes scale with it, as they do in the editor. */
+
+.n8n-demo {
+  --n8n-canvas: #232323;
+  --n8n-node: #363636;
+  --n8n-border: #8a8a92;
+  --n8n-edge: #9d9da3;
+  --n8n-text: #ececec;
+  --n8n-muted: #a3a3a8;
+  --n8n-success: #29a568;
+  --n8n-running: #ff6d5a;
+  --n8n-waiting: #f2a640;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: var(--n8n-canvas);
+  background-image: radial-gradient(circle, #343434 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  color: var(--n8n-text);
+  font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.n8n-demo[data-panning] {
+  cursor: grabbing;
+}
+
+.n8n-world[data-glide] {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.n8n-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  transform-origin: 0 0;
+}
+
+/* ── Groups ─────────────────────────────────────────────────────────────── */
+
+.n8n-sticky {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 14px 18px;
+  border: 1px solid #94622c;
+  border-radius: 6px;
+  background: #7b4815;
+  color: #f1dcc4;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.n8n-sticky[data-color='2'] {
+  background: #7a3f1d;
+  border-color: #9a5a32;
+}
+.n8n-sticky[data-color='3'] {
+  background: #6b2a2c;
+  border-color: #8c4446;
+}
+.n8n-sticky[data-color='4'] {
+  background: #2f5131;
+  border-color: #4a6e4b;
+}
+.n8n-sticky[data-color='5'] {
+  background: #24465f;
+  border-color: #3d627c;
+}
+.n8n-sticky[data-color='6'] {
+  background: #463466;
+  border-color: #614d82;
+}
+.n8n-sticky[data-color='7'] {
+  background: #3b3b3d;
+  border-color: #565659;
+}
+
+/* ── Connections ────────────────────────────────────────────────────────── */
+
+.n8n-edges {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.n8n-edges path {
+  fill: none;
+  stroke: var(--n8n-edge);
+  stroke-width: 2;
+  transition: stroke 0.25s ease;
+}
+
+.n8n-edges g[data-kind='ai'] path {
+  stroke-dasharray: 6 5;
+}
+
+.n8n-edges g[data-lit] path {
+  stroke: var(--n8n-success);
+  stroke-width: 2.5;
+}
+
+.n8n-edges text {
+  fill: var(--n8n-success);
+  font-size: 14px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--n8n-canvas);
+  stroke-width: 4px;
+}
+
+.n8n-open-end path {
+  stroke: var(--n8n-edge);
+}
+
+.n8n-open-end rect {
+  fill: var(--n8n-node);
+  stroke: var(--n8n-edge);
+  stroke-width: 1.5;
+}
+
+/* ── Nodes ──────────────────────────────────────────────────────────────── */
+
+.n8n-node {
+  position: absolute;
+  display: grid;
+  box-sizing: border-box;
+  place-items: center;
+  padding: 0;
+  border: 2px solid var(--n8n-border);
+  border-radius: 8px;
+  background: var(--n8n-node);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.n8n-node:hover {
+  border-color: #c9c9cf;
+}
+
+.n8n-node:focus-visible {
+  outline: 3px solid #ff6d5a;
+  outline-offset: 3px;
+}
+
+.n8n-node[data-shape='trigger'] {
+  border-radius: 40px 8px 8px 40px;
+}
+
+.n8n-node[data-shape='sub'] {
+  border-radius: 50%;
+}
+
+.n8n-node[data-shape='tool'] {
+  border-radius: 999px;
+}
+
+.n8n-node[data-shape='root'],
+.n8n-node[data-shape='tool'] {
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  padding-inline: 26px 18px;
+  justify-items: start;
+}
+
+.n8n-node[data-state='success'] {
+  border-color: var(--n8n-success);
+}
+
+.n8n-node[data-state='running'] {
+  border-color: var(--n8n-running);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--n8n-running) 28%, transparent);
+}
+
+.n8n-node[data-state='waiting'] {
+  border-color: var(--n8n-waiting);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--n8n-waiting) 28%, transparent);
+}
+
+.n8n-node-icon {
+  display: grid;
+  place-items: center;
+}
+
+/* Brand logos keep their colour here; elsewhere on the site they rest in ink. */
+.n8n-demo .tool-mark {
+  background-color: var(--tool-color);
+}
+
+.n8n-node-inline {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.n8n-trigger-bolt {
+  position: absolute;
+  top: 50%;
+  left: -30px;
+  color: #ff6d5a;
+  transform: translateY(-50%);
+}
+
+.n8n-node-check {
+  position: absolute;
+  right: 6px;
+  bottom: 5px;
+  color: var(--n8n-success);
+}
+
+.n8n-node[data-shape='sub'] .n8n-node-check {
+  right: 14px;
+  bottom: 10px;
+}
+
+.n8n-node-spin {
+  position: absolute;
+  right: 6px;
+  bottom: 5px;
+  color: var(--n8n-running);
+}
+
+.n8n-node[data-state='waiting'] .n8n-node-spin {
+  color: var(--n8n-waiting);
+}
+
+.n8n-node[data-state='running'] .n8n-node-spin svg {
+  animation: n8n-spin 0.9s linear infinite;
+}
+
+.n8n-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--n8n-border);
+  border-radius: 50%;
+  background: #2b2b2b;
+  transform: translate(-50%, -50%);
+}
+
+.n8n-handle[data-side='in'] {
+  top: 50%;
+  left: -1px;
+}
+
+.n8n-handle[data-side='out'] {
+  left: calc(100% + 1px);
+}
+
+.n8n-handle[data-side='top'] {
+  top: -1px;
+  left: 50%;
+}
+
+.n8n-handle-label {
+  position: absolute;
+  bottom: 8px;
+  left: 12px;
+  color: var(--n8n-muted);
+  font-size: 13px;
+}
+
+.n8n-port {
+  position: absolute;
+  top: 100%;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--n8n-border);
+  border-radius: 50%;
+  background: #2b2b2b;
+  transform: translate(-50%, -50%);
+}
+
+.n8n-port-label {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  color: var(--n8n-muted);
+  font-size: 11px;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.n8n-port-add {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 1.5px solid var(--n8n-edge);
+  border-radius: 4px;
+  background: var(--n8n-node);
+  color: var(--n8n-muted);
+  font-size: 15px;
+  line-height: 1;
+  transform: translateX(-50%);
+}
+
+.n8n-node-label {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  display: flex;
+  width: 150px;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* Sub-nodes sit 144 units apart; n8n wraps their names rather than let them meet. */
+.n8n-node[data-shape='sub'] .n8n-node-label {
+  width: 124px;
+}
+
+.n8n-node-name {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--n8n-text);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.n8n-node-subtitle {
+  color: var(--n8n-muted);
+  font-size: 12.5px;
+}
+
+/* ── Editor chrome, in screen pixels ────────────────────────────────────── */
+
+.n8n-toolbar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  left: 12px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.n8n-scenarios {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.n8n-scenario {
+  padding: 6px 12px;
+  border: 1px solid #4a4a4f;
+  border-radius: 999px;
+  background: #2b2b2e;
+  color: #cfcfd4;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.n8n-scenario:hover:not(:disabled) {
+  border-color: #77777e;
+}
+
+.n8n-scenario[aria-checked='true'] {
+  border-color: #ff6d5a;
+  background: color-mix(in oklab, #ff6d5a 18%, #2b2b2e);
+  color: #fff;
+}
+
+.n8n-scenario:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.n8n-hint {
+  overflow: hidden;
+  padding-left: 4px;
+  color: var(--n8n-muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.n8n-execute {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: #ff6d5a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 18px -8px rgb(255 109 90 / 0.8);
+  transition: background-color 0.2s ease;
+}
+
+.n8n-execute:hover:not(:disabled) {
+  background: #ff8573;
+}
+
+.n8n-execute:disabled {
+  cursor: progress;
+  opacity: 0.85;
+}
+
+.n8n-spin {
+  animation: n8n-spin 0.9s linear infinite;
+}
+
+.n8n-zoom {
+  position: absolute;
+  bottom: 14px;
+  left: 12px;
+  z-index: 3;
+  display: flex;
+  gap: 4px;
+}
+
+.n8n-zoom button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid #4a4a4f;
+  border-radius: 6px;
+  background: #2b2b2e;
+  color: #d6d6db;
+  cursor: pointer;
+}
+
+.n8n-zoom button:hover {
+  border-color: #77777e;
+}
+
+.n8n-note {
+  position: absolute;
+  right: 14px;
+  bottom: 20px;
+  z-index: 3;
+  margin: 0;
+  color: #8a8a90;
+  font-size: 11.5px;
+}
+
+.n8n-status {
+  position: absolute;
+  top: 56px;
+  right: 12px;
+  z-index: 3;
+  max-width: 60%;
+  margin: 0;
+  padding: 0;
+  color: #d6d6db;
+  font-size: 12.5px;
+  text-align: right;
+}
+
+.n8n-status:not(:empty) {
+  padding: 6px 10px;
+  border: 1px solid #45454a;
+  border-radius: 6px;
+  background: rgb(35 35 35 / 0.88);
+}
+
+.n8n-status[data-tone='done'] {
+  border-color: color-mix(in oklab, var(--n8n-success) 60%, #45454a);
+  color: #b9f0d1;
+}
+
+.n8n-status[data-tone='wait'] {
+  border-color: color-mix(in oklab, var(--n8n-waiting) 60%, #45454a);
+  color: #ffdcae;
+}
+
+/* ── Output panel ───────────────────────────────────────────────────────── */
+
+.n8n-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  width: min(440px, 88%);
+  flex-direction: column;
+  border-left: 1px solid #45454a;
+  background: #2b2b2e;
+  box-shadow: -18px 0 40px -20px rgb(0 0 0 / 0.7);
+  user-select: text;
+}
+
+.n8n-panel header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid #3c3c40;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.n8n-panel header span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.n8n-panel header button {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #c9c9ce;
+  cursor: pointer;
+}
+
+.n8n-panel header button:hover {
+  background: #3a3a3e;
+}
+
+.n8n-panel-tab {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #3c3c40;
+  color: var(--n8n-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.n8n-panel-body {
+  flex: 1;
+  overflow: auto;
+  padding: 12px 14px 72px;
+  overscroll-behavior: contain;
+}
+
+.n8n-panel-body p {
+  margin: 0;
+  color: var(--n8n-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.n8n-json {
+  margin: 0;
+  color: #d4d4d8;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.n8n-json [data-kind='key'] {
+  color: #e8e8ec;
+}
+.n8n-json [data-kind='string'] {
+  color: #6fcf97;
+}
+.n8n-json [data-kind='number'] {
+  color: #79b8ff;
+}
+.n8n-json [data-kind='literal'] {
+  color: #f2a640;
+}
+
+@keyframes n8n-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .n8n-hint,
+  .n8n-note {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .n8n-spin,
+  .n8n-node[data-state='running'] .n8n-node-spin svg {
+    animation: none;
+  }
+
+  .n8n-node,
+  .n8n-edges path {
+    transition: none;
+  }
+}

@@ -1,0 +1,863 @@
+{
+  "platform": "n8n",
+  "name": "AI Appointment Setter",
+  "bounds": {
+    "x": -544,
+    "y": -368,
+    "x2": 2864,
+    "y2": 1584
+  },
+  "stickies": [
+    {
+      "x": -544,
+      "y": -368,
+      "w": 3408,
+      "h": 368,
+      "color": 6,
+      "title": "This is to get slots in a Google Calendar to check availability."
+    },
+    {
+      "x": -544,
+      "y": 16,
+      "w": 3408,
+      "h": 448,
+      "color": "#7D92E8",
+      "title": "This is to Book Slots once the slots is confirmed available."
+    },
+    {
+      "x": -544,
+      "y": 480,
+      "w": 3408,
+      "h": 432,
+      "color": 5,
+      "title": "This is to Update Slots if customer/client is requesting to reschedule their slots"
+    },
+    {
+      "x": -544,
+      "y": 928,
+      "w": 3408,
+      "h": 384,
+      "color": "#E67F7F",
+      "title": "This is to Cancel Slots if customer/client is requesting to cancel their slots."
+    },
+    {
+      "x": -544,
+      "y": 1328,
+      "w": 3408,
+      "h": 256,
+      "color": 1,
+      "title": "To record. or updadte Call Results"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "GetSlots",
+      "type": "webhook",
+      "shape": "trigger",
+      "x": -480,
+      "y": -240,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "call_results",
+      "type": "webhook",
+      "shape": "trigger",
+      "x": -496,
+      "y": 1392,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Prepare GetSlots Request",
+      "type": "code",
+      "shape": "default",
+      "x": -224,
+      "y": -240,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Get all Caledar Events",
+      "type": "googleCalendar",
+      "shape": "default",
+      "x": 48,
+      "y": -240,
+      "w": 100,
+      "h": 100,
+      "subtitle": "getAll: event"
+    },
+    {
+      "name": "Available Start Time and Date Ranges",
+      "type": "code",
+      "shape": "default",
+      "x": 272,
+      "y": -240,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Respond to Vapi GetSlots1",
+      "type": "respondToWebhook",
+      "shape": "default",
+      "x": 496,
+      "y": -240,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "BookSlots",
+      "type": "webhook",
+      "shape": "trigger",
+      "x": -480,
+      "y": 176,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "If",
+      "type": "if",
+      "shape": "default",
+      "x": -48,
+      "y": 176,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Build Error Response Payload",
+      "type": "set",
+      "shape": "default",
+      "x": 176,
+      "y": 272,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Respond with Error",
+      "type": "respondToWebhook",
+      "shape": "default",
+      "x": 400,
+      "y": 272,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Escape Json",
+      "type": "code",
+      "shape": "default",
+      "x": 176,
+      "y": 80,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Convert time to CST America/Chicago",
+      "type": "code",
+      "shape": "default",
+      "x": 400,
+      "y": 80,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Create an event",
+      "type": "googleCalendar",
+      "shape": "default",
+      "x": 1296,
+      "y": 80,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: event",
+      "outputs": [
+        "success",
+        "error"
+      ]
+    },
+    {
+      "name": "Booking Payload",
+      "type": "set",
+      "shape": "default",
+      "x": 1520,
+      "y": 80,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Success Response",
+      "type": "set",
+      "shape": "default",
+      "x": 1744,
+      "y": 80,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Respond to Vapi",
+      "type": "respondToWebhook",
+      "shape": "default",
+      "x": 1968,
+      "y": 144,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "If Booking is confirmed",
+      "type": "filter",
+      "shape": "default",
+      "x": 2192,
+      "y": 144,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "kept"
+      ]
+    },
+    {
+      "name": "Information to be saved in Airtable",
+      "type": "set",
+      "shape": "default",
+      "x": 2400,
+      "y": 144,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Log book details",
+      "type": "airtable",
+      "shape": "default",
+      "x": 2608,
+      "y": 144,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: record"
+    },
+    {
+      "name": "Add Friendly Error",
+      "type": "code",
+      "shape": "default",
+      "x": 1520,
+      "y": 240,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "UpdateSlots",
+      "type": "webhook",
+      "shape": "trigger",
+      "x": -496,
+      "y": 592,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Input Arguments from UpdateSlot Tool1",
+      "type": "code",
+      "shape": "default",
+      "x": -304,
+      "y": 592,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Check if required is provided",
+      "type": "if",
+      "shape": "default",
+      "x": -112,
+      "y": 592,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Find original appointment",
+      "type": "airtable",
+      "shape": "default",
+      "x": 80,
+      "y": 544,
+      "w": 100,
+      "h": 100,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Update an event",
+      "type": "googleCalendar",
+      "shape": "default",
+      "x": 848,
+      "y": 544,
+      "w": 100,
+      "h": 100,
+      "subtitle": "update: event",
+      "outputs": [
+        "success",
+        "error"
+      ]
+    },
+    {
+      "name": "Update record",
+      "type": "airtable",
+      "shape": "default",
+      "x": 1056,
+      "y": 544,
+      "w": 100,
+      "h": 100,
+      "subtitle": "update: record"
+    },
+    {
+      "name": "Respond to VAPI about updating Slots",
+      "type": "respondToWebhook",
+      "shape": "default",
+      "x": 1280,
+      "y": 640,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Response to call_id",
+      "type": "set",
+      "shape": "default",
+      "x": 1056,
+      "y": 736,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Build Error Response Payload1",
+      "type": "set",
+      "shape": "default",
+      "x": 80,
+      "y": 736,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Respond with Error1",
+      "type": "respondToWebhook",
+      "shape": "default",
+      "x": 256,
+      "y": 736,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "CancelSlots",
+      "type": "webhook",
+      "shape": "trigger",
+      "x": -496,
+      "y": 1056,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Input Arguments from Booking Tools",
+      "type": "code",
+      "shape": "default",
+      "x": -272,
+      "y": 176,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Input Aguments from cancelslot Tool",
+      "type": "set",
+      "shape": "default",
+      "x": -80,
+      "y": 1056,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Parse CancelSlot",
+      "type": "code",
+      "shape": "default",
+      "x": -288,
+      "y": 1056,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Check if required info is provided for cancellation",
+      "type": "if",
+      "shape": "default",
+      "x": 144,
+      "y": 1056,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Find Appointment Record",
+      "type": "airtable",
+      "shape": "default",
+      "x": 368,
+      "y": 960,
+      "w": 100,
+      "h": 100,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Update Record to Cancel",
+      "type": "airtable",
+      "shape": "default",
+      "x": 800,
+      "y": 960,
+      "w": 100,
+      "h": 100,
+      "subtitle": "update: record"
+    },
+    {
+      "name": "Delete an event",
+      "type": "googleCalendar",
+      "shape": "default",
+      "x": 560,
+      "y": 960,
+      "w": 100,
+      "h": 100,
+      "subtitle": "delete: event",
+      "outputs": [
+        "success",
+        "error"
+      ]
+    },
+    {
+      "name": "Call_id and Response",
+      "type": "set",
+      "shape": "default",
+      "x": 800,
+      "y": 1120,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Respond to VAPI about Cancellation",
+      "type": "respondToWebhook",
+      "shape": "default",
+      "x": 1040,
+      "y": 1040,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Build Error Response",
+      "type": "set",
+      "shape": "default",
+      "x": 368,
+      "y": 1152,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Respond with Error to VAPI",
+      "type": "respondToWebhook",
+      "shape": "default",
+      "x": 592,
+      "y": 1152,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "All Input Arguments",
+      "type": "set",
+      "shape": "default",
+      "x": -288,
+      "y": 1392,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Create or update a record",
+      "type": "airtable",
+      "shape": "default",
+      "x": -64,
+      "y": 1392,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upsert: record"
+    },
+    {
+      "name": "Get Events in Booking Window",
+      "type": "googleCalendar",
+      "shape": "default",
+      "x": 624,
+      "y": 80,
+      "w": 100,
+      "h": 100,
+      "subtitle": "getAll: event"
+    },
+    {
+      "name": "Check Slot Is Free",
+      "type": "code",
+      "shape": "default",
+      "x": 848,
+      "y": 80,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Slot Free To Book?",
+      "type": "if",
+      "shape": "default",
+      "x": 1072,
+      "y": 80,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Get Events in New Window",
+      "type": "googleCalendar",
+      "shape": "default",
+      "x": 256,
+      "y": 544,
+      "w": 100,
+      "h": 100,
+      "subtitle": "getAll: event"
+    },
+    {
+      "name": "Check New Time Is Free",
+      "type": "code",
+      "shape": "default",
+      "x": 448,
+      "y": 544,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "New Time Free?",
+      "type": "if",
+      "shape": "default",
+      "x": 640,
+      "y": 544,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "GetSlots",
+      "to": "Prepare GetSlots Request",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Get all Caledar Events",
+      "to": "Available Start Time and Date Ranges",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Available Start Time and Date Ranges",
+      "to": "Respond to Vapi GetSlots1",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "BookSlots",
+      "to": "Input Arguments from Booking Tools",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "If",
+      "to": "Escape Json",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "If",
+      "to": "Build Error Response Payload",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Build Error Response Payload",
+      "to": "Respond with Error",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Escape Json",
+      "to": "Convert time to CST America/Chicago",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Create an event",
+      "to": "Booking Payload",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Create an event",
+      "to": "Add Friendly Error",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Booking Payload",
+      "to": "Success Response",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Success Response",
+      "to": "Respond to Vapi",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Respond to Vapi",
+      "to": "If Booking is confirmed",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "If Booking is confirmed",
+      "to": "Information to be saved in Airtable",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Information to be saved in Airtable",
+      "to": "Log book details",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Add Friendly Error",
+      "to": "Respond to Vapi",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "UpdateSlots",
+      "to": "Input Arguments from UpdateSlot Tool1",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Input Arguments from UpdateSlot Tool1",
+      "to": "Check if required is provided",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Check if required is provided",
+      "to": "Find original appointment",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Check if required is provided",
+      "to": "Build Error Response Payload1",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Update an event",
+      "to": "Update record",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Update an event",
+      "to": "Response to call_id",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Update record",
+      "to": "Response to call_id",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Response to call_id",
+      "to": "Respond to VAPI about updating Slots",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Build Error Response Payload1",
+      "to": "Respond with Error1",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Input Arguments from Booking Tools",
+      "to": "If",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "CancelSlots",
+      "to": "Parse CancelSlot",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Parse CancelSlot",
+      "to": "Input Aguments from cancelslot Tool",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Input Aguments from cancelslot Tool",
+      "to": "Check if required info is provided for cancellation",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Check if required info is provided for cancellation",
+      "to": "Find Appointment Record",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Check if required info is provided for cancellation",
+      "to": "Build Error Response",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Find Appointment Record",
+      "to": "Delete an event",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Delete an event",
+      "to": "Update Record to Cancel",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Delete an event",
+      "to": "Call_id and Response",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Update Record to Cancel",
+      "to": "Call_id and Response",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Call_id and Response",
+      "to": "Respond to VAPI about Cancellation",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Build Error Response",
+      "to": "Respond with Error to VAPI",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "call_results",
+      "to": "All Input Arguments",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "All Input Arguments",
+      "to": "Create or update a record",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Prepare GetSlots Request",
+      "to": "Get all Caledar Events",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Convert time to CST America/Chicago",
+      "to": "Get Events in Booking Window",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Get Events in Booking Window",
+      "to": "Check Slot Is Free",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Check Slot Is Free",
+      "to": "Slot Free To Book?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Slot Free To Book?",
+      "to": "Create an event",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Slot Free To Book?",
+      "to": "Respond to Vapi",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Find original appointment",
+      "to": "Get Events in New Window",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Get Events in New Window",
+      "to": "Check New Time Is Free",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Check New Time Is Free",
+      "to": "New Time Free?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "New Time Free?",
+      "to": "Update an event",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "New Time Free?",
+      "to": "Response to call_id",
+      "kind": "main",
+      "output": 1
+    }
+  ]
+}

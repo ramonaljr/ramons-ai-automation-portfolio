@@ -1,0 +1,196 @@
+{
+  "platform": "make",
+  "name": "Order Stock Check",
+  "bounds": {
+    "x": -115,
+    "y": -415,
+    "x2": 1635,
+    "y2": 485
+  },
+  "stickies": [],
+  "nodes": [
+    {
+      "name": "Get new orders",
+      "label": "Get new orders",
+      "number": 1,
+      "type": "google-sheets:filterRows",
+      "shape": "trigger",
+      "x": -75,
+      "y": -75,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Search Rows"
+    },
+    {
+      "name": "Look up stock",
+      "label": "Look up stock",
+      "number": 2,
+      "type": "google-sheets:filterRows",
+      "shape": "default",
+      "x": 225,
+      "y": -75,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Search Rows"
+    },
+    {
+      "name": "Router 3",
+      "label": "Router",
+      "number": 3,
+      "type": "builtin:BasicRouter",
+      "shape": "default",
+      "x": 525,
+      "y": -75,
+      "w": 150,
+      "h": 150,
+      "outputs": [
+        "Enough stock",
+        "Stock falls below reorder level",
+        "Not enough stock"
+      ]
+    },
+    {
+      "name": "Reserve stock",
+      "label": "Reserve stock",
+      "number": 4,
+      "type": "google-sheets:updateRow",
+      "shape": "default",
+      "x": 825,
+      "y": -375,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Update a Row"
+    },
+    {
+      "name": "Mark order confirmed",
+      "label": "Mark order confirmed",
+      "number": 5,
+      "type": "google-sheets:updateRow",
+      "shape": "default",
+      "x": 1125,
+      "y": -375,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Update a Row"
+    },
+    {
+      "name": "Email order confirmation",
+      "label": "Email order confirmation",
+      "number": 6,
+      "type": "google-email:sendAnEmail",
+      "shape": "default",
+      "x": 1425,
+      "y": -375,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Send an email"
+    },
+    {
+      "name": "Alert operations: low stock",
+      "label": "Alert operations: low stock",
+      "number": 7,
+      "type": "slack:CreateMessage",
+      "shape": "default",
+      "x": 825,
+      "y": -75,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Send a Message"
+    },
+    {
+      "name": "Put order on hold",
+      "label": "Put order on hold",
+      "number": 8,
+      "type": "google-sheets:updateRow",
+      "shape": "default",
+      "x": 825,
+      "y": 225,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Update a Row"
+    },
+    {
+      "name": "Email customer about the delay",
+      "label": "Email customer about the delay",
+      "number": 9,
+      "type": "google-email:sendAnEmail",
+      "shape": "default",
+      "x": 1125,
+      "y": 225,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Send an email"
+    },
+    {
+      "name": "Alert operations: order on hold",
+      "label": "Alert operations: order on hold",
+      "number": 10,
+      "type": "slack:CreateMessage",
+      "shape": "default",
+      "x": 1425,
+      "y": 225,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Send a Message"
+    }
+  ],
+  "edges": [
+    {
+      "from": "Get new orders",
+      "to": "Look up stock",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Look up stock",
+      "to": "Router 3",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Router 3",
+      "to": "Reserve stock",
+      "kind": "main",
+      "output": 0,
+      "label": "Enough stock"
+    },
+    {
+      "from": "Reserve stock",
+      "to": "Mark order confirmed",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Mark order confirmed",
+      "to": "Email order confirmation",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Router 3",
+      "to": "Alert operations: low stock",
+      "kind": "main",
+      "output": 1,
+      "label": "Stock falls below reorder level"
+    },
+    {
+      "from": "Router 3",
+      "to": "Put order on hold",
+      "kind": "main",
+      "output": 2,
+      "label": "Not enough stock"
+    },
+    {
+      "from": "Put order on hold",
+      "to": "Email customer about the delay",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Email customer about the delay",
+      "to": "Alert operations: order on hold",
+      "kind": "main",
+      "output": 0
+    }
+  ]
+}
