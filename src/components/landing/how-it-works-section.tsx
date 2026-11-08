@@ -156,10 +156,13 @@ export function HowItWorksSection({ sheet = false }: { sheet?: boolean }) {
               <div className='proc-steps'>
                 {PROCESS.map((item, index) => (
                   <article key={item.step} className='proc-step' data-on={index === active || undefined}>
+                    {/* As on the benchmark sheet: the name and its facts at the
+                        top, level with the frame; the account and the counter
+                        at the foot. */}
                     <h3 className='proc-title'>{item.label}</h3>
                     <p className='proc-summary'>{item.summary}</p>
-                    <p className='proc-desc'>{item.desc}</p>
                     <StepSpec step={item} />
+                    <p className='proc-desc'>{item.desc}</p>
                     <p className='proc-count'>
                       <span>
                         <b>{item.step}</b> / {pad(STEPS)}

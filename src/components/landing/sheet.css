@@ -802,8 +802,7 @@
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--sheet-gut);
-  align-items: end;
-  align-self: center;
+  align-items: stretch;
   min-height: 0;
 }
 
@@ -811,13 +810,14 @@
   grid-column: 1 / 6;
   display: grid;
   grid-template-areas: 's';
-  align-content: end;
   min-height: 0;
+  padding-right: clamp(1rem, 2.5vw, 2.5rem);
 }
 
 .proc-step {
   grid-area: s;
-  align-self: end;
+  display: flex;
+  flex-direction: column;
   opacity: 0;
   transform: translateY(16px);
   pointer-events: none;
@@ -890,6 +890,12 @@
   line-height: 1.4;
 }
 
+/* On the pinned sheet the account sits at the foot with the counter. */
+.proc-step .proc-desc {
+  margin-top: auto;
+  padding-top: clamp(1rem, 3vh, 2rem);
+}
+
 .proc-desc {
   max-width: 34em;
   margin-top: 0.6rem;
@@ -931,15 +937,17 @@
 /* The figure: the step's illustration in a ruled frame, captioned. */
 .proc-figure {
   position: relative;
-  grid-column: 7 / 13;
+  grid-column: 6 / 13;
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
   margin: 0;
 }
 
 .proc-frame {
   position: relative;
   display: grid;
-  height: clamp(17rem, 58svh, 36rem);
+  min-height: 0;
   overflow: hidden;
   container-type: size;
   border: 1px solid var(--ink);
@@ -954,6 +962,13 @@
   place-items: center;
   opacity: 0;
   transition: opacity 0.5s ease;
+}
+
+/* The frame now runs the full height of the sheet, so the paper scales up
+   with it rather than floating small in the middle. */
+.proc-frame .pf {
+  width: min(90cqw, 56em);
+  font-size: clamp(9px, min(2.3cqw, 3.4cqh), 20px);
 }
 
 /* The step's figure wipes up over the last one as it fades. */
