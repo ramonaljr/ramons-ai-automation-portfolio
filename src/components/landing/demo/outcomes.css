@@ -442,6 +442,115 @@
   white-space: pre-line;
 }
 
+/* A deleted event: Calendar strikes it through and greys it out. */
+.oc-calendar[data-cancelled] .oc-calendar-title,
+.oc-calendar[data-cancelled] .oc-calendar-when {
+  color: #80868b;
+  text-decoration: line-through;
+}
+
+.oc-calendar[data-cancelled] .oc-calendar-meet {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.oc-calendar[data-cancelled] .oc-calendar-bar {
+  background: #bdc1c6;
+}
+
+.oc-calendar[data-cancelled] .oc-pill {
+  margin-bottom: 8px;
+}
+
+/* ── Google Drive ──────────────────────────────────────────────────────── */
+
+.oc-drive {
+  padding: 14px 6px 8px;
+  color: #1f1f1f;
+  font-family: Roboto, 'Google Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+.oc-drive-path {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 10px;
+  padding: 0 12px;
+  color: #444746;
+  font-size: 16px;
+}
+
+.oc-drive-path span {
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.oc-drive-path span[data-current] {
+  color: #1f1f1f;
+}
+
+.oc-drive table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+
+.oc-drive th {
+  overflow: hidden;
+  padding: 8px 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-bottom: 1px solid #e3e3e3;
+  color: #444746;
+  font-weight: 500;
+  text-align: left;
+}
+
+.oc-drive th:first-child {
+  width: 52%;
+}
+
+.oc-drive th:nth-child(2) {
+  width: 28%;
+}
+
+.oc-drive td {
+  overflow: hidden;
+  padding: 9px 10px;
+  border-bottom: 1px solid #ececec;
+  color: #444746;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-drive tr:last-child td {
+  border-bottom: 0;
+}
+
+.oc-drive-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #1f1f1f;
+  font-weight: 500;
+}
+
+.oc-drive-name svg {
+  flex-shrink: 0;
+}
+
+.oc-drive-name span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The file this run made: Drive's own selection blue. */
+.oc-drive tr[data-new] td {
+  background: #c2e7ff;
+}
+
 /* ── n8n form ──────────────────────────────────────────────────────────── */
 
 .oc-form {

@@ -55,6 +55,8 @@ function scenarios(now: Date): DemoScenario[] {
   }
 
   const folderUrl = 'https://drive.google.com/drive/folders/1ElenaDuarteOnboarding'
+  const folderName = `Onboarding - ${hire.fullName} - ${startDate}`
+  const earlierFolder = { name: `Onboarding - Marco Bellini - ${shift(startDate, -14)}`, type: 'folder' as const }
 
   const tasks = TASKS.map(task => ({
     taskKey: `${hire.personalEmail}:${task.title}`,
@@ -105,7 +107,7 @@ function scenarios(now: Date): DemoScenario[] {
       'Generate Onboarding Plan': plan,
       'Create Onboarding Folder': {
         id: '1ElenaDuarteOnboarding',
-        name: `${hire.fullName} - Onboarding`,
+        name: folderName,
         webViewLink: folderUrl
       },
       'Create Employee Record': {
@@ -124,10 +126,13 @@ function scenarios(now: Date): DemoScenario[] {
       'Log Onboarding Started': {
         submittedAt: now.toISOString(),
         fullName: hire.fullName,
+        personalEmail: hire.personalEmail,
         role: hire.role,
+        department: hire.department,
         startDate,
         taskCount: 12,
-        documentCount: 5
+        documentCount: 5,
+        executionId: '4127'
       },
       'One Row Per Task': tasks,
       'Save Tasks To Airtable': tasks,
@@ -177,6 +182,16 @@ function scenarios(now: Date): DemoScenario[] {
         note: `Welcome session for ${hire.fullName} joining ${hire.department} as ${hire.role}.`
       },
       {
+        kind: 'drive',
+        node: 'Create Onboarding Folder',
+        path: ['My Drive'],
+        files: [
+          { name: folderName, type: 'folder', modified: `${clock(now)} me` },
+          { ...earlierFolder, modified: 'Oct 26 me' }
+        ],
+        added: [0]
+      },
+      {
         kind: 'airtable',
         node: 'Create Employee Record',
         file: BASE,
@@ -185,6 +200,66 @@ function scenarios(now: Date): DemoScenario[] {
         rows: [
           ['Marco Bellini', 'F&B Server', 'Casa Marindo Bayfront', shift(startDate, -14), 12, 7, 'onboarding'],
           [hire.fullName, hire.role, hire.property, startDate, 12, 5, 'onboarding']
+        ],
+        highlight: 1
+      },
+      {
+        kind: 'airtable',
+        node: 'Save Tasks To Airtable',
+        file: BASE,
+        table: 'Onboarding Tasks',
+        columns: ['title', 'owner', 'dueDate', 'employeeEmail'],
+        rows: tasks.map(task => [task.title, task.owner, task.dueDate, task.employeeEmail]),
+        highlight: tasks.map((_, index) => index)
+      },
+      {
+        kind: 'airtable',
+        node: 'Save Document Checklist To Airtable',
+        file: BASE,
+        table: 'Onboarding Documents',
+        columns: ['documentName', 'employeeEmail', 'status'],
+        rows: documents.map(document => [document.documentName, document.employeeEmail, document.status]),
+        highlight: documents.map((_, index) => index)
+      },
+      {
+        kind: 'sheets',
+        node: 'Log Onboarding Started',
+        file: 'Onboarding Automation',
+        table: 'Onboarding Log',
+        columns: [
+          'submittedAt',
+          'fullName',
+          'personalEmail',
+          'role',
+          'department',
+          'startDate',
+          'taskCount',
+          'documentCount',
+          'executionId'
+        ],
+        rows: [
+          [
+            `${shift(startDate, -21)}T15:02:11Z`,
+            'Marco Bellini',
+            'marco.bellini@example.com',
+            'F&B Server',
+            'Food & Beverage',
+            shift(startDate, -14),
+            12,
+            7,
+            '4019'
+          ],
+          [
+            now.toISOString().slice(0, 19) + 'Z',
+            hire.fullName,
+            hire.personalEmail,
+            hire.role,
+            hire.department,
+            startDate,
+            12,
+            5,
+            '4127'
+          ]
         ],
         highlight: 1
       }
@@ -197,10 +272,13 @@ function scenarios(now: Date): DemoScenario[] {
     File: 'elena-duarte-passport.pdf'
   }
 
+  /** The build names the file `<email> - <document> - <original file name>`. */
+  const savedAs = `${hire.personalEmail} - Government ID - ${uploaded.File}`
+
   const upload: DemoScenario = {
     id: 'upload',
     label: 'Upload · Government ID',
-    hint: 'Elena uploads her ID: filed in her Drive folder, ticked off in Airtable, HR told.',
+    hint: 'Elena uploads her ID: saved to Drive under her email, ticked off in Airtable, HR told.',
     output: {
       'Document Upload Form': {
         employeeEmail: hire.personalEmail,
@@ -210,10 +288,10 @@ function scenarios(now: Date): DemoScenario[] {
       },
       'Find New Hire': { id: 'recElenaDuarte01', fields: { personalEmail: hire.personalEmail, folderUrl } },
       'Known New Hire?': { id: 'recElenaDuarte01' },
-      'Attach Uploaded File': { documentName: 'Government ID', fileName: 'Elena Duarte - Government ID.pdf' },
+      'Attach Uploaded File': { documentName: 'Government ID', fileName: uploaded.File },
       'Save Document To Drive': {
         id: '1ElenaGovId',
-        name: 'Elena Duarte - Government ID.pdf',
+        name: savedAs,
         webViewLink: 'https://drive.google.com/file/d/1ElenaGovId/view'
       },
       'Mark Document Received': {
@@ -238,6 +316,23 @@ function scenarios(now: Date): DemoScenario[] {
         app: 'n8n',
         time: 'just now',
         text: [':inbox_tray: *Onboarding document received*', `Government ID from ${hire.personalEmail}`]
+      },
+      {
+        kind: 'drive',
+        node: 'Save Document To Drive',
+        path: ['My Drive'],
+        files: [
+          { name: savedAs, type: 'pdf', modified: `${clock(now)} me`, size: '412 KB' },
+          { name: folderName, type: 'folder', modified: 'Yesterday me' },
+          {
+            name: 'marco.bellini@example.com - Signed contract - contract-signed.pdf',
+            type: 'pdf',
+            modified: 'Oct 28 me',
+            size: '286 KB'
+          },
+          { ...earlierFolder, modified: 'Oct 26 me' }
+        ],
+        added: [0]
       },
       {
         kind: 'airtable',

@@ -130,8 +130,8 @@ export type DemoOutcome =
       columns: string[]
       rows: (string | number)[][]
 
-      /** The row this run wrote, by index in `rows`. */
-      highlight?: number
+      /** The row (or rows) this run wrote, by index in `rows`. */
+      highlight?: number | number[]
     }
   | {
       kind: 'calendar'
@@ -145,6 +145,9 @@ export type DemoOutcome =
 
       /** The build asks Google for a Meet link. */
       meet?: boolean
+
+      /** The run deleted the event: drawn struck through, as Calendar shows a cancellation. */
+      cancelled?: boolean
       guests: string[]
       note?: string
     }
@@ -163,6 +166,24 @@ export type DemoOutcome =
       title: string
       badge?: string
       fields: { label: string; value: string }[]
+    }
+  | {
+
+      /** Files and folders in Google Drive, as its file list shows them. */
+      kind: 'drive'
+      node: string
+
+      /** Where they sit, from My Drive down. */
+      path: string[]
+      files: {
+        name: string
+        type: 'folder' | 'pdf' | 'image' | 'doc' | 'text'
+        modified: string
+        size?: string
+      }[]
+
+      /** The files this run made, by index in `files`. */
+      added?: number[]
     }
   | {
 

@@ -1,5 +1,5 @@
 import layout from '@/content/demos/hr-evaluation-assistant.layout.json'
-import type { DemoBundle, DemoLayout, DemoScenario } from '@/lib/demos/types'
+import type { DemoBundle, DemoLayout, DemoOutcome, DemoScenario } from '@/lib/demos/types'
 
 /**
  * Applicant screening: two applicants for the Automation Specialist role.
@@ -111,6 +111,10 @@ function intake(person: {
   }
 }
 
+/** Drive's "Last modified" for a file from today: the time alone, Central. */
+const clockOf = (moment: Date) =>
+  moment.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' })
+
 function scenarios(now: Date): DemoScenario[] {
   const applied = new Date(now.getTime() - 4 * 60 * 1000)
   const slot = interviewSlot(now)
@@ -135,6 +139,19 @@ function scenarios(now: Date): DemoScenario[] {
   ]
 
   const columns = ['Name', 'Applying for', 'Stage', 'JD CV score', 'Phone interview', 'CV Score Notes']
+
+  /** The CV folder in Drive after the upload, the earlier applicants' CVs under it. */
+  const cvFolder = (file: string): DemoOutcome => ({
+    kind: 'drive',
+    node: 'Upload CV to Google Drive',
+    path: ['My Drive', 'Applicant CVs'],
+    files: [
+      { name: file, type: 'pdf', modified: `${clockOf(applied)} me`, size: '182 KB' },
+      { name: 'Tom_Becker_CV.pdf', type: 'pdf', modified: 'Nov 5 me', size: '96 KB' },
+      { name: 'Priya_Nair_CV.pdf', type: 'pdf', modified: 'Nov 3 me', size: '214 KB' }
+    ],
+    added: [0]
+  })
 
   const maria = intake({
     first: 'Maria',
@@ -277,6 +294,7 @@ function scenarios(now: Date): DemoScenario[] {
         body: invite.EmailContent,
         time: sentAt
       },
+      cvFolder('Maria_Santos_CV.pdf'),
       {
         kind: 'calendar',
         node: 'Book Interview',
@@ -341,6 +359,7 @@ function scenarios(now: Date): DemoScenario[] {
       }
     },
     outcomes: [
+      cvFolder('Daniel_Reyes_CV.pdf'),
       {
         kind: 'airtable',
         node: 'Rejected',

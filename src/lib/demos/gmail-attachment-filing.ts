@@ -27,7 +27,6 @@ const listed = (file: Attachment) => ({
 })
 
 const linkOf = (file: Attachment) => `https://drive.google.com/uc?id=${file.driveId}&export=download`
-const kind = (mime: string) => (mime === 'application/pdf' ? 'PDF' : mime.replace('image/', '').toUpperCase())
 
 function scenarios(now: Date): DemoScenario[] {
   const time = clock(now)
@@ -138,15 +137,30 @@ function scenarios(now: Date): DemoScenario[] {
         time
       },
       {
-        kind: 'record',
+        kind: 'drive',
         node: 'Google Drive 8',
-        app: 'Google Drive',
-        title: 'Client documents',
-        badge: '2 files added',
-        fields: files.map(file => ({
-          label: file.named ?? file.filename,
-          value: `${kind(file.mimeType)} · ${(file.size / 1_000_000).toFixed(1)} MB · was ${file.filename}`
-        }))
+        path: ['My Drive', 'Client documents'],
+        files: [
+          ...files.map(file => ({
+            name: file.named ?? file.filename,
+            type: file.mimeType === 'application/pdf' ? ('pdf' as const) : ('image' as const),
+            modified: `${time} me`,
+            size: `${(file.size / 1_000_000).toFixed(1)} MB`
+          })),
+          {
+            name: 'Costco receipt - office supplies - Nov 2026.jpg',
+            type: 'image',
+            modified: 'Nov 5 me',
+            size: '1.2 MB'
+          },
+          {
+            name: 'Harbor Credit Union statement - October 2026.pdf',
+            type: 'pdf',
+            modified: 'Nov 3 me',
+            size: '388 KB'
+          }
+        ],
+        added: [0, 1]
       },
       {
         kind: 'sheets',
