@@ -20,6 +20,7 @@ import { ContactSection } from '@/components/landing/contact-section'
 import { TestimonialsSection } from '@/components/landing/testimonials-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
 import { ParticleField } from '@/components/landing/particle-field'
+import { OffscreenLoopPause } from '@/components/landing/offscreen-loop-pause'
 import { PAGE } from '@/components/landing/motion'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
@@ -81,6 +82,7 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
       </div>
 
       <ChatWidget />
+      <OffscreenLoopPause />
     </div>
   )
 }
