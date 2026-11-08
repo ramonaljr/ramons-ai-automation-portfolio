@@ -5,6 +5,8 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerE
 import { LayoutGrid } from 'lucide-react'
 import { animate, motion, useInView as useMotionInView, useMotionValue, useTransform } from 'motion/react'
 
+import './work-cards.css'
+
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { SectionIntro } from '@/components/landing/section-intro'
 import {
@@ -13,16 +15,13 @@ import {
   DISPLAY_FONT,
   ICON_STROKE,
   SECTION_ANCHOR,
-  snappySpring,
   useInView,
   usePrefersReducedMotion
 } from '@/components/landing/motion'
-import { CaseStudyModal } from '@/components/landing/case-study-modal'
+import { LazyCaseStudyModal, preloadCaseStudyModal } from '@/components/landing/lazy-case-study-modal'
 import { WorkCanvas } from '@/components/landing/work-canvas'
-import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
-import { ViewStage } from '@/components/landing/view-stage'
-import { filmOf, orderWork, WORK_TONES, workViews } from '@/lib/work-views'
-import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
+import { orderWork, WORK_TONES, workViews } from '@/lib/work-views'
+import { Ico, P } from '@/components/landing/work-icons'
 import { ToolMark } from '@/components/landing/tool-stack-section'
 import { toolNamed } from '@/lib/portfolio'
 
@@ -147,73 +146,81 @@ type WorkCardProps = {
   dealt: boolean
   reduced: boolean
   allLabs: boolean
-  viewIndex: number
-  onView: (index: number) => void
   onOpen: () => void
-
-  /** Opens the dialog with the project's film playing. */
-  onWatch: () => void
 }
 
-function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpen, onWatch }: WorkCardProps) {
+/**
+ * One project, led by its result.
+ *
+ * The figure comes first and largest, because the result is what a reader is
+ * weighing; the process map sits beside it as the evidence, small enough that
+ * two projects share a row. The whole card is one control that opens the
+ * case-study dialog, where the film, the other views, the demo run and the
+ * source live. The card used to carry three of those as buttons of its own,
+ * thirty buttons across ten cards, each one also inside the dialog.
+ */
+function WorkCard({ cs, index, dealt, reduced, allLabs, onOpen }: WorkCardProps) {
   // Hovers only count once the card has actually been on screen.
   const { ref, inView: seen } = useInView<HTMLLIElement>(0.3)
 
-  // The picture rests finished and each hover plays the run. It used to start
-  // empty and draw itself in once scrolled to, which took about three seconds;
-  // anyone scrolling at a normal pace saw a row of blank white boxes. Its
-  // first time on screen it traces itself instead: the tiles stay put and only
-  // the connectors and outlines play (WorkCanvas `trace`).
+  // The map rests finished and each hover plays the run. Its first time on
+  // screen it traces itself: the tiles stay put and only the connectors and
+  // outlines play (WorkCanvas `trace`).
   const [replays, setReplays] = useState(0)
-  const { frameRef, lensRef, artRef, move: moveLens, hide: hideLens } = useMagnifier()
 
-  const gallery = workViews(cs)
-  const view = gallery[Math.min(viewIndex, gallery.length - 1)]
+  const view = workViews(cs)[0]
   const outcome = cs.keyOutcome
   const tags = workTags(cs)
   const tone = WORK_TONES[cs.slug] ?? 'var(--accent)'
-  const delay = index * 0.11
+  const delay = index * 0.08
 
   return (
     <motion.li
       ref={ref}
-      className='work-card'
+      className='wk-card'
       style={{ '--work-tone': tone } as CSSProperties}
-      initial={{ opacity: 0, y: 44, scale: 0.94 }}
-      animate={dealt ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 44, scale: 0.94 }}
-      transition={reduced ? { duration: 0 } : { duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={reduced ? undefined : { y: -6, transition: snappySpring }}
-      onPointerMove={event => {
-        trackSpotlight(event)
-        moveLens(event)
-      }}
-      onPointerLeave={hideLens}
+      initial={{ opacity: 0, y: 28 }}
+      animate={dealt ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+      transition={reduced ? { duration: 0 } : { duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+      onPointerMove={trackSpotlight}
       onPointerEnter={event => {
         // Touch has no hover, and a tap is already opening the dialog.
         if (event.pointerType === 'mouse' && seen) setReplays(count => count + 1)
       }}
     >
-      {/* The frame wipes open from the base, a beat after the card lands, so
-          the canvas is revealed rather than simply present. */}
-      <motion.div
-        ref={frameRef}
-        className='work-card-frame'
-        data-view={view?.key}
-        initial={{ clipPath: 'inset(100% 0% 0% 0%)' }}
-        animate={dealt ? { clipPath: 'inset(0% 0% 0% 0%)' } : { clipPath: 'inset(100% 0% 0% 0%)' }}
-        transition={reduced ? { duration: 0 } : { duration: 0.5, delay: delay + 0.08, ease: [0.76, 0, 0.24, 1] }}
-      >
-        <ViewStage
-          views={gallery}
-          index={Math.min(viewIndex, gallery.length - 1)}
-          onSelect={onView}
-          reduced={reduced}
-          label={cs.title ?? cs.slug}
-          renderView={item =>
-            item.key === 'canvas' ? (
+      <div className='wk-grid'>
+        <div className='wk-lead'>
+          <p className='wk-context'>
+            {cs.organisation ?? workLabel(cs)}
+            {cs.sampleClient && <span> · Sample client</span>}
+            {cs.sample && !allLabs && <span> · Demo project</span>}
+          </p>
+
+          {outcome && (
+            <p className='wk-outcome'>
+              <OutcomeFigure value={outcome.value} reduced={reduced} />
+              <span>
+                {outcome.label}
+                <em>{cs.sample ? 'target outcome' : cs.sampleClient ? 'by design' : 'real build'}</em>
+              </span>
+            </p>
+          )}
+        </div>
+
+        {/* The map wipes open from the base, a beat after the card lands. */}
+        {view && (
+          <motion.div
+            className='wk-frame'
+            data-view={view.key}
+            aria-hidden='true'
+            initial={{ clipPath: 'inset(100% 0% 0% 0%)' }}
+            animate={dealt ? { clipPath: 'inset(0% 0% 0% 0%)' } : { clipPath: 'inset(100% 0% 0% 0%)' }}
+            transition={reduced ? { duration: 0 } : { duration: 0.5, delay: delay + 0.1, ease: [0.76, 0, 0.24, 1] }}
+          >
+            {view.key === 'canvas' ? (
               <WorkCanvas
-                src={item.cardSrc ?? item.src}
-                label={item.alt}
+                src={view.cardSrc ?? view.src}
+                label={view.alt}
                 idSuffix={`${cs.slug}-card`}
                 run={replays}
                 reduced={reduced}
@@ -221,80 +228,37 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
                 trace={seen}
               />
             ) : (
-              <img
-                src={item.src}
-                alt={item.alt}
-                width={1400}
-                height={875}
-                loading={index < 2 ? 'eager' : 'lazy'}
-                className='work-card-image'
-              />
-            )
-          }
-        />
+              <img src={view.src} alt='' width={800} height={500} loading='lazy' className='wk-image' />
+            )}
+          </motion.div>
+        )}
 
-        {/* Only the exception is marked. A badge repeated on every card is
-            decoration, not information; sample-client builds say so in the
-            eyebrow below instead. */}
-        {cs.sample && !allLabs && <span className='work-card-flag'>Demo project</span>}
-
-        <MagnifierLens lensRef={lensRef} artRef={artRef} />
-      </motion.div>
-
-      <div className='work-card-body'>
-        <p className='work-card-context'>
-          {cs.organisation ?? workLabel(cs)}
-          {cs.sampleClient && <span className='work-card-sample'> · Sample client</span>}
-        </p>
-
-        {/* The stretched hit area lives on this button, so the whole card
-            selects while the view buttons above stay clickable on their own —
-            no nesting, one real control per action. */}
-        <h3 className='work-card-title'>
-          <button type='button' className='work-card-select' aria-haspopup='dialog' onClick={onOpen}>
+        {/* The stretched hit area lives on this button, so the whole card opens
+          the dialog through one real control. */}
+        <h3 className='wk-title'>
+          <button type='button' className='wk-select' aria-haspopup='dialog' onClick={onOpen}>
             {cs.title ?? workLabel(cs)}
           </button>
         </h3>
 
-        {outcome && (
-          <p className='work-card-outcome'>
-            <OutcomeFigure value={outcome.value} reduced={reduced} />
-            <span>{outcome.label}</span>
-            <em>{cs.sample ? 'target outcome' : cs.sampleClient ? 'by design' : 'real build'}</em>
+        <p className='wk-summary'>{WORK_USE_CASES[cs.slug] ?? cs.description}</p>
+
+        <div className='wk-foot'>
+          {/* The marks sit in ink until the card is hovered, so three brand
+            colours do not compete with the card's own tone at rest. */}
+          <p className='wk-stack'>
+            {[tags.platform, ...tags.tools.slice(0, 2)]
+              .filter((name): name is string => Boolean(name))
+              .map(name => (
+                <span key={name} className='wk-tool'>
+                  <ToolMark tool={toolNamed(name)} size={14} />
+                  {name}
+                </span>
+              ))}
           </p>
-        )}
-
-        <p className='work-card-summary'>{WORK_USE_CASES[cs.slug] ?? cs.description}</p>
-
-        {/* Each name keeps its mark beside it. The marks sit in ink until the
-            card is hovered, like the Tool stack's, so three brand colours do
-            not compete with the card's own tone at rest. */}
-        <p className='work-card-stack'>
-          {[tags.platform, ...tags.tools.slice(0, 2)]
-            .filter((name): name is string => Boolean(name))
-            .map(name => (
-              <span key={name} className='work-card-tool'>
-                <ToolMark tool={toolNamed(name)} size={14} />
-                {name}
-              </span>
-            ))}
-        </p>
-
-        {/* Above the card's stretched hit area, like the thumbnails. A film
-            hosted here opens the dialog already playing it; any other
-            walkthrough is a link. Inert until the frontmatter carries a URL. */}
-        <div className='work-card-links'>
-          {filmOf(cs) ? (
-            <WorkLink label='Walkthrough' icon={<VideoIcon size={12} />} onClick={onWatch} />
-          ) : (
-            <WorkLink href={linkOf(cs.videoUrl)} label='Walkthrough' icon={<VideoIcon size={12} />} />
-          )}
-          <WorkLink href={linkOf(cs.repoUrl)} label='GitHub' icon={<GitHubIcon size={12} />} />
-          {/* Opens the dialog, which is where the case study is read. Going
-              straight to /case-study from here would duplicate the dialog's
-              own "Read full case study" and skip the canvas, the views and the
-              metrics on the way. */}
-          <WorkLink label='Read case study' icon={<Ico d={P.arrow} size={12} />} onClick={onOpen} />
+          <span className='wk-open' aria-hidden='true'>
+            Open case study <Ico d={P.arrow} size={13} />
+          </span>
         </div>
       </div>
     </motion.li>
@@ -304,14 +268,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, viewIndex, onView, onOpe
 export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
   const { ref, inView } = useInView<HTMLUListElement>(0.06)
   const reduced = usePrefersReducedMotion()
-  const [selected, setSelected] = useState<{ study: CaseStudyMetadata; film: boolean } | null>(null)
-
-  /**
-   * Which thumbnail each card is showing. One record rather than six pieces of
-   * state, so a card that has never been touched simply has no entry and falls
-   * back to its first view.
-   */
-  const [views, setViews] = useState<Record<string, number>>({})
+  const [selected, setSelected] = useState<CaseStudyMetadata | null>(null)
 
   // Delivered work first, then sample clients, then labs (see `orderWork`).
   const shown = useMemo(() => orderWork(caseStudies), [caseStudies])
@@ -341,10 +298,9 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
   const visible = platform ? shown.filter(cs => cs.platform?.trim() === platform) : shown
 
-  // At three columns the first card can take a full row. That only leaves
-  // clean rows when the rest divide by three; with one or two cards left,
-  // each takes a row of its own instead (see `.work-gallery` in globals.css).
-  const layout = visible.length <= 2 ? 'wide' : (visible.length - 1) % 3 === 0 ? 'feature' : 'grid'
+  // Two to a row. An odd count would leave the last card alone, so the first
+  // takes the full row instead and the rest pair up (see work-cards.css).
+  const layout = visible.length % 2 === 1 ? 'feature' : 'grid'
 
   /**
    * A per-card badge only means something when it separates one card from
@@ -354,6 +310,11 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
    * on their own.
    */
   const allLabs = visible.length > 0 && visible.every(cs => cs.sample)
+
+  // Fetch the dialog's code as the work arrives, so the first open is instant.
+  useEffect(() => {
+    if (inView) preloadCaseStudyModal()
+  }, [inView])
 
   return (
     <section id='portfolio' className={`${SECTION_ANCHOR} work-story-section`}>
@@ -403,9 +364,9 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
           )}
         </div>
 
-        {/* Six cards, all six visible and all the same size, each canvas
-            running its own workflow as it arrives and again on hover. */}
-        <ul ref={ref} className='work-gallery' data-layout={layout}>
+        {/* Every project visible, two to a row, each map running its own
+            workflow as it arrives and again on hover. */}
+        <ul ref={ref} className='wk-gallery' data-layout={layout}>
           {visible.map((cs, index) => (
             <WorkCard
               key={cs.slug}
@@ -414,23 +375,15 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
               dealt={inView}
               reduced={reduced}
               allLabs={allLabs}
-              viewIndex={views[cs.slug] ?? 0}
-              onView={itemIndex => setViews(current => ({ ...current, [cs.slug]: itemIndex }))}
-              onOpen={() => setSelected({ study: cs, film: false })}
-              onWatch={() => setSelected({ study: cs, film: true })}
+              onOpen={() => setSelected(cs)}
             />
           ))}
         </ul>
       </div>
 
-      {/* Keyed by project and entry point, so each open starts on the right
-          view without carrying the last one's choice over. */}
-      <CaseStudyModal
-        key={selected ? `${selected.study.slug}:${selected.film ? 'film' : 'work'}` : 'closed'}
-        study={selected?.study ?? null}
-        startOnFilm={selected?.film}
-        onClose={() => setSelected(null)}
-      />
+      {/* Keyed by project, so each open starts on its first view without
+          carrying the last one's choice over. */}
+      <LazyCaseStudyModal key={selected?.slug ?? 'closed'} study={selected} onClose={() => setSelected(null)} />
     </section>
   )
 }

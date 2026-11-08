@@ -2,44 +2,44 @@
 
 import type { CSSProperties, ReactNode } from 'react'
 
-import { Check } from 'lucide-react'
+import './engagement.css'
 
-import { AuditVisual, BuildVisual, LaunchVisual } from '@/components/landing/how-it-works-section'
-import {
-  CONTAINER,
-  Cta,
-  DISPLAY_FONT,
-  ICON_STROKE,
-  SECTION_ANCHOR,
-  useContactHref,
-  useInView
-} from '@/components/landing/motion'
+import { CONTAINER, Cta, DISPLAY_FONT, SECTION_ANCHOR, useContactHref, useInView } from '@/components/landing/motion'
+import { AuditFigure, BuildFigure, MonitorFigure } from '@/components/landing/process-figures'
 import { SectionIntro } from '@/components/landing/section-intro'
 
 import { ENGAGEMENTS } from '@/lib/portfolio'
 
-/** The same illustrations How it works uses, one per stage of the path. */
-const VISUALS: ReactNode[] = [<AuditVisual key='audit' />, <BuildVisual key='build' />, <LaunchVisual key='launch' />]
+/**
+ * What the client holds at the end of each step, drawn as the same documents
+ * the Process sheet uses: the audit's opportunity list, the build's log and
+ * the retainer's run monitor. One running example, so the two sections read
+ * as one job.
+ */
+const FIGURES: ReactNode[] = [<AuditFigure key='audit' />, <BuildFigure key='build' />, <MonitorFigure key='monitor' />]
 
 /**
- * Working together, as a path rather than a menu.
+ * Working together, as a ruled schedule rather than three pricing cards.
  *
- * Audit, build and retainer are the order most clients take them in, so they
- * read left to right as steps on a line that draws in as the section arrives.
- * Each step carries its How it works illustration, how it is priced and what
- * the client leaves with; the build is the inverted card, the one the page
- * leads towards. Every tier starts the same way, with the free call, so the
- * path ends in one "Book a free call" rather than a button per card.
+ * Audit, build and retainer read left to right in the order most clients take
+ * them, as three columns under one rule that draws in as the section arrives.
+ * Every column carries the same rows (when, name, price, who it is for, the
+ * document you are left with, what is included), aligned across the three
+ * through subgrid, so a reader compares along a row instead of hunting inside
+ * cards. The build, which the page leads towards, is marked by an accent rule
+ * rather than an inverted card.
  *
- * `band` is the homepage's version: the same path on the page's one dark
- * band, where a reader decides. /services shows it on the light page.
+ * In the drafting-sheet language of About, Services and Process (Studio
+ * Okafor benchmark, 2026-11-08) but unnumbered: numbered sheets stay with
+ * those three. `band` is the homepage's version, on the page's one dark band
+ * where a reader decides; /services shows it on the light page.
  */
 export function EngagementSection({ band = false }: { band?: boolean }) {
   const { ref, inView } = useInView<HTMLOListElement>(0.12)
   const contactHref = useContactHref()
 
   return (
-    <section id='engagement' className={`${SECTION_ANCHOR} ${band ? 'pricing-band' : ''}`}>
+    <section id='engagement' className={`${SECTION_ANCHOR} eng ${band ? 'pricing-band' : ''}`}>
       <div className={CONTAINER}>
         <SectionIntro
           tag='WORKING TOGETHER'
@@ -53,58 +53,50 @@ export function EngagementSection({ band = false }: { band?: boolean }) {
           blurb='Most clients start with the audit, build what it finds, and keep it running on a retainer. Start wherever you are.'
         />
 
-        <ol ref={ref} className='engagement-path' data-visible={inView}>
+        <ol ref={ref} className='eng-cols' data-in={inView || undefined}>
           {ENGAGEMENTS.map((tier, index) => (
             <li
               key={tier.name}
-              className='engagement-step'
+              className='eng-col'
               data-featured={tier.featured || undefined}
-              style={{ '--step-delay': `${index * 160}ms` } as CSSProperties}
+              style={{ '--i': index } as CSSProperties}
             >
-              <div className='engagement-step-head'>
-                <span className='engagement-step-dot' aria-hidden='true' />
-                {tier.start && <span className='engagement-step-badge'>Most clients start here</span>}
+              <p className='eng-when'>
+                <span>{tier.duration}</span>
+                {tier.start && <span className='eng-start'>Most clients start here</span>}
+              </p>
+
+              <h3 className='eng-name' style={{ fontFamily: DISPLAY_FONT }}>
+                {tier.name}
+              </h3>
+
+              <p className='eng-price'>
+                <strong style={{ fontFamily: DISPLAY_FONT }}>{tier.pricing}</strong>
+                <span>{tier.pricingNote}</span>
+              </p>
+
+              <p className='eng-for'>{tier.forWhen}</p>
+
+              <div className='eng-fig' data-on={inView || undefined} aria-hidden='true'>
+                {FIGURES[index]}
               </div>
 
-              <article className='engagement-card'>
-                <div className='engagement-visual' aria-hidden='true'>
-                  {VISUALS[index]}
-                </div>
+              <ul className='eng-includes'>
+                {tier.includes.map(item => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
 
-                <div className='engagement-card-body'>
-                  <p className='engagement-duration'>{tier.duration}</p>
-                  <h3 className='engagement-name' style={{ fontFamily: DISPLAY_FONT }}>
-                    {tier.name}
-                  </h3>
-
-                  <p className='engagement-price'>
-                    <strong style={{ fontFamily: DISPLAY_FONT }}>{tier.pricing}</strong>
-                    <span>{tier.pricingNote}</span>
-                  </p>
-
-                  <p className='engagement-for'>{tier.forWhen}</p>
-
-                  <ul className='engagement-includes'>
-                    {tier.includes.map(item => (
-                      <li key={item}>
-                        <Check size={12} strokeWidth={ICON_STROKE} aria-hidden='true' />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <p className='engagement-outcome'>
-                    <span>You leave with</span>
-                    {tier.outcome}
-                  </p>
-                </div>
-              </article>
+              <p className='eng-outcome'>
+                <span>You leave with</span>
+                {tier.outcome}
+              </p>
             </li>
           ))}
         </ol>
 
-        <div className='engagement-close'>
-          <p className='engagement-reassure'>
+        <div className='eng-close'>
+          <p>
             Every engagement starts with a free 30-minute call. What is included and the price are agreed in writing
             before any build starts.
           </p>

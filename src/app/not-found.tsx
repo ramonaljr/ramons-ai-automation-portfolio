@@ -1,6 +1,11 @@
-import { SiteNav } from '@/components/landing/site-nav'
-import { SiteFooter } from '@/components/landing/site-footer'
-import { ArrowIcon, ArrowRight, CONTAINER, DISPLAY_FONT, PAGE } from '@/components/landing/motion'
+import { ArrowRight, ArrowUpRight } from 'lucide-react'
+
+import { LazySiteFooter, LazySiteNav } from '@/components/landing/lazy-chrome'
+import { CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE } from '@/components/landing/tokens'
+
+// Imports only server-safe tokens and the lazy nav and footer: the root layout
+// carries this page on every route, so anything it imports directly is
+// downloaded on every page (see lazy-chrome.tsx).
 
 // A dot matrix spelling 404, drawn in the landing page's ink rather than an
 // image — it inherits the palette and stays crisp at any size.
@@ -18,7 +23,7 @@ const LINKS = [
 const NotFound = () => {
   return (
     <div className={PAGE}>
-      <SiteNav />
+      <LazySiteNav />
 
       <section className='px-6 pt-36 pb-32 md:px-12 lg:px-20 lg:pt-44'>
         <div className={CONTAINER}>
@@ -56,7 +61,7 @@ const NotFound = () => {
             >
               Back to the start
               <span className='flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-colors group-hover:bg-white/25'>
-                <ArrowIcon />
+                <ArrowUpRight size={14} strokeWidth={ICON_STROKE} aria-hidden='true' />
               </span>
             </a>
 
@@ -67,14 +72,14 @@ const NotFound = () => {
                 className='border-rule text-ink-3 hover:border-rule-strong hover:bg-ink/3 hover:text-ink inline-flex items-center gap-2 rounded-full border px-5 py-3 text-[12px] tracking-wide transition-all'
               >
                 {link.label}
-                <ArrowRight />
+                <ArrowRight size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
               </a>
             ))}
           </div>
         </div>
       </section>
 
-      <SiteFooter />
+      <LazySiteFooter />
     </div>
   )
 }

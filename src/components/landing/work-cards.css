@@ -1,0 +1,331 @@
+/* ── Selected Work: outcome-led cards (2026-11-08) ───────────────────────────
+   Each card leads with its result: the figure is the largest thing on it, and
+   the process map sits beside it as the evidence. Two cards to a row from
+   1200px; one wide card per row below that, laid out the same way, and a plain
+   stack on phones. The card's own width decides its layout (container query),
+   so the full-row card on an odd count needs no rules of its own.
+
+   Flat paper with a hairline, in step with the drafting-sheet sections that
+   follow, but unnumbered: the numbering belongs to About, Services and
+   Process only. */
+
+.wk-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.9rem, 1.4vw, 1.4rem);
+  margin-top: clamp(1.2rem, 2vw, 2rem);
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 75rem) {
+  .wk-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wk-gallery[data-layout='feature'] > .wk-card:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.wk-card {
+  --wk-line: color-mix(in oklab, var(--ink) 14%, transparent);
+
+  position: relative;
+  isolation: isolate;
+  /* The card is the container its layout queries; the grid is the child they
+     restyle (a container query cannot restyle the container itself). */
+  container-type: inline-size;
+  padding: clamp(1rem, 1.6vw, 1.5rem);
+  overflow: hidden;
+  border: 1px solid var(--wk-line);
+  border-radius: 0.6rem;
+  background: color-mix(in oklab, var(--ground) 95%, transparent);
+  transition: border-color 0.35s ease;
+}
+
+/* A soft spotlight in the project's tone follows the pointer. Behind the
+   content (the card isolates its own stack), so it never washes over text. */
+.wk-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    24rem circle at var(--mx, 50%) var(--my, 30%),
+    color-mix(in oklab, var(--work-tone) 16%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.wk-card:hover,
+.wk-card:focus-within {
+  border-color: color-mix(in oklab, var(--ink) 38%, transparent);
+}
+
+.wk-card:hover::before {
+  opacity: 1;
+}
+
+.wk-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'lead'
+    'frame'
+    'title'
+    'summary'
+    'foot';
+  align-content: start;
+  gap: 0.75rem;
+  height: 100%;
+}
+
+/* ── The lead: context, then the figure ── */
+.wk-lead {
+  grid-area: lead;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.wk-context {
+  color: color-mix(in oklch, var(--accent) 80%, var(--ink));
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.wk-context span {
+  color: var(--ink-3);
+}
+
+.wk-outcome {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.wk-outcome strong {
+  /* One accent for every figure; each project's own tone stays in its map. */
+  color: var(--accent);
+  font-size: clamp(2.6rem, 9cqi, 4.4rem);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+
+.wk-outcome span {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.5rem;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.wk-outcome em {
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  font-style: normal;
+}
+
+.wk-outcome em::before {
+  content: '· ';
+}
+
+/* ── The map ── */
+.wk-frame {
+  grid-area: frame;
+  position: relative;
+  /* Above the stretched hit area so it paints over it, but every click falls
+     through, so the picture opens the case study too. */
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 0.4rem;
+  background: color-mix(in oklab, var(--ink) 5%, transparent);
+  pointer-events: none;
+}
+
+.wk-frame[data-view='canvas'] {
+  background: oklch(0.205 0.007 255);
+}
+
+.wk-frame[data-view='canvas']:has(svg[data-light]) {
+  background: #f5f5f8;
+}
+
+/* The map keeps a strip clear for its status chip along the bottom edge. */
+.wk-frame .work-canvas-art {
+  box-sizing: border-box;
+  padding-bottom: 2.4rem;
+}
+
+.wk-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ── Title, summary, foot ── */
+.wk-title {
+  grid-area: title;
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+/* One real control; its stretched pseudo-element makes the card the target. */
+.wk-select {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wk-select::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+}
+
+.wk-select:focus-visible {
+  outline: none;
+}
+
+.wk-card:has(.wk-select:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.wk-summary {
+  grid-area: summary;
+  max-width: 62ch;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.wk-foot {
+  grid-area: foot;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1.2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--wk-line);
+}
+
+.wk-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+}
+
+.wk-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.wk-card:hover .wk-tool .tool-mark,
+.wk-card:focus-within .wk-tool .tool-mark {
+  background-color: var(--tool-color);
+}
+
+.wk-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.wk-open svg {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wk-card:hover .wk-open svg,
+.wk-card:focus-within .wk-open svg {
+  transform: translateX(3px);
+}
+
+/* ── Medium cards: the figure and the map share the top row ── */
+@container (min-width: 30rem) {
+  .wk-grid {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-areas:
+      'lead frame'
+      'title title'
+      'summary summary'
+      'foot foot';
+    column-gap: clamp(1rem, 2.4cqi, 1.6rem);
+  }
+
+  .wk-lead {
+    justify-content: space-between;
+  }
+}
+
+/* ── Wide cards (one to a row, or the full-row card): the words in one
+   column, the map beside them ── */
+@container (min-width: 46rem) {
+  .wk-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas:
+      'lead frame'
+      'title frame'
+      'summary frame'
+      'foot frame';
+    column-gap: clamp(1.5rem, 3.5cqi, 3rem);
+    row-gap: 0.8rem;
+  }
+
+  .wk-lead {
+    gap: 1.2rem;
+  }
+
+  .wk-frame {
+    align-self: center;
+  }
+
+  .wk-title {
+    font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+  }
+
+  .wk-foot {
+    align-self: end;
+  }
+
+  .wk-outcome strong {
+    font-size: clamp(3rem, 7cqi, 5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wk-card::before,
+  .wk-open svg {
+    transition: none;
+  }
+}

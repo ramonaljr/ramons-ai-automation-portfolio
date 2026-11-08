@@ -15,7 +15,7 @@ import Image from 'next/image'
 import { animate, type AnimationPlaybackControls } from 'motion/react'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
-import { CaseStudyModal } from '@/components/landing/case-study-modal'
+import { LazyCaseStudyModal } from '@/components/landing/lazy-case-study-modal'
 import { workLabel } from '@/components/landing/projects-section'
 import { snappySpring, useInView, usePrefersReducedMotion } from '@/components/landing/motion'
 import { orderWork, WORK_TONES } from '@/lib/work-views'
@@ -309,7 +309,7 @@ export function WorkStrip({ caseStudies }: { caseStudies: CaseStudyMetadata[] })
         </ul>
       </div>
 
-      <CaseStudyModal key={selected?.slug ?? 'closed'} study={selected} onClose={() => setSelected(null)} />
+      <LazyCaseStudyModal key={selected?.slug ?? 'closed'} study={selected} onClose={() => setSelected(null)} />
     </section>
   )
 }

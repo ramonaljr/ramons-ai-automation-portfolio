@@ -1,0 +1,280 @@
+/* ── Working together: a ruled schedule (2026-11-08) ─────────────────────────
+   See engagement-section.tsx. Three columns under one drawn rule, separated by
+   hairlines, with every row aligned across them through subgrid. Colours come
+   from the page tokens, which the dark band (.pricing-band) remaps, so the
+   same rules serve the homepage band and the light /services page. */
+
+.eng {
+  --eng-line: color-mix(in oklab, var(--ink) 16%, transparent);
+  --eng-mono: var(--font-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --eng-pad: clamp(1.1rem, 2.2vw, 2rem);
+}
+
+.eng-cols {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The rule the schedule hangs from, drawn in as the section arrives. */
+.eng-cols::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--ink);
+  transform-origin: 0 50%;
+  transition: transform 1.4s var(--ease-entrance);
+}
+
+.eng-cols:not([data-in])::before {
+  transform: scaleX(0);
+}
+
+.eng-col {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 1.1rem;
+  padding: 1.6rem 0 2.2rem;
+  transition:
+    opacity 0.8s ease calc(var(--i) * 140ms + 250ms),
+    transform 0.8s var(--ease-entrance) calc(var(--i) * 140ms + 250ms);
+}
+
+.eng-col + .eng-col {
+  border-top: 1px solid var(--eng-line);
+}
+
+.eng-cols:not([data-in]) .eng-col {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+/* The build, which the page leads towards: an accent rule on its column. */
+.eng-col[data-featured]::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+}
+
+/* ── The rows ── */
+.eng-when {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  color: var(--ink-3);
+  font: 400 0.75rem/1.35 var(--eng-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.eng-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--accent);
+}
+
+.eng-start::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+
+.eng-name {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.5rem, 2.2vw, 2.1rem);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.eng-price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.7rem;
+}
+
+.eng-price strong {
+  color: var(--ink);
+  font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+  font-weight: 400;
+}
+
+.eng-price span {
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+}
+
+.eng-for {
+  max-width: 34ch;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* The document the step leaves you holding, on its own paper. The frame is a
+   size container, so the figure's type follows it (see process-figures.css). */
+.eng-fig {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 30rem;
+  aspect-ratio: 5 / 4;
+  margin-block: 0.4rem;
+  container-type: size;
+}
+
+@media (min-width: 64rem) {
+  .eng-fig {
+    max-width: none;
+  }
+}
+
+.eng-fig .pf {
+  width: min(94cqw, 52em);
+  font-size: clamp(8px, min(2.9cqw, 3.4cqh), 15px);
+}
+
+/* Paper is paper on the dark band too: the figure keeps the light page's
+   ink and accent rather than the band's remapped ones. */
+.eng-fig {
+  --ink: oklch(0.225 0.018 255);
+  --ink-2: oklch(0.35 0.017 255);
+  --ink-3: oklch(0.47 0.016 255);
+  --accent: oklch(0.51 0.16 32);
+}
+
+/* A column is narrower than the Process frame, so the monitor's note hangs
+   to the left of its failed bar instead of running off the paper. */
+.eng-fig .pf-runs-note {
+  right: calc((1 - var(--x)) * 100%);
+  left: auto;
+  width: max-content;
+  max-width: 55%;
+  padding-right: 0.6em;
+  padding-left: 0;
+  border-right: 1px solid var(--accent);
+  border-left: 0;
+  text-align: right;
+  white-space: normal;
+  transform: translateX(1px);
+}
+
+.eng-includes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--eng-line);
+}
+
+.eng-includes li {
+  display: grid;
+  grid-template-columns: 1.1rem minmax(0, 1fr);
+  padding: 0.62rem 0;
+  border-bottom: 1px solid var(--eng-line);
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.eng-includes li::before {
+  content: '+';
+  color: var(--ink-3);
+  font-family: var(--eng-mono);
+}
+
+.eng-outcome {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.eng-outcome span {
+  color: var(--ink-3);
+  font: 400 0.6875rem/1.3 var(--eng-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Three columns, rows aligned across them ── */
+@media (min-width: 64rem) {
+  .eng-cols {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(7, auto);
+  }
+
+  .eng-col {
+    grid-row: span 7;
+    grid-template-rows: subgrid;
+    gap: 1.1rem 0;
+    padding: 1.6rem var(--eng-pad) 2.4rem;
+  }
+
+  .eng-col:first-child {
+    padding-left: 0;
+  }
+
+  .eng-col:last-child {
+    padding-right: 0;
+  }
+
+  .eng-col + .eng-col {
+    border-top: 0;
+    border-left: 1px solid var(--eng-line);
+  }
+
+  .eng-col[data-featured]::before {
+    right: 0;
+    left: 0;
+  }
+}
+
+/* ── The close ── */
+.eng-close {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--eng-line);
+}
+
+.eng-close p {
+  max-width: 60ch;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eng-cols::before,
+  .eng-col {
+    transition: none;
+  }
+
+  .eng-cols:not([data-in])::before {
+    transform: none;
+  }
+
+  .eng-cols:not([data-in]) .eng-col {
+    opacity: 1;
+    transform: none;
+  }
+}

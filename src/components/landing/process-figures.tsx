@@ -87,7 +87,7 @@ const OPPORTUNITIES = [
   { label: 'Final sign-off', value: '5 min', share: 0.12, verdict: 'Keep a person' }
 ]
 
-function AuditFigure() {
+export function AuditFigure() {
   return (
     <Paper kind='Opportunity list' refLabel='Process audit · Week 1'>
       <ol className='pf-rank'>
@@ -171,7 +171,7 @@ const BUILD_LOG = [
   'Every run logged · failure alerts on'
 ]
 
-function BuildFigure() {
+export function BuildFigure() {
   return (
     <Paper kind='Build log' refLabel='Build & connect · In your accounts'>
       <ol className='pf-chain'>
@@ -235,7 +235,7 @@ function TestFigure() {
 const RUNS = [0.42, 0.55, 0.5, 0.62, 0.58, 0.35, 0.3, 0.66, 0.7, 0.61, 0.74, 0.68, 0.4, 0.36]
 const FAILED_DAY = 8
 
-function MonitorFigure() {
+export function MonitorFigure() {
   return (
     <Paper kind='Run monitor' refLabel='Launch & optimize · Monthly'>
       <p className='pf-live pf-in' style={at(1)}>
