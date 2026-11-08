@@ -328,6 +328,9 @@ const CHROME = {
     press: 'Execute',
     item: 'item',
     legible: 0,
+
+    /** The zoom a run is followed at: a node about 85px across. */
+    follow: 0.85,
     Icon: FlaskConical
   },
   make: {
@@ -340,6 +343,7 @@ const CHROME = {
     press: 'Run once',
     item: 'bundle',
     legible: 0,
+    follow: 0.7,
     Icon: Play
   },
   zapier: {
@@ -354,6 +358,7 @@ const CHROME = {
 
     /** A Zap with Paths is far wider than tall; fitted whole, its steps are unreadable. */
     legible: 0.5,
+    follow: 0.75,
     Icon: Zap
   }
 } as const
@@ -447,6 +452,10 @@ function Canvas({
   const pan = useRef<{ id: number; x: number; y: number; from: View; moved: boolean } | null>(null)
   const swallowClick = useRef(false)
 
+  // Set when the reader pans or zooms during a run: from then on the camera
+  // is theirs, so it stops following and does not pull back at the end.
+  const steered = useRef(false)
+
   // Scenarios are built once, when the canvas mounts, so their dates sit ahead of today.
   const [scenarios] = useState(() => bundle.scenarios(new Date()))
   const [picked, setPicked] = useState(scenarios[0]?.id)
@@ -454,6 +463,8 @@ function Canvas({
   const [open, setOpen] = useState<string | null>(null)
 
   const scenario = scenarios.find(s => s.id === picked) ?? scenarios[0]
+  const chrome = CHROME[layout.platform]
+  const glideTimer = useRef(0)
   const byName = new Map(layout.nodes.map(node => [node.name, node]))
 
   const apply = () => {
@@ -463,10 +474,11 @@ function Canvas({
     if (world) world.style.transform = `translate(${x}px, ${y}px) scale(${k})`
   }
 
-  const fit = () => {
+  /** The view that shows the whole build, or opens on the trigger when that is too small to read. */
+  const fitted = (): View | null => {
     const frame = frameRef.current
 
-    if (!frame) return
+    if (!frame) return null
 
     const { x, y, x2, y2 } = layout.bounds
     const width = frame.clientWidth - INSET.side * 2
@@ -476,8 +488,7 @@ function Canvas({
     const trigger = layout.nodes.find(node => node.shape === 'trigger')
 
     // Too big to read whole: open at a readable zoom on the trigger, and let the run lead the way.
-    view.current =
-      k < legible && trigger
+    return k < legible && trigger
         ? {
             k: legible,
             x: frame.clientWidth / 2 - (trigger.x + trigger.w / 2) * legible,
@@ -488,36 +499,66 @@ function Canvas({
             x: INSET.side + (width - (x2 - x) * k) / 2 - x * k,
             y: INSET.top + (height - (y2 - y) * k) / 2 - y * k
           }
+  }
+
+  const fit = () => {
+    const next = fitted()
+
+    if (!next) return
+    view.current = next
     apply()
   }
 
-  /** Glides the canvas to a node the run reaches off screen. */
-  const follow = (node: DemoNode) => {
-    const frame = frameRef.current
+  /** Moves the canvas to `next`, easing over `ms` when the move is ours, not the reader's. */
+  const glideTo = (next: View, ms = 650) => {
     const world = worldRef.current
 
-    if (!frame || !world) return
+    if (!world) return
 
-    const { x, y, k } = view.current
+    view.current = next
+    world.style.setProperty('--glide', `${ms}ms`)
+    world.dataset.glide = ''
+    apply()
+    window.clearTimeout(glideTimer.current)
+    glideTimer.current = window.setTimeout(() => delete world.dataset.glide, ms + 50)
+  }
+
+  /**
+   * The camera on a run: closes in to a readable zoom on the node at work,
+   * and pans on only when the run leaves the calm middle of the frame, so it
+   * travels in a few long glides rather than a jolt on every step.
+   */
+  const follow = (node: DemoNode) => {
+    const frame = frameRef.current
+
+    if (!frame || steered.current) return
+
+    const { x, y, k: was } = view.current
+    const k = Math.max(was, chrome.follow)
     const left = x + node.x * k
     const top = y + node.y * k
 
-    const seen =
-      left >= INSET.side &&
-      top >= INSET.top &&
-      left + node.w * k <= frame.clientWidth - INSET.side &&
-      top + node.h * k <= frame.clientHeight - INSET.bottom
+    // The middle of the frame, inside the toolbar, the zoom buttons and a margin.
+    const marginX = frame.clientWidth * 0.18
+    const marginY = (frame.clientHeight - INSET.top - INSET.bottom) * 0.18
 
-    if (seen) return
+    const calm =
+      k === was &&
+      left >= INSET.side + marginX &&
+      top >= INSET.top + marginY &&
+      left + node.w * k <= frame.clientWidth - INSET.side - marginX &&
+      top + node.h * k <= frame.clientHeight - INSET.bottom - marginY
 
-    view.current = {
-      k,
-      x: frame.clientWidth / 2 - (node.x + node.w / 2) * k,
-      y: (INSET.top + frame.clientHeight - INSET.bottom) / 2 - (node.y + node.h / 2) * k
-    }
-    world.dataset.glide = ''
-    apply()
-    window.setTimeout(() => delete world.dataset.glide, 650)
+    if (calm) return
+
+    glideTo(
+      {
+        k,
+        x: frame.clientWidth * 0.42 - (node.x + node.w / 2) * k,
+        y: (INSET.top + frame.clientHeight - INSET.bottom) / 2 - (node.y + node.h / 2) * k
+      },
+      k === was ? 650 : 900
+    )
   }
 
   /** Zoom by `factor` about a point in the frame (its centre by default). */
@@ -525,6 +566,8 @@ function Canvas({
     const frame = frameRef.current
 
     if (!frame) return
+
+    steered.current = true
 
     const { x, y, k } = view.current
     const next = Math.min(ZOOM.max, Math.max(ZOOM.min, k * factor))
@@ -593,8 +636,28 @@ function Canvas({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [run, reduced])
 
+  // Once a run ends, the camera eases back out to the whole build, where the
+  // path it took stays lit and the branches it skipped fall back.
+  useEffect(() => {
+    if (!run?.done || reduced || steered.current) return
+
+    const timer = window.setTimeout(() => {
+      const next = fitted()
+
+      if (next) glideTo(next, 1100)
+    }, 700)
+
+    return () => window.clearTimeout(timer)
+
+    // `fitted` and `glideTo` only read refs and the static layout.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [run?.done, reduced])
+
+  useEffect(() => () => window.clearTimeout(glideTimer.current), [])
+
   const execute = () => {
     if (!scenario) return
+    steered.current = false
     setRun({ scenario, plan: plan(layout, scenario), cursor: 0, done: false })
   }
 
@@ -663,6 +726,7 @@ function Canvas({
     if (!state.moved) {
       if (Math.hypot(dx, dy) < 5) return
       state.moved = true
+      steered.current = true
       event.currentTarget.setPointerCapture(event.pointerId)
       event.currentTarget.dataset.panning = ''
     }
@@ -690,7 +754,6 @@ function Canvas({
   // The nodes this run has finished, for the results to fill in behind it.
   const reached = run ? new Set(run.done ? run.plan.steps : run.plan.steps.slice(0, run.cursor)) : null
   const shown = run?.scenario ?? scenario
-  const chrome = CHROME[layout.platform]
   const countOf = (node: DemoNode) => itemCount(run?.scenario.output[node.name])
 
   return (
@@ -702,6 +765,7 @@ function Canvas({
           data-platform={layout.platform}
           data-no-lens
           data-running={run && !run.done ? '' : undefined}
+          data-ran={run?.done ? '' : undefined}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerEnd}
@@ -875,7 +939,16 @@ function Canvas({
           </div>
 
           <div className='n8n-chrome n8n-zoom' role='group' aria-label='Canvas zoom'>
-            <button type='button' aria-label='Fit view' onClick={fit}>
+            <button
+              type='button'
+              aria-label='Fit view'
+              onClick={() => {
+                steered.current = true
+                const next = fitted()
+
+                if (next) glideTo(next)
+              }}
+            >
               <Maximize2 size={15} />
             </button>
             <button type='button' aria-label='Zoom in' onClick={() => zoom(ZOOM.step)}>
@@ -893,7 +966,24 @@ function Canvas({
             role='status'
             data-tone={run?.done ? 'done' : waiting ? 'wait' : undefined}
           >
-            {run?.done ? chrome.done : waiting ? waiting : current ? `Running ${current.name}` : ''}
+            {run?.done ? (
+              <>
+                {chrome.done}
+                <span className='n8n-status-step'>{run.plan.steps.length} steps</span>
+              </>
+            ) : run && current ? (
+              <>
+                <span className='n8n-status-step'>
+                  Step {run.cursor + 1} of {run.plan.steps.length}
+                </span>
+                {waiting || current.label || current.name}
+                <i
+                  className='n8n-status-bar'
+                  aria-hidden='true'
+                  style={{ '--p': (run.cursor + 1) / run.plan.steps.length } as CSSProperties}
+                />
+              </>
+            ) : null}
           </p>
 
           {/* ── A node's output, as n8n's panel shows it ──────────────────────── */}
