@@ -390,6 +390,11 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
                           {r.value}
                         </p>
                         <p className='text-ink-3 mt-3 text-[13px]'>{r.label}</p>
+                        {r.desc && (
+                          <p className='text-ink-2 border-rule mt-5 border-t pt-4 text-left text-[14px] leading-relaxed'>
+                            {r.desc}
+                          </p>
+                        )}
                       </div>
                     </Reveal>
                   ))}

@@ -33,10 +33,13 @@ impactHighlightDesc: 'The team only steps in for disputes, questions and final n
 roi:
   - value: '0'
     label: 'Reminders during a dispute'
+    desc: 'Once a customer disputes an invoice, reminders stop until a person clears it. No timer restarts them, so nobody is chased over a bill they are contesting.'
   - value: '1'
     label: 'Row per invoice, enforced'
+    desc: 'The database allows only one record per invoice, so even if the workflow runs twice, a customer never gets the same reminder twice.'
   - value: '7'
     label: 'Reply types understood'
+    desc: 'Replies are sorted into disputes, promises to pay, payments already sent, invoice copy requests, wrong contacts and payment questions, and each sets its own next step. Anything else goes to a person.'
 failsafeHeadline: 'A dispute stops everything'
 failsafeDesc: 'A disputed invoice gets no more reminders until a person clears it. No timer, no automatic restart.'
 failsafes:

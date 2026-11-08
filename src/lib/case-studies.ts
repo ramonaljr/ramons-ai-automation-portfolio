@@ -91,7 +91,9 @@ export type CaseStudyMetadata = {
   stepCount?: number
   impactHighlight?: string
   impactHighlightDesc?: string
-  roi?: { value: string; label: string }[]
+
+  /** `desc` says in words what the number means for the business. */
+  roi?: { value: string; label: string; desc?: string }[]
   failsafeHeadline?: string
   failsafeDesc?: string
   failsafes?: { title: string; desc: string }[]

@@ -33,10 +33,13 @@ impactHighlightDesc: 'Every file arrives under a name that says what it is, with
 roi:
   - value: '15 min'
     label: 'Between inbox checks'
+    desc: 'Label a client email To File and within 15 minutes its attachments are named, saved to Google Drive and logged, with nobody downloading anything.'
   - value: '5'
     label: 'Details logged per file'
+    desc: 'Every file gets a log row with the date, its original name, its new name, the file type and a Drive link, so anyone can find what arrived and where it went.'
   - value: '1'
     label: 'Receipt per email'
+    desc: 'The sender gets one email listing every file saved under its new name, and only when at least one file was saved.'
 failsafeHeadline: 'Only real files, and a second try'
 failsafeDesc: 'Signature logos and empty parts are skipped, and a failed AI or Drive step tries again before it stops.'
 failsafes:

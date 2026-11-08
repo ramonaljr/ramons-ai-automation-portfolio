@@ -33,10 +33,13 @@ impactHighlightDesc: 'Approvers see the issues already flagged, and only approve
 roi:
   - value: '3-way'
     label: 'Invoice, PO & delivery match'
+    desc: 'Each invoice is checked against its purchase order and delivery record before an approver sees it, so overbilling and missing deliveries are already flagged.'
   - value: '2'
     label: 'Duplicate checks'
+    desc: 'Once before the AI reads the invoice and once after, by vendor and invoice number, so a bill sent twice is never paid twice.'
   - value: '100%'
     label: 'Invoices logged'
+    desc: 'Approved, rejected or flagged, every invoice is logged with its outcome, so finance can see what happened to any bill and why.'
 failsafeHeadline: 'Nothing posts without approval'
 failsafeDesc: 'Every bill is approved by a person in Slack before it reaches QuickBooks, and anything uncertain is checked first.'
 failsafes:

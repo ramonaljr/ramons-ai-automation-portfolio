@@ -33,10 +33,13 @@ impactHighlightDesc: 'Each stage sets off its own next step, once, and every ema
 roi:
   - value: '5'
     label: 'Pipeline stages automated'
+    desc: 'Ready to Start, No Response, Quoted, Approved, and Paid and Closed each set off their own next step: a folder and task, a follow-up, a welcome or a thank-you.'
   - value: '2 days'
     label: 'Wait before each nudge'
+    desc: 'No Response and Quoted leads get a nudge two days after the follow-up, but only if they are still at that stage, so nobody is nudged after they reply.'
   - value: '1'
     label: 'Run per stage, per lead'
+    desc: 'Each stage is recorded on the lead before anything is sent, so moving a card back and forth never sends the same email twice.'
 failsafeHeadline: 'Nothing sent twice, nothing dropped'
 failsafeDesc: 'Each stage is claimed before it runs, a nudge is checked against the board before it goes out, and a failed step gets a second try.'
 failsafes:

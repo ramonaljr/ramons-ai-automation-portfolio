@@ -22,6 +22,9 @@ const WorkflowDemo = dynamic(() => import('@/components/landing/demo/n8n-demo').
   ssr: false
 })
 
+/** A block that folds to nothing: grid rows animate where height cannot. */
+const FOLD = 'grid transition-[grid-template-rows,opacity] duration-300 motion-reduce:transition-none'
+
 /** Everything inside the dialog a keyboard can land on, in document order. */
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
 
@@ -62,6 +65,21 @@ export function CaseStudyModal({
    */
   const [picked, setPicked] = useState<{ slug: string; index: number }>({ slug: '', index: 0 })
   const viewIndex = picked.slug === study?.slug ? picked.index : 0
+
+  /**
+   * The header folds down to the title once the body scrolls, so the tags and
+   * description stop taking a fifth of the screen from the content. It folds
+   * past 64px and opens again only near the top: the gap keeps it from
+   * flickering when the reader stops right at the line.
+   */
+  const [compact, setCompact] = useState(false)
+
+  const onBodyScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const top = e.currentTarget.scrollTop
+
+    if (top > 64) setCompact(true)
+    else if (top < 8) setCompact(false)
+  }
 
   /**
    * Scroll lock, Escape, and the focus contract a dialog owes a keyboard.
@@ -194,36 +212,49 @@ export function CaseStudyModal({
         onClick={e => e.stopPropagation()}
       >
         {/* ── Modal Top Header (Fixed inside modal) ────────────────────────── */}
-        <div className='border-rule bg-surface-raised relative border-b px-[max(1.5rem,calc((100%-90rem)/2))] pt-6 pb-5 sm:px-[max(2rem,calc((100%-90rem)/2))] sm:pt-8'>
-          {/* Tags */}
-          <div className='mb-3 flex flex-wrap items-center gap-2 pr-12'>
-            {/* One label, not a claim and its own contradiction: this said
+        <div
+          className={`border-rule bg-surface-raised relative border-b px-[max(1.5rem,calc((100%-90rem)/2))] transition-[padding] duration-300 motion-reduce:transition-none sm:px-[max(2rem,calc((100%-90rem)/2))] ${
+            compact ? 'py-3 sm:py-3.5' : 'pt-6 pb-5 sm:pt-8'
+          }`}
+        >
+          {/* Tags: folded away with the description once the body scrolls. */}
+          <div
+            className={`${FOLD} ${compact ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr]'}`}
+            aria-hidden={compact || undefined}
+          >
+            <div className='min-h-0 overflow-hidden'>
+              <div className='mb-3 flex flex-wrap items-center gap-2 pr-12'>
+                {/* One label, not a claim and its own contradiction: this said
                 "CASE STUDY" while a SAMPLE badge sat three chips along. */}
-            <span className='text-ink-3 font-mono text-xs tracking-[0.2em] uppercase'>
-              {study.sample ? 'Demo project' : study.sampleClient ? 'Sample client build' : 'Case study'}
-            </span>
-            {study.platform && (
-              <span className='border-rule-strong bg-ink/4 text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-xs'>
-                {study.platform}
-              </span>
-            )}
-            {study.categories?.map(c => (
-              <span key={c} className='border-rule text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-xs'>
-                {c}
-              </span>
-            ))}
-            {study.speed && (
-              <span className='badge badge-accent'>
-                <Ico d={study.speedKind === 'throughput' ? P.stack : P.bolt} size={11} />
-                {study.speed}
-              </span>
-            )}
+                <span className='text-ink-3 font-mono text-xs tracking-[0.2em] uppercase'>
+                  {study.sample ? 'Demo project' : study.sampleClient ? 'Sample client build' : 'Case study'}
+                </span>
+                {study.platform && (
+                  <span className='border-rule-strong bg-ink/4 text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-xs'>
+                    {study.platform}
+                  </span>
+                )}
+                {study.categories?.map(c => (
+                  <span key={c} className='border-rule text-ink-2 rounded-full border px-2.5 py-0.5 font-mono text-xs'>
+                    {c}
+                  </span>
+                ))}
+                {study.speed && (
+                  <span className='badge badge-accent'>
+                    <Ico d={study.speedKind === 'throughput' ? P.stack : P.bolt} size={11} />
+                    {study.speed}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Title */}
           <h2
             id='modal-case-study-title'
-            className='text-ink pr-12 text-2xl leading-snug font-light tracking-tight sm:text-3xl lg:text-[34px]'
+            className={`text-ink pr-12 leading-snug font-light tracking-tight transition-[font-size] duration-300 motion-reduce:transition-none ${
+              compact ? 'text-lg sm:text-xl' : 'text-2xl sm:text-3xl lg:text-[34px]'
+            }`}
             style={{ fontFamily: DISPLAY_FONT }}
           >
             {study.title}
@@ -231,7 +262,11 @@ export function CaseStudyModal({
 
           {/* Description */}
           {study.description && (
-            <p className='text-ink-2 mt-2 max-w-2xl text-[14.5px] leading-relaxed'>{study.description}</p>
+            <div className={`${FOLD} ${compact ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr]'}`}>
+              <div className='min-h-0 overflow-hidden'>
+                <p className='text-ink-2 mt-2 max-w-2xl text-[14.5px] leading-relaxed'>{study.description}</p>
+              </div>
+            </div>
           )}
 
           {/* Close button (top right) */}
@@ -239,7 +274,9 @@ export function CaseStudyModal({
             type='button'
             onClick={onClose}
             aria-label='Close dialog'
-            className='border-rule bg-ink/3 text-ink-2 hover:text-ink hover:bg-ink/8 hover:border-rule-strong absolute top-5 right-5 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border transition-all sm:top-7 sm:right-7'
+            className={`border-rule bg-ink/3 text-ink-2 hover:text-ink hover:bg-ink/8 hover:border-rule-strong absolute right-5 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border transition-all sm:right-7 ${
+              compact ? 'top-1/2 -translate-y-1/2' : 'top-5 sm:top-7'
+            }`}
           >
             <Ico d={P.close} size={15} />
           </button>
@@ -248,6 +285,7 @@ export function CaseStudyModal({
         {/* ── Scrollable Body Content ──────────────────────────────────────── */}
         <div
           ref={bodyRef}
+          onScroll={onBodyScroll}
           className='flex-1 space-y-8 overflow-y-auto bg-[#FAF9F6] px-[max(1.5rem,calc((100%-90rem)/2))] py-6 sm:px-[max(2rem,calc((100%-90rem)/2))] sm:py-8'
         >
           {/* The film and the workflow share the top frame; the toggle only
@@ -362,17 +400,37 @@ export function CaseStudyModal({
             )}
           </div>
 
-          {/* 2. ROI & Key Metrics */}
+          {/* 2. ROI & Key Metrics. The outcome is said in words first, and
+              each figure carries a line on what it means for the business:
+              a bare "3" or "15 min" tells a reader nothing on its own. */}
           {study.roi && study.roi.length > 0 && (
             <div>
               <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase'>KEY OUTCOMES &amp; IMPACT</p>
-              <div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
+              {study.impactHighlight && (
+                <div className='mb-5 max-w-3xl'>
+                  <p
+                    className='text-ink text-xl leading-snug font-light tracking-tight sm:text-2xl'
+                    style={{ fontFamily: DISPLAY_FONT }}
+                  >
+                    {study.impactHighlight}
+                  </p>
+                  {study.impactHighlightDesc && (
+                    <p className='text-ink-2 mt-2 text-[14.5px] leading-relaxed'>{study.impactHighlightDesc}</p>
+                  )}
+                </div>
+              )}
+              <div className='grid gap-3 sm:grid-cols-3'>
                 {study.roi.map((r, idx) => (
-                  <div key={idx} className='border-rule bg-surface-raised rounded-xl border p-4 text-center shadow-sm'>
+                  <div key={idx} className='border-rule bg-surface-raised rounded-xl border p-5 shadow-sm'>
                     <div className='text-ink text-2xl font-light sm:text-3xl' style={{ fontFamily: DISPLAY_FONT }}>
                       {r.value}
                     </div>
-                    <div className='text-ink-3 mt-1 font-sans text-[12px] leading-tight'>{r.label}</div>
+                    <div className='text-ink-3 mt-1 font-mono text-[11px] tracking-[0.12em] uppercase'>{r.label}</div>
+                    {r.desc && (
+                      <p className='text-ink-2 border-rule mt-3 border-t pt-3 text-[13.5px] leading-relaxed'>
+                        {r.desc}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
