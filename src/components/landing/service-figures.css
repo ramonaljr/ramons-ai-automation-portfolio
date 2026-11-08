@@ -1,0 +1,152 @@
+/* ── Service figures: the document each service leaves behind ────────────
+   See service-figures.tsx. They reuse the paper from process-figures.css
+   (.pf, .pf-head, .pf-fields, .pf-chain…); only what is new lives here. */
+
+/* The dotted drafting ground the paper sits on, as in the Process frame.
+   A fixed shape, so every service fills the same card and nothing jumps
+   between hovers; the paper's type follows the frame. */
+.svc-fig {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  container-type: size;
+  background:
+    radial-gradient(circle, color-mix(in oklab, var(--ink) 9%, transparent) 1px, transparent 1.4px) 0 0 / 18px 18px,
+    color-mix(in oklab, var(--ground) 60%, white);
+}
+
+.svc-fig .pf {
+  width: min(86cqw, 46em);
+  gap: 1.1em;
+  padding: 1.25em 1.5em 1.3em;
+  font-size: clamp(8px, min(2.45cqw, 3.8cqh), 17px);
+}
+
+/* ── A timed trail: run log, approval trail ── */
+.pf-trail {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pf-trail li {
+  display: grid;
+  grid-template-columns: 3.6em minmax(0, 1fr) auto;
+  gap: 1em;
+  align-items: baseline;
+  padding: 0.5em 0;
+  border-top: 1px solid var(--pf-line);
+}
+
+.pf-trail li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.pf-trail time,
+.pf-trail b {
+  font-family: var(--pf-mono);
+  font-size: 0.72em;
+  letter-spacing: 0.04em;
+}
+
+.pf-trail time {
+  color: var(--ink-3);
+}
+
+.pf-trail span {
+  font-size: 0.95em;
+}
+
+.pf-trail b {
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+/* The one step a person takes. */
+.pf-trail li[data-person] time {
+  color: var(--accent);
+}
+
+.pf-trail li[data-person] b {
+  padding: 0.15em 0.6em;
+  border: 1px solid var(--accent);
+  border-radius: 99em;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Answer with sources ── */
+.pf-ask {
+  display: grid;
+  gap: 0.35em;
+  margin: 0;
+  font-family: var(--font-editorial);
+  font-size: 1.4em;
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+.pf-ask span {
+  color: var(--ink-3);
+  font-family: var(--pf-mono);
+  font-size: 0.48em;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pf-answer {
+  margin: 0;
+  padding-left: 0.9em;
+  border-left: 1px solid var(--pf-ink);
+  font-size: 0.95em;
+  line-height: 1.45;
+}
+
+.pf-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pf-sources li {
+  display: inline-flex;
+  gap: 0.5em;
+  align-items: center;
+  padding: 0.35em 0.75em;
+  border: 1px solid var(--pf-line);
+  border-radius: 0.3em;
+  background: #fff;
+  font-family: var(--pf-mono);
+  font-size: 0.74em;
+  letter-spacing: 0.02em;
+}
+
+.pf-sources svg {
+  width: 1.2em;
+  height: 1.2em;
+  color: var(--ink-3);
+}
+
+/* Phones: the open row's figure takes the height its paper needs, so the
+   type can stay readable instead of shrinking to fit a fixed card. */
+@media (max-width: 767px) {
+  .svc-board .svc-fig {
+    aspect-ratio: auto;
+    padding: 1rem 0.5rem 1.25rem;
+    container-type: inline-size;
+  }
+
+  .svc-board .svc-fig .pf {
+    width: 100%;
+    font-size: clamp(10px, 4cqw, 13px);
+  }
+}
