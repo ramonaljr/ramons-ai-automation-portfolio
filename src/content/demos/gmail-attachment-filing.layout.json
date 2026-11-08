@@ -1,0 +1,212 @@
+{
+  "platform": "make",
+  "name": "Integration Gmail",
+  "bounds": {
+    "x": -115,
+    "y": -141,
+    "x2": 2273,
+    "y2": 485
+  },
+  "stickies": [],
+  "bands": [
+    {
+      "from": "Gmail 4",
+      "to": "Tools 11"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Gmail 3",
+      "label": "Gmail",
+      "number": 3,
+      "type": "google-email:triggerWatchNewEmails",
+      "shape": "trigger",
+      "x": -75,
+      "y": -75,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Watch emails"
+    },
+    {
+      "name": "Gmail 4",
+      "label": "Gmail",
+      "number": 4,
+      "type": "google-email:listEmailAttachments",
+      "shape": "default",
+      "x": 234,
+      "y": -84,
+      "w": 150,
+      "h": 150,
+      "subtitle": "List email attachments and media"
+    },
+    {
+      "name": "Google Gemini AI 5",
+      "label": "Google Gemini AI",
+      "number": 5,
+      "type": "gemini-ai:uploadAFile",
+      "shape": "default",
+      "x": 537,
+      "y": -85,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Upload a file"
+    },
+    {
+      "name": "Retry 12",
+      "label": "Retry",
+      "number": 12,
+      "type": "builtin:Break",
+      "shape": "default",
+      "x": 537,
+      "y": 225,
+      "w": 150,
+      "h": 150
+    },
+    {
+      "name": "Google Gemini AI 7",
+      "label": "Google Gemini AI",
+      "number": 7,
+      "type": "gemini-ai:createACompletionGeminiPro",
+      "shape": "default",
+      "x": 837,
+      "y": -85,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Generate a response"
+    },
+    {
+      "name": "Retry 13",
+      "label": "Retry",
+      "number": 13,
+      "type": "builtin:Break",
+      "shape": "default",
+      "x": 837,
+      "y": 225,
+      "w": 150,
+      "h": 150
+    },
+    {
+      "name": "Google Drive 8",
+      "label": "Google Drive",
+      "number": 8,
+      "type": "google-drive:uploadAFile",
+      "shape": "default",
+      "x": 1163,
+      "y": -101,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Upload a File"
+    },
+    {
+      "name": "Retry 14",
+      "label": "Retry",
+      "number": 14,
+      "type": "builtin:Break",
+      "shape": "default",
+      "x": 1163,
+      "y": 225,
+      "w": 150,
+      "h": 150
+    },
+    {
+      "name": "Google Sheets 9",
+      "label": "Google Sheets",
+      "number": 9,
+      "type": "google-sheets:addRow",
+      "shape": "default",
+      "x": 1463,
+      "y": -101,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Add a Row"
+    },
+    {
+      "name": "Tools 11",
+      "label": "Tools",
+      "number": 11,
+      "type": "util:TextAggregator",
+      "shape": "default",
+      "x": 1763,
+      "y": -101,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Text aggregator"
+    },
+    {
+      "name": "Gmail 10",
+      "label": "Gmail",
+      "number": 10,
+      "type": "google-email:sendAnEmail",
+      "shape": "default",
+      "x": 2063,
+      "y": -101,
+      "w": 150,
+      "h": 150,
+      "subtitle": "Send an email"
+    }
+  ],
+  "edges": [
+    {
+      "from": "Gmail 3",
+      "to": "Gmail 4",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Google Gemini AI 5",
+      "to": "Retry 12",
+      "kind": "error",
+      "output": 0
+    },
+    {
+      "from": "Gmail 4",
+      "to": "Google Gemini AI 5",
+      "kind": "main",
+      "output": 0,
+      "label": "Real attachments only"
+    },
+    {
+      "from": "Google Gemini AI 7",
+      "to": "Retry 13",
+      "kind": "error",
+      "output": 0
+    },
+    {
+      "from": "Google Gemini AI 5",
+      "to": "Google Gemini AI 7",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Google Drive 8",
+      "to": "Retry 14",
+      "kind": "error",
+      "output": 0
+    },
+    {
+      "from": "Google Gemini AI 7",
+      "to": "Google Drive 8",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Google Drive 8",
+      "to": "Google Sheets 9",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Google Sheets 9",
+      "to": "Tools 11",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Tools 11",
+      "to": "Gmail 10",
+      "kind": "main",
+      "output": 0,
+      "label": "Files were saved"
+    }
+  ]
+}

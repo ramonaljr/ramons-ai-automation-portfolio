@@ -1,0 +1,782 @@
+{
+  "platform": "n8n",
+  "name": "HR Evaluation and Job Posting Assistant with AI",
+  "bounds": {
+    "x": -144,
+    "y": -176,
+    "x2": 2192,
+    "y2": 1520
+  },
+  "stickies": [
+    {
+      "x": -144,
+      "y": -176,
+      "w": 2336,
+      "h": 560,
+      "color": 1,
+      "title": "Receive and Filter Applicants"
+    },
+    {
+      "x": -144,
+      "y": 448,
+      "w": 1232,
+      "h": 496,
+      "color": 1,
+      "title": "Generate Questionnaires for Potential Hire"
+    },
+    {
+      "x": 1184,
+      "y": 448,
+      "w": 1008,
+      "h": 496,
+      "color": 1,
+      "title": "Send Perseonalize Email to Potential Hire for Interview"
+    },
+    {
+      "x": -144,
+      "y": 1024,
+      "w": 1232,
+      "h": 496,
+      "color": 1,
+      "title": "Book a slot for Interview"
+    },
+    {
+      "x": 1184,
+      "y": 1024,
+      "w": 1008,
+      "h": 496,
+      "color": 1,
+      "title": "Generate screening questions for Potential Hire"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "On form submission",
+      "type": "formTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 0,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Upload CV to Google Drive",
+      "type": "googleDrive",
+      "shape": "default",
+      "x": 224,
+      "y": 0,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upload: file"
+    },
+    {
+      "name": "Edit Fields",
+      "type": "set",
+      "shape": "default",
+      "x": 448,
+      "y": 0,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Airtable Job Applicants",
+      "type": "airtable",
+      "shape": "default",
+      "x": 672,
+      "y": 0,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: record"
+    },
+    {
+      "name": "Download file",
+      "type": "googleDrive",
+      "shape": "default",
+      "x": 896,
+      "y": 0,
+      "w": 100,
+      "h": 100,
+      "subtitle": "download: file"
+    },
+    {
+      "name": "Extract from File",
+      "type": "extractFromFile",
+      "shape": "default",
+      "x": 1120,
+      "y": 0,
+      "w": 100,
+      "h": 100,
+      "subtitle": "Extract from PDF"
+    },
+    {
+      "name": "AI Agent",
+      "type": "agent",
+      "shape": "root",
+      "x": 1344,
+      "y": 0,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        },
+        {
+          "kind": "ai_memory",
+          "label": "Memory",
+          "wired": false
+        },
+        {
+          "kind": "ai_tool",
+          "label": "Tool",
+          "wired": true
+        },
+        {
+          "kind": "ai_outputParser",
+          "label": "Output Parser",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "Groq Chat Model",
+      "type": "lmChatGroq",
+      "shape": "sub",
+      "x": 1248,
+      "y": 208,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Search records in Airtable",
+      "type": "airtableTool",
+      "shape": "sub",
+      "x": 1392,
+      "y": 208,
+      "w": 80,
+      "h": 80,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Structured Output Parser",
+      "type": "outputParserStructured",
+      "shape": "sub",
+      "x": 1536,
+      "y": 208,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "If",
+      "type": "if",
+      "shape": "default",
+      "x": 1712,
+      "y": 0,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Potential Hire",
+      "type": "airtable",
+      "shape": "default",
+      "x": 1936,
+      "y": -64,
+      "w": 100,
+      "h": 100,
+      "subtitle": "update: record"
+    },
+    {
+      "name": "Rejected",
+      "type": "airtable",
+      "shape": "default",
+      "x": 1936,
+      "y": 96,
+      "w": 100,
+      "h": 100,
+      "subtitle": "update: record"
+    },
+    {
+      "name": "Search records in Airtable1",
+      "type": "airtableTool",
+      "shape": "sub",
+      "x": 192,
+      "y": 752,
+      "w": 80,
+      "h": 80,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Generate Questionaire",
+      "type": "agent",
+      "shape": "root",
+      "x": 128,
+      "y": 496,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        },
+        {
+          "kind": "ai_memory",
+          "label": "Memory",
+          "wired": false
+        },
+        {
+          "kind": "ai_tool",
+          "label": "Tool",
+          "wired": true
+        },
+        {
+          "kind": "ai_outputParser",
+          "label": "Output Parser",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "OpenAI Chat Model",
+      "type": "lmChatOpenAi",
+      "shape": "sub",
+      "x": 16,
+      "y": 752,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Structured Output Parser1",
+      "type": "outputParserStructured",
+      "shape": "sub",
+      "x": 352,
+      "y": 752,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Questionnaire",
+      "type": "form",
+      "shape": "default",
+      "x": 480,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "subtitle": "Next Form Page"
+    },
+    {
+      "name": "Save Questionnaire Answers",
+      "type": "airtable",
+      "shape": "default",
+      "x": 704,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "subtitle": "update: record"
+    },
+    {
+      "name": "Personalized Email",
+      "type": "agent",
+      "shape": "root",
+      "x": 1360,
+      "y": 496,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        },
+        {
+          "kind": "ai_memory",
+          "label": "Memory",
+          "wired": false
+        },
+        {
+          "kind": "ai_tool",
+          "label": "Tool",
+          "wired": true
+        },
+        {
+          "kind": "ai_outputParser",
+          "label": "Output Parser",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "get_job_posting",
+      "type": "airtableTool",
+      "shape": "sub",
+      "x": 1520,
+      "y": 768,
+      "w": 80,
+      "h": 80,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Get a record in Airtable",
+      "type": "airtableTool",
+      "shape": "sub",
+      "x": 1376,
+      "y": 768,
+      "w": 80,
+      "h": 80,
+      "subtitle": "get: record"
+    },
+    {
+      "name": "Groq Chat Model1",
+      "type": "lmChatGroq",
+      "shape": "sub",
+      "x": 1232,
+      "y": 768,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Structured Output Parser2",
+      "type": "outputParserStructured",
+      "shape": "sub",
+      "x": 1664,
+      "y": 768,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Edit Fields1",
+      "type": "set",
+      "shape": "default",
+      "x": 1728,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Send a message",
+      "type": "gmail",
+      "shape": "default",
+      "x": 1952,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "subtitle": "send: message"
+    },
+    {
+      "name": "Groq Chat Model2",
+      "type": "lmChatGroq",
+      "shape": "sub",
+      "x": 32,
+      "y": 1328,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Structured Output Parser3",
+      "type": "outputParserStructured",
+      "shape": "sub",
+      "x": 352,
+      "y": 1328,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Book Meeting",
+      "type": "agent",
+      "shape": "root",
+      "x": 112,
+      "y": 1104,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        },
+        {
+          "kind": "ai_memory",
+          "label": "Memory",
+          "wired": false
+        },
+        {
+          "kind": "ai_tool",
+          "label": "Tool",
+          "wired": true
+        },
+        {
+          "kind": "ai_outputParser",
+          "label": "Output Parser",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "Update Interview Schedule",
+      "type": "airtable",
+      "shape": "default",
+      "x": 928,
+      "y": 1104,
+      "w": 100,
+      "h": 100,
+      "subtitle": "update: record"
+    },
+    {
+      "name": "Search records in Airtable2",
+      "type": "airtableTool",
+      "shape": "sub",
+      "x": 1424,
+      "y": 1312,
+      "w": 80,
+      "h": 80,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Get a record in Airtable1",
+      "type": "airtableTool",
+      "shape": "sub",
+      "x": 1584,
+      "y": 1312,
+      "w": 80,
+      "h": 80,
+      "subtitle": "get: record"
+    },
+    {
+      "name": "Screening Questions via Phone",
+      "type": "agent",
+      "shape": "root",
+      "x": 1360,
+      "y": 1104,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        },
+        {
+          "kind": "ai_memory",
+          "label": "Memory",
+          "wired": false
+        },
+        {
+          "kind": "ai_tool",
+          "label": "Tool",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "OpenAI Chat Model1",
+      "type": "lmChatOpenAi",
+      "shape": "sub",
+      "x": 1248,
+      "y": 1312,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Edit Fields2",
+      "type": "set",
+      "shape": "default",
+      "x": 1728,
+      "y": 1104,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Update record",
+      "type": "airtable",
+      "shape": "default",
+      "x": 1952,
+      "y": 1104,
+      "w": 100,
+      "h": 100,
+      "subtitle": "update: record"
+    },
+    {
+      "name": "Read Interviewer Calendar",
+      "type": "googleCalendarTool",
+      "shape": "sub",
+      "x": 192,
+      "y": 1328,
+      "w": 80,
+      "h": 80,
+      "subtitle": "getAll: event"
+    },
+    {
+      "name": "Get Interviewer Week",
+      "type": "googleCalendar",
+      "shape": "default",
+      "x": 400,
+      "y": 1104,
+      "w": 100,
+      "h": 100,
+      "subtitle": "getAll: event"
+    },
+    {
+      "name": "Confirm Interview Slot",
+      "type": "code",
+      "shape": "default",
+      "x": 592,
+      "y": 1104,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Book Interview",
+      "type": "googleCalendar",
+      "shape": "default",
+      "x": 768,
+      "y": 1104,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: event"
+    }
+  ],
+  "edges": [
+    {
+      "from": "On form submission",
+      "to": "Upload CV to Google Drive",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Upload CV to Google Drive",
+      "to": "Edit Fields",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Edit Fields",
+      "to": "Airtable Job Applicants",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Airtable Job Applicants",
+      "to": "Download file",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Download file",
+      "to": "Extract from File",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Extract from File",
+      "to": "AI Agent",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Groq Chat Model",
+      "to": "AI Agent",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Search records in Airtable",
+      "to": "AI Agent",
+      "kind": "ai_tool",
+      "output": 0
+    },
+    {
+      "from": "Structured Output Parser",
+      "to": "AI Agent",
+      "kind": "ai_outputParser",
+      "output": 0
+    },
+    {
+      "from": "AI Agent",
+      "to": "If",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "If",
+      "to": "Potential Hire",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "If",
+      "to": "Rejected",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Potential Hire",
+      "to": "Generate Questionaire",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Search records in Airtable1",
+      "to": "Generate Questionaire",
+      "kind": "ai_tool",
+      "output": 0
+    },
+    {
+      "from": "OpenAI Chat Model",
+      "to": "Generate Questionaire",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Structured Output Parser1",
+      "to": "Generate Questionaire",
+      "kind": "ai_outputParser",
+      "output": 0
+    },
+    {
+      "from": "Generate Questionaire",
+      "to": "Questionnaire",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Questionnaire",
+      "to": "Save Questionnaire Answers",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Save Questionnaire Answers",
+      "to": "Personalized Email",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "get_job_posting",
+      "to": "Personalized Email",
+      "kind": "ai_tool",
+      "output": 0
+    },
+    {
+      "from": "Get a record in Airtable",
+      "to": "Personalized Email",
+      "kind": "ai_tool",
+      "output": 0
+    },
+    {
+      "from": "Groq Chat Model1",
+      "to": "Personalized Email",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Structured Output Parser2",
+      "to": "Personalized Email",
+      "kind": "ai_outputParser",
+      "output": 0
+    },
+    {
+      "from": "Personalized Email",
+      "to": "Edit Fields1",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Edit Fields1",
+      "to": "Send a message",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Send a message",
+      "to": "Book Meeting",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Groq Chat Model2",
+      "to": "Book Meeting",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Structured Output Parser3",
+      "to": "Book Meeting",
+      "kind": "ai_outputParser",
+      "output": 0
+    },
+    {
+      "from": "Update Interview Schedule",
+      "to": "Screening Questions via Phone",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Search records in Airtable2",
+      "to": "Screening Questions via Phone",
+      "kind": "ai_tool",
+      "output": 0
+    },
+    {
+      "from": "Get a record in Airtable1",
+      "to": "Screening Questions via Phone",
+      "kind": "ai_tool",
+      "output": 0
+    },
+    {
+      "from": "OpenAI Chat Model1",
+      "to": "Screening Questions via Phone",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Screening Questions via Phone",
+      "to": "Edit Fields2",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Edit Fields2",
+      "to": "Update record",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Read Interviewer Calendar",
+      "to": "Book Meeting",
+      "kind": "ai_tool",
+      "output": 0
+    },
+    {
+      "from": "Book Meeting",
+      "to": "Get Interviewer Week",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Get Interviewer Week",
+      "to": "Confirm Interview Slot",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Confirm Interview Slot",
+      "to": "Book Interview",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Book Interview",
+      "to": "Update Interview Schedule",
+      "kind": "main",
+      "output": 0
+    }
+  ]
+}

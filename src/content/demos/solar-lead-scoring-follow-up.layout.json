@@ -1,0 +1,702 @@
+{
+  "platform": "n8n",
+  "name": "Voltara Commercial Solar - Lead Scoring & Follow-Up",
+  "bounds": {
+    "x": -64,
+    "y": 0,
+    "x2": 5672,
+    "y2": 1668
+  },
+  "stickies": [
+    {
+      "x": 5152,
+      "y": 0,
+      "w": 520,
+      "h": 760,
+      "color": 3,
+      "title": "Setup needed"
+    },
+    {
+      "x": 5152,
+      "y": 800,
+      "w": 520,
+      "h": 320,
+      "color": 4,
+      "title": "Why the form gets a reply first"
+    },
+    {
+      "x": 5152,
+      "y": 1168,
+      "w": 520,
+      "h": 420,
+      "color": 5,
+      "title": "Rules set the score - AI only reads the message"
+    },
+    {
+      "x": -64,
+      "y": 0,
+      "w": 1156,
+      "h": 1000,
+      "color": 7,
+      "title": "1 · Receive the lead & reply fast"
+    },
+    {
+      "x": 1104,
+      "y": 0,
+      "w": 420,
+      "h": 1000,
+      "color": 4,
+      "title": "2 · Check if we know them"
+    },
+    {
+      "x": 1536,
+      "y": 0,
+      "w": 560,
+      "h": 1000,
+      "color": 6,
+      "title": "3 · AI reads the message"
+    },
+    {
+      "x": 2112,
+      "y": 0,
+      "w": 700,
+      "h": 1000,
+      "color": 5,
+      "title": "4 · Score & sort - by rules, not AI"
+    },
+    {
+      "x": 2816,
+      "y": 0,
+      "w": 960,
+      "h": 1000,
+      "color": 2,
+      "title": "5 · Assign a rep & save"
+    },
+    {
+      "x": 3792,
+      "y": 0,
+      "w": 760,
+      "h": 1000,
+      "color": 3,
+      "title": "6 · Reply & alert the rep"
+    },
+    {
+      "x": 4560,
+      "y": 0,
+      "w": 520,
+      "h": 1000,
+      "color": 1,
+      "title": "7 · Low-priority leads & logging"
+    },
+    {
+      "x": -64,
+      "y": 1072,
+      "w": 2152,
+      "h": 596,
+      "color": 3,
+      "title": "8 · Follow-up check - runs every 5 minutes"
+    },
+    {
+      "x": 2112,
+      "y": 1072,
+      "w": 760,
+      "h": 592,
+      "color": 3,
+      "title": "9 · If something breaks"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "New Lead From Website Form",
+      "type": "webhook",
+      "shape": "trigger",
+      "x": 0,
+      "y": 640,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Clean Up Form Data",
+      "type": "set",
+      "shape": "default",
+      "x": 224,
+      "y": 640,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Name & Email Valid?",
+      "type": "if",
+      "shape": "default",
+      "x": 448,
+      "y": 640,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Reply To Form - Received",
+      "type": "respondToWebhook",
+      "shape": "default",
+      "x": 688,
+      "y": 624,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Reply To Form - Missing Info",
+      "type": "respondToWebhook",
+      "shape": "default",
+      "x": 672,
+      "y": 848,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Find Existing Lead Record",
+      "type": "airtable",
+      "shape": "default",
+      "x": 1168,
+      "y": 624,
+      "w": 100,
+      "h": 100,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "AI Reads Enquiry",
+      "type": "informationExtractor",
+      "shape": "root",
+      "x": 1664,
+      "y": 624,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "AI Model - Read Enquiry",
+      "type": "lmChatOpenAi",
+      "shape": "sub",
+      "x": 1664,
+      "y": 848,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Score And Tier Lead",
+      "type": "code",
+      "shape": "default",
+      "x": 2208,
+      "y": 624,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Route By Lead Type",
+      "type": "switch",
+      "shape": "default",
+      "x": 2496,
+      "y": 608,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "Needs a sales rep",
+        "Low priority",
+        "Duplicate"
+      ]
+    },
+    {
+      "name": "Find Rep Record",
+      "type": "airtable",
+      "shape": "default",
+      "x": 2864,
+      "y": 416,
+      "w": 100,
+      "h": 100,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Save As Low-Priority Lead",
+      "type": "airtable",
+      "shape": "default",
+      "x": 4608,
+      "y": 784,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upsert: record"
+    },
+    {
+      "name": "Save Lead To Airtable",
+      "type": "airtable",
+      "shape": "default",
+      "x": 3216,
+      "y": 416,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upsert: record",
+      "outputs": [
+        "success",
+        "error"
+      ]
+    },
+    {
+      "name": "AI Writes Reply Email",
+      "type": "chainLlm",
+      "shape": "root",
+      "x": 3840,
+      "y": 400,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "AI Model - Write Reply",
+      "type": "lmChatOpenAi",
+      "shape": "sub",
+      "x": 3840,
+      "y": 576,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Email Reply To Lead",
+      "type": "gmail",
+      "shape": "default",
+      "x": 4144,
+      "y": 400,
+      "w": 100,
+      "h": 100,
+      "subtitle": "send: message"
+    },
+    {
+      "name": "Alert Rep In Slack",
+      "type": "slack",
+      "shape": "default",
+      "x": 4320,
+      "y": 400,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Save To Lead Log",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 4768,
+      "y": 560,
+      "w": 100,
+      "h": 100,
+      "subtitle": "append: sheet"
+    },
+    {
+      "name": "Rep Found?",
+      "type": "if",
+      "shape": "default",
+      "x": 3408,
+      "y": 512,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Update Rep Last Assigned Time",
+      "type": "airtable",
+      "shape": "default",
+      "x": 3616,
+      "y": 496,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upsert: record"
+    },
+    {
+      "name": "Log Invalid Form",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 880,
+      "y": 848,
+      "w": 100,
+      "h": 100,
+      "subtitle": "append: sheet"
+    },
+    {
+      "name": "Every 5 Minutes",
+      "type": "scheduleTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 1408,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Lookup Sales Manager Record",
+      "type": "airtable",
+      "shape": "default",
+      "x": 224,
+      "y": 1408,
+      "w": 100,
+      "h": 100,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Find Overdue Lead Records",
+      "type": "airtable",
+      "shape": "default",
+      "x": 672,
+      "y": 1408,
+      "w": 100,
+      "h": 100,
+      "subtitle": "search: record"
+    },
+    {
+      "name": "Reassign To Manager",
+      "type": "airtable",
+      "shape": "default",
+      "x": 1152,
+      "y": 1408,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upsert: record"
+    },
+    {
+      "name": "Alert - Lead Not Followed Up",
+      "type": "slack",
+      "shape": "default",
+      "x": 1424,
+      "y": 1408,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Save To Escalation Log",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 1664,
+      "y": 1408,
+      "w": 100,
+      "h": 100,
+      "subtitle": "append: sheet"
+    },
+    {
+      "name": "When Workflow Fails",
+      "type": "errorTrigger",
+      "shape": "trigger",
+      "x": 2176,
+      "y": 1312,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Build Error Summary",
+      "type": "set",
+      "shape": "default",
+      "x": 2400,
+      "y": 1312,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Alert - Workflow Failed",
+      "type": "slack",
+      "shape": "default",
+      "x": 2624,
+      "y": 1312,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Save To Error Log",
+      "type": "googleSheets",
+      "shape": "default",
+      "x": 2624,
+      "y": 1440,
+      "w": 100,
+      "h": 100,
+      "subtitle": "append: sheet"
+    },
+    {
+      "name": "Alert - Lead Not Saved",
+      "type": "slack",
+      "shape": "default",
+      "x": 3408,
+      "y": 784,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Find Existing Lead",
+      "type": "code",
+      "shape": "default",
+      "x": 1360,
+      "y": 624,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Assign Rep",
+      "type": "code",
+      "shape": "default",
+      "x": 3040,
+      "y": 416,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Lookup Sales Manager",
+      "type": "code",
+      "shape": "default",
+      "x": 464,
+      "y": 1408,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Find Overdue Leads",
+      "type": "code",
+      "shape": "default",
+      "x": 912,
+      "y": 1408,
+      "w": 100,
+      "h": 100
+    }
+  ],
+  "edges": [
+    {
+      "from": "Score And Tier Lead",
+      "to": "Route By Lead Type",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Rep Found?",
+      "to": "Update Rep Last Assigned Time",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Every 5 Minutes",
+      "to": "Lookup Sales Manager Record",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Build Error Summary",
+      "to": "Alert - Workflow Failed",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Build Error Summary",
+      "to": "Save To Error Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "New Lead From Website Form",
+      "to": "Clean Up Form Data",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Clean Up Form Data",
+      "to": "Name & Email Valid?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Name & Email Valid?",
+      "to": "Reply To Form - Received",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Name & Email Valid?",
+      "to": "Reply To Form - Missing Info",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Reply To Form - Received",
+      "to": "Find Existing Lead Record",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Reply To Form - Missing Info",
+      "to": "Log Invalid Form",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "AI Reads Enquiry",
+      "to": "Score And Tier Lead",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "AI Model - Read Enquiry",
+      "to": "AI Reads Enquiry",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Save As Low-Priority Lead",
+      "to": "Save To Lead Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Save Lead To Airtable",
+      "to": "AI Writes Reply Email",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Save Lead To Airtable",
+      "to": "Rep Found?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Save Lead To Airtable",
+      "to": "Alert - Lead Not Saved",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "AI Writes Reply Email",
+      "to": "Email Reply To Lead",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "AI Model - Write Reply",
+      "to": "AI Writes Reply Email",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Email Reply To Lead",
+      "to": "Alert Rep In Slack",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Alert Rep In Slack",
+      "to": "Save To Lead Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Reassign To Manager",
+      "to": "Alert - Lead Not Followed Up",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Alert - Lead Not Followed Up",
+      "to": "Save To Escalation Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "When Workflow Fails",
+      "to": "Build Error Summary",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Route By Lead Type",
+      "to": "Find Rep Record",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Route By Lead Type",
+      "to": "Save As Low-Priority Lead",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Route By Lead Type",
+      "to": "Save To Lead Log",
+      "kind": "main",
+      "output": 2
+    },
+    {
+      "from": "Alert - Lead Not Saved",
+      "to": "Save To Lead Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Existing Lead Record",
+      "to": "Find Existing Lead",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Existing Lead",
+      "to": "AI Reads Enquiry",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Rep Record",
+      "to": "Assign Rep",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Assign Rep",
+      "to": "Save Lead To Airtable",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Lookup Sales Manager Record",
+      "to": "Lookup Sales Manager",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Lookup Sales Manager",
+      "to": "Find Overdue Lead Records",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Overdue Lead Records",
+      "to": "Find Overdue Leads",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Find Overdue Leads",
+      "to": "Reassign To Manager",
+      "kind": "main",
+      "output": 0
+    }
+  ]
+}

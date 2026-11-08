@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+import dynamic from 'next/dynamic'
 import { createPortal } from 'react-dom'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
@@ -14,6 +15,12 @@ import { ViewStage } from '@/components/landing/view-stage'
 import { WorkFullscreen } from '@/components/landing/work-fullscreen'
 import { ToolMark } from '@/components/landing/tool-stack-section'
 import { toolNamed } from '@/lib/portfolio'
+import { hasDemo } from '@/lib/demos'
+
+/** The live build: client-only, and only fetched when a project with one is opened. */
+const WorkflowDemo = dynamic(() => import('@/components/landing/demo/n8n-demo').then(m => m.WorkflowDemo), {
+  ssr: false
+})
 
 /** Everything inside the dialog a keyboard can land on, in document order. */
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
@@ -173,7 +180,7 @@ export function CaseStudyModal({
 
   return createPortal(
     <div
-      className='bg-ink/60 animate-in fade-in fixed inset-0 z-[200] flex items-center justify-center p-3 backdrop-blur-sm duration-200 sm:p-5 md:p-8'
+      className='bg-ink/60 animate-in fade-in fixed inset-0 z-[200] flex items-center justify-center backdrop-blur-sm duration-200'
       onClick={onClose}
       role='dialog'
       aria-modal='true'
@@ -183,13 +190,13 @@ export function CaseStudyModal({
         ref={panelRef}
         tabIndex={-1}
         style={{ '--work-tone': WORK_TONES[study.slug] ?? 'var(--accent)' } as React.CSSProperties}
-        className='bg-surface-raised border-rule animate-in zoom-in-95 relative flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl border shadow-2xl duration-200 focus:outline-none'
+        className='bg-surface-raised animate-in zoom-in-95 relative flex h-full w-full flex-col overflow-hidden duration-200 focus:outline-none'
         onClick={e => e.stopPropagation()}
       >
         {/* ── Modal Top Header (Fixed inside modal) ────────────────────────── */}
-        <div className='border-rule bg-surface-raised relative border-b px-6 pt-6 pr-16 pb-5 sm:px-8 sm:pt-8'>
+        <div className='border-rule bg-surface-raised relative border-b px-[max(1.5rem,calc((100%-90rem)/2))] pt-6 pb-5 sm:px-[max(2rem,calc((100%-90rem)/2))] sm:pt-8'>
           {/* Tags */}
-          <div className='mb-3 flex flex-wrap items-center gap-2'>
+          <div className='mb-3 flex flex-wrap items-center gap-2 pr-12'>
             {/* One label, not a claim and its own contradiction: this said
                 "CASE STUDY" while a SAMPLE badge sat three chips along. */}
             <span className='text-ink-3 font-mono text-xs tracking-[0.2em] uppercase'>
@@ -216,7 +223,7 @@ export function CaseStudyModal({
           {/* Title */}
           <h2
             id='modal-case-study-title'
-            className='text-ink text-2xl leading-snug font-light tracking-tight sm:text-3xl lg:text-[34px]'
+            className='text-ink pr-12 text-2xl leading-snug font-light tracking-tight sm:text-3xl lg:text-[34px]'
             style={{ fontFamily: DISPLAY_FONT }}
           >
             {study.title}
@@ -239,7 +246,10 @@ export function CaseStudyModal({
         </div>
 
         {/* ── Scrollable Body Content ──────────────────────────────────────── */}
-        <div ref={bodyRef} className='flex-1 space-y-8 overflow-y-auto bg-[#FAF9F6] px-6 py-6 sm:px-8 sm:py-8'>
+        <div
+          ref={bodyRef}
+          className='flex-1 space-y-8 overflow-y-auto bg-[#FAF9F6] px-[max(1.5rem,calc((100%-90rem)/2))] py-6 sm:px-[max(2rem,calc((100%-90rem)/2))] sm:py-8'
+        >
           {/* The film and the workflow share the top frame; the toggle only
               appears when there is a film to switch to. Grouped so the
               toggle sits close to the frame it controls. */}
@@ -423,10 +433,26 @@ export function CaseStudyModal({
               </div>
             </div>
           )}
+
+          {/* 6. The build itself, runnable. Its own section rather than a view
+              in the gallery above: there it shared a 14:9 frame with the
+              screenshots and every node name was too small to read. The
+              gallery keeps the screenshot; this gets the dialog's full width.
+              The demo renders its own section, and the results under it
+              (what the run leaves in Gmail, Slack, Airtable...). */}
+          {hasDemo(study.slug) && (
+            <WorkflowDemo
+              slug={study.slug}
+              platform={study.platform ?? 'workflow'}
+              fallback={study.heroImage ?? study.image ?? ''}
+              alt={`${study.title} build`}
+              reduced={reduced}
+            />
+          )}
         </div>
 
         {/* ── Modal Pinned Footer Actions ──────────────────────────────────── */}
-        <div className='border-rule bg-surface-raised flex flex-wrap items-center justify-between gap-3 border-t px-6 py-4 sm:px-8'>
+        <div className='border-rule bg-surface-raised flex flex-wrap items-center justify-between gap-3 border-t px-[max(1.5rem,calc((100%-90rem)/2))] py-4 sm:px-[max(2rem,calc((100%-90rem)/2))]'>
           {/* These pointed somewhere plausible when empty — "Walkthrough" led
               to the case-study page and "Source" to a GitHub profile rather
               than a repo, so both promised something that did not exist. They

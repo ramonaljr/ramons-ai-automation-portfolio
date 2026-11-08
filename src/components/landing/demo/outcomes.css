@@ -1,0 +1,612 @@
+/* The results under an interactive demo (outcomes.tsx): each app drawn the
+   way it looks, in its own light theme, so the cards read as screenshots of
+   where the work lands rather than as more of this site. */
+
+.oc-section {
+  padding: 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 1rem;
+  background: var(--surface-raised);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+}
+
+.oc-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  margin-bottom: 0.9rem;
+  padding: 0 0.25rem 0.75rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.oc-cards {
+  display: grid;
+  grid-auto-flow: row dense;
+  gap: 1rem;
+}
+
+@media (min-width: 48rem) {
+  .oc-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .oc-card[data-wide] {
+    grid-column: 1 / -1;
+  }
+
+  .oc-card[data-tall] {
+    grid-row: span 2;
+  }
+}
+
+.oc-card {
+  margin: 0;
+}
+
+.oc-card figcaption {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.45rem;
+  color: var(--ink-3);
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 11.5px;
+}
+
+.oc-card .tool-mark {
+  background-color: var(--tool-color);
+}
+
+.oc-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #dadce0;
+  border-radius: 10px;
+  background: #fff;
+  color: #202124;
+  font-family: 'Google Sans', Roboto, ui-sans-serif, system-ui, sans-serif;
+  box-shadow: 0 10px 28px -20px rgb(15 23 42 / 0.45);
+}
+
+.oc-card:not([data-ready]) .oc-frame > :first-child {
+  filter: blur(3px) grayscale(1);
+  opacity: 0.35;
+}
+
+.oc-frame > :first-child {
+  transition:
+    filter 0.5s ease,
+    opacity 0.5s ease;
+}
+
+.oc-pending {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  color: #5f6368;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.oc-avatar {
+  display: inline-grid;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  background: #1a73e8;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ── Gmail ─────────────────────────────────────────────────────────────── */
+
+.oc-email {
+  padding: 18px 20px 20px;
+}
+
+.oc-email-subject {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  font-size: 19px;
+  line-height: 1.3;
+}
+
+.oc-email-tag {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #e8eaed;
+  color: #5f6368;
+  font-size: 11.5px;
+}
+
+.oc-email-meta {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.oc-email-who {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  font-size: 13.5px;
+}
+
+.oc-email-who span {
+  color: #5f6368;
+  font-size: 12px;
+}
+
+.oc-email-time {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #5f6368;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.oc-email-body {
+  margin: 0;
+  padding-left: 44px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* ── Slack ─────────────────────────────────────────────────────────────── */
+
+.oc-slack {
+  font-family: 'Lato', ui-sans-serif, system-ui, sans-serif;
+}
+
+.oc-slack-channel {
+  padding: 10px 16px;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.oc-slack-message {
+  display: flex;
+  gap: 10px;
+  padding: 14px 16px 16px;
+}
+
+.oc-slack-avatar {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 6px;
+  background: #ea4b71;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.oc-slack-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+.oc-slack-badge {
+  padding: 0 4px;
+  border-radius: 3px;
+  background: #e8e8e8;
+  color: #616061;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.oc-slack-time {
+  color: #616061;
+  font-size: 12px;
+}
+
+.oc-slack-line {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.oc-slack-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.oc-slack-buttons span {
+  padding: 4px 12px;
+  border: 1px solid #c3c3c3;
+  border-radius: 4px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.oc-slack-buttons span[data-primary] {
+  border-color: #007a5a;
+  background: #007a5a;
+  color: #fff;
+}
+
+/* ── Airtable and Google Sheets ────────────────────────────────────────── */
+
+.oc-grid-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  background: #2d7ff9;
+  color: #fff;
+  font-size: 13.5px;
+}
+
+.oc-grid[data-kind='airtable'] .oc-grid-bar .tool-mark {
+  background-color: #fff;
+}
+
+.oc-grid[data-kind='sheets'] .oc-grid-bar {
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  color: #202124;
+}
+
+.oc-grid-tab {
+  padding: 2px 10px;
+  border-radius: 4px 4px 0 0;
+  background: rgb(255 255 255 / 0.2);
+  font-size: 12.5px;
+}
+
+.oc-grid[data-kind='sheets'] .oc-grid-tab {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.oc-grid-scroll {
+  overflow-x: auto;
+}
+
+.oc-grid table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.oc-grid th,
+.oc-grid td {
+  max-width: 260px;
+  overflow: hidden;
+  padding: 7px 10px;
+  border: 1px solid #e5e5e5;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-grid th {
+  background: #f5f5f5;
+  color: #444;
+  font-weight: 600;
+}
+
+.oc-grid[data-kind='sheets'] th {
+  background: #f8f9fa;
+  color: #5f6368;
+  font-weight: 500;
+}
+
+.oc-grid-index {
+  width: 36px;
+  color: #888;
+  text-align: center !important;
+}
+
+.oc-grid tr[data-new] td {
+  background: #fff8db;
+}
+
+.oc-grid[data-kind='sheets'] tr[data-new] td {
+  background: #e8f0fe;
+}
+
+.oc-pill[data-value='awaiting_ack'],
+.oc-pill[data-value='pending_review'],
+.oc-pill[data-value='chased'],
+.oc-pill[data-value='od_8_14'],
+.oc-pill[data-value='od_30_plus'],
+.oc-pill[data-value='requested'] {
+  background: #ffeab6;
+}
+
+.oc-pill {
+  display: inline-block;
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: #e5e9f0;
+  color: #1f2937;
+  font-size: 12px;
+}
+
+.oc-pill[data-value='interviewing'],
+.oc-pill[data-value='posted'],
+.oc-pill[data-value='in_crm'],
+.oc-pill[data-value='enterprise'],
+.oc-pill[data-value='onboarding'],
+.oc-pill[data-value='approved'],
+.oc-pill[data-value='paid'],
+.oc-pill[data-value='booked'],
+.oc-pill[data-value='confirmed'],
+.oc-pill[data-value='open'],
+.oc-pill[data-value='added'],
+.oc-pill[data-value='received'],
+.oc-pill[data-value='hot'],
+.oc-pill[data-value='complete'] {
+  background: #d1f7c4;
+}
+
+.oc-pill[data-value='no hire'],
+.oc-pill[data-value='low_fit'],
+.oc-pill[data-value='rejected'],
+.oc-pill[data-value='cancelled'],
+.oc-pill[data-value='disputed'],
+.oc-pill[data-value='escalated'],
+.oc-pill[data-value='final notice'] {
+  background: #ffdce5;
+}
+
+/* ── Google Calendar ───────────────────────────────────────────────────── */
+
+.oc-calendar {
+  display: flex;
+  gap: 14px;
+  padding: 18px 20px;
+}
+
+.oc-calendar-bar {
+  width: 14px;
+  height: 14px;
+  margin-top: 6px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  background: #039be5;
+}
+
+.oc-calendar-title {
+  margin: 0 0 4px;
+  font-size: 19px;
+}
+
+.oc-calendar-when {
+  margin: 0 0 14px;
+  color: #3c4043;
+  font-size: 13.5px;
+}
+
+.oc-calendar-where {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  color: #3c4043;
+  font-size: 13px;
+}
+
+.oc-calendar-guests {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.oc-calendar-guests li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.oc-calendar-guests .oc-avatar {
+  width: 26px;
+  height: 26px;
+  font-size: 11px;
+}
+
+.oc-calendar-note {
+  margin: 12px 0 0;
+  color: #5f6368;
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+/* ── n8n form ──────────────────────────────────────────────────────────── */
+
+.oc-form {
+  padding: 20px 22px;
+  background: #fbfcfe;
+  font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+.oc-form-title {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.oc-form-field {
+  margin-bottom: 12px;
+}
+
+.oc-form-field p {
+  margin: 0 0 5px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.oc-form-field p span {
+  color: #ff6d5a;
+}
+
+.oc-form-field div {
+  padding: 8px 10px;
+  border: 1px solid #dbdfe7;
+  border-radius: 6px;
+  background: #fff;
+  color: #444;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.oc-form-submit {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  background: #ff6d5a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ── A single record: QuickBooks bill, Pipedrive deal, database row ────── */
+
+.oc-record-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e6e8eb;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.oc-record[data-app='QuickBooks'] .oc-record-head {
+  border-top: 4px solid #2ca01c;
+}
+
+.oc-record[data-app='Pipedrive'] .oc-record-head {
+  border-top: 4px solid #26b67c;
+}
+
+.oc-record[data-app='PostgreSQL'] .oc-record-head {
+  border-top: 4px solid #336791;
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 13px;
+}
+
+.oc-record[data-app='Google Drive'] .oc-record-head {
+  border-top: 4px solid #4285f4;
+}
+
+.oc-record-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px 18px;
+  margin: 0;
+  padding: 14px 16px 16px;
+}
+
+.oc-record-fields dt {
+  margin-bottom: 2px;
+  color: #6b6f76;
+  font-size: 11.5px;
+}
+
+.oc-record-fields dd {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* ── A conversation: VAPI call transcript, n8n chat ───────────────────── */
+
+.oc-chat {
+  background: #f7f8fa;
+}
+
+.oc-chat-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #e6e8eb;
+  background: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.oc-chat-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 14px;
+  list-style: none;
+}
+
+.oc-chat-lines li {
+  max-width: 85%;
+  padding: 8px 12px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.oc-chat-lines li[data-from='agent'] {
+  align-self: flex-start;
+  border: 1px solid #e3e5e8;
+  border-bottom-left-radius: 4px;
+  background: #fff;
+}
+
+.oc-chat-lines li[data-from='person'] {
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+  background: #3b6fd8;
+  color: #fff;
+}
+
+.oc-calendar-meet {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  background: #1a73e8;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-frame > :first-child {
+    transition: none;
+  }
+}

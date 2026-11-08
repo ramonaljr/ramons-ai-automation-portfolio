@@ -1,0 +1,878 @@
+{
+  "platform": "n8n",
+  "name": "TalentBridge Staffing - AI Unpaid Invoice Reminders",
+  "bounds": {
+    "x": -64,
+    "y": 0,
+    "x2": 4924,
+    "y2": 2834
+  },
+  "stickies": [
+    {
+      "x": -64,
+      "y": 0,
+      "w": 1200,
+      "h": 1024,
+      "color": 1,
+      "title": "1 · Get data from three places"
+    },
+    {
+      "x": 1152,
+      "y": 0,
+      "w": 740,
+      "h": 1024,
+      "color": 4,
+      "title": "2 · Fixed rules decide who gets a reminder - no AI"
+    },
+    {
+      "x": 2640,
+      "y": 0,
+      "w": 560,
+      "h": 1024,
+      "color": 6,
+      "title": "3 · AI writes the email - within the rules"
+    },
+    {
+      "x": 3200,
+      "y": 0,
+      "w": 960,
+      "h": 1024,
+      "color": 5,
+      "title": "4 · Send, then record it"
+    },
+    {
+      "x": 1904,
+      "y": 0,
+      "w": 720,
+      "h": 1024,
+      "color": 3,
+      "title": "5 · 30+ days late - tell a person first"
+    },
+    {
+      "x": -64,
+      "y": 1040,
+      "w": 1400,
+      "h": 952,
+      "color": 6,
+      "title": "6 · AI reads customer replies"
+    },
+    {
+      "x": 1360,
+      "y": 1040,
+      "w": 1740,
+      "h": 368,
+      "color": 3,
+      "title": "7 · Dispute = STOP reminders"
+    },
+    {
+      "x": 1360,
+      "y": 1424,
+      "w": 1740,
+      "h": 1410,
+      "color": 4,
+      "title": "8 · Every other reply sets the next reminder date"
+    },
+    {
+      "x": 3120,
+      "y": 1040,
+      "w": 1032,
+      "h": 604,
+      "color": 3,
+      "title": "9 · If something breaks"
+    },
+    {
+      "x": 4224,
+      "y": 0,
+      "w": 700,
+      "h": 1028,
+      "color": 2,
+      "title": "Before this runs"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Every Day At 8:00",
+      "type": "scheduleTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 624,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Postgres - Load Collection State",
+      "type": "postgres",
+      "shape": "default",
+      "x": 896,
+      "y": 624,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "Decide Who To Remind Today",
+      "type": "code",
+      "shape": "default",
+      "x": 1200,
+      "y": 624,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Route By Action",
+      "type": "switch",
+      "shape": "default",
+      "x": 1424,
+      "y": 560,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "Paid - close it",
+        "Friendly reminder",
+        "Overdue reminder",
+        "Final notice",
+        "Needs Review"
+      ]
+    },
+    {
+      "name": "Postgres - Mark Invoice Paid",
+      "type": "postgres",
+      "shape": "default",
+      "x": 1648,
+      "y": 432,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "AI Writes Reminder Email",
+      "type": "chainLlm",
+      "shape": "root",
+      "x": 2752,
+      "y": 576,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "AI Model - Write Email",
+      "type": "lmChatOpenAi",
+      "shape": "sub",
+      "x": 2752,
+      "y": 832,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Slack - Alert Owner Before Final Notice",
+      "type": "slack",
+      "shape": "default",
+      "x": 2080,
+      "y": 672,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Pipedrive - Log Final Notice",
+      "type": "pipedrive",
+      "shape": "default",
+      "x": 2240,
+      "y": 672,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: activity"
+    },
+    {
+      "name": "Slack - Needs Manual Review",
+      "type": "slack",
+      "shape": "default",
+      "x": 2080,
+      "y": 848,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Gmail - Send Reminder",
+      "type": "gmail",
+      "shape": "default",
+      "x": 3264,
+      "y": 576,
+      "w": 100,
+      "h": 100,
+      "subtitle": "send: message",
+      "outputs": [
+        "success",
+        "error"
+      ]
+    },
+    {
+      "name": "Postgres - Save Contact Made",
+      "type": "postgres",
+      "shape": "default",
+      "x": 3488,
+      "y": 560,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upsert"
+    },
+    {
+      "name": "Airtable - Update Dashboard",
+      "type": "airtable",
+      "shape": "default",
+      "x": 3696,
+      "y": 432,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upsert: record"
+    },
+    {
+      "name": "New Customer Reply",
+      "type": "gmailTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 1440,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Clean Up Reply",
+      "type": "set",
+      "shape": "default",
+      "x": 224,
+      "y": 1440,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Classify Reply Intent",
+      "type": "informationExtractor",
+      "shape": "root",
+      "x": 448,
+      "y": 1440,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_languageModel",
+          "label": "Chat Model*",
+          "wired": true
+        }
+      ]
+    },
+    {
+      "name": "AI Model - Read Reply",
+      "type": "lmChatOpenAi",
+      "shape": "sub",
+      "x": 528,
+      "y": 1648,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Postgres - Find Invoice In State",
+      "type": "postgres",
+      "shape": "default",
+      "x": 736,
+      "y": 1440,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "Invoice Found?",
+      "type": "if",
+      "shape": "default",
+      "x": 896,
+      "y": 1440,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Route By Reply Type",
+      "type": "switch",
+      "shape": "default",
+      "x": 1120,
+      "y": 1344,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "Dispute",
+        "Promised to pay",
+        "Says already paid",
+        "Wants invoice copy",
+        "Wrong contact",
+        "Payment question",
+        "Other"
+      ]
+    },
+    {
+      "name": "Postgres - STOP REMINDERS (Dispute)",
+      "type": "postgres",
+      "shape": "default",
+      "x": 1392,
+      "y": 1248,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "Pipedrive - Create Dispute Activity",
+      "type": "pipedrive",
+      "shape": "default",
+      "x": 1616,
+      "y": 1248,
+      "w": 100,
+      "h": 100,
+      "subtitle": "create: activity"
+    },
+    {
+      "name": "Slack - Dispute Alert",
+      "type": "slack",
+      "shape": "default",
+      "x": 1840,
+      "y": 1248,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Drive - Save Dispute Emails",
+      "type": "googleDrive",
+      "shape": "default",
+      "x": 2064,
+      "y": 1248,
+      "w": 100,
+      "h": 100,
+      "subtitle": "createFromText: file"
+    },
+    {
+      "name": "Postgres - Save Promised Payment Date",
+      "type": "postgres",
+      "shape": "default",
+      "x": 1472,
+      "y": 1664,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "Postgres - Customer Says Paid",
+      "type": "postgres",
+      "shape": "default",
+      "x": 1472,
+      "y": 1840,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "Gmail - Reply With Invoice Copy",
+      "type": "gmail",
+      "shape": "default",
+      "x": 1472,
+      "y": 2032,
+      "w": 100,
+      "h": 100,
+      "subtitle": "reply: message"
+    },
+    {
+      "name": "Postgres - Pause For Invoice Copy",
+      "type": "postgres",
+      "shape": "default",
+      "x": 2112,
+      "y": 2032,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "Postgres - Update Wrong Contact",
+      "type": "postgres",
+      "shape": "default",
+      "x": 1472,
+      "y": 2224,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "Slack - Wrong Contact",
+      "type": "slack",
+      "shape": "default",
+      "x": 1760,
+      "y": 2224,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Slack - Payment Question",
+      "type": "slack",
+      "shape": "default",
+      "x": 1472,
+      "y": 2416,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Postgres - Pause For Question",
+      "type": "postgres",
+      "shape": "default",
+      "x": 1760,
+      "y": 2416,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "Slack - Other Reply",
+      "type": "slack",
+      "shape": "default",
+      "x": 1472,
+      "y": 2640,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Slack - Reply Not Matched",
+      "type": "slack",
+      "shape": "default",
+      "x": 1120,
+      "y": 1808,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Postgres - Log Reply",
+      "type": "postgres",
+      "shape": "default",
+      "x": 2560,
+      "y": 1888,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "Airtable - Update Dashboard (Reply)",
+      "type": "airtable",
+      "shape": "default",
+      "x": 2768,
+      "y": 1888,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upsert: record"
+    },
+    {
+      "name": "When Workflow Fails",
+      "type": "errorTrigger",
+      "shape": "trigger",
+      "x": 3216,
+      "y": 1296,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Build Error Summary",
+      "type": "set",
+      "shape": "default",
+      "x": 3440,
+      "y": 1296,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Slack - Workflow Failed",
+      "type": "slack",
+      "shape": "default",
+      "x": 3664,
+      "y": 1296,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Postgres - Save To Error Log",
+      "type": "postgres",
+      "shape": "default",
+      "x": 3664,
+      "y": 1456,
+      "w": 100,
+      "h": 100,
+      "subtitle": "executeQuery"
+    },
+    {
+      "name": "Slack - Resend Invoice Copy",
+      "type": "slack",
+      "shape": "default",
+      "x": 1776,
+      "y": 2032,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "Slack - Reminder Not Sent",
+      "type": "slack",
+      "shape": "default",
+      "x": 3488,
+      "y": 768,
+      "w": 100,
+      "h": 100,
+      "subtitle": "post: message"
+    },
+    {
+      "name": "QuickBooks - Unpaid Invoices",
+      "type": "quickbooks",
+      "shape": "default",
+      "x": 224,
+      "y": 624,
+      "w": 100,
+      "h": 100,
+      "subtitle": "getAll: invoice"
+    },
+    {
+      "name": "QuickBooks - Customers",
+      "type": "quickbooks",
+      "shape": "default",
+      "x": 448,
+      "y": 624,
+      "w": 100,
+      "h": 100,
+      "subtitle": "getAll: invoice"
+    },
+    {
+      "name": "Pipedrive - Customer Context",
+      "type": "httpRequest",
+      "shape": "default",
+      "x": 672,
+      "y": 624,
+      "w": 100,
+      "h": 100
+    }
+  ],
+  "edges": [
+    {
+      "from": "Postgres - Load Collection State",
+      "to": "Decide Who To Remind Today",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Pipedrive - Log Final Notice",
+      "to": "AI Writes Reminder Email",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Classify Reply Intent",
+      "to": "Postgres - Find Invoice In State",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Postgres - Find Invoice In State",
+      "to": "Invoice Found?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Pipedrive - Create Dispute Activity",
+      "to": "Slack - Dispute Alert",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Slack - Dispute Alert",
+      "to": "Drive - Save Dispute Emails",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Postgres - Pause For Invoice Copy",
+      "to": "Postgres - Log Reply",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Postgres - Update Wrong Contact",
+      "to": "Slack - Wrong Contact",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Slack - Wrong Contact",
+      "to": "Postgres - Log Reply",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Slack - Payment Question",
+      "to": "Postgres - Pause For Question",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Postgres - Pause For Question",
+      "to": "Postgres - Log Reply",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Build Error Summary",
+      "to": "Slack - Workflow Failed",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Build Error Summary",
+      "to": "Postgres - Save To Error Log",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Decide Who To Remind Today",
+      "to": "Route By Action",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Route By Action",
+      "to": "Postgres - Mark Invoice Paid",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Route By Action",
+      "to": "AI Writes Reminder Email",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Route By Action",
+      "to": "AI Writes Reminder Email",
+      "kind": "main",
+      "output": 2
+    },
+    {
+      "from": "Route By Action",
+      "to": "Slack - Alert Owner Before Final Notice",
+      "kind": "main",
+      "output": 3
+    },
+    {
+      "from": "Route By Action",
+      "to": "Slack - Needs Manual Review",
+      "kind": "main",
+      "output": 4
+    },
+    {
+      "from": "Postgres - Mark Invoice Paid",
+      "to": "Airtable - Update Dashboard",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "AI Writes Reminder Email",
+      "to": "Gmail - Send Reminder",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "AI Model - Write Email",
+      "to": "AI Writes Reminder Email",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Slack - Alert Owner Before Final Notice",
+      "to": "Pipedrive - Log Final Notice",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Gmail - Send Reminder",
+      "to": "Postgres - Save Contact Made",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Gmail - Send Reminder",
+      "to": "Slack - Reminder Not Sent",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Postgres - Save Contact Made",
+      "to": "Airtable - Update Dashboard",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "New Customer Reply",
+      "to": "Clean Up Reply",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Clean Up Reply",
+      "to": "Classify Reply Intent",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "AI Model - Read Reply",
+      "to": "Classify Reply Intent",
+      "kind": "ai_languageModel",
+      "output": 0
+    },
+    {
+      "from": "Invoice Found?",
+      "to": "Route By Reply Type",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Invoice Found?",
+      "to": "Slack - Reply Not Matched",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Route By Reply Type",
+      "to": "Postgres - STOP REMINDERS (Dispute)",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Route By Reply Type",
+      "to": "Postgres - Save Promised Payment Date",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Route By Reply Type",
+      "to": "Postgres - Customer Says Paid",
+      "kind": "main",
+      "output": 2
+    },
+    {
+      "from": "Route By Reply Type",
+      "to": "Gmail - Reply With Invoice Copy",
+      "kind": "main",
+      "output": 3
+    },
+    {
+      "from": "Route By Reply Type",
+      "to": "Postgres - Update Wrong Contact",
+      "kind": "main",
+      "output": 4
+    },
+    {
+      "from": "Route By Reply Type",
+      "to": "Slack - Payment Question",
+      "kind": "main",
+      "output": 5
+    },
+    {
+      "from": "Route By Reply Type",
+      "to": "Slack - Other Reply",
+      "kind": "main",
+      "output": 6
+    },
+    {
+      "from": "Postgres - STOP REMINDERS (Dispute)",
+      "to": "Pipedrive - Create Dispute Activity",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Drive - Save Dispute Emails",
+      "to": "Postgres - Log Reply",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Postgres - Save Promised Payment Date",
+      "to": "Postgres - Log Reply",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Postgres - Customer Says Paid",
+      "to": "Postgres - Log Reply",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Slack - Other Reply",
+      "to": "Postgres - Log Reply",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Postgres - Log Reply",
+      "to": "Airtable - Update Dashboard (Reply)",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "When Workflow Fails",
+      "to": "Build Error Summary",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Gmail - Reply With Invoice Copy",
+      "to": "Slack - Resend Invoice Copy",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Slack - Resend Invoice Copy",
+      "to": "Postgres - Pause For Invoice Copy",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Every Day At 8:00",
+      "to": "QuickBooks - Unpaid Invoices",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "QuickBooks - Unpaid Invoices",
+      "to": "QuickBooks - Customers",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "QuickBooks - Customers",
+      "to": "Pipedrive - Customer Context",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Pipedrive - Customer Context",
+      "to": "Postgres - Load Collection State",
+      "kind": "main",
+      "output": 0
+    }
+  ]
+}

@@ -1,0 +1,528 @@
+/* The Make and Zapier canvases (make-world.tsx, zapier-world.tsx), and the
+   shared toolbar and output panel in each editor's light theme. Sizes are
+   canvas units, as in n8n-demo.css: the world scales, the chrome does not.
+   Colours are read off the build screenshots. */
+
+/* ── Make ──────────────────────────────────────────────────────────────── */
+
+.n8n-demo[data-platform='make'] {
+  --make-canvas: #f6f6f6;
+
+  background-color: var(--make-canvas);
+  background-image: none;
+  color: #1f1f1f;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.make-links,
+.zap-links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+}
+
+.make-band {
+  fill: none;
+  stroke: #e1e1e1;
+  stroke-width: 200;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.make-ear {
+  opacity: 0.42;
+  transition: opacity 0.3s ease;
+}
+
+.make-links g[data-kind='error'] .make-ear {
+  opacity: 0.22;
+}
+
+.make-dot {
+  opacity: 0.5;
+  stroke-width: 3.5;
+  transition: opacity 0.3s ease;
+}
+
+.make-links g[data-lit] .make-ear {
+  opacity: 0.85;
+}
+
+/* Bundles travelling: each dot brightens a beat after the one before. */
+.make-links g[data-lit] .make-dot {
+  opacity: 1;
+  animation: make-flow 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes make-flow {
+  from {
+    opacity: 0.45;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.make-module {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.make-circle {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--app);
+  box-shadow: 0 0 0 8px var(--make-canvas);
+  transition: transform 0.25s ease;
+}
+
+.make-module .tool-mark {
+  background-color: #fff;
+}
+
+.make-module[data-retry] .make-circle {
+  border: 7px solid var(--app);
+  background: color-mix(in oklab, var(--app) 12%, #fff);
+}
+
+.make-module[data-retry] .tool-mark {
+  background-color: var(--app);
+}
+
+.make-module:hover .make-circle {
+  transform: scale(1.03);
+}
+
+.make-module:focus-visible {
+  outline: none;
+}
+
+.make-module:focus-visible .make-circle {
+  box-shadow:
+    0 0 0 8px var(--make-canvas),
+    0 0 0 14px #6d00cc;
+}
+
+.make-module[data-state='running'] .make-circle {
+  animation: make-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes make-pulse {
+  50% {
+    transform: scale(1.06);
+    box-shadow:
+      0 0 0 8px var(--make-canvas),
+      0 0 0 24px color-mix(in oklab, var(--app) 28%, transparent);
+  }
+}
+
+.make-clock {
+  position: absolute;
+  bottom: -14px;
+  left: -14px;
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  background: var(--app);
+  box-shadow: 0 0 0 3px var(--app);
+  color: #fff;
+}
+
+/* The operations bubble Make pins to a module after it runs. */
+.make-bubble {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 46px;
+  height: 46px;
+  padding: 0 12px;
+  border-radius: 23px;
+  background: #fff;
+  color: #1f1f1f;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 46px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.22);
+}
+
+.make-plus {
+  position: absolute;
+  top: calc(50% - 13px);
+  color: #fff;
+}
+
+.make-label {
+  position: absolute;
+  left: 50%;
+  display: flex;
+  width: 440px;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.make-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #1f1f1f;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.make-number {
+  padding: 0 6px;
+  border-radius: 3px;
+  background: #e2e2e2;
+  color: #555;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.make-action {
+  color: #555;
+  font-size: 14px;
+}
+
+/* The wrench Make draws under a plain link, where a filter could be set. */
+.make-wrench {
+  position: absolute;
+  color: #6b6b6b;
+  transform: translate(-50%, -50%) rotate(90deg);
+  pointer-events: none;
+}
+
+.make-filter {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  max-width: 200px;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.18);
+  color: #222;
+  font-size: 14px;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.make-filter span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.make-filter b {
+  color: #5fae3e;
+  font-weight: 600;
+}
+
+/* ── Zapier ────────────────────────────────────────────────────────────── */
+
+.n8n-demo[data-platform='zapier'] {
+  --zap-line: #695be8;
+  --zap-run: #ff4f00;
+  --zap-ok: #1f9d63;
+
+  background-color: #f7f6f2;
+  background-image: radial-gradient(circle, #e2dfd6 1px, transparent 1.2px);
+  color: #2d2e2e;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.zap-links path {
+  fill: none;
+  stroke: var(--zap-line);
+  stroke-width: 2.5;
+}
+
+.zap-links text {
+  fill: var(--zap-line);
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.zap-links g[data-lit] path {
+  stroke: var(--zap-run);
+  stroke-width: 4;
+}
+
+.zap-step {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1.5px solid #e2dfd6;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.zap-step:hover,
+.zap-step:focus-visible {
+  border-color: var(--zap-line);
+  outline: none;
+}
+
+.zap-step[data-state='running'],
+.zap-step[data-state='waiting'] {
+  border-color: var(--zap-run);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--zap-run) 22%, transparent);
+}
+
+.zap-step[data-state='success'] {
+  border-color: var(--zap-ok);
+}
+
+.zap-step-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.zap-check {
+  flex-shrink: 0;
+  color: #cfccc3;
+}
+
+.zap-step[data-state='success'] .zap-check {
+  color: var(--zap-ok);
+}
+
+.zap-spin {
+  flex-shrink: 0;
+  color: var(--zap-run);
+  animation: n8n-spin 0.9s linear infinite;
+}
+
+.zap-app {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 6px;
+  border: 1.5px solid transparent;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.zap-app[data-builtin] {
+  border-color: #ffb89c;
+  background: #fff5ef;
+}
+
+.zap-poll {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #e9f6ee;
+  color: #1c7c4c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.zap-more {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: #5f5f5f;
+}
+
+.zap-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+.zap-title span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zap-pill {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 2px solid var(--zap-line);
+  border-radius: 999px;
+  background: #fff;
+  color: #4b3fd1;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.zap-pill[data-tone='success'] {
+  border-color: #3fb77f;
+  color: #17804f;
+}
+
+.zap-pill[data-tone='error'] {
+  border-color: #e6655d;
+  color: #c53a32;
+}
+
+.zap-pill[data-lit] {
+  border-color: var(--zap-run);
+  background: #fff3ec;
+  color: #b33a00;
+}
+
+/* ── The toolbar and output panel, light ───────────────────────────────── */
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) {
+  --n8n-muted: #6b6b6b;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-scenario {
+  border-color: #d8d8d8;
+  background: #fff;
+  color: #333;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-scenario:hover:not(:disabled) {
+  border-color: #a8a8a8;
+}
+
+.n8n-demo[data-platform='make'] .n8n-scenario[aria-checked='true'] {
+  border-color: #6d00cc;
+  background: #f4ebff;
+  color: #4b008f;
+}
+
+.n8n-demo[data-platform='zapier'] .n8n-scenario[aria-checked='true'] {
+  border-color: #ff4f00;
+  background: #fff1ea;
+  color: #b33a00;
+}
+
+.n8n-demo[data-platform='make'] .n8n-execute {
+  border-radius: 999px;
+  background: #6d00cc;
+  box-shadow: 0 6px 18px -8px rgb(109 0 204 / 0.8);
+}
+
+.n8n-demo[data-platform='make'] .n8n-execute:hover:not(:disabled) {
+  background: #8125d6;
+}
+
+.n8n-demo[data-platform='zapier'] .n8n-execute {
+  background: #ff4f00;
+  box-shadow: 0 6px 18px -8px rgb(255 79 0 / 0.8);
+}
+
+.n8n-demo[data-platform='zapier'] .n8n-execute:hover:not(:disabled) {
+  background: #ff6a26;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-zoom button {
+  border-color: #d8d8d8;
+  background: #fff;
+  color: #333;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-note {
+  color: #858585;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-status:not(:empty) {
+  border-color: #dcdcdc;
+  background: rgb(255 255 255 / 0.94);
+  color: #333;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-status[data-tone='done'] {
+  border-color: #8fd3ad;
+  color: #15683f;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-panel {
+  border-left-color: #e3e3e3;
+  background: #fff;
+  box-shadow: -18px 0 40px -24px rgb(0 0 0 / 0.35);
+  color: #222;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-panel header,
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-panel-tab {
+  border-bottom-color: #ececec;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-panel header button {
+  color: #555;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-panel header button:hover {
+  background: #f2f2f2;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-json {
+  color: #333;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-json [data-kind='key'] {
+  color: #222;
+  font-weight: 600;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-json [data-kind='string'] {
+  color: #0a7d3b;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-json [data-kind='number'] {
+  color: #1a5fd1;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-json [data-kind='literal'] {
+  color: #b5650d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .make-links g[data-lit] .make-dot,
+  .make-module[data-state='running'] .make-circle,
+  .zap-spin {
+    animation: none;
+  }
+}
