@@ -446,17 +446,6 @@
   animation: sheet-wipe 0.7s var(--ease-entrance) both;
 }
 
-/* The service's diagram, cropped in a little past its margins so the steps
-   fill the card. The drawing's own ground colour fills the stage. */
-.sheet-pv-shot {
-  display: block;
-  aspect-ratio: 2.15;
-  background-color: #f0f3f6;
-  background-repeat: no-repeat;
-  background-position: 50% 56%;
-  background-size: 106%;
-}
-
 /* Hidden, the card's loops hold still. */
 .sheet-pv:not([data-on]) *,
 .sheet-pv:not([data-on]) *::before,
@@ -543,13 +532,6 @@
   position: relative;
   margin: 0;
   border: 1px solid var(--sheet-line);
-  background: #f0f3f6;
-}
-
-.svc-board img {
-  display: block;
-  width: 100%;
-  height: auto;
 }
 
 /* Registration crosses at two corners, as on the Process figure. */
@@ -574,19 +556,8 @@
   bottom: -7px;
 }
 
-/* Phones: the diagram keeps a readable size and scrolls sideways, rather
-   than shrinking its labels to a few pixels. */
+/* Phones: the crosses would sit outside the screen's gutter. */
 @media (max-width: 767px) {
-  .svc-board {
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-  }
-
-  .svc-board img {
-    width: 620px;
-    max-width: none;
-  }
-
   .svc-board::before,
   .svc-board::after {
     display: none;

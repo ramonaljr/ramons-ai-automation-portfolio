@@ -24,10 +24,10 @@ import { ICON_STROKE } from '@/components/landing/motion'
  */
 
 /** Delay slot for a piece of a figure, in steps of the shared stagger. */
-const at = (d: number) => ({ '--d': d }) as CSSProperties
+export const at = (d: number) => ({ '--d': d }) as CSSProperties
 
 /** A tool's mark from public/images/tools, in its own colour. */
-const mark = (slug: string, color: string) => (
+export const mark = (slug: string, color: string) => (
   <span
     className='pf-logo'
     style={{
@@ -39,7 +39,7 @@ const mark = (slug: string, color: string) => (
 )
 
 /** The paper itself: the document's kind and reference, then its body. */
-function Paper({ kind, refLabel, children }: { kind: string; refLabel: string; children: ReactNode }) {
+export function Paper({ kind, refLabel, children }: { kind: string; refLabel: string; children: ReactNode }) {
   return (
     <div className='pf' aria-hidden='true'>
       <div className='pf-head pf-in'>
@@ -120,18 +120,30 @@ function MapFigure() {
 
         <g className='pf-node pf-in' style={at(0)}>
           <rect x='10' y='92' width='140' height='66' rx='10' />
-          <text x='26' y='121'>Request form</text>
-          <text className='pf-sub' x='26' y='141'>item · cost · reason</text>
+          <text x='26' y='121'>
+            Request form
+          </text>
+          <text className='pf-sub' x='26' y='141'>
+            item · cost · reason
+          </text>
         </g>
         <g className='pf-node pf-in' style={at(1)}>
           <rect x='210' y='92' width='140' height='66' rx='10' />
-          <text x='226' y='121'>Checks</text>
-          <text className='pf-sub' x='226' y='141'>budget · supplier</text>
+          <text x='226' y='121'>
+            Checks
+          </text>
+          <text className='pf-sub' x='226' y='141'>
+            budget · supplier
+          </text>
         </g>
         <g className='pf-node pf-core pf-in' style={at(2)}>
           <rect x='410' y='92' width='140' height='66' rx='10' />
-          <text x='426' y='121'>Approval</text>
-          <text className='pf-sub' x='426' y='141'>manager, in Slack</text>
+          <text x='426' y='121'>
+            Approval
+          </text>
+          <text className='pf-sub' x='426' y='141'>
+            manager, in Slack
+          </text>
         </g>
 
         <text className='pf-edge pf-in' style={at(4)} x='566' y='36'>

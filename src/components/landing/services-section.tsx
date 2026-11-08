@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom'
 import { CalendarCheck, FileText, MessageCircle, Phone, ClipboardCheck, Mic } from 'lucide-react'
 
 import { SectionIntro } from '@/components/landing/section-intro'
+import { ServiceFigure } from '@/components/landing/service-figures'
 import { pad, SheetHeader, SheetPlus } from '@/components/landing/sheet'
 import {
   ArrowIcon,
@@ -17,7 +18,7 @@ import {
   rise,
   SECTION,
   useContactHref,
-  useInView,
+  useInView
 } from '@/components/landing/motion'
 
 import { ToolMark, ToolStackSection } from '@/components/landing/tool-stack-section'
@@ -128,13 +129,6 @@ const SERVICE_FLOWS: Record<string, Step[]> = {
     }
   ]
 }
-
-/**
- * Each service drawn as a line diagram, in the drafting-sheet style the three
- * middle sections share: the trigger, the steps, and the one a person or the
- * AI owns picked out in terracotta (public/images/services).
- */
-const diagram = (slug: string) => `/images/services/${slug}.svg`
 
 /**
  * Where the floating preview runs: a mouse, a screen wide enough to keep it
@@ -280,7 +274,7 @@ export function ServicesSection({ sheet = false }: { sheet?: boolean }) {
               data-on={index === active || undefined}
               data-prev={index === previous || undefined}
             >
-              <span className='sheet-pv-shot' style={{ backgroundImage: `url(${diagram(item.slug)})` }} />
+              <ServiceFigure slug={item.slug} on={index === active} />
             </div>
           ))}
         </div>
@@ -380,9 +374,9 @@ export function ServicesSection({ sheet = false }: { sheet?: boolean }) {
                           </a>
                         </div>
 
-                        <figure className='svc-board'>
-                          {/* Decorative: the copy beside it carries the meaning. */}
-                          <img src={diagram(item.slug)} alt='' loading='lazy' decoding='async' />
+                        {/* Decorative: the copy beside it carries the meaning. */}
+                        <figure className='svc-board' aria-hidden='true'>
+                          <ServiceFigure slug={item.slug} on={isOpen} />
                         </figure>
                       </div>
                     </div>
