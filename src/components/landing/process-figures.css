@@ -1,5 +1,6 @@
 /* ── Process figures: each step's deliverable, as a document ──────────────
-   See process-figures.tsx. Drawn finished; `.proc-visual[data-on]` plays it
+   See process-figures.tsx. Drawn finished; `.proc-visual[data-on]` (Process) or `.eng-fig[data-on]`
+   (Engagement) plays it
    in. All sizes in em, from a font size that follows the frame. */
 
 .pf {
@@ -463,47 +464,47 @@
 
 /* ── Playing in: only the step on show, only where motion is welcome ──── */
 @media (prefers-reduced-motion: no-preference) {
-  .proc-visual[data-on] .pf-in {
+  :is(.proc-visual, .eng-fig)[data-on] .pf-in {
     animation: pf-in 0.7s var(--ease-entrance) both;
     animation-delay: calc(var(--d, 0) * 110ms + 120ms);
   }
 
-  .proc-visual[data-on] .pf-bar i {
+  :is(.proc-visual, .eng-fig)[data-on] .pf-bar i {
     animation: pf-grow-x 1s var(--ease-entrance) both;
     animation-delay: calc(var(--d, 0) * 110ms + 300ms);
   }
 
-  .proc-visual[data-on] .pf-link {
+  :is(.proc-visual, .eng-fig)[data-on] .pf-link {
     animation: pf-grow-x 0.6s var(--ease-entrance) both;
     animation-delay: calc(var(--d, 0) * 110ms + 200ms);
   }
 
-  .proc-visual[data-on] .pf-draw {
+  :is(.proc-visual, .eng-fig)[data-on] .pf-draw {
     stroke-dasharray: 1;
     animation: pf-draw 0.9s var(--ease-entrance) both;
     animation-delay: calc(var(--d, 0) * 160ms + 250ms);
   }
 
   /* A dashed path draws in solid, then settles into its dashes. */
-  .proc-visual[data-on] .pf-draw.pf-dash {
+  :is(.proc-visual, .eng-fig)[data-on] .pf-draw.pf-dash {
     animation-name: pf-draw-dashed;
   }
 
-  .proc-visual[data-on] .pf-stamp {
+  :is(.proc-visual, .eng-fig)[data-on] .pf-stamp {
     animation: pf-stamp 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) both;
     animation-delay: calc(var(--d, 0) * 160ms + 300ms);
   }
 
-  .proc-visual[data-on] .pf-runs > span:not(.pf-runs-note) {
+  :is(.proc-visual, .eng-fig)[data-on] .pf-runs > span:not(.pf-runs-note) {
     animation: pf-grow-y 0.8s var(--ease-entrance) both;
     animation-delay: calc(var(--d, 0) * 110ms + 120ms);
   }
 
-  .proc-visual[data-on] .pf-runs-note {
+  :is(.proc-visual, .eng-fig)[data-on] .pf-runs-note {
     animation: pf-in 0.6s var(--ease-entrance) 1.3s both;
   }
 
-  .proc-visual[data-on] .pf-live i {
+  :is(.proc-visual, .eng-fig)[data-on] .pf-live i {
     animation: pf-pulse 2.4s ease-in-out 1s infinite;
   }
 }

@@ -1,0 +1,202 @@
+/* ── Questions: a ruled list beside a standing intro (2026-11-08) ────────────
+   See faq-section.tsx. Hairline rows with the sheets' plus, unnumbered; the
+   intro stays in view beside the list on wide screens. */
+
+.faq {
+  --faq-line: color-mix(in oklab, var(--ink) 15%, transparent);
+}
+
+.faq-grid {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+}
+
+.faq-intro {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 64rem) {
+  .faq-grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: start;
+  }
+
+  .faq-intro {
+    position: sticky;
+    top: 7rem;
+  }
+}
+
+.faq-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ink);
+}
+
+.faq-row {
+  border-bottom: 1px solid var(--faq-line);
+}
+
+.faq-row h3 {
+  margin: 0;
+}
+
+.faq-q {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  min-height: 4.25rem;
+  padding: 1.05rem 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.faq-q > span:first-child {
+  font-family: var(--font-editorial);
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  font-weight: 300;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  transition: transform 0.6s var(--ease-entrance);
+}
+
+.faq-q:hover > span:first-child,
+.faq-row[data-open] .faq-q > span:first-child {
+  transform: translateX(10px);
+}
+
+.faq-q:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.faq-row[data-open] .sheet-plus::after {
+  transform: rotate(0deg);
+}
+
+/* Opens in place: the answer's row animates from 0fr to 1fr. */
+.faq-a {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.6s var(--ease-entrance);
+}
+
+.faq-row[data-open] .faq-a {
+  grid-template-rows: 1fr;
+}
+
+/* Hidden as well as collapsed, so a closed answer's links are not tabbable. */
+.faq-a > div {
+  min-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: visibility 0s linear 0.6s;
+}
+
+.faq-row[data-open] .faq-a > div {
+  visibility: visible;
+  transition: none;
+}
+
+.faq-reply {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+  padding: 0 0 1.5rem 10px;
+}
+
+.faq-reply img {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.faq-reply p {
+  max-width: 60ch;
+  color: var(--ink-2);
+  font-size: 0.975rem;
+  line-height: 1.6;
+}
+
+.faq-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.1rem;
+  padding-bottom: 2px;
+  border-bottom: 1px solid currentColor;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.faq-all::after {
+  content: '→';
+  transition: transform 0.35s var(--ease-entrance);
+}
+
+.faq-all:hover::after {
+  transform: translateX(3px);
+}
+
+/* The way out of the list, as one more ruled row rather than a card. */
+.faq-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--faq-line);
+}
+
+.faq-more p {
+  max-width: 46ch;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.faq-more strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.faq-more :is(a, button) {
+  padding: 0.65rem 1.1rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.faq-more :is(a, button):hover {
+  background: var(--ink);
+  color: var(--ground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-q > span:first-child,
+  .faq-a,
+  .faq-all::after {
+    transition: none;
+  }
+}

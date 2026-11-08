@@ -6,8 +6,9 @@ import { usePathname } from 'next/navigation'
 import { motion, useScroll, useTransform } from 'motion/react'
 import { ArrowRight as LucideArrowRight, ArrowUpRight } from 'lucide-react'
 
-/** One stroke weight for every icon on the landing page (all from lucide-react). */
-export const ICON_STROKE = 1.75
+import { CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE } from '@/components/landing/tokens'
+
+export { CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE }
 
 /**
  * Design tokens and the reveal primitive shared by every surface that has to
@@ -18,12 +19,6 @@ export const ICON_STROKE = 1.75
  * lives as literals, so anything that wants to match it reads the literals from
  * here rather than re-declaring them per file.
  */
-
-/** Display face for headlines and figures. Always paired with `font-light`. */
-export const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
-
-/** Page gutter width. Sections set their own horizontal padding. */
-export const CONTAINER = 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto'
 
 /** Page gutters, shared by every section variant. */
 const GUTTER = 'px-6 md:px-12 lg:px-20'
@@ -58,9 +53,6 @@ export const SECTION = `saas-section pt-14 pb-16 md:pt-20 md:pb-24 ${GUTTER} bor
 export const SECTION_ANCHOR = `saas-section pt-16 pb-20 md:pt-24 md:pb-28 ${GUTTER}`
 
 export const SECTION_CONT = `saas-section pt-6 pb-20 md:pb-28 ${GUTTER}`
-
-/** Cream page ground. Applied to the outermost wrapper of every page. */
-export const PAGE = 'koisei-page bg-ground text-ink min-h-dvh font-sans antialiased'
 
 /**
  * Creates a local stacking context for copy over the constellation field.
