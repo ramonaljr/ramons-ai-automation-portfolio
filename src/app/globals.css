@@ -4968,7 +4968,17 @@ a.work-aux-link:hover {
   transform-origin: left center;
 }
 
+/* The dot rides a track as wide as the connector: translating the track by
+   100% of its own width carries the dot from one end to the other on the
+   compositor, where animating `left` repainted on every frame. */
 .service-flow-link i {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.service-flow-link i::before {
+  content: '';
   position: absolute;
   top: 50%;
   left: 0;
@@ -4980,7 +4990,6 @@ a.work-aux-link:hover {
   box-shadow:
     0 0 0 0.25rem color-mix(in oklab, #6366f1 22%, transparent),
     0 0 1rem color-mix(in oklab, #6366f1 60%, transparent);
-  opacity: 0;
   transform: translate(-50%, -50%);
 }
 
@@ -5051,6 +5060,27 @@ a.work-aux-link:hover {
   animation-delay: calc(var(--step) * 1.2s + 0.4s);
 }
 
+/* The lit outline and glow, drawn once over the step's own border and
+   faded in and out: animating the step's border-color and box-shadow
+   repainted the card on every frame of every cycle. */
+.service-flow-step::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--stage-accent);
+  border-radius: inherit;
+  box-shadow:
+    0 0 0 0.3rem color-mix(in oklab, var(--stage-accent) 12%, transparent),
+    0 1rem 1.8rem -0.9rem color-mix(in oklab, var(--stage-accent) 60%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.service-flow-wrap[data-live] .service-flow-step::before {
+  animation: service-step-glow 3.6s ease-in-out infinite;
+  animation-delay: calc(var(--step) * 1.2s + 0.4s);
+}
+
 .service-flow-wrap[data-live] .service-flow-tile {
   animation: service-tile-lit 3.6s ease-in-out infinite;
   animation-delay: calc(var(--step) * 1.2s + 0.4s);
@@ -5087,18 +5117,25 @@ a.work-aux-link:hover {
   0%,
   40%,
   100% {
-    border-color: var(--stage-border);
-    box-shadow: 0 0.2rem 0.5rem rgb(0 0 0 / 0.05);
     translate: 0 0;
   }
 
   12%,
   28% {
-    border-color: var(--stage-accent);
-    box-shadow:
-      0 0 0 0.3rem color-mix(in oklab, var(--stage-accent) 12%, transparent),
-      0 1rem 1.8rem -0.9rem color-mix(in oklab, var(--stage-accent) 60%, transparent);
     translate: 0 -4px;
+  }
+}
+
+@keyframes service-step-glow {
+  0%,
+  40%,
+  100% {
+    opacity: 0;
+  }
+
+  12%,
+  28% {
+    opacity: 1;
   }
 }
 
@@ -5155,7 +5192,7 @@ a.work-aux-link:hover {
 @keyframes service-link-dot {
   0%,
   26% {
-    left: 0;
+    transform: translateX(0);
     opacity: 0;
   }
 
@@ -5164,13 +5201,13 @@ a.work-aux-link:hover {
   }
 
   44% {
-    left: 100%;
+    transform: translateX(100%);
     opacity: 1;
   }
 
   48%,
   100% {
-    left: 100%;
+    transform: translateX(100%);
     opacity: 0;
   }
 }
@@ -5289,6 +5326,7 @@ a.work-aux-link:hover {
 
 @media (prefers-reduced-motion: reduce) {
   .service-flow-step,
+  .service-flow-step::before,
   .service-flow-tile,
   .service-flow-tile::after,
   .service-flow-link::after,
@@ -8913,6 +8951,25 @@ div#experience.about-journey {
   opacity: 0;
 }
 
+/* The shafts are invisible outside the golden scene (the calm scene fades
+   the whole backdrop), so they hold still there instead of repainting a
+   blurred full-screen layer nobody can see. */
+.blossom-story-root[data-scene='calm'] .blossom-story-rays i,
+.blossom-story-root[data-scene='close'] .blossom-story-rays i {
+  animation-play-state: paused;
+}
+
+/* OffscreenLoopPause flags each landing section while it is out of view.
+   Its loops hold on their current frame and resume from it on return.
+   !important because several components set `running` on their own
+   attributes (`data-playing`), and off screen must win over those. */
+[data-offscreen],
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
+}
+
 @media (max-width: 1023px) {
   /* The copy spans the screen: light the top band only, one set of shafts. */
   .blossom-story-rays {
@@ -8989,6 +9046,17 @@ div#experience.about-journey {
 
 .blossom-story-root[data-scene='calm'] .field-aura {
   opacity: 1;
+}
+
+/* Hidden everywhere but the calm scene, so it only drifts there.
+   :nth-child(n) matches the specificity of the per-layer `animation`
+   shorthands above, which would otherwise reset the play state. */
+.field-aura i:nth-child(n) {
+  animation-play-state: paused;
+}
+
+.blossom-story-root[data-scene='calm'] .field-aura i:nth-child(n) {
+  animation-play-state: running;
 }
 
 @media (prefers-reduced-motion: reduce) {

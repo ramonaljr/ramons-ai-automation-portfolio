@@ -96,6 +96,20 @@ export function BlossomStoryBackground() {
       // The falling leaves are a sibling layer, so the scene state is also
       // written where both can see it.
       root.parentElement?.setAttribute('data-scene', mood)
+
+      // The footage is only visible in the golden scene (globals.css fades it
+      // out for calm and close), so it stops decoding everywhere else.
+      // `autoplay` is false under reduced motion, where the effect below
+      // already holds it on a still frame.
+      const video = videoRef.current
+
+      if (!video?.autoplay) return
+
+      if (mood !== 'golden') {
+        if (!video.paused) video.pause()
+      } else if (video.paused) {
+        void video.play().catch(() => undefined)
+      }
     }
 
     update()
@@ -132,6 +146,14 @@ export function BlossomStoryBackground() {
     if (reduced) {
       video.pause()
       video.currentTime = 0.1
+
+      return
+    }
+
+    // Mounted after load, possibly with the reader already past the hero:
+    // only roll it if the golden scene is up.
+    if (rootRef.current?.dataset.mood !== 'golden') {
+      video.pause()
 
       return
     }
