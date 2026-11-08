@@ -2,7 +2,7 @@
 
 import { useRef, useState, type CSSProperties } from 'react'
 
-import { motion, useMotionValueEvent, useScroll } from 'motion/react'
+import { motion, useMotionValueEvent, useScroll, useTransform } from 'motion/react'
 
 import { CONTAINER, SECTION } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
@@ -24,6 +24,12 @@ import { ENGAGEMENTS, PROCESS } from '@/lib/portfolio'
  * It replaced a tab explorer that played through the steps on a timer. Scroll
  * drives this one, so it never changes under a reader who has stopped.
  *
+ * The drafting details follow the benchmark's featured sheet: a dimension
+ * line over the frame giving the step's timing, an accent rule along the
+ * frame's top edge tagged with the document it holds, a scale ruler down the
+ * page's right margin whose marker travels with the scroll, and a ticked
+ * "02 / 06" counter under the step.
+ *
  * Phones, short screens and reduced motion get the same steps as a ruled
  * list; CSS shows one or the other, never both.
  */
@@ -37,6 +43,12 @@ const PHASES = (['Audit', 'Build', 'Retainer'] as const).map((name, index) => ({
   duration: ENGAGEMENTS[index]?.duration,
   steps: PROCESS.flatMap((step, stepIndex) => (step.phase === name ? [stepIndex] : []))
 }))
+
+/** The document each step hands over, as the figures title it. */
+const DELIVERABLES = ['Problem statement', 'Opportunity list', 'System map', 'Build log', 'Test report', 'Run monitor']
+
+/** Where each step begins along the counter's track, plus its far end. */
+const TICKS = Array.from({ length: STEPS + 1 }, (_, index) => index / STEPS)
 
 const durationOf = (phase: string) => PHASES.find(item => item.name === phase)?.duration
 
@@ -72,6 +84,9 @@ export function HowItWorksSection({ sheet = false }: { sheet?: boolean }) {
   // 0 as the sheet pins, 1 as it lets go; each step holds a sixth of the run.
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] })
   const [active, setActive] = useState(0)
+
+  // The ruler's marker rides the whole run, top to bottom.
+  const markTop = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
 
   useMotionValueEvent(scrollYProgress, 'change', progress => {
     setActive(Math.min(STEPS - 1, Math.max(0, Math.floor(progress * STEPS))))
@@ -129,28 +144,48 @@ export function HowItWorksSection({ sheet = false }: { sheet?: boolean }) {
               ))}
             </nav>
 
+            {/* A scale down the right margin; its marker travels with the
+                scroll and names the step in hand. */}
+            <div className='proc-ruler' aria-hidden='true'>
+              <motion.span className='proc-ruler-mark' style={{ y: markTop }}>
+                <span>{step.step}</span>
+              </motion.span>
+            </div>
+
             <div className='proc-body'>
               <div className='proc-steps'>
                 {PROCESS.map((item, index) => (
                   <article key={item.step} className='proc-step' data-on={index === active || undefined}>
-                    <p className='proc-count'>
-                      <span>
-                        Step <b>{item.step}</b> / {pad(STEPS)}
-                      </span>
-                      <span className='proc-bar' aria-hidden='true'>
-                        <motion.i style={{ scaleX: scrollYProgress }} />
-                      </span>
-                    </p>
                     <h3 className='proc-title'>{item.label}</h3>
                     <p className='proc-summary'>{item.summary}</p>
                     <p className='proc-desc'>{item.desc}</p>
                     <StepSpec step={item} />
+                    <p className='proc-count'>
+                      <span>
+                        <b>{item.step}</b> / {pad(STEPS)}
+                      </span>
+                      <span className='proc-bar' aria-hidden='true'>
+                        <motion.i style={{ scaleX: scrollYProgress }} />
+                        {TICKS.map(at => (
+                          <em key={at} style={{ '--at': at } as CSSProperties} />
+                        ))}
+                      </span>
+                    </p>
                   </article>
                 ))}
               </div>
 
               <figure className='proc-figure' aria-hidden='true'>
+                {/* A dimension line, as over a drawing: what this step spans. */}
+                <p className='proc-dim'>
+                  <span>{step.timing}</span>
+                </p>
                 <div className='proc-frame'>
+                  {/* The accent rule along the frame's top edge, tagged with
+                      the document the step hands over. */}
+                  <p className='proc-level'>
+                    <span key={active}>{DELIVERABLES[active]}</span>
+                  </p>
                   {PROCESS_FIGURES.map((visual, index) => (
                     <div key={index} className='proc-visual' data-on={index === active || undefined}>
                       {visual}

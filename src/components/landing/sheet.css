@@ -705,6 +705,8 @@
 }
 
 .proc-stage {
+  --proc-dim: 1.75rem;
+
   position: sticky;
   top: 0;
   display: grid;
@@ -833,8 +835,8 @@
 .proc-count {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  margin-bottom: clamp(1rem, 2.5vh, 1.75rem);
+  gap: 1.1rem;
+  margin-top: clamp(1rem, 2.5vh, 1.6rem);
   color: var(--ink-3);
   font: 500 0.6875rem/1 var(--sheet-mono);
   letter-spacing: 0.08em;
@@ -846,12 +848,23 @@
   font-weight: 500;
 }
 
+/* The track under the counter, ticked where each step begins. */
 .proc-bar {
   position: relative;
   flex: 1;
-  max-width: 9rem;
+  max-width: 12rem;
   height: 1px;
   background: var(--sheet-line);
+}
+
+.proc-bar em {
+  position: absolute;
+  top: -3px;
+  left: calc(var(--at) * 100%);
+  width: 1px;
+  height: 7px;
+  margin-left: -0.5px;
+  background: var(--ink-3);
 }
 
 .proc-bar i {
@@ -864,9 +877,9 @@
 .proc-title {
   color: var(--ink);
   font-family: var(--font-editorial);
-  font-size: clamp(2.25rem, 3.6vw, 3.9rem);
+  font-size: clamp(2.6rem, 4.6vw, 5rem);
   font-weight: 300;
-  line-height: 1.02;
+  line-height: 0.98;
   letter-spacing: -0.025em;
 }
 
@@ -958,6 +971,64 @@
   animation-play-state: paused;
 }
 
+/* A dimension line over the frame, as over a drawing: end ticks, a hairline
+   and the step's timing set in the middle of it. */
+.proc-dim {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--proc-dim);
+  margin: 0;
+  color: var(--ink-3);
+  font: 500 0.625rem/1 var(--sheet-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.proc-dim::before {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 9px;
+  translate: 0 -50%;
+  background:
+    linear-gradient(var(--ink-3), var(--ink-3)) 0 50% / 100% 1px no-repeat,
+    linear-gradient(var(--ink-3), var(--ink-3)) 0 0 / 1px 100% no-repeat,
+    linear-gradient(var(--ink-3), var(--ink-3)) 100% 0 / 1px 100% no-repeat;
+}
+
+.proc-dim span {
+  position: relative;
+  padding: 0 0.75rem;
+  background: var(--ground);
+}
+
+/* An accent rule along the frame's top edge, tagged with the document the
+   step hands over. */
+.proc-level {
+  position: absolute;
+  z-index: 2;
+  inset: 0 0 auto 38%;
+  height: 1px;
+  margin: 0;
+  background: var(--accent);
+}
+
+.proc-level span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.35rem 0.55rem 0.3rem;
+  background: var(--accent);
+  color: oklch(0.985 0.004 60);
+  font: 500 0.625rem/1 var(--sheet-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  animation: sheet-wipe 0.6s var(--ease-entrance) both;
+}
+
 .proc-caption {
   display: flex;
   justify-content: space-between;
@@ -974,6 +1045,66 @@
   font-weight: 500;
 }
 
+/* A scale down the page's right margin, major ticks at each step; the
+   marker travels it with the scroll. Only where the margin is wide enough. */
+.proc-ruler {
+  display: none;
+}
+
+@media (min-width: 80rem) {
+  .proc-ruler {
+    position: absolute;
+    top: clamp(5.5rem, 11vh, 7rem);
+    right: calc(-1 * clamp(3rem, 4.4vw, 4rem));
+    bottom: clamp(1.5rem, 4vh, 3rem);
+    display: block;
+    width: 13px;
+    background:
+      linear-gradient(var(--ink-4), var(--ink-4)) 100% 0 / 1px 100% no-repeat,
+      linear-gradient(to bottom, var(--ink-3) 1px, transparent 1px) 100% 0 / 13px calc(100% / 6) repeat-y,
+      linear-gradient(to bottom, var(--ink-4) 1px, transparent 1px) 100% 0 / 6px calc(100% / 36) repeat-y;
+  }
+
+  /* The scale's closing tick. */
+  .proc-ruler::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 13px;
+    height: 1px;
+    background: var(--ink-3);
+  }
+}
+
+/* A full-height carrier, so a percentage translate spans the whole scale. */
+.proc-ruler-mark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.proc-ruler-mark span {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 0.4rem);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  translate: 0 -50%;
+  color: var(--accent);
+  font: 500 0.625rem/1 var(--sheet-mono);
+  letter-spacing: 0.08em;
+}
+
+.proc-ruler-mark span::after {
+  content: '';
+  width: 5px;
+  height: 7px;
+  background: var(--accent);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
 /* Registration crosses at the frame's corners. */
 .proc-figure::before,
 .proc-figure::after {
@@ -988,7 +1119,7 @@
 }
 
 .proc-figure::before {
-  top: -6px;
+  top: calc(var(--proc-dim) - 6px);
   left: -6px;
 }
 
