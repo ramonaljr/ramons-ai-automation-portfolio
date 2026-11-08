@@ -298,9 +298,11 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
   const visible = platform ? shown.filter(cs => cs.platform?.trim() === platform) : shown
 
-  // Two to a row. An odd count would leave the last card alone, so the first
-  // takes the full row instead and the rest pair up (see work-cards.css).
-  const layout = visible.length % 2 === 1 ? 'feature' : 'grid'
+  // Three to a row on desktop, two below that, phones included. A count that
+  // would leave one card alone on the last row has the first card take a
+  // full row instead, so the rest fill their rows (see work-cards.css).
+  const featureAtTwo = visible.length % 2 === 1
+  const featureAtThree = visible.length % 3 === 1
 
   /**
    * A per-card badge only means something when it separates one card from
@@ -366,7 +368,12 @@ export function ProjectsSection({ caseStudies }: { caseStudies: CaseStudyMetadat
 
         {/* Every project visible, two to a row, each map running its own
             workflow as it arrives and again on hover. */}
-        <ul ref={ref} className='wk-gallery' data-layout={layout}>
+        <ul
+          ref={ref}
+          className='wk-gallery'
+          data-feature-2={featureAtTwo || undefined}
+          data-feature-3={featureAtThree || undefined}
+        >
           {visible.map((cs, index) => (
             <WorkCard
               key={cs.slug}
