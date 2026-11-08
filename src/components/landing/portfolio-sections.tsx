@@ -60,8 +60,8 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
               long page, and visitors arriving from Upwork come for proof. */}
               <ProjectsSection caseStudies={caseStudies} />
               <IntroSection systemCount={caseStudies.length} />
-              <ServicesSection />
-              <HowItWorksSection />
+              <ServicesSection sheet />
+              <HowItWorksSection sheet />
 
               {/* The full pricing path, on the page's one dark band. /services
               shows the same section on the light page. */}

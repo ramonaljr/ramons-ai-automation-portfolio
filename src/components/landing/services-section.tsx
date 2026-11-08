@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react'
 
-import { AnimatePresence, motion } from 'motion/react'
+import { createPortal } from 'react-dom'
+
 import { CalendarCheck, FileText, MessageCircle, Phone, ClipboardCheck, Mic } from 'lucide-react'
 
 import { SectionIntro } from '@/components/landing/section-intro'
+import { pad, SheetHeader, SheetPlus } from '@/components/landing/sheet'
 import {
   ArrowIcon,
   CONTAINER,
@@ -16,7 +18,6 @@ import {
   SECTION,
   useContactHref,
   useInView,
-  usePrefersReducedMotion
 } from '@/components/landing/motion'
 
 import { ToolMark, ToolStackSection } from '@/components/landing/tool-stack-section'
@@ -128,80 +129,174 @@ const SERVICE_FLOWS: Record<string, Step[]> = {
   ]
 }
 
-/** The stages' colours, in the process maps' palette (docs/process-diagrams). */
-const STAGE_COLOURS = [
-  { bg: '#EBF2FD', border: '#AFCBF2', accent: '#2F6FD6' },
-  { bg: '#E8F7F3', border: '#A4DACD', accent: '#13917C' },
-  { bg: '#F2EDFB', border: '#C8B6EE', accent: '#7650D6' }
-]
-
-/** Where the list sits beside the board, so hovering it can switch services. */
-const SIDE_BY_SIDE = '(min-width: 1024px)'
+/**
+ * Each service drawn as a line diagram, in the drafting-sheet style the three
+ * middle sections share: the trigger, the steps, and the one a person or the
+ * AI owns picked out in terracotta (public/images/services).
+ */
+const diagram = (slug: string) => `/images/services/${slug}.svg`
 
 /**
- * Services as a picker and a board: the five services as a list on the left,
- * and the selected one on the right as a three-step flow on a process board,
- * in the same drawing language as the Story and the Selected Work maps,
- * with its description, the work it covers and the link to its page.
- *
- * Every service's copy stays in the DOM; the ones not selected are hidden,
- * so search engines and screen readers still meet all five. A mouse switches
- * services on hover; touch and keyboard on tap or focus.
+ * Where the floating preview runs: a mouse, a screen wide enough to keep it
+ * beside the list, and a reader who has not asked for less motion.
  */
-export function ServicesSection() {
+const FOLLOW = '(hover: hover) and (pointer: fine) and (min-width: 1024px) and (prefers-reduced-motion: no-preference)'
+
+/** How far the preview sits from the pointer, and from the window's edges. */
+const OFFSET = 28
+const MARGIN = 16
+
+/**
+ * The preview card that trails the pointer over the index, showing how the
+ * service under it runs. It eases toward the pointer each frame rather than
+ * sitting on it, which reads as weight; the loop only runs while the pointer
+ * is over the index.
+ */
+function usePointerFollow(on: boolean) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const pointer = useRef({ x: 0, y: 0 })
+  const at = useRef({ x: 0, y: 0, placed: false })
+
+  useEffect(() => {
+    if (!on) return
+
+    let frame = 0
+
+    const tick = () => {
+      const card = cardRef.current
+
+      if (card) {
+        // Aimed each frame, not on each pointer event: the card is mounted by
+        // the first hover, after that hover's own event has been handled.
+        // Right of the pointer, or left of it where the right would clip.
+        const { x, y } = pointer.current
+        const width = card.offsetWidth
+        const height = card.offsetHeight
+        const right = x + OFFSET
+        const goalX = right + width > window.innerWidth - MARGIN ? x - OFFSET - width : right
+        const goalY = Math.min(Math.max(y - height / 2, MARGIN), Math.max(window.innerHeight - height - MARGIN, MARGIN))
+        const pos = at.current
+
+        // The first frame lands on the pointer: easing in from wherever the
+        // card was last shown would sweep it across the list.
+        if (!pos.placed) {
+          pos.x = goalX
+          pos.y = goalY
+          pos.placed = true
+        }
+
+        pos.x += (goalX - pos.x) * 0.16
+        pos.y += (goalY - pos.y) * 0.16
+        card.style.transform = `translate3d(${pos.x.toFixed(1)}px, ${pos.y.toFixed(1)}px, 0)`
+      }
+
+      frame = requestAnimationFrame(tick)
+    }
+
+    frame = requestAnimationFrame(tick)
+
+    return () => cancelAnimationFrame(frame)
+  }, [on])
+
+  const aim = (clientX: number, clientY: number) => {
+    pointer.current.x = clientX
+    pointer.current.y = clientY
+  }
+
+  const reset = () => {
+    at.current.placed = false
+  }
+
+  return { cardRef, aim, reset }
+}
+
+/**
+ * Services as an index, in the drafting-sheet language About and Process
+ * share: five ruled rows, each with its number, what comes off the desk, the
+ * work it covers and the tools it runs on.
+ *
+ * With a mouse, the row under the pointer steps forward, the rest step back,
+ * and a card trails the pointer showing that service's three steps. A click
+ * (or tap, or Enter) opens the row in place with the description, the full
+ * flow and the link to the service's page. All five services' copy stays in
+ * the DOM, open or not, for search engines and screen readers.
+ *
+ * `sheet` adds the sheet header the homepage numbers its sections with;
+ * /services shows the index without it.
+ */
+export function ServicesSection({ sheet = false }: { sheet?: boolean }) {
   const { ref, inView } = useInView<HTMLDivElement>(0.12)
   const contactHref = useContactHref()
 
-  // Its own trigger: tied to the picker's, a jump that skipped the picker
-  // left this block invisible.
+  // Its own trigger: tied to the index's, a jump that skipped the index left
+  // this block invisible.
   const { ref: platformsRef, inView: platformsInView } = useInView<HTMLDivElement>(0.15)
-  const [active, setActive] = useState(0)
 
-  /**
-   * Auto-play: the services take turns, each for as long as its progress bar
-   * takes to fill (the bar's own animationend advances it, so the bar and the
-   * switch can never drift apart). A pointer over the panel pauses it, the
-   * panel leaving the screen pauses it, and the first click or keyboard focus
-   * stops it for good: from then on the reader is choosing.
-   */
-  const reduced = usePrefersReducedMotion()
-  const [stopped, setStopped] = useState(false)
-  const [hovering, setHovering] = useState(false)
-  const [visible, setVisible] = useState(false)
-  const pickerRef = useRef<HTMLDivElement>(null)
-  const playing = !reduced && !stopped && !hovering && visible
+  const [open, setOpen] = useState<number | null>(null)
+  const [active, setActive] = useState<number | null>(null)
+  const [previous, setPrevious] = useState<number | null>(null)
 
-  useEffect(() => {
-    const el = pickerRef.current
+  // The card is mounted on first hover, never on touch screens, and the
+  // pointer loop runs only while the pointer is over the index.
+  const [following, setFollowing] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { cardRef, aim, reset } = usePointerFollow(following)
 
-    if (!el) return
+  const canFollow = (event: PointerEvent) => event.pointerType === 'mouse' && window.matchMedia(FOLLOW).matches
 
-    const obs = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.35 })
+  const enterRow = (index: number) => (event: PointerEvent<HTMLElement>) => {
+    if (!canFollow(event)) return
 
-    obs.observe(el)
+    if (index !== active) {
+      setPrevious(active)
+      setActive(index)
+    }
 
-    return () => obs.disconnect()
-  }, [])
-
-  const advance = () => setActive(current => (current + 1) % SERVICES.length)
-
-  const choose = (index: number) => {
-    setActive(index)
-    setStopped(true)
+    setMounted(true)
+    setFollowing(true)
+    aim(event.clientX, event.clientY)
   }
 
-  // Hover only switches services side by side. Stacked, the board is below
-  // the list, and a pointer resting on the list would keep changing it.
-  const openOnHover = (index: number) => (event: PointerEvent<HTMLElement>) => {
-    if (event.pointerType === 'mouse' && window.matchMedia(SIDE_BY_SIDE).matches) setActive(index)
+  const leaveIndex = () => {
+    setActive(null)
+    setPrevious(null)
+    setFollowing(false)
+    reset()
   }
 
-  const service = SERVICES[active]
-  const steps = SERVICE_FLOWS[service.slug] ?? []
+  // The card has nothing to add over a row that is already open: the full
+  // flow is on show inside it.
+  const previewOn = following && active !== null && active !== open
+
+  const preview =
+    mounted &&
+    createPortal(
+      <div ref={cardRef} className='sheet-pv' data-on={previewOn || undefined} aria-hidden='true'>
+        <div className='sheet-pv-stage'>
+          {SERVICES.map((item, index) => (
+            <div
+              key={item.slug}
+              className='sheet-pv-layer'
+              data-on={index === active || undefined}
+              data-prev={index === previous || undefined}
+            >
+              <span className='sheet-pv-shot' style={{ backgroundImage: `url(${diagram(item.slug)})` }} />
+            </div>
+          ))}
+        </div>
+        <p className='sheet-pv-cap'>
+          <span>{active === null ? '' : (SERVICE_PRESENTATION[SERVICES[active].slug]?.outcomes[0] ?? '')}</span>
+          <span>{active === null ? '' : `Service ${pad(active + 1)} / ${pad(SERVICES.length)}`}</span>
+        </p>
+      </div>,
+      document.body
+    )
 
   return (
     <section id='services' className={SECTION}>
       <div className={CONTAINER}>
+        {sheet && <SheetHeader number={2} title='Services · What comes off the desk' />}
+
         <SectionIntro
           title={
             <>
@@ -214,135 +309,91 @@ export function ServicesSection() {
         />
 
         <div
-          ref={node => {
-            ref.current = node
-            pickerRef.current = node
-          }}
-          className='service-picker'
-          style={rise(inView)}
-          onPointerEnter={event => event.pointerType === 'mouse' && setHovering(true)}
-          onPointerLeave={() => setHovering(false)}
+          ref={ref}
+          className='sheet-index svc-index'
+          data-in={inView || undefined}
+          data-has-active={active !== null || undefined}
+          onPointerMove={event => aim(event.clientX, event.clientY)}
+          onPointerLeave={leaveIndex}
         >
-          <div className='service-list' role='tablist' aria-label='Services' aria-orientation='vertical'>
-            {SERVICES.map((item, index) => {
-              const copy = SERVICE_PRESENTATION[item.slug]
-
-              return (
-                <button
-                  key={item.slug}
-                  type='button'
-                  role='tab'
-                  id={`service-tab-${item.slug}`}
-                  aria-selected={index === active}
-                  aria-controls={`service-panel-${item.slug}`}
-                  className='service-list-item'
-                  onPointerEnter={openOnHover(index)}
-                  onClick={() => choose(index)}
-                  onFocus={() => choose(index)}
-                >
-                  <span className='service-list-index' aria-hidden='true' />
-                  <span className='service-list-title' style={{ fontFamily: DISPLAY_FONT }}>
-                    {copy?.title ?? item.title}
-                  </span>
-                  <span className='service-list-outcomes'>{(copy?.outcomes ?? []).join(' · ')}</span>
-                  {index === active && !stopped && !reduced && (
-                    <span className='service-list-progress' aria-hidden='true'>
-                      <i data-playing={playing} onAnimationEnd={advance} />
-                    </span>
-                  )}
-                </button>
-              )
-            })}
+          <div className='sheet-cols' aria-hidden='true'>
+            <span>No.</span>
+            <span>Service</span>
+            <span className='sheet-wide'>Typical work</span>
+            <span className='sheet-wide svc-col-tools'>Runs on</span>
+            <span />
           </div>
 
-          <div className='service-stage'>
-            {/* The board: the selected service as three steps, drawn in afresh
-                each time the service changes. Decorative; the copy below
-                carries it. */}
-            <div className='service-board' aria-hidden='true'>
-              <span className='service-board-label'>How it runs</span>
-              <AnimatePresence mode='wait' initial={false}>
-                <motion.div
-                  key={service.slug}
-                  className='service-flow-wrap'
-                  data-live={!reduced || undefined}
-                  initial='hidden'
-                  animate='shown'
-                  exit='gone'
-                  variants={{ shown: { transition: { staggerChildren: 0.12 } } }}
-                >
-                  <ol className='service-flow'>
-                    {steps.map((step, index) => (
-                      <motion.li
-                        key={step.label}
-                        className='service-flow-step'
-                        style={
-                          {
-                            '--stage-bg': STAGE_COLOURS[index].bg,
-                            '--stage-border': STAGE_COLOURS[index].border,
-                            '--stage-accent': STAGE_COLOURS[index].accent,
-                            '--step': index
-                          } as CSSProperties
-                        }
-                        variants={{
-                          hidden: { opacity: 0, y: 16 },
-                          shown: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
-                          gone: { opacity: 0, transition: { duration: 0.15 } }
-                        }}
-                      >
-                        <span className='service-flow-tile'>{step.icon}</span>
-                        <span className='service-flow-text'>
-                          <span className='service-flow-head'>
-                            <span className='service-flow-badge'>{index + 1}</span>
-                            {step.label}
-                          </span>
-                          <span className='service-flow-example'>{step.example}</span>
-                        </span>
-                        {/* The connector to the next step. A unit of work, a
-                            glowing dot, crosses it on a loop and fills it as it
-                            goes; each step lifts and lights as the dot arrives. */}
-                        {index < steps.length - 1 && (
-                          <span className='service-flow-link'>
-                            <i />
-                          </span>
-                        )}
-                      </motion.li>
-                    ))}
-                  </ol>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
+          <ul className='sheet-rows'>
             {SERVICES.map((item, index) => {
               const copy = SERVICE_PRESENTATION[item.slug]
+              const steps = SERVICE_FLOWS[item.slug] ?? []
+              const outcomes = copy?.outcomes ?? item.tools.slice(0, 3)
+              const isOpen = open === index
 
               return (
-                <div
+                <li
                   key={item.slug}
-                  id={`service-panel-${item.slug}`}
-                  role='tabpanel'
-                  aria-labelledby={`service-tab-${item.slug}`}
-                  className='service-detail'
-                  hidden={index !== active}
+                  className='sheet-row'
+                  data-active={active === index || undefined}
+                  data-open={isOpen || undefined}
+                  style={{ '--i': index + 1 } as CSSProperties}
+                  onPointerEnter={enterRow(index)}
                 >
-                  <h3 className='service-detail-title' style={{ fontFamily: DISPLAY_FONT }}>
-                    {copy?.title ?? item.title}
+                  <h3>
+                    <button
+                      type='button'
+                      id={`service-row-${item.slug}`}
+                      className='sheet-row-head'
+                      aria-expanded={isOpen}
+                      aria-controls={`service-body-${item.slug}`}
+                      onClick={() => setOpen(isOpen ? null : index)}
+                    >
+                      <span className='sheet-mono sheet-no'>{pad(index + 1)}</span>
+                      <span>
+                        <span className='sheet-name'>{copy?.title ?? item.title}</span>
+                        <span className='sheet-mono sheet-meta'>{outcomes.join(' · ')}</span>
+                      </span>
+                      <span className='sheet-mono sheet-wide'>{outcomes.join(' · ')}</span>
+                      <span className='sheet-wide svc-col-tools svc-tools' aria-hidden='true'>
+                        {steps.map(step => (
+                          <span key={step.label}>{step.icon}</span>
+                        ))}
+                      </span>
+                      <SheetPlus />
+                    </button>
                   </h3>
-                  <p className='service-detail-copy'>{copy?.description ?? item.description}</p>
-                  <ul className='service-detail-tags' aria-label='Typical work'>
-                    {(copy?.outcomes ?? item.tools.slice(0, 3)).map(outcome => (
-                      <li key={outcome}>{outcome}</li>
-                    ))}
-                  </ul>
-                  <a href={`/services/${item.slug}`} className='service-detail-link tap-area'>
-                    See how it works
-                    <ArrowIcon />
-                  </a>
-                </div>
+
+                  <div
+                    id={`service-body-${item.slug}`}
+                    role='region'
+                    aria-labelledby={`service-row-${item.slug}`}
+                    className='sheet-row-body'
+                  >
+                    <div>
+                      <div className='sheet-row-grid'>
+                        <div className='svc-row-text'>
+                          <p className='sheet-copy'>{copy?.description ?? item.description}</p>
+                          <a href={`/services/${item.slug}`} className='sheet-link tap-area'>
+                            See how it works
+                            <ArrowIcon />
+                          </a>
+                        </div>
+
+                        <figure className='svc-board'>
+                          {/* Decorative: the copy beside it carries the meaning. */}
+                          <img src={diagram(item.slug)} alt='' loading='lazy' decoding='async' />
+                        </figure>
+                      </div>
+                    </div>
+                  </div>
+                </li>
               )
             })}
-          </div>
+          </ul>
         </div>
+
+        {preview}
 
         {/* The contact route that used to fill the grid's sixth cell. */}
         <div className='service-accordion-cta' style={rise(inView, 180)}>

@@ -1,0 +1,1100 @@
+/* ── Drafting sheets: About, Services, Process ────────────────────────────
+   Benchmarked on Studio Okafor (2026-11-08). Numbered labels, hairline rules
+   and mono-caps metadata are allowed inside these three sections only; the
+   rest of the landing page keeps the taste-pass rules. Colours come from the
+   page tokens (--ink, --ink-3, --rule, --accent), so the dark band and any
+   later palette change carry through. */
+
+.sheet-head,
+.sheet-index,
+.sheet-pv,
+.proc-sheet,
+.proc-list {
+  --sheet-gut: clamp(12px, 1.6vw, 24px);
+  --sheet-line: color-mix(in oklab, var(--ink) 15%, transparent);
+  --sheet-mono: var(--font-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+/* ── Sheet header: a rule that draws in, a number, a title, a sheet count ── */
+.sheet-head {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--sheet-gut);
+  align-items: center;
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  padding-top: 0.9rem;
+  color: var(--ink);
+}
+
+.sheet-head::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.85;
+  transform-origin: 0 50%;
+  transition: transform 1.4s var(--ease-entrance);
+}
+
+/* A registration cross where the rule ends, as on a drawing sheet. */
+.sheet-head::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 13px;
+  height: 13px;
+  background:
+    linear-gradient(currentColor, currentColor) 50% 0 / 1px 100% no-repeat,
+    linear-gradient(currentColor, currentColor) 0 50% / 100% 1px no-repeat;
+  opacity: 0.85;
+}
+
+.sheet-head span {
+  font: 500 0.6875rem/1.3 var(--sheet-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    opacity 0.8s ease 0.3s,
+    transform 0.8s var(--ease-entrance) 0.3s;
+}
+
+.sheet-head-n {
+  grid-column: 1 / 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sheet-head-n::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+}
+
+.sheet-head-t {
+  grid-column: 3 / 10;
+}
+
+.sheet-head-s {
+  grid-column: 10 / 13;
+  color: var(--ink-3);
+  text-align: right;
+}
+
+.sheet-head:not([data-in])::before {
+  transform: scaleX(0);
+}
+
+.sheet-head:not([data-in]) span {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+@media (max-width: 639px) {
+  .sheet-head-t {
+    display: none;
+  }
+
+  .sheet-head-n {
+    grid-column: 1 / 7;
+  }
+
+  .sheet-head-s {
+    grid-column: 7 / 13;
+  }
+}
+
+/* ── The index: ruled rows on one column grid ─────────────────────────────
+   Each index sets --cols for its own columns. The rows open in place: the
+   body's grid row animates from 0fr to 1fr, so its height is never measured. */
+.sheet-index {
+  position: relative;
+}
+
+.sheet-cols,
+.sheet-row-head {
+  display: grid;
+  grid-template-columns: var(--cols);
+  column-gap: var(--sheet-gut);
+  align-items: center;
+}
+
+.sheet-cols {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.sheet-cols span {
+  color: var(--ink-3);
+  font: 500 0.625rem/1 var(--sheet-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sheet-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sheet-row {
+  border-bottom: 1px solid var(--sheet-line);
+  transition: opacity 0.5s ease;
+}
+
+.sheet-row-head {
+  width: 100%;
+  min-height: 4.5rem;
+  padding: 0.95rem 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sheet-row-head > span {
+  min-width: 0;
+}
+
+.sheet-row-head:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.sheet-mono {
+  color: var(--ink-3);
+  font: 400 0.75rem/1.35 var(--sheet-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  transition: color 0.4s ease;
+}
+
+.sheet-no {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The accent square that marks the row in hand. */
+.sheet-no::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  transform: scale(0);
+  transition: transform 0.45s var(--ease-entrance);
+}
+
+.sheet-name {
+  display: block;
+  color: var(--ink);
+  font-family: var(--font-editorial);
+  font-size: clamp(1.3rem, 1.95vw, 1.85rem);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.012em;
+  transition: transform 0.6s var(--ease-entrance);
+}
+
+/* On phones the columns fold into one line under the name. */
+.sheet-meta {
+  display: none;
+  margin-top: 0.4rem;
+}
+
+.sheet-plus {
+  position: relative;
+  justify-self: end;
+  width: 14px;
+  height: 14px;
+}
+
+.sheet-plus::before,
+.sheet-plus::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  transition: transform 0.5s var(--ease-entrance);
+}
+
+.sheet-plus::after {
+  transform: rotate(90deg);
+}
+
+.sheet-row[data-open] .sheet-plus::after {
+  transform: rotate(0deg);
+}
+
+/* One row in hand: the rest step back, it steps forward. */
+.sheet-index[data-has-active] .sheet-row:not([data-active]) {
+  opacity: 0.42;
+}
+
+.sheet-row[data-active] .sheet-name {
+  transform: translateX(14px);
+}
+
+.sheet-row[data-active] .sheet-no::before,
+.sheet-row[data-open] .sheet-no::before {
+  transform: scale(1);
+}
+
+.sheet-row[data-active] .sheet-mono,
+.sheet-row[data-open] .sheet-mono {
+  color: var(--ink-2);
+}
+
+.sheet-row-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.7s var(--ease-entrance);
+}
+
+.sheet-row[data-open] .sheet-row-body {
+  grid-template-rows: 1fr;
+}
+
+/* Hidden as well as collapsed, so a closed row's links are not tabbable. */
+.sheet-row-body > div {
+  min-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: visibility 0s linear 0.7s;
+}
+
+.sheet-row[data-open] .sheet-row-body > div {
+  visibility: visible;
+  transition: none;
+}
+
+/* The open row's content, on the same columns as its head: number column
+   left empty, so the copy hangs from the name. */
+.sheet-row-grid {
+  display: grid;
+  grid-template-columns: var(--body-cols);
+  column-gap: var(--sheet-gut);
+  row-gap: 1.25rem;
+  padding: 0.35rem 0 2.25rem;
+}
+
+.sheet-row-grid > :first-child {
+  grid-column: 2;
+}
+
+.sheet-copy {
+  max-width: 34em;
+  color: var(--ink-2);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.sheet-spec {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.55rem 1.25rem;
+  align-content: start;
+  margin: 0;
+  color: var(--ink-2);
+  font: 400 0.75rem/1.45 var(--sheet-mono);
+}
+
+.sheet-spec dt {
+  padding-top: 2px;
+  color: var(--ink-3);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sheet-spec dd {
+  margin: 0;
+}
+
+.sheet-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-self: start;
+  padding-bottom: 2px;
+  border-bottom: 1px solid currentColor;
+  color: var(--ink);
+  font: 500 0.6875rem/1.3 var(--sheet-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.sheet-link:hover {
+  color: var(--accent);
+}
+
+/* Rows arrive in order the first time the index is seen. `backwards`, not
+   `both`: a held end state would beat the dimming above. */
+.sheet-index:not([data-in]) .sheet-cols,
+.sheet-index:not([data-in]) .sheet-row {
+  opacity: 0;
+}
+
+.sheet-index[data-in] .sheet-cols,
+.sheet-index[data-in] .sheet-row {
+  animation: sheet-row-in 0.9s var(--ease-entrance) backwards;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@keyframes sheet-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* ── Phones: number, name and the plus; the rest folds under the name ──── */
+@media (max-width: 767px) {
+  .sheet-cols {
+    display: none;
+  }
+
+  .sheet-row-head {
+    grid-template-columns: 2.4rem minmax(0, 1fr) 1.2rem;
+    align-items: start;
+    padding: 1.1rem 0;
+  }
+
+  .sheet-row-head > .sheet-wide {
+    display: none;
+  }
+
+  .sheet-no,
+  .sheet-plus {
+    margin-top: 0.45rem;
+  }
+
+  .sheet-meta {
+    display: block;
+  }
+
+  .sheet-row-grid {
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+  }
+
+  .sheet-row-grid > * {
+    grid-column: 2;
+  }
+
+  .sheet-row[data-active] .sheet-name {
+    transform: none;
+  }
+}
+
+/* ── The floating preview that follows the pointer over an index ─────────
+   Fixed to the viewport and moved by transform from script; it is mounted
+   on <body> so no transformed ancestor can capture its `position: fixed`. */
+.sheet-pv {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: clamp(400px, 33vw, 600px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    visibility 0s linear 0.35s;
+  will-change: transform;
+}
+
+.sheet-pv[data-on] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.35s ease;
+}
+
+.sheet-pv-stage {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  background: #f0f3f6;
+  box-shadow:
+    0 0 0 1px var(--ink),
+    0 34px 70px -34px oklch(0.25 0.018 255 / 0.5);
+}
+
+/* Two layers are ever drawn: the service just left, underneath, and the
+   one under the pointer, wiping up over it. */
+.sheet-pv-layer {
+  grid-area: 1 / 1;
+}
+
+.sheet-pv-layer:not([data-on], [data-prev]) {
+  display: none;
+}
+
+.sheet-pv-layer[data-on] {
+  z-index: 1;
+  animation: sheet-wipe 0.7s var(--ease-entrance) both;
+}
+
+/* The service's diagram, cropped in a little past its margins so the steps
+   fill the card. The drawing's own ground colour fills the stage. */
+.sheet-pv-shot {
+  display: block;
+  aspect-ratio: 2.15;
+  background-color: #f0f3f6;
+  background-repeat: no-repeat;
+  background-position: 50% 56%;
+  background-size: 106%;
+}
+
+/* Hidden, the card's loops hold still. */
+.sheet-pv:not([data-on]) *,
+.sheet-pv:not([data-on]) *::before,
+.sheet-pv:not([data-on]) *::after {
+  animation-play-state: paused;
+}
+
+@keyframes sheet-wipe {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.sheet-pv-cap {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  color: var(--ink);
+  font: 500 0.625rem/1.2 var(--sheet-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sheet-pv-cap span:last-child {
+  color: var(--accent);
+}
+
+/* Crop marks at two corners. */
+.sheet-pv::before,
+.sheet-pv::after {
+  content: '';
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) 50% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 0 50% / 100% 1px no-repeat;
+}
+
+.sheet-pv::before {
+  top: -7px;
+  left: -7px;
+}
+
+.sheet-pv::after {
+  top: calc(100% - 26px);
+  right: -7px;
+}
+
+/* ── Services ──────────────────────────────────────────────────────────── */
+.svc-index {
+  --cols: 3.5rem minmax(0, 3.1fr) minmax(0, 2.2fr) 6.5rem 1.5rem;
+  --body-cols: 3.5rem minmax(0, 1fr) minmax(0, 1.45fr);
+}
+
+.svc-tools {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.svc-tools .service-flow-logo {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.svc-tools svg {
+  width: 17px;
+  height: 17px;
+}
+
+.svc-row-text {
+  display: grid;
+  gap: 1.1rem;
+  align-content: start;
+}
+
+.svc-board {
+  position: relative;
+  margin: 0;
+  border: 1px solid var(--sheet-line);
+  background: #f0f3f6;
+}
+
+.svc-board img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Registration crosses at two corners, as on the Process figure. */
+.svc-board::before,
+.svc-board::after {
+  content: '';
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) 50% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 0 50% / 100% 1px no-repeat;
+}
+
+.svc-board::before {
+  top: -7px;
+  left: -7px;
+}
+
+.svc-board::after {
+  right: -7px;
+  bottom: -7px;
+}
+
+/* Phones: the diagram keeps a readable size and scrolls sideways, rather
+   than shrinking its labels to a few pixels. */
+@media (max-width: 767px) {
+  .svc-board {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .svc-board img {
+    width: 620px;
+    max-width: none;
+  }
+
+  .svc-board::before,
+  .svc-board::after {
+    display: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .svc-index {
+    --cols: 3rem minmax(0, 3fr) minmax(0, 2fr) 1.5rem;
+    --body-cols: 3rem minmax(0, 1fr);
+  }
+
+  .svc-index .svc-col-tools {
+    display: none;
+  }
+
+  .svc-index .sheet-row-grid > * {
+    grid-column: 2;
+  }
+}
+
+/* ── About: the career index ──────────────────────────────────────────── */
+.career-index {
+  --cols: 3.5rem minmax(0, 2.6fr) minmax(0, 2.4fr) 8.5rem 1.5rem;
+  --body-cols: 3.5rem minmax(0, 1.5fr) minmax(0, 1fr);
+
+  margin-top: clamp(3.5rem, 7vw, 6rem);
+}
+
+.career-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--sheet-gut, 24px);
+  row-gap: 1.25rem;
+  align-items: end;
+  margin-bottom: clamp(1.75rem, 3.5vw, 3rem);
+}
+
+.career-head h2 {
+  grid-column: 1 / 7;
+  color: var(--ink);
+  font-family: var(--font-editorial);
+  font-size: clamp(2rem, 3.4vw, 3.25rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.career-head p {
+  grid-column: 7 / 12;
+  max-width: 30em;
+  color: var(--ink-2);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.career-achievement {
+  color: var(--ink);
+  font-family: var(--font-editorial);
+  font-size: clamp(1.1rem, 1.4vw, 1.3rem);
+  font-weight: 300;
+  line-height: 1.35;
+}
+
+.career-highlights {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.career-highlights li {
+  position: relative;
+  padding-left: 1.4rem;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* A drafting dash, not a bullet. */
+.career-highlights li::before {
+  content: '';
+  position: absolute;
+  top: 0.78em;
+  left: 0;
+  width: 0.7rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+@media (max-width: 1023px) {
+  .career-index {
+    --cols: 3rem minmax(0, 2.4fr) minmax(0, 2fr) 7rem 1.5rem;
+    --body-cols: 3rem minmax(0, 1fr);
+  }
+
+  .career-index .sheet-row-grid > * {
+    grid-column: 2;
+  }
+
+  .career-head h2,
+  .career-head p {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Process: the pinned sheet ─────────────────────────────────────────────
+   The track gives each of the six steps about half a screen of scroll; the
+   stage holds still while the steps cross-fade in one grid cell. Only shown
+   where a whole step fits a screen and motion is welcome; elsewhere the
+   ruled list below carries the same steps. */
+.proc-sheet {
+  position: relative;
+  height: calc(100svh + var(--steps) * 48svh);
+}
+
+.proc-stage {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(1.5rem, 3.5vh, 2.75rem);
+  height: 100svh;
+  padding: clamp(5.5rem, 11vh, 7rem) 0 clamp(1.5rem, 4vh, 3rem);
+}
+
+.proc-rail {
+  display: grid;
+  grid-template-columns: 2fr 3fr 1.15fr;
+  column-gap: var(--sheet-gut);
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ink);
+}
+
+.proc-rail-phase {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
+
+.proc-rail-label {
+  color: var(--ink-3);
+  font: 500 0.625rem/1 var(--sheet-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.proc-rail-label b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.proc-rail-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.4rem;
+}
+
+.proc-rail-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.2rem 0;
+  border: 0;
+  background: none;
+  color: var(--ink-4);
+  font: 400 0.75rem/1.2 var(--sheet-mono);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: color 0.4s ease;
+}
+
+.proc-rail-step::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border: 1px solid currentColor;
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.proc-rail-step[data-state='past'] {
+  color: var(--ink-3);
+}
+
+.proc-rail-step[data-state='past']::before {
+  background: currentColor;
+}
+
+.proc-rail-step[data-state='on'] {
+  color: var(--ink);
+}
+
+.proc-rail-step[data-state='on']::before {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.proc-rail-step:hover {
+  color: var(--ink);
+}
+
+.proc-rail-step:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.proc-body {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--sheet-gut);
+  align-items: end;
+  align-self: center;
+  min-height: 0;
+}
+
+.proc-steps {
+  grid-column: 1 / 6;
+  display: grid;
+  grid-template-areas: 's';
+  align-content: end;
+  min-height: 0;
+}
+
+.proc-step {
+  grid-area: s;
+  align-self: end;
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition:
+    opacity 0.6s ease,
+    transform 0.8s var(--ease-entrance);
+}
+
+.proc-step[data-on] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.proc-count {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: clamp(1rem, 2.5vh, 1.75rem);
+  color: var(--ink-3);
+  font: 500 0.6875rem/1 var(--sheet-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.proc-count b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.proc-bar {
+  position: relative;
+  flex: 1;
+  max-width: 9rem;
+  height: 1px;
+  background: var(--sheet-line);
+}
+
+.proc-bar i {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: 0 50%;
+}
+
+.proc-title {
+  color: var(--ink);
+  font-family: var(--font-editorial);
+  font-size: clamp(2.25rem, 3.6vw, 3.9rem);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.proc-summary {
+  margin-top: 0.9rem;
+  color: var(--ink);
+  font-size: clamp(1.05rem, 1.25vw, 1.25rem);
+  line-height: 1.4;
+}
+
+.proc-desc {
+  max-width: 34em;
+  margin-top: 0.6rem;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* The spec rows: what the step costs the client and what it hands back. */
+.proc-spec {
+  display: grid;
+  margin: clamp(1.25rem, 3vh, 2rem) 0 0;
+  border-top: 1px solid var(--ink);
+}
+
+.proc-spec > div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  column-gap: var(--sheet-gut);
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--sheet-line);
+}
+
+.proc-spec dt {
+  padding-top: 0.2rem;
+  color: var(--ink-3);
+  font: 500 0.625rem/1.3 var(--sheet-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.proc-spec dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+/* The figure: the step's illustration in a ruled frame, captioned. */
+.proc-figure {
+  position: relative;
+  grid-column: 7 / 13;
+  display: grid;
+  margin: 0;
+}
+
+.proc-frame {
+  position: relative;
+  display: grid;
+  height: clamp(17rem, 58svh, 36rem);
+  overflow: hidden;
+  container-type: size;
+  border: 1px solid var(--ink);
+  background:
+    radial-gradient(circle, color-mix(in oklab, var(--ink) 9%, transparent) 1px, transparent 1.4px) 0 0 / 20px 20px,
+    color-mix(in oklab, var(--ground) 60%, white);
+}
+
+.proc-visual {
+  display: grid;
+  grid-area: 1 / 1;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+/* The step's figure wipes up over the last one as it fades. */
+.proc-visual[data-on] {
+  z-index: 1;
+  opacity: 1;
+  animation: sheet-wipe 0.8s var(--ease-entrance) both;
+}
+
+/* The five illustrations not on show hold still. */
+.proc-visual:not([data-on]),
+.proc-visual:not([data-on]) *,
+.proc-visual:not([data-on]) *::before,
+.proc-visual:not([data-on]) *::after {
+  animation-play-state: paused;
+}
+
+.proc-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.6rem;
+  color: var(--ink-3);
+  font: 500 0.625rem/1.2 var(--sheet-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.proc-caption b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* Registration crosses at the frame's corners. */
+.proc-figure::before,
+.proc-figure::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  width: 13px;
+  height: 13px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) 50% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 0 50% / 100% 1px no-repeat;
+}
+
+.proc-figure::before {
+  top: -6px;
+  left: -6px;
+}
+
+.proc-figure::after {
+  right: -6px;
+  bottom: calc(1.2rem + 0.6rem - 6px);
+}
+
+/* ── Process as a ruled list: phones, short screens, reduced motion ────── */
+.proc-list {
+  display: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--ink);
+  list-style: none;
+}
+
+.proc-list > li {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  column-gap: var(--sheet-gut);
+  padding: 1.4rem 0 1.6rem;
+  border-bottom: 1px solid var(--sheet-line);
+}
+
+.proc-list .proc-title {
+  font-size: clamp(1.6rem, 6vw, 2.25rem);
+}
+
+/* Phones: the spec runs the full width under the step, number column and all. */
+.proc-list .proc-spec {
+  grid-column: 1 / -1;
+  margin-top: 1.1rem;
+}
+
+/* The intro's margin is trimmed for the pinned sheet, whose stage brings its
+   own top padding; the list puts that space back. */
+@media (min-width: 1024px) {
+  .proc-list {
+    margin-top: 2.5rem;
+  }
+}
+
+/* The step's deliverable under it, from tablet width: on a phone the
+   document would be drawn too small to read. */
+.proc-list-fig {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .proc-list-fig {
+    position: relative;
+    grid-column: 2 / -1;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9.5;
+    margin-top: 1.5rem;
+    border: 1px solid var(--sheet-line);
+    background:
+      radial-gradient(circle, color-mix(in oklab, var(--ink) 9%, transparent) 1px, transparent 1.4px) 0 0 / 20px 20px,
+      color-mix(in oklab, var(--ground) 60%, white);
+    container-type: size;
+  }
+}
+
+@media (min-width: 768px) {
+  .proc-list > li {
+    grid-template-columns: 3.5rem minmax(0, 1.2fr) minmax(0, 1fr);
+  }
+
+  .proc-list .proc-spec {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 1023px), (max-height: 699px), (prefers-reduced-motion: reduce) {
+  .proc-sheet {
+    display: none;
+  }
+
+  .proc-list {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-head::before,
+  .sheet-head span,
+  .sheet-row,
+  .sheet-row-body,
+  .sheet-name,
+  .sheet-plus::before,
+  .sheet-plus::after {
+    transition: none;
+  }
+
+  .sheet-index[data-in] .sheet-cols,
+  .sheet-index[data-in] .sheet-row,
+  .sheet-pv-layer {
+    animation: none;
+  }
+}
+
+/* The panel under the career index lines up with the index's edges. */
+.about-journey .experience-after {
+  padding-inline: 0;
+}

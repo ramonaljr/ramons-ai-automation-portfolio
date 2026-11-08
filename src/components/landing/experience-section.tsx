@@ -1,26 +1,10 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent } from 'react'
 
-import { type MotionValue, AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from 'motion/react'
-
-import { EXPERIENCE, type Role } from '@/lib/portfolio'
-
-const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
-
-/** Oldest first, so the year runs forward as the reader scrolls. */
-const ROLES = [...EXPERIENCE].reverse()
-
-const startYear = (role: Role) => Number(role.period.split(' - ')[0])
-const endLabel = (role: Role) => role.period.split(' - ').at(-1)?.trim() ?? ''
-
-/**
- * The axis is one equal step per role, not a calendar: a step is the same
- * share of the scroll that shows that role, so the fill tracks the reader.
- * Each boundary is labelled with the year the next role began, and the last
- * with "Now".
- */
-const AXIS_LABELS = [...ROLES.map(startYear), 'Now']
+import { rise, useInView } from '@/components/landing/motion'
+import { SheetPlus } from '@/components/landing/sheet'
+import { EXPERIENCE } from '@/lib/portfolio'
 
 /**
  * How the work is run, stated once. Every line repeats a commitment made
@@ -43,25 +27,196 @@ const HEADING = 'Four roles. One habit: map the work first.'
 const BLURB =
   'Each role handed me a process to run by hand: invoices and supplier payments, project cost records, month-end accounts, then forecasting.'
 
+/** Where a row opens on hover: a mouse, and room for the full row. */
+const HOVER = '(hover: hover) and (pointer: fine) and (min-width: 768px)'
+
+/** How long the pointer rests on a row before it opens, and how long the
+ *  index ignores the pointer while a row is opening and another closing. */
+const INTENT = 140
+const SETTLE = 650
+
+/** "2015 - 2018" reads as "2015 to 2018": the page keeps dashes out of its copy. */
+const years = (period: string) => period.replace(' - ', ' to ')
+
 /**
- * The career, closing About. It keeps the `experience` id so existing links
- * still land on it.
+ * The career, closing About, as an index in the drafting-sheet language the
+ * three middle sections share (benchmarked on Studio Okafor, 2026-11-08):
+ * four ruled rows, newest first, each with its number, role, employer and
+ * years. Opening a row shows the headline result, what the job involved and
+ * its particulars in mono.
  *
- * On wide, tall-enough screens it is a pinned timeline like the Story section:
- * the year runs forward from 2015 as the reader scrolls, the role card swaps
- * to the job held then, and an axis along the foot gives each role an equal
- * step that fills as the reader scrolls through it. Everywhere
- * else (phones, short screens, reduced motion) the same roles are a plain
- * list. Only one of the two is ever displayed, so screen readers meet the
- * roles once.
+ * With a mouse, a row opens as the pointer rests on it and the one before
+ * closes; the last one opened stays open when the pointer leaves, so the
+ * page does not jump under a reader scrolling on. Touch and keyboard open
+ * and close rows by tapping or pressing Enter.
+ *
+ * It replaced a pinned timeline that took four screens of scroll and showed
+ * one role at a time; the index shows the whole career at a glance and opens
+ * any role in place. It keeps the `experience` id so existing links still
+ * land on it.
  */
 export function ExperienceJourney() {
+  const { ref: headRef, inView: headInView } = useInView<HTMLDivElement>(0.2)
+  const { ref, inView } = useInView<HTMLDivElement>(0.15)
+
+  // The newest role starts open, so the index never reads as a bare list.
+  const [open, setOpen] = useState<number | null>(0)
+  const [active, setActive] = useState<number | null>(null)
+
+  // Hover opening is driven by pointer *movement*, not pointerenter: as one
+  // row grows and another shrinks, rows slide under a still pointer, and
+  // enter events would then open them in a chain. A row also gets a moment
+  // to finish opening before the pointer can open another.
+  const openRef = useRef<number | null>(0)
+  const pointerRow = useRef<number | null>(null)
+  const quietUntil = useRef(0)
+  const timer = useRef(0)
+  const hovering = useRef(false)
+
+  useEffect(() => () => window.clearTimeout(timer.current), [])
+
+  const show = (index: number | null) => {
+    openRef.current = index
+    setOpen(index)
+  }
+
+  const track = (event: PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'mouse' || !window.matchMedia(HOVER).matches) return
+
+    hovering.current = true
+
+    const row = (event.target as Element).closest<HTMLElement>('[data-row]')
+    const index = row ? Number(row.dataset.row) : null
+
+    setActive(index)
+
+    if (index === pointerRow.current) return
+
+    pointerRow.current = index
+    window.clearTimeout(timer.current)
+
+    if (index === null) return
+
+    timer.current = window.setTimeout(
+      () => {
+        const target = pointerRow.current
+
+        if (target === null || target === openRef.current) return
+
+        quietUntil.current = performance.now() + SETTLE
+        show(target)
+      },
+      Math.max(INTENT, quietUntil.current - event.timeStamp)
+    )
+  }
+
+  const leave = () => {
+    pointerRow.current = null
+    window.clearTimeout(timer.current)
+    setActive(null)
+  }
+
+  // A mouse click opens the row under it but never closes it: with hover
+  // opening, a click to close would reopen the moment the pointer moved.
+  // Taps and Enter toggle.
+  const press = (index: number) => (event: MouseEvent<HTMLButtonElement>) => {
+    if (hovering.current && event.detail > 0) show(index)
+    else show(openRef.current === index ? null : index)
+  }
+
   return (
     <div id='experience' className='about-journey'>
-      <PinnedTimeline />
-      <RoleList />
-
       <div className='mx-auto max-w-[1240px]'>
+        <div className='career-index'>
+          <div ref={headRef} className='career-head' style={rise(headInView)}>
+            <h2>{HEADING}</h2>
+            <p>{BLURB}</p>
+          </div>
+
+          <div
+            ref={ref}
+            className='sheet-index'
+            data-in={inView || undefined}
+            data-has-active={active !== null || undefined}
+            onPointerMove={track}
+            onPointerLeave={leave}
+          >
+            <div className='sheet-cols' aria-hidden='true'>
+              <span>No.</span>
+              <span>Role</span>
+              <span className='sheet-wide'>Employer</span>
+              <span className='sheet-wide'>Years</span>
+              <span />
+            </div>
+
+            <ol className='sheet-rows'>
+              {EXPERIENCE.map((role, index) => {
+                const isOpen = open === index
+
+                return (
+                  <li
+                    key={role.index}
+                    className='sheet-row'
+                    data-active={active === index || undefined}
+                    data-open={isOpen || undefined}
+                    data-row={index}
+                    style={{ '--i': index + 1 } as CSSProperties}
+                  >
+                    <h3>
+                      <button
+                        type='button'
+                        id={`role-row-${role.index}`}
+                        className='sheet-row-head'
+                        aria-expanded={isOpen}
+                        aria-controls={`role-body-${role.index}`}
+                        onClick={press(index)}
+                      >
+                        <span className='sheet-mono sheet-no'>{role.index}</span>
+                        <span>
+                          <span className='sheet-name'>{role.role}</span>
+                          <span className='sheet-mono sheet-meta'>
+                            {role.company} · {years(role.period)}
+                          </span>
+                        </span>
+                        <span className='sheet-mono sheet-wide'>{role.company}</span>
+                        <span className='sheet-mono sheet-wide'>{years(role.period)}</span>
+                        <SheetPlus />
+                      </button>
+                    </h3>
+
+                    <div
+                      id={`role-body-${role.index}`}
+                      role='region'
+                      aria-labelledby={`role-row-${role.index}`}
+                      className='sheet-row-body'
+                    >
+                      <div>
+                        <div className='sheet-row-grid'>
+                          <div>
+                            <p className='career-achievement'>{role.achievement}</p>
+                            <ul className='career-highlights'>
+                              {role.highlights.map(line => (
+                                <li key={line}>{line}</li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <dl className='sheet-spec'>
+                            <dt>Employer</dt>
+                            <dd>{role.employer}</dd>
+                            <dt>Tools</dt>
+                            <dd>{role.stack.join(' · ')}</dd>
+                          </dl>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                )
+              })}
+            </ol>
+          </div>
+        </div>
+
         <div className='experience-after'>
           <div className='experience-how'>
             <p className='experience-how-label'>How I work</p>
@@ -80,210 +235,6 @@ export function ExperienceJourney() {
           </p>
         </div>
       </div>
-    </div>
-  )
-}
-
-function PinnedTimeline() {
-  const trackRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] })
-  const [active, setActive] = useState(0)
-
-  // State changes only when the reader crosses into another role's share.
-  useMotionValueEvent(scrollYProgress, 'change', latest => {
-    const next = Math.min(ROLES.length - 1, Math.max(0, Math.floor(latest * ROLES.length)))
-
-    if (next !== active) setActive(next)
-  })
-
-  // Jumps the scroll to the middle of a role's share, so the tabs work as
-  // navigation as well as a legend.
-  const goTo = (index: number) => {
-    const track = trackRef.current
-
-    if (!track) return
-
-    const top = track.getBoundingClientRect().top + window.scrollY
-    const run = track.offsetHeight - window.innerHeight
-
-    window.scrollTo({ top: top + run * ((index + 0.5) / ROLES.length), behavior: 'smooth' })
-  }
-
-  const role = ROLES[active]
-
-  return (
-    <div ref={trackRef} className='experience-track'>
-      <div className='experience-stage'>
-        <div className='experience-screen'>
-          <div className='experience-side'>
-            {/* A <p>, not an <h2>: the list version below carries the heading,
-                and only one of the two is ever displayed. */}
-            <p className='experience-heading' style={{ fontFamily: DISPLAY_FONT }}>
-              {HEADING}
-            </p>
-            <p className='experience-blurb'>{BLURB}</p>
-
-            <div className='experience-year' style={{ fontFamily: DISPLAY_FONT }} aria-hidden='true'>
-              <AnimatePresence mode='popLayout' initial={false}>
-                <motion.span
-                  key={startYear(role)}
-                  initial={{ y: '60%', opacity: 0 }}
-                  animate={{ y: '0%', opacity: 1 }}
-                  exit={{ y: '-60%', opacity: 0 }}
-                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  {startYear(role)}
-                </motion.span>
-              </AnimatePresence>
-            </div>
-            <p className='experience-year-to'>
-              to {endLabel(role)} · {role.company}
-            </p>
-          </div>
-
-          <div className='experience-main'>
-            {/* Every role is laid out invisibly in the same grid cell, so the
-                card is as tall as the longest role and no taller. It used to
-                stretch to fill the screen, which left the shorter roles
-                sitting on a mostly empty card, and a card sized to the role
-                on show would make the tabs jump on every change. */}
-            <div className='experience-card-frame'>
-              {ROLES.map(item => (
-                <div key={item.index} className='experience-card experience-card-sizer' aria-hidden='true'>
-                  <RoleBody role={item} position={1} />
-                </div>
-              ))}
-              <AnimatePresence mode='wait' initial={false}>
-                <motion.article
-                  key={role.index}
-                  className='experience-card'
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -16 }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <RoleBody role={role} position={active + 1} />
-                </motion.article>
-              </AnimatePresence>
-            </div>
-
-            <ol className='experience-tabs'>
-              {ROLES.map((item, index) => (
-                <li key={item.index}>
-                  <button
-                    type='button'
-                    data-active={index === active}
-                    aria-current={index === active ? 'step' : undefined}
-                    onClick={() => goTo(index)}
-                  >
-                    <span>{item.period}</span>
-                    {item.short}
-                  </button>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          {/* Decorative: the tabs above carry the same dates, and the list
-              version carries them for screen readers. */}
-          <div className='experience-axis' aria-hidden='true'>
-            <div className='experience-axis-steps'>
-              {ROLES.map((item, index) => (
-                <AxisStep
-                  key={item.index}
-                  index={index}
-                  progress={scrollYProgress}
-                  state={index < active ? 'past' : index === active ? 'active' : 'next'}
-                />
-              ))}
-            </div>
-            <ol>
-              {AXIS_LABELS.map((label, index) => (
-                <li key={label} data-active={index === active} style={{ left: `${(index / ROLES.length) * 100}%` }}>
-                  {label}
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * One role's step on the axis. Its fill runs from empty to full across that
- * role's share of the scroll, so earlier steps sit full and later ones empty.
- */
-function AxisStep({
-  index,
-  progress,
-  state
-}: {
-  index: number
-  progress: MotionValue<number>
-  state: 'past' | 'active' | 'next'
-}) {
-  const fill = useTransform(progress, value => Math.min(Math.max(value * ROLES.length - index, 0), 1))
-
-  return (
-    <span data-state={state}>
-      <motion.i style={{ scaleX: fill }} />
-    </span>
-  )
-}
-
-/** One role: title, employer, the headline claim, what the job involved, skills. */
-function RoleBody({ role, position }: { role: Role; position?: number }) {
-  return (
-    <>
-      {/* The pinned card drops the period: its tabs, axis and big year
-          already say when, and a "Role 1 of 4" kicker was a numbered label. */}
-      {(!position || role.arrangement) && (
-        <p className='experience-card-kicker'>
-          {!position && role.period}
-          {role.arrangement && <span>{role.arrangement}</span>}
-        </p>
-      )}
-      <h3 className='experience-card-title' style={{ fontFamily: DISPLAY_FONT }}>
-        {role.role}
-      </h3>
-      <p className='experience-card-employer'>
-        {role.company} · {role.employer}
-      </p>
-      <p className='experience-card-achievement'>{role.achievement}</p>
-      <ul className='experience-card-highlights'>
-        {role.highlights.map(line => (
-          <li key={line}>{line}</li>
-        ))}
-      </ul>
-      <ul className='experience-card-stack'>
-        {role.stack.map(item => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    </>
-  )
-}
-
-/** The same roles as a list, newest first, for phones, short screens and reduced motion. */
-function RoleList() {
-  return (
-    <div className='experience-list mx-auto max-w-[1240px]'>
-      <div className='experience-list-intro'>
-        <h2 className='experience-heading' style={{ fontFamily: DISPLAY_FONT }}>
-          {HEADING}
-        </h2>
-        <p className='experience-blurb'>{BLURB}</p>
-      </div>
-
-      <ol>
-        {EXPERIENCE.map(role => (
-          <li key={role.index} className='experience-card'>
-            <RoleBody role={role} />
-          </li>
-        ))}
-      </ol>
     </div>
   )
 }
