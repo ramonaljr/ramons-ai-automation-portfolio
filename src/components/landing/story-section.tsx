@@ -409,9 +409,14 @@ function ExceptionLane({ progress }: { progress: MotionValue<number> }) {
   )
 }
 
-/** Climbs while the problem builds, then drains to zero while the system runs. */
+/**
+ * Climbs while the problem builds, peaks as act one closes, then drains from
+ * the moment the pile is pulled into the system (0.34) until the packets wind
+ * down (0.56). It used to hold its peak until 0.42, so the counts sat at their
+ * worst through the first half of "Then the work starts moving on its own".
+ */
 function Counter({ progress, target }: { progress: MotionValue<number>; target: number }) {
-  const value = useTransform(progress, [0.04, 0.24, 0.42, 0.6], [0, target, target, 0])
+  const value = useTransform(progress, [0.04, 0.2, 0.34, 0.56], [0, target, target, 0])
   const text = useTransform(value, latest => String(Math.round(latest)))
 
   return <motion.strong style={{ fontFamily: DISPLAY_FONT }}>{text}</motion.strong>

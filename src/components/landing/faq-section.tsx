@@ -105,11 +105,11 @@ export function FaqSection({ essentialOnly = false }: { essentialOnly?: boolean 
               ) : (
                 <>
                   <p>
-                    <strong>Still have a question?</strong> The assistant can walk you through the services and how a
+                    <strong>Still have a question?</strong> My assistant can walk you through the services and how a
                     project runs.
                   </p>
                   <button type='button' onClick={() => window.dispatchEvent(new Event(OPEN_CHAT_EVENT))}>
-                    Ask the assistant
+                    Ask my assistant
                   </button>
                 </>
               )}

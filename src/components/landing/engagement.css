@@ -158,22 +158,6 @@
   --accent: oklch(0.51 0.16 32);
 }
 
-/* A column is narrower than the Process frame, so the monitor's note hangs
-   to the left of its failed bar instead of running off the paper. */
-.eng-fig .pf-runs-note {
-  right: calc((1 - var(--x)) * 100%);
-  left: auto;
-  width: max-content;
-  max-width: 55%;
-  padding-right: 0.6em;
-  padding-left: 0;
-  border-right: 1px solid var(--accent);
-  border-left: 0;
-  text-align: right;
-  white-space: normal;
-  transform: translateX(1px);
-}
-
 .eng-includes {
   margin: 0;
   padding: 0;
@@ -191,10 +175,16 @@
   line-height: 1.45;
 }
 
+/* A drawn tick: what the step includes, not a row that opens (a "+" read as
+   an expand control). */
 .eng-includes li::before {
-  content: '+';
-  color: var(--ink-3);
-  font-family: var(--eng-mono);
+  content: '';
+  width: 0.62em;
+  height: 0.34em;
+  margin-top: 0.42em;
+  border-bottom: 1.5px solid var(--ink-3);
+  border-left: 1.5px solid var(--ink-3);
+  transform: rotate(-45deg);
 }
 
 .eng-outcome {
