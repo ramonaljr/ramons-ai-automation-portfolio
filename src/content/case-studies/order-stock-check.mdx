@@ -33,10 +33,13 @@ impactHighlightDesc: 'Customers hear back either way, and operations knows about
 roi:
   - value: '15 min'
     label: 'Between order checks'
+    desc: 'A new order waits at most 15 minutes before it is checked against stock, so customers hear back quickly either way.'
   - value: '3'
     label: 'Stock outcomes'
+    desc: 'Enough stock: confirmed and reserved. Leaves stock low: confirmed, and operations told to reorder. Not enough: put on hold, and the customer told why.'
   - value: '10'
     label: 'Orders per run'
+    desc: 'Each check works through up to 10 new orders, and anything left over is picked up by the next check 15 minutes later.'
 failsafeHeadline: 'Stock is checked before every promise'
 failsafeDesc: 'An order is confirmed only when its full quantity is in stock, and every short order goes to a person.'
 failsafes:
