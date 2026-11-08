@@ -1,9 +1,10 @@
 /* ── Selected Work: outcome-led cards (2026-11-08) ───────────────────────────
    Each card leads with its result: the figure is the largest thing on it, and
-   the process map sits beside it as the evidence. Two cards to a row from
-   1200px; one wide card per row below that, laid out the same way, and a plain
-   stack on phones. The card's own width decides its layout (container query),
-   so the full-row card on an odd count needs no rules of its own.
+   the process map sits beside it as the evidence. Three cards to a row from
+   1200px and two below that, phones included, where the cards drop their
+   summary and tool list to fit. The card's own width decides its layout
+   (container query), so the full-row card that takes up an odd remainder
+   needs no rules of its own.
 
    Flat paper with a hairline, in step with the drafting-sheet sections that
    follow, but unnumbered: the numbering belongs to About, Services and
@@ -11,19 +12,25 @@
 
 .wk-gallery {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(0.9rem, 1.4vw, 1.4rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.6rem, 1.4vw, 1.4rem);
   margin-top: clamp(1.2rem, 2vw, 2rem);
   padding: 0;
   list-style: none;
 }
 
+@media (max-width: 74.99rem) {
+  .wk-gallery[data-feature-2] > .wk-card:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (min-width: 75rem) {
   .wk-gallery {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .wk-gallery[data-layout='feature'] > .wk-card:first-child {
+  .wk-gallery[data-feature-3] > .wk-card:first-child {
     grid-column: 1 / -1;
   }
 }
@@ -320,6 +327,70 @@
 
   .wk-outcome strong {
     font-size: clamp(3rem, 7cqi, 5rem);
+  }
+}
+
+/* ── Phones: two compact cards to a row ──
+   The card is the container, so its own padding is set by the viewport; the
+   contents follow the card's width. Below 16rem a card keeps the result, the
+   map and the title, and the whole card still opens the case study. */
+@media (max-width: 40rem) {
+  .wk-card {
+    padding: 0.7rem;
+    border-radius: 0.45rem;
+  }
+}
+
+@container (max-width: 16rem) {
+  .wk-grid {
+    gap: 0.55rem;
+  }
+
+  .wk-lead {
+    gap: 0.5rem;
+  }
+
+  .wk-context {
+    font-size: 0.6875rem;
+    line-height: 1.3;
+  }
+
+  .wk-outcome {
+    gap: 0.35rem;
+  }
+
+  .wk-outcome strong {
+    font-size: clamp(1.75rem, 20cqi, 2.6rem);
+  }
+
+  .wk-outcome span {
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+
+  .wk-outcome em,
+  .wk-summary,
+  .wk-stack,
+  .wk-frame .work-canvas-status {
+    display: none;
+  }
+
+  .wk-frame .work-canvas-art {
+    padding-bottom: 0;
+  }
+
+  .wk-title {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+
+  .wk-foot {
+    padding-top: 0.5rem;
+  }
+
+  .wk-open {
+    font-size: 0.75rem;
   }
 }
 
