@@ -1149,10 +1149,40 @@
   }
 }
 
-/* The step's deliverable under it, from tablet width: on a phone the
-   document would be drawn too small to read. */
+/* The step's deliverable under it. On a phone it runs the full width,
+   under the spec, in the scene's narrow design and at that design's own
+   height; from tablet width it sits in a fixed box (below). */
 .proc-list-fig {
-  display: none;
+  grid-column: 1 / -1;
+  margin-top: 1.25rem;
+  overflow: hidden;
+  border: 1px solid var(--sheet-line);
+  background:
+    radial-gradient(circle, color-mix(in oklab, var(--ink) 9%, transparent) 1px, transparent 1.4px) 0 0 / 20px 20px,
+    color-mix(in oklab, var(--ground) 60%, white);
+}
+
+@media (max-width: 767px) {
+  /* Out past the section's 24px padding to the screen's edges, ruled top
+     and bottom only: at a phone's width the scene draws at full size */
+  .proc-list .proc-list-fig {
+    margin-inline: -24px;
+    border-inline: 0;
+  }
+
+  /* Kept under the stage's 400px switch, so a large phone still gets the
+     narrow design (larger and easier to read than the wide one shrunk) */
+  .proc-list .proc-list-fig .ps-frame {
+    position: static;
+    width: min(100%, 399px);
+    margin-inline: auto;
+  }
+
+  /* Held at the narrow design's proportion until the scene mounts, so
+     nothing below moves when it arrives */
+  .proc-list .proc-list-fig .ps-frame:empty {
+    aspect-ratio: 360 / 440;
+  }
 }
 
 @media (min-width: 768px) {
@@ -1163,10 +1193,6 @@
     place-items: center;
     aspect-ratio: 16 / 9.5;
     margin-top: 1.5rem;
-    border: 1px solid var(--sheet-line);
-    background:
-      radial-gradient(circle, color-mix(in oklab, var(--ink) 9%, transparent) 1px, transparent 1.4px) 0 0 / 20px 20px,
-      color-mix(in oklab, var(--ground) 60%, white);
     container-type: size;
   }
 }
