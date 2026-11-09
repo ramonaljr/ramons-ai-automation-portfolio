@@ -1,8 +1,7 @@
 /* ── Working together: a ruled schedule (2026-11-08) ─────────────────────────
    See engagement-section.tsx. Three columns under one drawn rule, separated by
    hairlines, with every row aligned across them through subgrid. Colours come
-   from the page tokens, which the dark band (.pricing-band) remaps, so the
-   same rules serve the homepage band and the light /services page. */
+   from the page tokens, so a later palette change carries through. */
 
 .eng {
   --eng-line: color-mix(in oklab, var(--ink) 16%, transparent);
@@ -147,15 +146,6 @@
 .eng-fig .pf {
   width: min(94cqw, 52em);
   font-size: clamp(8px, min(2.9cqw, 3.4cqh), 15px);
-}
-
-/* Paper is paper on the dark band too: the figure keeps the light page's
-   ink and accent rather than the band's remapped ones. */
-.eng-fig {
-  --ink: oklch(0.225 0.018 255);
-  --ink-2: oklch(0.35 0.017 255);
-  --ink-3: oklch(0.47 0.016 255);
-  --accent: oklch(0.51 0.16 32);
 }
 
 .eng-includes {
