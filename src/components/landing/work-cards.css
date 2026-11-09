@@ -176,6 +176,16 @@
   padding-bottom: 2.4rem;
 }
 
+/* Each tile in a process map carries an SVG drop shadow (8% black, 3px blur).
+   At card size it is a hairline the tiles' own outlines already give, but
+   while a map traces or replays, every shadowed tile is re-blurred each frame:
+   it held scrolling past the gallery to about 30 fps. Only the paint goes; the
+   `filter` attribute stays, since work-canvas.tsx and the tile rules key on
+   it. The dialog, one large map at a time, keeps its shadows. */
+.wk-frame .work-canvas svg [filter] {
+  filter: none;
+}
+
 .wk-image {
   width: 100%;
   height: 100%;
