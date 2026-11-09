@@ -16,11 +16,11 @@ something, not by being shown seventeen boxes in a row.
 
 ## Rules for every film
 
-- **Facts come only from the case study's `.mdx`** and the existing film
-  script in `docs/storify-films/films/<slug>.js` (its lanes and numbered
-  steps were taken from the process map). No measured results, no client
-  names, nothing the build doesn't do. The ledger is re-checked against the
-  `.mdx` when each film is built.
+- **Facts come only from the case study's `.mdx`** and its process map's
+  data in `docs/process-diagrams/diagrams.json` (the lanes and numbered
+  steps). No measured results, no client names, nothing the build doesn't
+  do. The ledger is re-checked against the `.mdx` when each film is built.
+  The Storify scripts' captions are a starting point for wording only.
 - **The site's look:** the scene kit in `src/components/stageshow/kit`, cool
   greys, Satoshi type, terracotta accent; app screens drawn as clean cards
   (Gmail, Calendar, Slack, Sheets, Airtable…) with their real marks from
@@ -63,10 +63,10 @@ something, not by being shown seventeen boxes in a row.
 | Piece | What it is |
 |---|---|
 | `FilmStage` | Plays a film's parts in order, with chapter chips, play/pause and the reduced-motion stills. |
-| `LaneMap` | The process map in the case study's design: lanes, numbered steps, a lit path, a step card with its caption. Read from each film's lane data. |
+| `LaneMap` | The process map in the case study's design: lanes, numbered steps, a lit path, a step card with its caption. |
 | Camera moves | App screens ⇄ map, using the kit's `Camera`. |
 | App cards | Gmail message and inbox, Calendar day, Slack message with buttons, Sheets/Airtable row, QuickBooks bill, Drive file, a web form, a phone call. Each built once and shared. |
-| Lane data | Each project's lanes and steps moved out of the Storify scripts into one typed file per project, so the film and the map read the same facts. |
+| Lane data | Read from `docs/process-diagrams/diagrams.json`, which already generates each case study's card and map SVGs (`build.cjs`). The film reads the same file, so a changed step changes the map, the card and the film together, with no copy to keep in step. |
 
 ---
 
@@ -202,13 +202,18 @@ something, not by being shown seventeen boxes in a row.
    files and can run in parallel sessions.
 4. **Switch the dialog over** for each film as it passes review, then render
    the MP4s (16:9 and the 4:5 LinkedIn cut).
-5. **Each film passes the same checks as the site's scenes:** a frame-by-frame
+5. **Retire the hand-drawn film** in the same change: delete
+   `public/films/<slug>.mp4` and `<slug>.jpg`, point `videoUrl` at the
+   Stageshow MP4 (the Walkthrough link), and drop `videoPoster`. When the last
+   of the ten is replaced, remove `docs/storify-films/` and the two Storify
+   plan docs; git history keeps them.
+6. **Each film passes the same checks as the site's scenes:** a frame-by-frame
    film strip, a still at 360 px wide, and reduced motion.
 
 ## Decisions for Ramon
 
-1. **The hand-drawn films:** retire them once their replacement is live, or
-   keep them as an optional "hand-drawn version"?
+1. ~~**The hand-drawn films:** retire or keep?~~ **Retire** (Ramon,
+   2026-11-10): each one goes when its replacement is live (step 5 above).
 2. **Sound:** the hand-drawn films have music; a live scene is silent. Fine,
    or should the rendered MP4s get a music bed?
 3. **Live in the dialog** (recommended) or an MP4 there too?
