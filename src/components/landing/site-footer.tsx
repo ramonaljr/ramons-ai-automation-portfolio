@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
 import { usePathname } from 'next/navigation'
-import { motion, useScroll, useTransform, type MotionValue, type Variants } from 'motion/react'
+import { motion, type Variants } from 'motion/react'
 
 import { BrandMark } from '@/components/landing/brand-mark'
-import { CONTAINER, DISPLAY_FONT, READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
+import { CONTAINER, DISPLAY_FONT, READABLE, useInView, usePrefersReducedMotion } from '@/components/landing/motion'
 import { PROFILE, SERVICES } from '@/lib/portfolio'
 
 /**
@@ -70,51 +70,37 @@ const LINE: Variants = {
   shown: { y: '0%', transition: { duration: 0.9, ease: EASE } }
 }
 
-const LETTERS = ['R', 'A', 'M', 'O', 'N']
-
 /**
- * One letter of the signature. It rises out of the bottom edge as the reader
- * reaches the end of the page, each letter a beat after the last, and fills
- * with terracotta on the same scroll.
+ * The signature's letters, in a box where the type is 100 units tall.
+ * Each x is where Satoshi Black (900) puts the letter with the word's
+ * -0.07em tracking, measured from the loaded font on 2026-11-09, so the SVG
+ * sits where the old HTML wordmark did. The box is cropped at 58 units, so
+ * the bottom of each letter runs off the page's edge; the baseline is 78.5.
  */
-function SignatureLetter({
-  letter,
-  index,
-  progress,
-  fill,
-  reduced
-}: {
-  letter: string
-  index: number
-  progress: MotionValue<number>
-  fill: MotionValue<string>
-  reduced: boolean
-}) {
-  // `progress` runs from the signature entering the screen to the end of
-  // the page, so the whole rise happens where it can be seen.
-  const start = index * 0.1
-  const y = useTransform(progress, [0, start, start + 0.55, 1], ['105%', '105%', '0%', '0%'])
+const SIGNATURE = [
+  { letter: 'R', x: 0 },
+  { letter: 'A', x: 61.8 },
+  { letter: 'M', x: 125.1 },
+  { letter: 'O', x: 209.2 },
+  { letter: 'N', x: 281.9 }
+]
 
-  return (
-    <motion.span style={reduced ? { backgroundSize: '100% 100%' } : { y, backgroundSize: fill }}>{letter}</motion.span>
-  )
-}
+/** Ink runs from 7.7 to 352.8, so the box starts at 3.5 to centre it. */
+const SIGNATURE_BOX = '3.5 0 353.5 58'
+const SIGNATURE_BASELINE = 78.5
+
+/** The footer is on every page once, so its gradient's id is fixed (useId
+ * differs between server and client above the footer). */
+const SIGNATURE_FILL = 'footer-sig-fill-gradient'
 
 export function SiteFooter() {
   const footerRef = useRef<HTMLElement>(null)
   const pathname = usePathname()
   const onLanding = pathname === '/'
   const reduced = usePrefersReducedMotion()
-  const signatureRef = useRef<HTMLDivElement>(null)
 
-  // From the signature's top reaching the bottom of the screen to the end of
-  // the page: it is only on screen for the last stretch of the scroll, so its
-  // motion keys off its own position rather than the whole footer's.
-  const { scrollYProgress } = useScroll({ target: signatureRef, offset: ['start end', 'end end'] })
-
-  // The wordmark fills with terracotta from the bottom as the page ends,
-  // like a signature being drawn.
-  const wordFill = useTransform(scrollYProgress, [0.2, 1], ['100% 30%', '100% 100%'])
+  // The signature plays once, when most of it is on screen.
+  const { ref: signatureRef, inView: signed } = useInView<HTMLDivElement>(0.6)
   const manilaTime = useManilaTime()
 
   return (
@@ -126,7 +112,7 @@ export function SiteFooter() {
       <noscript>
         <style>
           {
-            '.footer-ask-line>span,.footer-actions,.footer-columns nav,.footer-columns li,.footer-identity,.footer-word span{opacity:1!important;transform:none!important}'
+            '.footer-ask-line>span,.footer-actions,.footer-columns nav,.footer-columns li,.footer-identity{opacity:1!important;transform:none!important}.footer-sig-line{stroke-dashoffset:0!important}.footer-sig-fill{clip-path:none!important}'
           }
         </style>
       </noscript>
@@ -259,24 +245,41 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* The wordmark signs off the page: solid, cropped along the bottom
-          edge, its letters rising one by one and filling with terracotta
-          from the bottom as the page ends.
-          It sits below the links rather than behind the headline, where the
-          two used to muddy each other. */}
+      {/* The wordmark signs off the page, cropped along the bottom edge.
+          When it comes into view each letter is written in, its outline
+          drawn like a pen stroke, then filled with terracotta from the
+          bottom, one letter after the next (see .footer-sig in globals.css).
+          It plays once in time rather than with the scroll, so it is always
+          seen finished, however fast the reader arrives. */}
       <div ref={signatureRef} className='footer-signature' aria-hidden='true'>
-        <div className='footer-word'>
-          {LETTERS.map((letter, index) => (
-            <SignatureLetter
-              key={letter}
-              letter={letter}
-              index={index}
-              progress={scrollYProgress}
-              fill={wordFill}
-              reduced={reduced}
-            />
+        <svg className='footer-sig' viewBox={SIGNATURE_BOX} data-on={signed || undefined}>
+          <defs>
+            <linearGradient
+              id={SIGNATURE_FILL}
+              gradientUnits='userSpaceOnUse'
+              x1='0'
+              y1={SIGNATURE_BASELINE}
+              x2='0'
+              y2='4'
+            >
+              <stop offset='0' className='footer-sig-stop-low' />
+              <stop offset='1' className='footer-sig-stop-high' />
+            </linearGradient>
+          </defs>
+          {SIGNATURE.map(({ letter, x }, index) => (
+            <g key={letter} style={{ '--i': index } as CSSProperties}>
+              <text x={x} y={SIGNATURE_BASELINE} className='footer-sig-ghost'>
+                {letter}
+              </text>
+              <text x={x} y={SIGNATURE_BASELINE} className='footer-sig-fill' fill={`url(#${SIGNATURE_FILL})`}>
+                {letter}
+              </text>
+              <text x={x} y={SIGNATURE_BASELINE} className='footer-sig-line'>
+                {letter}
+              </text>
+            </g>
           ))}
-        </div>
+        </svg>
       </div>
     </footer>
   )
