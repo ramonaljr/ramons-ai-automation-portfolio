@@ -1,10 +1,11 @@
 'use client'
 
-import { Fragment, useRef, useState, useSyncExternalStore } from 'react'
+import { Fragment, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react'
 
 import { gsap, useGSAP } from '@/components/landing/gsap'
 import { usePrefersReducedMotion } from '@/components/landing/motion'
 import { BrandMark } from '@/components/landing/brand-mark'
+import { TOOLS, type Tool } from '@/components/landing/scenes/tool-mark'
 
 import { PROFILE } from '@/lib/portfolio'
 
@@ -27,6 +28,9 @@ const SEEN_SCRIPT = `try{if(sessionStorage.getItem('${SEEN_KEY}')==='1')document
 
 /** Input that hurries the intro along rather than making anyone sit through it. */
 const SKIP_EVENTS = ['pointerdown', 'keydown', 'wheel', 'touchstart'] as const
+
+/** The workflow under the name: an email in, n8n, a message out. */
+const FLOW: Tool[] = ['gmail', 'n8n', 'slack']
 
 /** The name with its suffix split off, so the suffix can take the accent. */
 const NAME_WORDS = PROFILE.name.split(' ')
@@ -53,8 +57,11 @@ const noSubscribe = () => () => {}
 /**
  * The opening is the landing page itself, out of focus. The page sits behind
  * frosted glass like the nav bar's; over it the monogram draws, the brand line
- * and the name rise in the hero's own display type, the workflow bar fills,
- * and then the glass clears and the hero comes into focus where it stands.
+ * and the name rise in the hero's own display type, and a small workflow runs
+ * under them (Gmail, n8n, Slack, each lighting in its own colour as the line
+ * reaches it). Then the glass clears and the hero comes into focus where it
+ * stands. Nothing here pretends to load: it is about a second and a half, and
+ * any input hurries it.
  */
 export function IntroAnimation({ onDone }: { onDone: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -85,11 +92,6 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
         return
       }
 
-      // The percentage is written straight to the node rather than through
-      // state: a re-render per frame would be sixty renders for one number.
-      const percent = rootRef.current?.querySelector('.intro-loading-percent')
-      const progress = { value: 0 }
-
       const tl = gsap.timeline({
         defaults: { ease: 'expo.out' },
         onComplete: () => {
@@ -104,22 +106,17 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
         // `y: 0` because GSAP reads the CSS starting offset (translateY(110%))
         // as pixels into `y`, and would keep it while tweening `yPercent`.
         .fromTo('.intro-word', { y: 0, yPercent: 110 }, { yPercent: 0, duration: 1, stagger: 0.08 }, 0.2)
-        .fromTo('.intro-loading', { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.35)
-        .fromTo('.intro-loading-fill', { scaleX: 0 }, { scaleX: 1, duration: 1, ease: 'power1.inOut' }, 0.35)
-        .to(
-          progress,
-          {
-            value: 100,
-            duration: 1,
-            ease: 'power1.inOut',
-            onUpdate: () => {
-              if (percent) percent.textContent = `${String(Math.round(progress.value)).padStart(3, '0')}%`
-            }
-          },
-          0.35
+        .fromTo('.intro-flow', { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.35)
+
+        // The run: each mark lights as the line reaches it
+        .to('.intro-flow-lit', { autoAlpha: 1, duration: 0.3, stagger: 0.35, ease: 'power2.out' }, 0.5)
+        .fromTo(
+          '.intro-flow-fill',
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.3, stagger: 0.35, ease: 'power1.inOut' },
+          0.6
         )
-        .fromTo('.intro-slogan', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.55)
-        .addLabel('clear', 1.5)
+        .addLabel('clear', 1.45)
 
         // The copy leaves first, then the glass clears behind it.
         .to('.intro-stack', { autoAlpha: 0, y: -24, duration: 0.5, ease: 'power2.in' }, 'clear')
@@ -174,17 +171,29 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
             ))}
           </p>
 
-          <div className='intro-loading'>
-            <div className='intro-loading-head'>
-              <span>Initializing workflow</span>
-              <span className='intro-loading-percent'>000%</span>
-            </div>
-            <span className='intro-loading-track'>
-              <span className='intro-loading-fill' />
-            </span>
+          <div className='intro-flow'>
+            {FLOW.map((tool, i) => (
+              <Fragment key={tool}>
+                {i > 0 && (
+                  <span className='intro-flow-line'>
+                    <span className='intro-flow-fill' />
+                  </span>
+                )}
+                <span
+                  className='intro-flow-node'
+                  style={
+                    {
+                      '--src': `url(/images/tools/${TOOLS[tool].slug}.svg)`,
+                      '--mark': TOOLS[tool].color
+                    } as CSSProperties
+                  }
+                >
+                  <span className='intro-flow-mark' />
+                  <span className='intro-flow-mark intro-flow-lit' />
+                </span>
+              </Fragment>
+            ))}
           </div>
-
-          <p className='intro-slogan'>Automating the manual work that quietly eats your business week.</p>
         </div>
       </div>
     </div>

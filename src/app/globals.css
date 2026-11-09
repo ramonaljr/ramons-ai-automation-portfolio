@@ -449,31 +449,50 @@
   color: var(--accent);
 }
 
-.intro-loading {
-  width: clamp(16rem, 24vw, 21rem);
+.intro-flow {
+  display: flex;
+  align-items: center;
   margin-top: 2.1rem;
   opacity: 0;
 }
 
-.intro-loading-head {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.6rem;
-  color: var(--ink-3);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+/* A tool on the run: its mark in a small tile, grey until the line reaches
+   it, then in its own colour (the lit copy fades in over the grey one) */
+.intro-flow-node {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.6rem;
+  background: color-mix(in oklab, white 70%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent),
+    0 1px 2px color-mix(in oklab, var(--ink) 5%, transparent);
 }
 
-.intro-loading-track {
+.intro-flow-mark {
+  grid-area: 1 / 1;
+  width: 1.05rem;
+  height: 1.05rem;
+  background-color: color-mix(in oklab, var(--ink) 22%, transparent);
+  mask: var(--src) center / contain no-repeat;
+}
+
+.intro-flow-lit {
+  background-color: var(--mark);
+  opacity: 0;
+}
+
+.intro-flow-line {
   display: block;
-  height: 2px;
-  overflow: hidden;
-  background: color-mix(in oklab, var(--ink) 10%, transparent);
+  width: 3.25rem;
+  height: 1px;
+  margin-inline: 0.5rem;
+  background: color-mix(in oklab, var(--ink) 14%, transparent);
 }
 
-.intro-loading-fill {
+.intro-flow-fill {
   display: block;
   height: 100%;
   background: var(--accent);
@@ -481,14 +500,14 @@
   transform-origin: 0 50%;
 }
 
-.intro-slogan {
-  max-width: 42ch;
-  margin-top: 1.4rem;
-  color: var(--ink-2);
-  font-size: 1.125rem;
-  font-weight: 300;
-  line-height: 1.55;
-  opacity: 0;
+/* The chat button sits above the glass (z 110 to its 100), so it waits
+   until the intro has gone, then fades in on its own transition. Only where
+   the intro plays: on phones the overlay stays mounted, hidden. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  html:not([data-intro-seen]) body:has(.intro-overlay) .chat-launcher {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 /* Seen this session (set before paint, see SEEN_SCRIPT), or asked for less
