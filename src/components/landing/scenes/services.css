@@ -1,0 +1,355 @@
+/* The five Services scenes (services-scenes.tsx). Shared look in look.css;
+   every rule is scoped under .ps. Stage pixels: 600 x 375, the hero window
+   from y 40, its body from y 78. */
+
+.ps .psv-head {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.ps .psv-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.ps .psv-count > :first-child {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A timed trail: run log, approval trail */
+.ps .psv-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  margin: 0 -8px;
+  padding: 0 8px;
+  border-top: 1px solid var(--ss-line);
+}
+
+/* The row that waits on a person: room above its button, and a fixed cell
+   so the label's change never reflows the text */
+.ps .psv-row:has(.psv-approve) {
+  grid-template-columns: 44px 1fr 104px;
+  min-height: 46px;
+}
+
+.ps .psv-approve {
+  justify-self: end;
+}
+
+.ps .psv-row time {
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ps .psv-row .ss-check {
+  justify-self: end;
+  flex: none;
+}
+
+/* A check and a badge in one cell, crossfading */
+.ps .psv-status {
+  display: grid;
+  justify-self: end;
+  justify-items: end;
+  align-items: center;
+}
+
+.ps .psv-status > * {
+  grid-area: 1 / 1;
+  transition: opacity 0.4s ease;
+}
+
+.ps .psv-status > .ss-badge,
+.ps .psv-status[data-on] > .ss-check {
+  opacity: 0;
+}
+
+.ps .psv-status[data-on] > .ss-badge {
+  opacity: 1;
+}
+
+.ps .psv[data-out] .psv-status > * {
+  opacity: 0;
+  transition-duration: 0.25s;
+}
+
+.ps .psv-fields + .ps-filler {
+  margin-top: 16px;
+}
+
+.ps .psv-row[data-person] > span:not(.psv-status) {
+  font-weight: 600;
+}
+
+.ps .psv-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ps .psv-rest {
+  top: 345px;
+  left: 470px;
+}
+
+/* An answer with its sources */
+.ps .psv-question {
+  box-sizing: border-box;
+  min-height: 38px;
+  margin-bottom: 14px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--ss-line);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ps .psv-answer {
+  min-height: 42px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.ps .psv-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.ps .psv-source svg {
+  flex: none;
+}
+
+.ps .psv-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: rgb(20 24 33 / 0.05);
+  font-size: 11.5px;
+  color: var(--ss-text);
+}
+
+.ps .psv-note {
+  display: block;
+  margin-top: 14px;
+  font-size: 11.5px;
+}
+
+.ps .psv-ask > .ps-filler {
+  margin-top: 18px;
+}
+
+/* A nightly sync */
+.ps .psv-chain {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 16px;
+}
+
+.ps .psv-link {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+}
+
+.ps .psv-line {
+  position: absolute;
+  top: 16px;
+  right: calc(50% + 24px);
+  width: calc(100% - 48px);
+  height: 1.5px;
+  background: rgb(20 24 33 / 0.2);
+}
+
+.ps .psv-stat {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  align-items: center;
+  min-height: 36px;
+  border-top: 1px solid var(--ss-line);
+}
+
+.ps .psv-stat__value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ps .psv-stat__value > .ss-count {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* An after-hours call */
+.ps .psv-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ps .psv-live i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ss-success);
+  box-shadow: 0 0 0 3px var(--ss-success-soft);
+}
+
+.ps .psv-fields {
+  margin: 0;
+}
+
+.ps .psv-fields > div {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  align-items: center;
+  min-height: 38px;
+  border-top: 1px solid var(--ss-line);
+}
+
+.ps .psv-fields dt,
+.ps .psv-fields dd {
+  margin: 0;
+}
+
+.ps .psv-fields dd {
+  font-size: 12.5px;
+}
+
+.ps .psv-chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ps .psv-booked {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Leaving before a reset: what changed in place fades with the rest */
+.ps .psv-count,
+.ps .psv-question__text,
+.ps .psv-answer,
+.ps .psv-approve,
+.ps .psv-stat__value,
+.ps .psv-chips {
+  transition: opacity 0.25s ease;
+}
+
+.ps .psv[data-out] .psv-count,
+.ps .psv[data-out] .psv-question__text,
+.ps .psv[data-out] .psv-answer,
+.ps .psv[data-out] .psv-approve,
+.ps .psv[data-out] .psv-stat__value,
+.ps .psv[data-out] .psv-chips {
+  opacity: 0;
+}
+
+/* The narrow design, for phones */
+.ps .ss-stage[data-layout='compact'] .psv-row {
+  grid-template-columns: 38px 1fr auto;
+  gap: 8px;
+  padding-block: 5px;
+}
+
+.ps .ss-stage[data-layout='compact'] .psv-fields > div {
+  grid-template-columns: 78px 1fr;
+  padding-block: 6px;
+}
+
+.ps .ss-stage[data-layout='compact'] .psv-stat {
+  grid-template-columns: 66px 1fr;
+  padding-block: 6px;
+}
+
+/* Stacked rather than wrapped, so a badge never lands against the text */
+.ps .ss-stage[data-layout='compact'] .psv-stat__value {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+}
+
+.ps .ss-stage[data-layout='compact'] .psv-row:has(.psv-approve) {
+  grid-template-columns: 38px 1fr 100px;
+}
+
+.ps .ss-stage[data-layout='compact'] .psv-sources {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ps .ss-stage[data-layout='compact'] .psv-head > .ps-faint {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ps .ss-stage[data-layout='compact'] .psv-answer {
+  min-height: 84px;
+}
+
+.ps .ss-stage[data-layout='compact'] .psv-question {
+  font-size: 12px;
+}
+
+.ps .ss-stage[data-layout='compact'] .psv-rest {
+  top: 370px;
+  left: 300px;
+}
+
+/* ---------- The host: Services' hover card and open rows ---------- */
+
+/* The dotted drafting ground, as in the Process frame. A fixed shape, so
+   every service fills the same card and nothing jumps between hovers. */
+.svc-fig {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  container-type: size;
+  background:
+    radial-gradient(circle, color-mix(in oklab, var(--ink) 9%, transparent) 1px, transparent 1.4px) 0 0 / 18px 18px,
+    color-mix(in oklab, var(--ground) 60%, white);
+}
+
+.svc-fig .ps-frame {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  width: min(100cqw, 100cqh * var(--ratio));
+  margin-inline: auto;
+}
+
+/* Phones: the open row's scene takes its narrow design's own height */
+@media (max-width: 767px) {
+  .svc-board .svc-fig {
+    aspect-ratio: auto;
+    container-type: normal;
+  }
+
+  .svc-board .svc-fig .ps-frame {
+    position: static;
+    width: 100%;
+  }
+}

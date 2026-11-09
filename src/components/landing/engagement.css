@@ -125,27 +125,18 @@
   line-height: 1.55;
 }
 
-/* The document the step leaves you holding, on its own paper. The frame is a
-   size container, so the figure's type follows it (see process-figures.css). */
+/* What the step looks like in practice: a Stageshow scene of the invoice
+   job (scenes/), taking its own height. */
 .eng-fig {
-  display: grid;
-  place-items: center;
   width: 100%;
   max-width: 30rem;
-  aspect-ratio: 5 / 4;
   margin-block: 0.4rem;
-  container-type: size;
 }
 
 @media (min-width: 64rem) {
   .eng-fig {
     max-width: none;
   }
-}
-
-.eng-fig .pf {
-  width: min(94cqw, 52em);
-  font-size: clamp(8px, min(2.9cqw, 3.4cqh), 15px);
 }
 
 .eng-includes {
@@ -194,9 +185,19 @@
 
 /* ── Three columns, rows aligned across them ── */
 @media (min-width: 64rem) {
+  /* Every column padded on both sides and the grid pulled out by one pad,
+     so the three hold the same width of content (outer columns padded on
+     one side only left the middle one a pad narrower). The rule is inset
+     back to the text. */
   .eng-cols {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-rows: repeat(7, auto);
+    margin-inline: calc(-1 * var(--eng-pad));
+  }
+
+  .eng-cols::before {
+    right: var(--eng-pad);
+    left: var(--eng-pad);
   }
 
   .eng-col {
@@ -204,14 +205,6 @@
     grid-template-rows: subgrid;
     gap: 1.1rem 0;
     padding: 1.6rem var(--eng-pad) 2.4rem;
-  }
-
-  .eng-col:first-child {
-    padding-left: 0;
-  }
-
-  .eng-col:last-child {
-    padding-right: 0;
   }
 
   .eng-col + .eng-col {

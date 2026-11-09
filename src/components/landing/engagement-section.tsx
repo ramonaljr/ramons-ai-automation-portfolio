@@ -1,22 +1,17 @@
 'use client'
 
-import type { CSSProperties, ReactNode } from 'react'
+import type { ComponentType, CSSProperties } from 'react'
 
 import './engagement.css'
 
 import { CONTAINER, Cta, DISPLAY_FONT, SECTION_ANCHOR, useContactHref, useInView } from '@/components/landing/motion'
-import { AuditFigure, BuildFigure, MonitorFigure } from '@/components/landing/process-figures'
+import { ENGAGEMENT_SCENES as SCENES } from '@/components/landing/scenes/engagement-scenes'
+import type { SceneProps } from '@/components/landing/scenes/scene'
+import { SceneFrame } from '@/components/landing/scenes/scene-frame'
+import { useTurns } from '@/components/landing/scenes/use-turns'
 import { SectionIntro } from '@/components/landing/section-intro'
 
 import { ENGAGEMENTS } from '@/lib/portfolio'
-
-/**
- * What the client holds at the end of each step, drawn as the same documents
- * the Process sheet uses: the audit's opportunity list, the build's log and
- * the retainer's run monitor. One running example, so the two sections read
- * as one job.
- */
-const FIGURES: ReactNode[] = [<AuditFigure key='audit' />, <BuildFigure key='build' />, <MonitorFigure key='monitor' />]
 
 /**
  * Working together, as a ruled schedule rather than three pricing cards.
@@ -36,6 +31,7 @@ const FIGURES: ReactNode[] = [<AuditFigure key='audit' />, <BuildFigure key='bui
  */
 export function EngagementSection() {
   const { ref, inView } = useInView<HTMLOListElement>(0.12)
+  const { turn, round } = useTurns(ref, SCENES.length, inView)
   const contactHref = useContactHref()
 
   return (
@@ -77,8 +73,16 @@ export function EngagementSection() {
 
               <p className='eng-for'>{tier.forWhen}</p>
 
-              <div className='eng-fig' data-on={inView || undefined} aria-hidden='true'>
-                {FIGURES[index]}
+              <div className='eng-fig' aria-hidden='true'>
+                <SceneFrame ratio={520 / 460}>
+                  {SCENES[index] && (
+                    <EngagementScene
+                      key={index === turn ? `turn-${round}` : 'still'}
+                      scene={SCENES[index]}
+                      playing={index === turn}
+                    />
+                  )}
+                </SceneFrame>
               </div>
 
               <ul className='eng-includes'>
@@ -105,4 +109,9 @@ export function EngagementSection() {
       </div>
     </section>
   )
+}
+
+/** A column's scene: its turn when `playing`, otherwise its payoff, held. */
+function EngagementScene({ scene: Scene, playing }: { scene: ComponentType<SceneProps>; playing: boolean }) {
+  return <Scene mode={playing ? 'turn' : 'still'} />
 }

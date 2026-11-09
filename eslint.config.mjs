@@ -27,7 +27,12 @@ const eslintConfig = defineConfig([
 
     // Process-diagram builder: a plain Node script that writes the card and
     // dialog SVGs, outside the app, so the app's TS/React rules do not apply.
-    'docs/process-diagrams/**'
+    'docs/process-diagrams/**',
+
+    // Stageshow's kit, vendored as published (MIT, see its LICENSE). Kept
+    // byte-for-byte so it can be updated from upstream, so the app's
+    // React Compiler and style rules are not applied to it.
+    'src/components/stageshow/kit/**'
   ]),
   {
     plugins: {

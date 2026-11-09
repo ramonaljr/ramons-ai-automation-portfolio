@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom'
 import { CalendarCheck, FileText, MessageCircle, Phone, ClipboardCheck, Mic } from 'lucide-react'
 
 import { SectionIntro } from '@/components/landing/section-intro'
-import { ServiceFigure } from '@/components/landing/service-figures'
+import { ServiceScene } from '@/components/landing/scenes/service-scene'
 import { pad, SheetHeader, SheetPlus } from '@/components/landing/sheet'
 import {
   ArrowIcon,
@@ -274,7 +274,7 @@ export function ServicesSection({ sheet = false }: { sheet?: boolean }) {
               data-on={index === active || undefined}
               data-prev={index === previous || undefined}
             >
-              <ServiceFigure slug={item.slug} on={index === active} />
+              <ServiceScene slug={item.slug} on={index === active} />
             </div>
           ))}
         </div>
@@ -376,7 +376,7 @@ export function ServicesSection({ sheet = false }: { sheet?: boolean }) {
 
                         {/* Decorative: the copy beside it carries the meaning. */}
                         <figure className='svc-board' aria-hidden='true'>
-                          <ServiceFigure slug={item.slug} on={isOpen} />
+                          <ServiceScene slug={item.slug} on={isOpen} />
                         </figure>
                       </div>
                     </div>

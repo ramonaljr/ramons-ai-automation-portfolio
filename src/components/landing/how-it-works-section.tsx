@@ -6,7 +6,7 @@ import { motion, useMotionValueEvent, useScroll, useTransform } from 'motion/rea
 
 import { CONTAINER, SECTION } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
-import { PROCESS_FIGURES } from '@/components/landing/process-figures'
+import { ProcessScene } from '@/components/landing/scenes/process-scene'
 import { pad, SheetHeader } from '@/components/landing/sheet'
 import { ENGAGEMENTS, PROCESS } from '@/lib/portfolio'
 
@@ -17,8 +17,8 @@ import { ENGAGEMENTS, PROCESS } from '@/lib/portfolio'
  * The sheet holds still while the page scrolls past it, and each half-screen
  * of scroll turns to the next of the six steps: its number, title, summary
  * and a spec of what the step takes from the client and hands back, beside
- * the deliverable that step hands over, drawn as a document in a captioned
- * frame (process-figures.tsx). A rail along the top groups the
+ * a captioned frame that plays that step of one invoice job as a short
+ * Stageshow scene (scenes/). A rail along the top groups the
  * steps by engagement and jumps to any of them.
  *
  * It replaced a tab explorer that played through the steps on a timer. Scroll
@@ -44,8 +44,8 @@ const PHASES = (['Audit', 'Build', 'Retainer'] as const).map((name, index) => ({
   steps: PROCESS.flatMap((step, stepIndex) => (step.phase === name ? [stepIndex] : []))
 }))
 
-/** The document each step hands over, as the figures title it. */
-const DELIVERABLES = ['Problem statement', 'Opportunity list', 'System map', 'Build log', 'Test report', 'Run monitor']
+/** What each step hands over, as the frame's tag names it. */
+const DELIVERABLES = ['Call notes', 'Opportunity list', 'System map', 'Build log', 'Test report', 'Live system']
 
 /** Where each step begins along the counter's track, plus its far end. */
 const TICKS = Array.from({ length: STEPS + 1 }, (_, index) => index / STEPS)
@@ -189,9 +189,9 @@ export function HowItWorksSection({ sheet = false }: { sheet?: boolean }) {
                   <p className='proc-level'>
                     <span key={active}>{DELIVERABLES[active]}</span>
                   </p>
-                  {PROCESS_FIGURES.map((visual, index) => (
-                    <div key={index} className='proc-visual' data-on={index === active || undefined}>
-                      {visual}
+                  {PROCESS.map((item, index) => (
+                    <div key={item.step} className='proc-visual' data-on={index === active || undefined}>
+                      <ProcessScene step={index} on={index === active} />
                     </div>
                   ))}
                 </div>
@@ -218,7 +218,9 @@ export function HowItWorksSection({ sheet = false }: { sheet?: boolean }) {
                 <p className='proc-desc'>{item.desc}</p>
               </div>
               <StepSpec step={item} />
-              <div className='proc-list-fig'>{PROCESS_FIGURES[index]}</div>
+              <div className='proc-list-fig'>
+                <ProcessScene step={index} />
+              </div>
             </li>
           ))}
         </ol>

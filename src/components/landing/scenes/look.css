@@ -1,0 +1,165 @@
+/* The look every scene shares (scene.tsx): Satoshi, the
+   site's ink and accent, a transparent stage so the frame's dot grid is the
+   ground, square stage corners and one 40px gutter. Everything is scoped
+   under .ps so nothing reaches the rest of the sheet. */
+
+.ps .ss-stage {
+  --ss-font: var(--font-satoshi), system-ui, sans-serif;
+  --ss-accent: var(--accent, #b4532a);
+  /* Plain values: Lightning CSS drops a custom property whose value is a
+     color-mix() over other custom properties. */
+  --ss-accent-soft: rgb(180 83 42 / 0.1);
+  --ss-accent-text: var(--accent, #b4532a);
+  --ss-text-strong: var(--ink, #141821);
+  --ss-text: #5b6472;
+  --ss-text-faint: #8a93a1;
+  --ss-success: #2f7d4f;
+  --ss-success-soft: rgb(47 125 79 / 0.12);
+  --ss-success-text: #24663f;
+  --ss-radius-window: 10px;
+  --gutter: 40px;
+  overflow: hidden;
+  border-radius: 0;
+  background: transparent;
+  font: 12px/1.4 var(--ss-font);
+  color: var(--ss-text-strong);
+}
+
+.ps .ps-strong {
+  font-weight: 600;
+  color: var(--ss-text-strong);
+}
+
+.ps .ps-muted {
+  color: var(--ss-text);
+}
+
+.ps .ps-faint {
+  color: var(--ss-text-faint);
+}
+
+/* A small label over a section of a window */
+.ps .ps-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ss-text-faint);
+}
+
+/* The hero window: a gutter from the top and both sides, off the bottom.
+   The stage is pinned to the frame's bottom edge, so that bleed is the
+   frame's own edge. */
+.ps .ps-hero {
+  position: absolute;
+  top: var(--gutter);
+  left: var(--gutter);
+  right: var(--gutter);
+  height: 520px;
+  box-shadow: var(--ss-shadow-hero);
+}
+
+.ps .ps-hero .ss-window__body {
+  background: var(--ss-surface);
+}
+
+.ps .ps-body {
+  display: grid;
+  align-content: start;
+  padding: 20px 24px;
+}
+
+/* A tool's mark from /images/tools, in its own colour */
+.ps .ps-mark {
+  display: block;
+  flex: none;
+  background-color: var(--mark);
+  mask: var(--src) center / contain no-repeat;
+}
+
+.ps .ps-tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--ss-surface);
+  box-shadow:
+    inset 0 0 0 1px var(--ss-line),
+    0 1px 2px rgb(0 0 0 / 0.04);
+}
+
+/* Filler that runs into the crop: rows of bars, nothing to read */
+.ps .ps-filler {
+  display: grid;
+}
+
+.ps .ps-filler > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  border-top: 1px solid var(--ss-line);
+}
+
+/* Things that arrive: rise and fade, mounted throughout so nothing moves */
+.ps .ps-in {
+  opacity: 0;
+  transform: translateY(6px);
+  will-change: transform;
+  transition:
+    opacity 0.5s ease,
+    transform 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.ps .ps-in[data-in] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Leaving before a reset is quick and needs no travel */
+.ps [data-out] .ps-in,
+.ps .ps-in[data-out] {
+  opacity: 0;
+  transform: none;
+  transition: opacity 0.25s ease;
+}
+
+/* Where the cursor waits between clicks */
+.ps .ps-rest {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+}
+
+/* The frame flows at full width; a host with a fixed box pins it instead
+   (see scene-frame.tsx). Before the scene mounts it holds the scene's
+   proportion, so nothing below it moves when it arrives. */
+.ps-frame {
+  width: 100%;
+}
+
+.ps-frame:empty {
+  aspect-ratio: var(--ratio);
+}
+
+/* Pinned: the bottom centre of a size container, as large as it allows */
+
+.proc-frame .ps-frame,
+.proc-list-fig .ps-frame {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  width: min(100cqw, 100cqh * var(--ratio));
+  margin-inline: auto;
+}
+
+/* The narrow design (Stage's compact layout): a tighter gutter and body */
+.ps .ss-stage[data-layout='compact'] {
+  --gutter: 20px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps-body {
+  padding: 16px;
+}
