@@ -1,6 +1,6 @@
 # Stageshow film plans: all 10 case studies
 
-A plan, not yet built; every decision in it is settled (see the end). It replaces each case study's hand-drawn Storify film
+**On hold after the pilot (2026-11-10):** film 1 is built but switched off, and the hand-drawn films stay on all ten case studies for now (see Status, at the end). The plan below is otherwise unchanged. It replaces each case study's hand-drawn Storify film
 (`public/films/<slug>.mp4`, about 3½ minutes, a robot narrator touring every
 lane) with a **fused film** made in Stageshow: the short product-style clip and
 the build walkthrough in one piece, in the site's own look.
@@ -223,4 +223,22 @@ something, not by being shown seventeen boxes in a row.
 4. ~~**Length?**~~ **60 to 90 seconds** (Ramon, 2026-11-10), against 3½
    minutes now.
 
-All four are settled, so the plan is ready to build from step 1.
+## Status (2026-11-10, after the pilot)
+
+- **Film 1 is built** (`src/components/landing/film/`, the AI Appointment
+  Setter): about 86 seconds, opening at the front desk with Dennice and Leo
+  from the hand-drawn films, redrawn flat in the site's colours
+  (`cast.tsx`). It passed the gate at 1040 and 360 px, reduced motion, and
+  the real dialog.
+- **The hand-drawn films stay on all ten for now** (Ramon, 2026-11-10). This
+  overrides decision 1 until Ramon says otherwise: steps 4 and 5 are paused,
+  so nothing in `public/films/` is deleted or replaced, `videoUrl` and
+  `videoPoster` stay, and `docs/storify-films/` stays.
+- **The dialog plays the MP4 again**, film 1 included. The live film is
+  switched off in `live-films.ts` (`SHOWN` is empty); adding a slug there
+  switches that dialog back to its live film, with nothing else to change.
+- **Films 2 to 10 are on hold.** When they resume (Ramon, 2026-11-10):
+  - They run as **three parallel sessions**, one per batch in step 3, each
+    on its own branch.
+  - **Each opens with the cast**, as film 1 does: a short Before with
+    Dennice and Leo, cast as in that case's hand-drawn film, then the build.

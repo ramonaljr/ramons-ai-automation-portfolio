@@ -1,10 +1,17 @@
 /**
- * The case studies whose film plays live in the dialog (a Stageshow scene)
- * instead of as an MP4. Kept apart from the films themselves so the dialog
- * can ask without loading them; live-film.tsx maps each to its scene.
+ * The case studies whose film is built as a live Stageshow scene. Kept apart
+ * from the films themselves so the dialog can ask without loading them;
+ * live-film.tsx maps each to its scene.
  */
 export const LIVE_FILMS = ['ai-appointment-setter'] as const
 
 export type LiveFilmSlug = (typeof LIVE_FILMS)[number]
 
-export const hasLiveFilm = (slug: string): slug is LiveFilmSlug => (LIVE_FILMS as readonly string[]).includes(slug)
+/**
+ * The live films the dialog plays in place of the MP4. Empty for now: the
+ * hand-drawn films stay on all ten case studies (Ramon, 2026-11-10). Add a
+ * slug here to switch its dialog over.
+ */
+const SHOWN: readonly LiveFilmSlug[] = []
+
+export const hasLiveFilm = (slug: string): slug is LiveFilmSlug => (SHOWN as readonly string[]).includes(slug)
