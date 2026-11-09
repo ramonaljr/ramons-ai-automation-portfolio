@@ -3231,13 +3231,10 @@ a.work-aux-link:hover {
    for reduced motion. Exactly one of the two is displayed at a time.
 
    The scene is light, like the page around it: the copy on the left and, on
-   the right, a board drawn in the process-map language of the Selected Work
-   cards (dotted canvas, pastel numbered stages, white tool tiles, indigo
-   arrows). The board is sized in em off its own width (1em = 1/64 of it), so
-   everything on it scales together. */
+   the right, each act's scene (story-scenes.tsx) on the dotted sheet the
+   Process scenes use, scaled as one piece to fit. */
 .story-section {
   --story-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --story-edge: #6366f1;
 
   position: relative;
 }
@@ -3433,27 +3430,6 @@ a.work-aux-link:hover {
   font-weight: 300;
   line-height: 1.02;
   letter-spacing: -0.03em;
-}
-
-.story-panel-list {
-  display: grid;
-  gap: 0.35rem;
-  margin-top: 1.25rem;
-  color: var(--ink-2);
-  font-size: 0.875rem;
-}
-
-.story-panel-list strong {
-  color: var(--accent);
-  font-weight: 500;
-}
-
-.story-panel-tools {
-  margin-top: 1.25rem;
-  color: var(--accent);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
 }
 
 .story-panel-stat {

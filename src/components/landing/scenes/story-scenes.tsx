@@ -4,8 +4,14 @@ import './story.css'
 
 import type { ComponentType, CSSProperties } from 'react'
 
-import { Badge, Check, Icon, Roll, Window } from '@/components/stageshow/kit'
-import { SceneStage, type SceneDef, type SceneProps, type SceneSize } from '@/components/landing/scenes/scene'
+import { Badge, Check, Icon, Roll, Window, type Act } from '@/components/stageshow/kit'
+import {
+  SceneStage,
+  type SceneDef,
+  type SceneProps,
+  type SceneSize,
+  type Steps
+} from '@/components/landing/scenes/scene'
 import { ToolMark, type Tool } from '@/components/landing/scenes/tool-mark'
 
 /**
@@ -13,6 +19,10 @@ import { ToolMark, type Tool } from '@/components/landing/scenes/tool-mark'
  * the work still arriving, the workflow taking it through, and the same
  * inbox clear at five. The names, amounts and times are illustration, the
  * same ones the act copy uses; none of it is a client record.
+ *
+ * Each scene is a list of steps (`steps`). On desktop the scroll walks them
+ * (scene.tsx, scroll mode), so a scene is never still unfolding when its act
+ * leaves; on phones each plays them through once as its panel arrives.
  */
 
 /** The story board's 64 : 50, with the shared narrow design for phones. */
@@ -27,7 +37,7 @@ type Work = {
   done: { meta: string; label: string }
 }
 
-/** Newest first, the way an inbox lists it. */
+/** Newest first, the way an inbox lists it. The same five in all three scenes, and all five fit. */
 const WORK: Work[] = [
   {
     mark: 'gmail',
@@ -58,12 +68,6 @@ const WORK: Work[] = [
     title: 'INV-2042 · $1,265.40',
     wait: { meta: 'PO not matched yet', tone: 'warning', label: 'To key in' },
     done: { meta: 'Checked by a person first', label: 'Posted' }
-  },
-  {
-    mark: 'user',
-    title: 'Demo request, 14 seats',
-    wait: { meta: 'Waiting since lunch', tone: 'danger', label: 'No reply' },
-    done: { meta: 'Demo set for Thursday', label: 'Called back' }
   }
 ]
 
@@ -89,15 +93,17 @@ const Clock = ({ time }: { time: string }) => (
   </span>
 )
 
-/** The three backlog figures; `part` of six is how much of each is showing. */
-const Totals = ({ part, clear }: { part: number; clear?: boolean }) => (
-  <div className='pst-totals' data-clear={clear || undefined}>
+/** The three backlog figures; `part` of five is how much of each is showing. */
+const Totals = ({ part, gone }: { part: number; gone?: boolean }) => (
+  <div className='pst-totals' data-gone={gone || undefined}>
     {TOTALS.map(total => (
       <span key={total.label} className='pst-total'>
-        {/* A crossfade between real figures: a digit roll across a big step
-            showed every number in between (2, 3, 4 … 47) */}
+        {/* Rolls straight from one real figure to the next: the old number
+            leaves as the new one arrives, so the box is never empty (a
+            crossfade blanked it between steps; a count showed every number
+            in between) */}
         <span className='pst-total__value'>
-          <Roll variant='fade'>{String(share(total.value, part))}</Roll>
+          <Roll>{String(share(total.value, part))}</Roll>
         </span>
         <span className='ps-faint pst-total__label'>{total.label}</span>
         <span className='ps-faint pst-total__short'>{total.short}</span>
@@ -112,24 +118,35 @@ type ProblemState = { shown: number; out: boolean }
 
 const PROBLEM_START: ProblemState = { shown: 0, out: false }
 
-const problem: SceneDef<ProblemState> = {
-  size: STORY,
-  start: PROBLEM_START,
-  poster: { shown: WORK.length, out: false },
-  hold: 2600,
+/** The oldest first, each new one landing on top and pushing the rest down. */
+const PROBLEM_STEPS: Steps<ProblemState> = {
+  count: WORK.length,
+  at: n => ({ shown: n, out: false }),
+  take: async (a, n, quick) => {
+    a.put({ shown: n })
+    await a.wait(quick ? 150 : 380)
+  }
+}
 
-  // The oldest first, each new one landing on top and pushing the rest down
-  play: async a => {
+/** Every step from the start, as one take: the phone panels' play. */
+const playSteps =
+  <S extends object>(steps: Steps<S>) =>
+  async (a: Act<S>) => {
     a.mark('open')
     await a.wait(300)
 
-    for (let i = 1; i <= WORK.length; i++) {
-      a.put({ shown: i })
-      await a.wait(460)
-    }
+    for (let n = 1; n <= steps.count; n++) await steps.take(a, n, false)
 
     a.mark('done')
-  },
+  }
+
+const problem: SceneDef<ProblemState> = {
+  size: STORY,
+  start: PROBLEM_START,
+  poster: PROBLEM_STEPS.at(PROBLEM_STEPS.count),
+  hold: 2600,
+  steps: PROBLEM_STEPS,
+  play: playSteps(PROBLEM_STEPS),
 
   exit: async a => {
     a.mark('exit')
@@ -204,36 +221,38 @@ type SystemState = { item: number; node: number; done: number; out: boolean }
 
 const SYSTEM_START: SystemState = { item: -1, node: -1, done: 0, out: false }
 
+/** One item a step: it lights each workflow step it passes through, then lands. */
+const SYSTEM_STEPS: Steps<SystemState> = {
+  count: RUN.length,
+  at: n => ({ item: -1, node: -1, done: n, out: false }),
+  take: async (a, n, quick) => {
+    const i = n - 1
+
+    a.put({ item: i })
+
+    for (const node of RUN[i]!.stops) {
+      a.put({ node })
+      await a.wait(quick ? 70 : 170)
+    }
+
+    // The unusual case holds a beat longer, then goes to a person
+    if (i === EXCEPTION) {
+      a.mark('exception')
+      await a.wait(quick ? 160 : 350)
+    }
+
+    a.put({ item: -1, node: -1, done: n })
+    await a.wait(quick ? 60 : 220)
+  }
+}
+
 const system: SceneDef<SystemState> = {
   size: STORY,
   start: SYSTEM_START,
-  poster: { item: -1, node: -1, done: RUN.length, out: false },
+  poster: SYSTEM_STEPS.at(SYSTEM_STEPS.count),
   hold: 2600,
-
-  play: async a => {
-    a.mark('open')
-    await a.wait(300)
-
-    for (let i = 0; i < RUN.length; i++) {
-      a.put({ item: i })
-
-      for (const node of RUN[i]!.stops) {
-        a.put({ node })
-        await a.wait(200)
-      }
-
-      // The unusual case holds a beat longer, then goes to a person
-      if (i === EXCEPTION) {
-        a.mark('exception')
-        await a.wait(350)
-      }
-
-      a.put({ item: -1, node: -1, done: i + 1 })
-      await a.wait(260)
-    }
-
-    a.mark('done')
-  },
+  steps: SYSTEM_STEPS,
+  play: playSteps(SYSTEM_STEPS),
 
   exit: async a => {
     a.mark('exit')
@@ -302,26 +321,29 @@ type OutcomeState = { cleared: number; clear: boolean; out: boolean }
 
 const OUTCOME_START: OutcomeState = { cleared: 0, clear: false, out: false }
 
+/** One item cleared a step, then the last step swaps the zeroed totals for "All caught up". */
+const OUTCOME_STEPS: Steps<OutcomeState> = {
+  count: WORK.length + 1,
+  at: n => ({ cleared: Math.min(n, WORK.length), clear: n > WORK.length, out: false }),
+  take: async (a, n, quick) => {
+    if (n > WORK.length) {
+      a.mark('clear')
+      a.put({ clear: true })
+    } else {
+      a.put({ cleared: n })
+    }
+
+    await a.wait(quick ? 110 : 300)
+  }
+}
+
 const outcome: SceneDef<OutcomeState> = {
   size: STORY,
   start: OUTCOME_START,
-  poster: { cleared: WORK.length, clear: true, out: false },
+  poster: OUTCOME_STEPS.at(OUTCOME_STEPS.count),
   hold: 2600,
-
-  play: async a => {
-    a.mark('open')
-    await a.wait(300)
-
-    for (let i = 1; i <= WORK.length; i++) {
-      a.put({ cleared: i })
-      await a.wait(330)
-    }
-
-    await a.wait(250)
-    a.mark('clear')
-    a.put({ clear: true })
-    a.mark('done')
-  },
+  steps: OUTCOME_STEPS,
+  play: playSteps(OUTCOME_STEPS),
 
   exit: async a => {
     a.mark('exit')
@@ -339,15 +361,19 @@ const outcome: SceneDef<OutcomeState> = {
           <span className='ps-strong'>Today</span>
           <Clock time='5:00 PM' />
         </div>
-        <Totals part={WORK.length - s.cleared} clear={s.clear} />
-        <div className='pst-clear ps-in' data-in={s.clear || undefined}>
-          <span className='pst-clear__check'>
-            <Icon name='check' size={14} stroke={2} />
-          </span>
-          <span className='pst-row__text'>
-            <span className='ps-strong'>All caught up</span>
-            <span className='ps-faint'>One checked by a person first</span>
-          </span>
+        {/* The banner takes the totals' place once they reach zero, so the
+            list sits where the problem's did and every row stays in view */}
+        <div className='pst-slot'>
+          <Totals part={WORK.length - s.cleared} gone={s.clear} />
+          <div className='pst-clear ps-in' data-in={s.clear || undefined}>
+            <span className='pst-clear__check'>
+              <Icon name='check' size={14} stroke={2} />
+            </span>
+            <span className='pst-row__text'>
+              <span className='ps-strong'>All caught up</span>
+              <span className='ps-faint'>One checked by a person first</span>
+            </span>
+          </div>
         </div>
         <div className='pst-list'>
           {WORK.map((work, i) => {

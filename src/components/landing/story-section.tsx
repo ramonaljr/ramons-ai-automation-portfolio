@@ -14,8 +14,10 @@ import { STORY, STORY_SCENES } from '@/components/landing/scenes/story-scenes'
  * Beside the copy, each act has a scene in the same look as the Process and
  * Services scenes (story-scenes.tsx): the inbox at 9:14 PM with the work
  * still arriving, the workflow taking it through with one case handed to a
- * person, and the same inbox clear at five. The scroll picks the act; each
- * scene plays as its act arrives and holds its last frame.
+ * person, and the same inbox clear at five. The scroll picks the act and
+ * also walks its scene, step by step: a reader who stops sees the scene
+ * stop, and nobody reaches the next act without passing the payoff of this
+ * one (a scene on its own timer was still unfolding when its act left).
  *
  * Phones and reduced motion get the same three beats as stacked panels, each
  * with its scene (a still under reduced motion): a pinned three-screen scene
@@ -52,7 +54,9 @@ const ACTS = [
 ] as const
 
 /**
- * Where each act holds full opacity, as fractions of the pinned scroll.
+ * Where each act holds full opacity, as fractions of the pinned scroll. One
+ * act is gone before the next arrives: overlapping, two headlines sat on top
+ * of each other at half strength and read as a glitch.
  *
  * Every scroll-linked range here spans 0 to 1 explicitly. Motion hands
  * opacity to the browser's native scroll timeline, and a keyframe list that
@@ -61,13 +65,26 @@ const ACTS = [
  * sat on top of the outcome.
  */
 const ACT_WINDOWS: { input: number[]; output: number[] }[] = [
-  { input: [0, 0.27, 0.34, 1], output: [1, 1, 0, 0] },
-  { input: [0, 0.3, 0.38, 0.6, 0.67, 1], output: [0, 0, 1, 1, 0, 0] },
-  { input: [0, 0.63, 0.71, 1], output: [0, 0, 1, 1] }
+  { input: [0, 0.26, 0.31, 1], output: [1, 1, 0, 0] },
+  { input: [0, 0.31, 0.37, 0.6, 0.65, 1], output: [0, 0, 1, 1, 0, 0] },
+  { input: [0, 0.65, 0.71, 1], output: [0, 0, 1, 1] }
 ]
 
-/** Where the outcome's system count runs, inside act three's fade-in (0.63 to 0.71). */
-const OUTCOME_COUNT = [0.6, 0.68] as const
+/**
+ * The stretch of the story each act's scene walks, start to payoff, in the
+ * same units. Each ends well before its act starts to leave, so the payoff
+ * holds a while. Below 0 is the approach: the problem's work starts landing
+ * while the section is still rising into view (-1 is its top at the bottom
+ * of the screen).
+ */
+const SCENE_STEPS: [number, number][] = [
+  [-0.8, 0.12],
+  [0.32, 0.49],
+  [0.68, 0.86]
+]
+
+/** Where the outcome's system count runs, inside act three's fade-in (0.65 to 0.71). */
+const OUTCOME_COUNT = [0.64, 0.7] as const
 
 /** An act's opacity at `p`, read off its window the way useTransform reads it. */
 const opacityAt = ({ input, output }: (typeof ACT_WINDOWS)[number], p: number) => {
@@ -82,8 +99,12 @@ const opacityAt = ({ input, output }: (typeof ACT_WINDOWS)[number], p: number) =
   return output[i]! + ((output[i + 1] ?? output[i]!) - output[i]!) * t
 }
 
-/** Each act's scene is mounted only while its act shows at all, so it plays as the act arrives. */
-const showing = (p: number) => ACT_WINDOWS.map(window => opacityAt(window, p) > 0.001)
+/** How far ahead (either way) a scene is mounted before its act shows, so it is ready on arrival. */
+const MOUNT_AHEAD = 0.05
+
+/** Each act's scene is mounted only while its act shows at all, or is about to. */
+const showing = (p: number) =>
+  ACT_WINDOWS.map(window => [p - MOUNT_AHEAD, p, p + MOUNT_AHEAD].some(at => opacityAt(window, at) > 0.001))
 
 const sameShowing = (a: boolean[], b: boolean[]) => a.every((v, i) => v === b[i])
 
@@ -102,11 +123,17 @@ export function StorySection({ systemCount }: { systemCount: number }) {
 function PinnedStory({ systemCount }: { systemCount: number }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] })
+  const { scrollYProgress: arrival } = useScroll({ target: trackRef, offset: ['start end', 'start start'] })
+
+  // One reading for the whole story: -1 to 0 while the section rises into
+  // view, then 0 to 1 through the pinned acts. Only one half moves at a time.
+  const position = useTransform([scrollYProgress, arrival], ([pinned, rising]: number[]) => pinned! + rising! - 1)
 
   // Slow on purpose. The track is long, so each act takes real scrolling, and
   // the copy follows the scroll through a soft spring rather than locking to
   // it: a hard flick of the wheel still plays out as a slow camera move.
-  const progress = useSpring(scrollYProgress, { stiffness: 38, damping: 18, mass: 0.9, restDelta: 0.0005 })
+  const story = useSpring(position, { stiffness: 38, damping: 18, mass: 0.9, restDelta: 0.0005 })
+  const progress = useTransform(story, latest => Math.max(0, latest))
 
   const railFill = useTransform(progress, [0, 1], [0, 1])
 
@@ -121,7 +148,7 @@ function PinnedStory({ systemCount }: { systemCount: number }) {
           {/* The scenes and rail are the animation, not the story: the copy
               carries it for screen readers. */}
           <div className='story-board-wrap' aria-hidden='true'>
-            <ActScenes progress={progress} />
+            <ActScenes progress={progress} story={story} />
           </div>
 
           <div className='story-rail' aria-hidden='true'>
@@ -141,7 +168,7 @@ function PinnedStory({ systemCount }: { systemCount: number }) {
 }
 
 /** The three scenes, stacked, each fading with its act's copy. */
-function ActScenes({ progress }: { progress: MotionValue<number> }) {
+function ActScenes({ progress, story }: { progress: MotionValue<number>; story: MotionValue<number> }) {
   const [shown, setShown] = useState(() => showing(progress.get()))
 
   useMotionValueEvent(progress, 'change', latest => {
@@ -153,10 +180,12 @@ function ActScenes({ progress }: { progress: MotionValue<number> }) {
   return (
     <div className='story-scenes'>
       {STORY_SCENES.map((Scene, index) => (
-        <ActScene key={index} index={index} progress={progress}>
-          <SceneFrame ratio={RATIO} on={shown[index]}>
-            <Scene mode='once' />
-          </SceneFrame>
+        <ActScene key={index} index={index} progress={progress} story={story}>
+          {steps => (
+            <SceneFrame ratio={RATIO} on={shown[index]}>
+              <Scene mode='scroll' progress={steps} />
+            </SceneFrame>
+          )}
         </ActScene>
       ))}
     </div>
@@ -166,19 +195,24 @@ function ActScenes({ progress }: { progress: MotionValue<number> }) {
 function ActScene({
   index,
   progress,
+  story,
   children
 }: {
   index: number
   progress: MotionValue<number>
-  children: ReactNode
+  story: MotionValue<number>
+  children: (steps: MotionValue<number>) => ReactNode
 }) {
   const timing = ACT_WINDOWS[index]!
   const opacity = useTransform(progress, timing.input, timing.output)
   const y = useTransform(opacity, [0, 1], ['1.5rem', '0rem'])
 
+  // How far through its steps the scene should be, 0 to 1 (clamped)
+  const steps = useTransform(story, SCENE_STEPS[index]!, [0, 1])
+
   return (
     <motion.div className='story-scene' style={{ opacity, y }}>
-      {children}
+      {children(steps)}
     </motion.div>
   )
 }
@@ -269,7 +303,7 @@ function StackedStory({ systemCount }: { systemCount: number }) {
           <PanelScene index={index} />
 
           {index === 0 && (
-            <ul className='story-panel-list sr-only'>
+            <ul className='sr-only'>
               {BACKLOG.map(item => (
                 <li key={item.label}>
                   <strong>{item.value}</strong> {item.label}
@@ -278,7 +312,7 @@ function StackedStory({ systemCount }: { systemCount: number }) {
             </ul>
           )}
 
-          {index === 1 && <p className='story-panel-tools sr-only'>{TOOL_CHAIN.join(' → ')}</p>}
+          {index === 1 && <p className='sr-only'>{TOOL_CHAIN.join(' → ')}</p>}
 
           {index === 2 && (
             <>

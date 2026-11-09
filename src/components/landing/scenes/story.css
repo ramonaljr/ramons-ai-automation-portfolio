@@ -34,6 +34,29 @@
   margin-bottom: 14px;
   border-radius: 8px;
   box-shadow: inset 0 0 0 1px var(--ss-line);
+  transition: opacity 0.3s ease;
+}
+
+/* The outcome's totals and its banner share one place: at zero the totals
+   leave and "All caught up" arrives where they stood */
+.ps .pst-slot {
+  display: grid;
+  margin-bottom: 14px;
+}
+
+.ps .pst-slot > * {
+  grid-area: 1 / 1;
+  margin-bottom: 0;
+}
+
+.ps .pst-totals[data-gone] {
+  opacity: 0;
+  transition-duration: 0.2s;
+}
+
+/* The banner waits for the totals to clear, so the two never show at once */
+.ps .pst-slot .pst-clear[data-in] {
+  transition-delay: 0.18s;
 }
 
 .ps .pst-total {
@@ -68,11 +91,6 @@
   font-weight: 500;
   line-height: 26px;
   color: var(--ss-accent-text);
-  transition: color 0.4s ease;
-}
-
-.ps .pst-totals[data-clear] .pst-total__value {
-  color: var(--ss-success-text);
 }
 
 /* Rows: a tile, two lines and a status */
@@ -135,14 +153,12 @@
   color: var(--ss-text);
 }
 
-/* The outcome's banner, its room kept so nothing below moves */
+/* The outcome's banner, as tall as the totals it replaces */
 .ps .pst-clear {
   display: grid;
   grid-template-columns: 32px minmax(0, 1fr);
   column-gap: 12px;
   align-items: center;
-  height: 52px;
-  margin-bottom: 10px;
   padding: 0 12px;
   border-radius: 8px;
   background: var(--ss-success-soft);
@@ -243,8 +259,13 @@
   margin-bottom: 12px;
 }
 
-.ps .ss-stage[data-layout='compact'] .pst-totals {
+.ps .ss-stage[data-layout='compact'] .pst-totals,
+.ps .ss-stage[data-layout='compact'] .pst-slot {
   margin-bottom: 12px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-slot > * {
+  margin-bottom: 0;
 }
 
 .ps .ss-stage[data-layout='compact'] .pst-total {
@@ -289,7 +310,6 @@
 }
 
 .ps .ss-stage[data-layout='compact'] .pst-clear {
-  height: 48px;
   padding: 0 10px;
   column-gap: 10px;
 }
