@@ -1,0 +1,299 @@
+/* The Story section's three scenes (story-scenes.tsx), in the shared look
+   (look.css). Everything is scoped under .ps. */
+
+.ps .pst {
+  --row: 52px;
+}
+
+.ps .pst-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 24px;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
+
+.ps .pst-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--ss-line);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ss-text);
+}
+
+/* The backlog: three figures in a ruled row */
+.ps .pst-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 14px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--ss-line);
+}
+
+.ps .pst-total {
+  display: grid;
+  gap: 2px;
+  padding: 10px 14px;
+  line-height: 14px;
+}
+
+.ps .pst-total + .pst-total {
+  border-left: 1px solid var(--ss-line);
+}
+
+.ps .pst-total .ps-faint {
+  font-size: 11px;
+}
+
+/* The narrow design's labels are one line each */
+.ps .pst-total__short,
+.ps .ss-stage[data-layout='compact'] .pst-total__label {
+  display: none;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-total__short {
+  display: block;
+}
+
+.ps .pst-total__value {
+  display: block;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  line-height: 26px;
+  color: var(--ss-accent-text);
+  transition: color 0.4s ease;
+}
+
+.ps .pst-totals[data-clear] .pst-total__value {
+  color: var(--ss-success-text);
+}
+
+/* Rows: a tile, two lines and a status */
+.ps .pst-list {
+  position: relative;
+}
+
+.ps .pst-row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  column-gap: 12px;
+  align-items: center;
+  height: var(--row);
+  border-top: 1px solid var(--ss-line);
+}
+
+/* The problem's rows stack by arrival: each lands on top and the rest move down */
+.ps .pst-list[style] .pst-row {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  opacity: 0;
+  transform: translateY(calc(var(--at) * var(--row)));
+  transition:
+    transform 0.55s cubic-bezier(0.25, 0.8, 0.25, 1),
+    opacity 0.4s ease;
+}
+
+.ps .pst-list[style] .pst-row[data-in] {
+  opacity: 1;
+}
+
+.ps .pst[data-out] .pst-list .pst-row[data-in] {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.ps .pst-row__text {
+  display: grid;
+  min-width: 0;
+  line-height: 16px;
+}
+
+.ps .pst-row__text > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ps .pst-row__text > :last-child {
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.ps .pst-status {
+  justify-self: end;
+}
+
+.ps .pst-row .ss-icon {
+  color: var(--ss-text);
+}
+
+/* The outcome's banner, its room kept so nothing below moves */
+.ps .pst-clear {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: center;
+  height: 52px;
+  margin-bottom: 10px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: var(--ss-success-soft);
+}
+
+.ps .pst-clear__check {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ss-success);
+  color: #fff;
+}
+
+/* The workflow: four steps on a line, the one working lit */
+.ps .pst-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 14px;
+}
+
+.ps .pst-node {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.ps .pst-node .ps-tile {
+  position: relative;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  transition: box-shadow 0.2s ease;
+}
+
+.ps .pst-node[data-on] .ps-tile {
+  box-shadow:
+    inset 0 0 0 1.5px var(--ss-accent),
+    0 0 0 4px var(--ss-accent-soft);
+}
+
+/* The line in from the previous step, centre to centre */
+.ps .pst-node__line {
+  position: absolute;
+  top: 20px;
+  right: 50%;
+  width: 100%;
+  height: 1px;
+  background: var(--ss-line);
+}
+
+.ps .pst-node__line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ss-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+
+.ps .pst-node__line[data-on]::after {
+  transform: scaleX(1);
+}
+
+/* Tonight's run, item by item */
+.ps .pst-run {
+  display: grid;
+}
+
+.ps .pst-run__row {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  column-gap: 12px;
+  align-items: center;
+  height: 48px;
+  border-top: 1px solid var(--ss-line);
+}
+
+.ps .pst-run__to {
+  display: grid;
+  justify-items: end;
+  min-width: 14px;
+}
+
+/* The narrow design */
+.ps .ss-stage[data-layout='compact'] .pst {
+  --row: 48px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-head {
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-totals {
+  margin-bottom: 12px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-total {
+  padding: 8px 10px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-total .ps-faint {
+  font-size: 10.5px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-total__value {
+  font-size: 19px;
+  line-height: 22px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-row {
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  column-gap: 10px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-row .ps-tile {
+  width: 28px;
+  height: 28px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-flow {
+  margin-bottom: 12px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-node .ps-tile {
+  width: 34px;
+  height: 34px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-node__line {
+  top: 17px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-run__row {
+  column-gap: 10px;
+  height: 46px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-clear {
+  height: 48px;
+  padding: 0 10px;
+  column-gap: 10px;
+}
+
+.ps .ss-stage[data-layout='compact'] .pst-flow .ps-faint {
+  font-size: 10.5px;
+}

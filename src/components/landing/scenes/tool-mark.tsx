@@ -4,6 +4,7 @@ export const TOOLS = {
   gmail: { slug: 'gmail', color: '#EA4335', name: 'Gmail' },
   n8n: { slug: 'n8n', color: '#EA4B71', name: 'n8n' },
   openai: { slug: 'openai', color: '#141821', name: 'OpenAI' },
+  claude: { slug: 'anthropic', color: '#191919', name: 'Claude' },
   airtable: { slug: 'airtable', color: '#18BFFF', name: 'Airtable' },
   googlesheets: { slug: 'googlesheets', color: '#34A853', name: 'Google Sheets' },
   hubspot: { slug: 'hubspot', color: '#FF7A59', name: 'HubSpot' },

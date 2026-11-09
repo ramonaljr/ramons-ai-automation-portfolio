@@ -11,12 +11,14 @@ import { Stage, type Act, type Layout, type StageProps } from '@/components/stag
  * - turn: starts on its payoff, leaves, plays once to the payoff again and
  *   holds there, then marks the stage `data-mark="turn-done"` so a host can
  *   pass the turn on (Engagement's columns, one at a time).
+ * - once: plays from the start to its payoff and holds there (the Story
+ *   acts, each as it arrives).
  * - still: its payoff, with no script.
  *
  * A scene's payoff state is its poster, so a turn starts and ends on the
  * same frame a still shows, and a column can swap between them unseen.
  */
-export type SceneMode = 'loop' | 'turn' | 'still'
+export type SceneMode = 'loop' | 'turn' | 'once' | 'still'
 
 export type SceneProps = { mode?: SceneMode }
 
@@ -58,6 +60,15 @@ export const CARD: SceneSize = { width: 600, height: 375, compact: { below: 380,
 const scriptFor = <S extends object>(def: SceneDef<S>, mode: SceneMode) => {
   if (mode === 'still') return undefined
 
+  if (mode === 'once') {
+    return async (a: Act<S>) => {
+      // Past the stage's first measuring frames, as in a turn
+      await a.wait(400)
+      await def.play(a)
+      a.mark('turn-done')
+    }
+  }
+
   if (mode === 'turn') {
     return async (a: Act<S>) => {
       // The stage holds transitions off while it first measures; leaving
@@ -87,10 +98,10 @@ export function SceneStage<S extends object>({ def, mode = 'loop' }: SceneProps 
       height={def.size.height}
       compact={def.size.compact}
       greys='cool'
-      initial={mode === 'loop' ? def.start : def.poster}
+      initial={mode === 'loop' || mode === 'once' ? def.start : def.poster}
       poster={def.poster}
       script={script}
-      play={mode === 'turn' ? 'once' : 'loop'}
+      play={mode === 'loop' ? 'loop' : 'once'}
       cursor={def.cursor}
     >
       {(s, _rect, layout) => def.render(s, layout)}
