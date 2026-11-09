@@ -13,13 +13,17 @@ import {
   type Line,
   type Missed
 } from '@/components/landing/film/app-cards'
+import { AgentTag, DeskPhone, Robot, Say, type Mood } from '@/components/landing/film/cast'
 import { FilmStage, type Cue, type FilmDef, type FilmPart } from '@/components/landing/film/film-stage'
 import { LaneMap } from '@/components/landing/film/lane-map'
 import { laneNamed, lanesOf, stepNamed } from '@/components/landing/film/lanes'
 
 /**
- * Film 1, the AI Appointment Setter (docs/stageshow-film-plans.md). One
- * after-hours call drives the tour: the caller asks for tomorrow at 2, 2:00
+ * Film 1, the AI Appointment Setter (docs/stageshow-film-plans.md). It opens
+ * at the front desk after hours, with the hand-drawn films' cast redrawn in
+ * the site's colours: Dennice, powered down for the night, and Leo, calling.
+ * First his call rings out; then the voice agent answers it. That call drives
+ * the tour: the caller asks for tomorrow at 2, 2:00
  * is taken, three open half hours are offered, the caller takes 2:30, it is
  * checked again right before booking, booked in Google Calendar and logged in
  * Airtable, and the call's result is saved. The camera moves in on each lane
@@ -63,6 +67,11 @@ const ASKED = 14
 const FREE = [14.5, 15, 15.5]
 const PICKED = 14.5
 
+const HELLO = 'Hello? Is anyone there?'
+
+/** A line of the call, as a still's text shows it. */
+const quote = (who: string, text: string) => `${who}: “${text}”`
+
 const IMPACT = 'Callers book, move or cancel appointments at any hour, without waiting for a person.'
 
 const words = (i: number) => LINES[i]!.text.split(' ').length
@@ -89,6 +98,16 @@ type S = {
   result: boolean
   lane: number
   step: number
+
+  /** The front desk at night: the phone, Leo and what each of them says. */
+  ring: boolean
+  leo: boolean
+  mood: Mood
+  hello: boolean
+  agent: boolean
+  sayA: boolean
+  sayC: boolean
+  list: boolean
 }
 
 const BLANK: S = {
@@ -105,14 +124,33 @@ const BLANK: S = {
   booked: false,
   result: false,
   lane: 0,
-  step: -1
+  step: -1,
+  ring: false,
+  leo: true,
+  mood: 'normal',
+  hello: false,
+  agent: false,
+  sayA: false,
+  sayC: false,
+  list: false
 }
 
 // Each part starts where the one before it ends, so a chapter jump and a
 // straight run reach the same frame.
-const P2: S = { ...BLANK, view: 'apps', missed: MISSED.length }
+const P2: S = { ...BLANK, leo: false, list: true, missed: MISSED.length }
 
-const P3: S = { ...P2, call: 'live', secs: 6, lines: 2, w: [words(0), 0, 0, 0, 0] }
+const P3: S = {
+  ...P2,
+  leo: true,
+  list: false,
+  agent: true,
+  sayA: true,
+  sayC: true,
+  call: 'live',
+  secs: 6,
+  lines: 2,
+  w: [words(0), 0, 0, 0, 0]
+}
 
 const P4: S = {
   ...P3,
@@ -222,38 +260,51 @@ async function step(a: Act<S>, cue: Cue, i: number, cap: string, ms = 2300) {
 const before: FilmPart<S> = {
   chip: 'Before',
   start: BLANK,
-  still: { ...BLANK, missed: MISSED.length },
-  words: [CAP.dark, CAP.gone],
-  ms: 8000,
+  still: P2,
+  words: [CAP.dark, quote('Caller', HELLO), CAP.gone],
+  ms: 10200,
   run: async (a, cue) => {
     a.put({ cap: CAP.dark })
+    await cue.wait(400)
+    a.put({ ring: true })
+    await cue.wait(2600)
+    a.put({ ring: false })
+    await cue.wait(300)
+    a.put({ hello: true })
+    await cue.wait(1900)
+    a.put({ mood: 'puzzled' })
+    await cue.wait(900)
+    a.put({ hello: false, leo: false })
     await cue.wait(500)
-    await each(cue, MISSED.length, 380, i => a.put({ missed: i + 1 }))
-    await cue.wait(2200)
-    a.put({ cap: CAP.gone })
-    await cue.wait(3700)
+    a.put({ list: true, cap: CAP.gone })
+    await cue.wait(300)
+    await each(cue, MISSED.length, 300, i => a.put({ missed: i + 1 }))
+    await cue.wait(2400)
   }
 }
 
 const arrives: FilmPart<S> = {
   chip: 'The call',
   start: P2,
-  still: { ...P3, focus: null },
-  words: [CAP.rings, CAP.asks],
-  ms: 7000,
+  still: P3,
+  words: [CAP.rings, quote('Voice agent', LINES[0]!.text), quote('Caller', LINES[1]!.text)],
+  ms: 7300,
   run: async (a, cue) => {
-    await toApps(a, cue, { cap: CAP.rings }, 'call')
-    await cue.wait(1200)
+    a.put({ list: false, cap: CAP.rings })
+    await cue.wait(500)
+    a.put({ leo: true, mood: 'normal', ring: true })
+    await cue.wait(1700)
     a.mark('answer')
-    a.put({ call: 'live', lines: 1 })
+    a.put({ ring: false, agent: true, call: 'live', lines: 1 })
 
     const stop = ticker(a, cue)
 
-    await cue.wait(250)
+    await cue.wait(300)
+    a.put({ sayA: true })
     await stream(a, cue, 0)
-    await cue.wait(900)
-    a.put({ lines: 2, cap: CAP.asks })
-    await cue.wait(2600)
+    await cue.wait(1500)
+    a.put({ sayC: true, lines: 2, cap: CAP.asks })
+    await cue.wait(2800)
     stop()
     a.put({ secs: 6 })
   }
@@ -275,17 +326,17 @@ const build: FilmPart<S> = {
     CAP.bookLog,
     CAP.resultsSave
   ],
-  ms: 56000,
+  ms: 51900,
   run: async (a, cue) => {
     const stop = ticker(a, cue)
 
     // Lane 1, Get slots: is 2:00 free?
     a.mark('get-slots')
     await toLane(a, cue, GET.n, CAP.getAsk)
-    await step(a, cue, stepNamed(GET, 'GetSlots'), CAP.getAsk, 1600)
-    await step(a, cue, stepNamed(GET, 'Prepare request'), CAP.getAsk, 1300)
-    await step(a, cue, stepNamed(GET, 'Get all events'), CAP.getRead, 2200)
-    await step(a, cue, stepNamed(GET, 'Check rules, list free times'), CAP.getRules, 2900)
+    await step(a, cue, stepNamed(GET, 'GetSlots'), CAP.getAsk, 1300)
+    await step(a, cue, stepNamed(GET, 'Prepare request'), CAP.getAsk, 1000)
+    await step(a, cue, stepNamed(GET, 'Get all events'), CAP.getRead, 2000)
+    await step(a, cue, stepNamed(GET, 'Check rules, list free times'), CAP.getRules, 2600)
 
     // Back to the apps: the calendar shows what the flow found
     await toApps(a, cue, { app: 'cal', cap: CAP.getTaken })
@@ -305,12 +356,12 @@ const build: FilmPart<S> = {
     // Lane 2, Book slots: checked again before anything is written
     a.mark('book-slots')
     await toLane(a, cue, BOOK.n, CAP.bookAsk)
-    await step(a, cue, stepNamed(BOOK, 'BookSlots'), CAP.bookAsk, 2000)
-    await step(a, cue, stepNamed(BOOK, 'Details provided?'), CAP.bookDetails, 2300)
-    await step(a, cue, stepNamed(BOOK, 'Convert time to CST'), CAP.bookZone, 2100)
-    await step(a, cue, stepNamed(BOOK, 'Get events in window'), CAP.bookAgain, 2400)
+    await step(a, cue, stepNamed(BOOK, 'BookSlots'), CAP.bookAsk, 1500)
+    await step(a, cue, stepNamed(BOOK, 'Details provided?'), CAP.bookDetails, 1800)
+    await step(a, cue, stepNamed(BOOK, 'Convert time to CST'), CAP.bookZone, 1600)
+    await step(a, cue, stepNamed(BOOK, 'Get events in window'), CAP.bookAgain, 2000)
     await step(a, cue, stepNamed(BOOK, 'Check slot is free'), CAP.bookFree, 1500)
-    await step(a, cue, stepNamed(BOOK, 'Slot free to book?'), CAP.bookFree, 1600)
+    await step(a, cue, stepNamed(BOOK, 'Slot free to book?'), CAP.bookFree, 1400)
 
     a.mark('booked')
     await toApps(a, cue, { app: 'cal', cap: CAP.bookAgain })
@@ -331,9 +382,9 @@ const build: FilmPart<S> = {
     await cue.wait(900)
     a.mark('call-results')
     await toLane(a, cue, RESULTS.n, CAP.resultsIn)
-    await step(a, cue, stepNamed(RESULTS, 'call_results'), CAP.resultsIn, 1900)
-    await step(a, cue, stepNamed(RESULTS, 'All input arguments'), CAP.resultsIn, 1200)
-    await step(a, cue, stepNamed(RESULTS, 'Create or update record'), CAP.resultsSave, 2000)
+    await step(a, cue, stepNamed(RESULTS, 'call_results'), CAP.resultsIn, 1500)
+    await step(a, cue, stepNamed(RESULTS, 'All input arguments'), CAP.resultsIn, 900)
+    await step(a, cue, stepNamed(RESULTS, 'Create or update record'), CAP.resultsSave, 1800)
     await toApps(a, cue, { app: 'air', result: true, cap: CAP.saved }, 'airtable')
     await cue.wait(2600)
   }
@@ -375,6 +426,47 @@ const result: FilmPart<S> = {
 function render(s: S, layout: Layout) {
   const wide = layout === 'wide'
   const missed = <MissedCalls calls={MISSED} shown={s.missed} />
+
+  // The front desk at night: Dennice is off until morning, Leo calls in
+  const desk = (
+    <div className='fd' aria-hidden='true'>
+      <div className='fd-window' />
+      <p className='fd-clock'>9:12 PM · Closed</p>
+      <div className='fd-floor' />
+      <div className='fd-dennice'>
+        <Robot who='dennice' mood='off' />
+      </div>
+      <p className='fd-zz'>
+        <span>z</span>
+        <span>z</span>
+      </p>
+      {/* Its name is drawn by film.css, so the desk is a bare surface */}
+      <div className='fd-desk' data-label='Front desk' />
+      <div className='fd-set'>
+        <DeskPhone ringing={s.ring} />
+      </div>
+      <AgentTag on={s.agent} talking={s.sayA && !s.sayC} />
+      <div className='fd-leo' data-in={s.leo || undefined}>
+        <Robot who='leo' mood={s.mood} phone />
+      </div>
+      <Say on={s.hello} tail='right' className='fd-say--leo'>
+        {HELLO}
+      </Say>
+      <Say on={s.sayC} tail='right' className='fd-say--leo'>
+        {LINES[1]!.text}
+      </Say>
+      <Say on={s.sayA} tail='left' className='fd-say--agent'>
+        {LINES[0]!.text}
+      </Say>
+    </div>
+  )
+
+  const front = (
+    <div className='fa-before' data-list={s.list || undefined}>
+      {desk}
+      {missed}
+    </div>
+  )
 
   const call = (
     <CallCard
@@ -437,7 +529,7 @@ function render(s: S, layout: Layout) {
       <div className='fa fa--wide' data-view={s.view}>
         <div className='fa-world'>
           <Camera focus={s.focus} max={2.2} pad={20} duration={MOVE}>
-            <div className='fa-before'>{missed}</div>
+            {front}
             <div className='fa-apps'>
               <div className='fa-plate' />
               {calendar}
@@ -461,7 +553,7 @@ function render(s: S, layout: Layout) {
   return (
     <div className='fa fa--compact' data-view={s.view}>
       <div className='fa-world'>
-        <div className='fa-before'>{missed}</div>
+        {front}
         <div className='fa-apps'>
           <div className='fa-lanechip' data-on={laneNow && s.step >= 0 ? true : undefined}>
             {laneNow && (
