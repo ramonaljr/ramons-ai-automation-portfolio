@@ -52,7 +52,7 @@
   <h1>Ramon Vallejera Jr., MBA</h1>
   <p class="tagline">AI Automation Specialist | n8n, Zapier, Make, AI agents and process automation</p>
   <p class="contact">
-    Cagayan de Oro, Philippines (Remote) | ramonvallejerajr@gmail.com | +63 926 717 1181<br>
+    Cagayan de Oro, Philippines (UTC+8, Remote) | ramonvallejerajr@gmail.com | +63 926 717 1181<br>
     <a href="https://ramonvallejera.com/">ramonvallejera.com</a> |
     <a href="https://www.linkedin.com/in/ramon-vallejera-jr-mba-6976a3115/">linkedin.com/in/ramon-vallejera-jr-mba-6976a3115</a> |
     <a href="https://github.com/ramonaljr">github.com/ramonaljr</a> |
@@ -63,7 +63,7 @@
 
 <section>
   <h2>Summary</h2>
-  <p>AI automation specialist with more than ten years in finance and accounting and an MBA. Builds workflows and AI agents in n8n, Zapier and Make, connected to the business tools teams already use. Having run invoicing, reconciliation, reporting and approvals by hand, designs automations around real business rules and controls, documented and maintainable so the people who inherit them can run them.</p>
+  <p>AI automation specialist building workflows and AI agents in n8n, Zapier and Make. More than ten years in finance and accounting and an MBA, so every build follows real business rules and controls and is documented for the team that runs it.</p>
 </section>
 
 <section class="skills">
@@ -72,6 +72,39 @@
   <p><strong>AI and LLM:</strong> OpenAI, Claude, Gemini and Groq APIs; prompt engineering; AI agents; RAG (Pinecone); voice agents (VAPI)</p>
   <p><strong>Integration:</strong> REST APIs, JSON, Google Workspace, Airtable, Slack, Gmail, QuickBooks, Pipedrive, Apollo, PostgreSQL</p>
   <p><strong>Accounting and finance:</strong> financial statements, month-end close, accounts payable and receivable, account reconciliation, audit, cost and variance analysis, tax compliance, DCF valuation and forecasting; QuickBooks, SAP, Sage, Excel (advanced)</p>
+</section>
+
+<section>
+  <h2>Projects</h2>
+  <p class="note">End-to-end automations in n8n, Zapier and Make, with write-ups at ramonvallejera.com and workflows at github.com/ramonaljr.</p>
+
+  <div class="item">
+    <div class="row"><h3>Client Pipeline Emails</h3><span class="date">Nov 2026</span></div>
+    <p class="sub">Zapier, Airtable, Gmail, Google Drive, AI by Zapier</p>
+    <p>Runs when a lead changes stage in Airtable, handles each stage only once, then splits into Paths: a Drive folder and a content task when work is ready to start, a follow-up and a two-day nudge for quiet leads and open quotes, and AI-written welcome and thank-you emails. Every action is logged, and a failed step is retried before anyone is alerted.</p>
+    <p class="links"><a href="https://ramonvallejera.com/case-study/airtable-crm-lead-engagement">ramonvallejera.com/case-study/airtable-crm-lead-engagement</a> | <a href="https://github.com/ramonaljr/zapier-client-pipeline-emails">github.com/ramonaljr/zapier-client-pipeline-emails</a></p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>Order Stock Check</h3><span class="date">Nov 2026</span></div>
+    <p class="sub">Make, Google Sheets, Gmail, Slack</p>
+    <p>Checks the order sheet every 15 minutes and looks up each product in the inventory sheet. A Router confirms the order, reserves the stock and emails the customer; alerts operations in Slack when stock falls below its reorder level; or puts the order on hold and tells the customer about the delay.</p>
+    <p class="links"><a href="https://ramonvallejera.com/case-study/order-stock-check">ramonvallejera.com/case-study/order-stock-check</a> | <a href="https://github.com/ramonaljr/make-order-stock-check">github.com/ramonaljr/make-order-stock-check</a></p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>AI Invoice Processing and Approval</h3><span class="date">Sep 2026</span></div>
+    <p class="sub">Sample client build | n8n, OpenAI, Gmail, Airtable, Slack, QuickBooks</p>
+    <p>Reads invoices from Gmail, skips duplicates and has AI extract the details, then checks each against the purchase order and delivery record before Slack approval and posting to QuickBooks. Built for construction billing: progress payments, retention and lien waivers.</p>
+    <p class="links"><a href="https://ramonvallejera.com/case-study/ai-invoice-processing-approval">ramonvallejera.com/case-study/ai-invoice-processing-approval</a> | <a href="https://github.com/ramonaljr/n8n-ai-invoice-processing-approval">github.com/ramonaljr/n8n-ai-invoice-processing-approval</a></p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>AI Unpaid Invoice Reminders</h3><span class="date">Sep 2026</span></div>
+    <p class="sub">Sample client build | n8n, QuickBooks, Pipedrive, PostgreSQL, OpenAI, Gmail, Slack</p>
+    <p>Checks QuickBooks, Pipedrive and the collections database every morning and sends reminders by set rules. AI writes the emails and reads customer replies; a dispute stops all reminders until a person resolves it.</p>
+    <p class="links"><a href="https://ramonvallejera.com/case-study/ai-unpaid-invoice-reminders">ramonvallejera.com/case-study/ai-unpaid-invoice-reminders</a> | <a href="https://github.com/ramonaljr/n8n-ai-unpaid-invoice-reminders">github.com/ramonaljr/n8n-ai-unpaid-invoice-reminders</a></p>
+  </div>
 </section>
 
 <section>
@@ -130,38 +163,6 @@
   </div>
 </section>
 
-<section>
-  <h2>Projects</h2>
-  <p class="note">End-to-end automations built in n8n, with write-ups at ramonvallejera.com and workflows at github.com/ramonaljr.</p>
-
-  <div class="item">
-    <div class="row"><h3>AI Invoice Processing and Approval</h3><span class="date">Sep 2026</span></div>
-    <p class="sub">Sample client build | n8n, OpenAI, Gmail, Airtable, Slack, QuickBooks</p>
-    <p>Reads invoices from Gmail, skips duplicates and has AI extract the details, then checks each against the purchase order and delivery record before Slack approval and posting to QuickBooks. Built for construction billing: progress payments, retention and lien waivers.</p>
-    <p class="links"><a href="https://ramonvallejera.com/case-study/ai-invoice-processing-approval">ramonvallejera.com/case-study/ai-invoice-processing-approval</a></p>
-  </div>
-
-  <div class="item">
-    <div class="row"><h3>AI Unpaid Invoice Reminders</h3><span class="date">Sep 2026</span></div>
-    <p class="sub">Sample client build | n8n, QuickBooks, Pipedrive, PostgreSQL, OpenAI, Gmail, Slack</p>
-    <p>Checks QuickBooks, Pipedrive and the collections database every morning and sends reminders by set rules. AI writes the emails and reads customer replies; a dispute stops all reminders until a person resolves it.</p>
-    <p class="links"><a href="https://ramonvallejera.com/case-study/ai-unpaid-invoice-reminders">ramonvallejera.com/case-study/ai-unpaid-invoice-reminders</a></p>
-  </div>
-
-  <div class="item">
-    <div class="row"><h3>AI Appointment Setter</h3><span class="date">Aug 2026</span></div>
-    <p class="sub">n8n, VAPI, Google Calendar, Airtable</p>
-    <p>VAPI voice agent backed by n8n webhooks that checks Google Calendar availability and books, reschedules and cancels appointments in real time, logging bookings and call results to Airtable.</p>
-    <p class="links"><a href="https://ramonvallejera.com/case-study/ai-appointment-setter">ramonvallejera.com/case-study/ai-appointment-setter</a></p>
-  </div>
-
-  <div class="item">
-    <div class="row"><h3>HR Evaluation and Job Posting Assistant with AI</h3><span class="date">Aug 2026</span></div>
-    <p class="sub">n8n, Groq, OpenAI, Airtable, Gmail, Google Calendar</p>
-    <p>Takes applications by form and uses an AI agent to evaluate each CV against its job posting, tagging candidates as potential hire or rejected. Shortlisted candidates get a tailored questionnaire, a personal interview invitation via Gmail and a booked slot in Google Calendar; the interviewer gets screening questions.</p>
-    <p class="links"><a href="https://ramonvallejera.com/case-study/hr-evaluation-assistant">ramonvallejera.com/case-study/hr-evaluation-assistant</a></p>
-  </div>
-</section>
 
 <section>
   <h2>Education</h2>
