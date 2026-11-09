@@ -31,15 +31,15 @@ const FIGURES: ReactNode[] = [<AuditFigure key='audit' />, <BuildFigure key='bui
  *
  * In the drafting-sheet language of About, Services and Process (Studio
  * Okafor benchmark, 2026-11-08) but unnumbered: numbered sheets stay with
- * those three. `band` is the homepage's version, on the page's one dark band
- * where a reader decides; /services shows it on the light page.
+ * those three. The homepage and /services show it the same way, on the
+ * light page (the homepage's dark band was dropped 2026-11-09).
  */
-export function EngagementSection({ band = false }: { band?: boolean }) {
+export function EngagementSection() {
   const { ref, inView } = useInView<HTMLOListElement>(0.12)
   const contactHref = useContactHref()
 
   return (
-    <section id='engagement' className={`${SECTION_ANCHOR} eng ${band ? 'pricing-band' : ''}`}>
+    <section id='engagement' className={`${SECTION_ANCHOR} eng`}>
       <div className={CONTAINER}>
         <SectionIntro
           tag='WORKING TOGETHER'

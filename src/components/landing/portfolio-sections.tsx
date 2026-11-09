@@ -63,9 +63,8 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
               <ServicesSection sheet />
               <HowItWorksSection sheet />
 
-              {/* The full pricing path, on the page's one dark band. /services
-              shows the same section on the light page. */}
-              <EngagementSection band />
+              {/* The full pricing path, on the light page as on /services. */}
+              <EngagementSection />
 
               {/* Corroboration immediately before the offer. Clearly labelled
               layout placeholders remain until approved client words arrive. */}
