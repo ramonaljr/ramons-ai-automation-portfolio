@@ -4,6 +4,13 @@
    brown sticky-note groups. Sizes are n8n's canvas units; the whole world is
    scaled, so text and strokes scale with it, as they do in the editor. */
 
+/* n8n's dark canvas. The site cursor borrows --ink from what it is over
+   (custom-cursor.tsx), so without this it drew the page's dark ink on the
+   dark canvas and vanished. Nothing inside the demo reads --ink. */
+[data-tone='dark'] {
+  --ink: oklch(0.97 0.006 255);
+}
+
 .n8n-demo {
   --n8n-canvas: #232323;
   --n8n-node: #363636;

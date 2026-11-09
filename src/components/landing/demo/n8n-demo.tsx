@@ -385,8 +385,11 @@ function DemoCard({ platform, children }: { platform: string; children: ReactNod
           The {platform} build, {chrome.unit}. Pick a sample input and press {chrome.press}.
         </p>
       </div>
+      {/* `data-tone` turns the site cursor over on n8n's dark canvas: it
+          takes its ink from the surface under it (n8n-demo.css). */}
       <div
         className='relative h-[clamp(480px,74vh,860px)] overflow-hidden rounded-xl'
+        data-tone={platformOf(platform) === 'n8n' ? 'dark' : undefined}
         style={{ backgroundColor: chrome.canvas }}
       >
         {children}
@@ -489,16 +492,16 @@ function Canvas({
 
     // Too big to read whole: open at a readable zoom on the trigger, and let the run lead the way.
     return k < legible && trigger
-        ? {
-            k: legible,
-            x: frame.clientWidth / 2 - (trigger.x + trigger.w / 2) * legible,
-            y: INSET.top + 24 - trigger.y * legible
-          }
-        : {
-            k,
-            x: INSET.side + (width - (x2 - x) * k) / 2 - x * k,
-            y: INSET.top + (height - (y2 - y) * k) / 2 - y * k
-          }
+      ? {
+          k: legible,
+          x: frame.clientWidth / 2 - (trigger.x + trigger.w / 2) * legible,
+          y: INSET.top + 24 - trigger.y * legible
+        }
+      : {
+          k,
+          x: INSET.side + (width - (x2 - x) * k) / 2 - x * k,
+          y: INSET.top + (height - (y2 - y) * k) / 2 - y * k
+        }
   }
 
   const fit = () => {
