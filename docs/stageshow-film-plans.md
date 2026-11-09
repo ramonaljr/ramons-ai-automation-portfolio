@@ -214,7 +214,8 @@ something, not by being shown seventeen boxes in a row.
 
 1. ~~**The hand-drawn films:** retire or keep?~~ **Retire** (Ramon,
    2026-11-10): each one goes when its replacement is live (step 5 above).
-2. **Sound:** the hand-drawn films have music; a live scene is silent. Fine,
-   or should the rendered MP4s get a music bed?
+2. ~~**Sound:** music or silent?~~ **Silent** (Ramon, 2026-11-10), live and
+   rendered alike: the captions carry everything, and the MP4s have no
+   audio track.
 3. **Live in the dialog** (recommended) or an MP4 there too?
 4. **Length:** 60 to 90 seconds, against 3½ minutes now.
