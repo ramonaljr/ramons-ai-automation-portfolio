@@ -8,7 +8,7 @@
  */
 
 /** First year in finance work. Drives every "10+ years" figure on the site. */
-const CAREER_START = 2015
+const CAREER_START = 2013
 
 /** Whole years in finance, rounded down to five so the figure never overclaims. */
 export const financeYears = () => Math.floor((new Date().getFullYear() - CAREER_START) / 5) * 5
@@ -623,7 +623,7 @@ export type Role = {
 }
 
 /**
- * A run of consecutive roles at one employer. Three of these four roles are the
+ * A run of consecutive roles at one employer. Three of these five roles are the
  * same company; listing it three times read as three unrelated jobs rather than
  * one six-year tenure with two promotions.
  */
@@ -696,6 +696,21 @@ export const EXPERIENCE: Role[] = [
       'Supervised the full accounts payable cycle: invoice processing, supplier reconciliation, aging and voucher controls.',
       'Reviewed payment approvals and followed up overdue supplier balances.',
       'Managed statutory tax compliance and the filing calendar, so every return went in on time.'
+    ]
+  },
+  {
+    index: '05',
+    company: 'Vallejera Accounting Firm',
+    role: 'Accounting and Audit Staff',
+    short: 'Accounting & Audit Staff',
+    period: '2013 - 2014',
+    stack: ['Audit', 'Financial Statements', 'Tax Returns', 'QuickBooks'],
+    achievement: 'Prepared client accounts and audit reports, and filed their tax returns',
+    employer: 'Accounting firm · Cagayan de Oro',
+    highlights: [
+      'Prepared client financial statements, notes and audit reports.',
+      'Performed audit work on cash, property and equipment, receivables and payables.',
+      'Recorded client sales, purchases and expenses in QuickBooks, and filed VAT, percentage, withholding and income tax returns.'
     ]
   }
 ]

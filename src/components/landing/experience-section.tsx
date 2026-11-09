@@ -22,10 +22,14 @@ const HOW_I_WORK = [
   { label: 'Documented handover', copy: 'Your team can run and extend it without me.' }
 ] as const
 
-const HEADING = 'Four roles. One habit: map the work first.'
+/** The role count in words, from the data, so a new role cannot leave it stale. */
+const ROLE_COUNT =
+  ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][EXPERIENCE.length - 1] ?? EXPERIENCE.length
+
+const HEADING = `${ROLE_COUNT} roles. One habit: map the work first.`
 
 const BLURB =
-  'Each role handed me a process to run by hand: invoices and supplier payments, project cost records, month-end accounts, then forecasting.'
+  'Each role handed me a process to run by hand: client books and audits, invoices and supplier payments, project cost records, month-end accounts, then forecasting.'
 
 /** Where a row opens on hover: a mouse, and room for the full row. */
 const HOVER = '(hover: hover) and (pointer: fine) and (min-width: 768px)'
@@ -41,7 +45,7 @@ const years = (period: string) => period.replace(' - ', ' to ')
 /**
  * The career, closing About, as an index in the drafting-sheet language the
  * three middle sections share (benchmarked on Studio Okafor, 2026-11-08):
- * four ruled rows, newest first, each with its number, role, employer and
+ * one ruled row per role, newest first, each with its number, role, employer and
  * years. Opening a row shows the headline result, what the job involved and
  * its particulars in mono.
  *
