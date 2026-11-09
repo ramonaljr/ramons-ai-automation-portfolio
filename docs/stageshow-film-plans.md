@@ -217,5 +217,7 @@ something, not by being shown seventeen boxes in a row.
 2. ~~**Sound:** music or silent?~~ **Silent** (Ramon, 2026-11-10), live and
    rendered alike: the captions carry everything, and the MP4s have no
    audio track.
-3. **Live in the dialog** (recommended) or an MP4 there too?
+3. ~~**Live in the dialog** or an MP4 there too?~~ **Live** (Ramon,
+   2026-11-10): the dialog's Film toggle plays the scene itself; the MP4s
+   are for the Walkthrough link, YouTube and LinkedIn only.
 4. **Length:** 60 to 90 seconds, against 3½ minutes now.
