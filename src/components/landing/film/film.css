@@ -1,0 +1,1238 @@
+/* The Stageshow films (film-stage.tsx and films/). Everything is scoped
+   under .fm (the player) or .fm-screen (a film's stage), so nothing reaches
+   the rest of the sheet. Prefixes: fm- the player, fc- the app cards, fl- the
+   lane map, fa- the Appointment Setter film. */
+
+/* ── The player ─────────────────────────────────────────────────────────── */
+
+.fm,
+.fm-stills {
+  --fm-ink: var(--ink, #141821);
+  --fm-ink-2: var(--ink-2, #3a4150);
+  --fm-ink-3: var(--ink-3, #5b6472);
+  --fm-rule: var(--rule, rgb(20 24 33 / 0.11));
+  --fm-rule-strong: var(--rule-strong, rgb(20 24 33 / 0.22));
+  --fm-accent: var(--accent, #b4532a);
+  font-family: var(--font-satoshi), system-ui, sans-serif;
+}
+
+.fm-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #f3f4f7;
+}
+
+.fm-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.fm-play {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--fm-ink);
+  border-radius: 999px;
+  background: var(--fm-ink);
+  color: var(--ground, #f4f5f7);
+  cursor: pointer;
+  transition: opacity 150ms;
+}
+
+.fm-play:hover {
+  opacity: 0.85;
+}
+
+.fm-play:focus-visible,
+.fm-chip:focus-visible {
+  outline: 2px solid var(--fm-accent);
+  outline-offset: 2px;
+}
+
+.fm-chips {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.fm-chips > li {
+  flex: 1 0 auto;
+}
+
+.fm-chip {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  padding: 7px 12px;
+  border: 1px solid var(--fm-rule-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fm-ink-2);
+  font: 500 12px/1.2 var(--font-geist-mono), ui-monospace, monospace;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color 150ms,
+    color 150ms;
+}
+
+.fm-chip:hover {
+  border-color: var(--fm-ink-3);
+  color: var(--fm-ink);
+}
+
+.fm-chip[data-state='now'] {
+  border-color: var(--fm-ink);
+  color: var(--fm-ink);
+}
+
+.fm-chip__label {
+  position: relative;
+  z-index: 1;
+}
+
+/* How far the part has played: a soft fill under the label */
+.fm-chip__fill {
+  position: absolute;
+  inset: 0;
+  background: rgb(180 83 42 / 0.12);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.fm-chip[data-state='done'] .fm-chip__fill {
+  transform: none;
+  background: rgb(20 24 33 / 0.05);
+}
+
+.fm-chip[data-state='now'] .fm-chip__fill {
+  animation: fm-fill linear forwards;
+}
+
+.fm[data-paused] .fm-chip__fill,
+.fm[data-paused] .fm-screen *,
+.fm[data-paused] .fm-screen *::before,
+.fm[data-paused] .fm-screen *::after {
+  animation-play-state: paused !important;
+}
+
+@keyframes fm-fill {
+  to {
+    transform: none;
+  }
+}
+
+/* Reduced motion: a still per part, its captions under it as text */
+.fm-stills {
+  display: grid;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fm-still__words {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  color: var(--fm-ink-2);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.fm-still__words p {
+  margin: 0;
+}
+
+.fm-still__chip {
+  color: var(--fm-ink-3);
+  font: 500 11px/1.4 var(--font-geist-mono), ui-monospace, monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Shared app cards ───────────────────────────────────────────────────── */
+
+.fm-screen .fc-card {
+  position: absolute;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--ss-surface);
+  box-shadow:
+    0 0 0 1px rgb(20 24 33 / 0.06),
+    0 1px 2px rgb(20 24 33 / 0.05),
+    0 10px 28px rgb(20 24 33 / 0.08);
+}
+
+.fm-screen .fc-strong {
+  color: var(--ss-text-strong);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.fm-screen .fc-muted {
+  color: var(--ss-text);
+  font-size: 11.5px;
+  line-height: 1.3;
+}
+
+.fm-screen .fc-in {
+  opacity: 0;
+  transform: translateY(6px);
+  will-change: transform;
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.fm-screen .fc-in[data-in] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Recent calls */
+.fm-screen .fc-missed {
+  padding: 18px 20px 8px;
+}
+
+.fm-screen .fc-missed__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ss-line);
+}
+
+.fm-screen .fc-missed__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fm-screen .fc-missed__row {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--ss-line-faint);
+}
+
+.fm-screen .fc-missed__row:last-child {
+  border-bottom: 0;
+}
+
+.fm-screen .fc-missed__icon {
+  color: #c2412d;
+}
+
+.fm-screen .fc-missed__who {
+  display: grid;
+  gap: 4px;
+}
+
+.fm-screen .fc-missed__at {
+  color: var(--ss-text);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The call */
+.fm-screen .fc-call {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px 0;
+}
+
+.fm-screen .fc-call__head {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ss-line);
+}
+
+.fm-screen .fc-call__disc {
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  border-radius: 50%;
+  background: var(--ss-accent-soft);
+  color: var(--ss-accent);
+}
+
+.fm-screen .fc-call__who {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fm-screen .fc-call__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fm-screen .fc-call__badge {
+  flex: none;
+  font-size: 11.5px;
+  transition:
+    background-color 200ms,
+    color 200ms;
+}
+
+.fm-screen .fc-call__badge[data-ring] .ss-badge__dot {
+  animation: fc-blink 1s ease-in-out infinite;
+}
+
+.fm-screen .fc-call__timer {
+  min-width: 26px;
+  color: var(--ss-text);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+.fm-screen .fc-call__timer[data-on] {
+  opacity: 1;
+}
+
+/* The transcript keeps its newest line in view: older lines rise under a
+   soft top edge */
+.fm-screen .fc-call__thread {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.fm-screen .fc-call__lines {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 0 14px;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, transparent, #000 18px);
+}
+
+.fm-screen .fc-agent {
+  color: var(--ss-text-strong);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.fm-screen .fc-caller {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fm-screen .fc-caller > span {
+  padding: 6px 11px;
+  border-radius: 15px;
+  background: var(--ss-fill);
+  color: var(--ss-text-strong);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.fm-screen .fc-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 4px;
+  background: var(--ss-surface);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 350ms,
+    transform 450ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: transform;
+  pointer-events: none;
+}
+
+.fm-screen .fc-ring[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+.fm-screen .fc-ring__halo {
+  position: relative;
+  display: block;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 8px;
+}
+
+.fm-screen .fc-ring__disc {
+  display: block;
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  padding: 12px;
+  border-radius: 50%;
+  background: var(--ss-accent);
+  color: #fff;
+}
+
+.fm-screen .fc-ring__halo::before,
+.fm-screen .fc-ring__halo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--ss-accent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: fc-pulse 1.6s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+}
+
+.fm-screen .fc-ring__halo::after {
+  animation-delay: 0.8s;
+}
+
+/* Google Calendar */
+.fm-screen .fc-cal__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ss-line);
+}
+
+.fm-screen .fc-cal__status {
+  margin-left: auto;
+  font-size: 11.5px;
+}
+
+.fm-screen .fc-st {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ss-text);
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.fm-screen .fc-st--accent {
+  color: var(--ss-accent-text);
+  font-weight: 500;
+}
+
+.fm-screen .fc-st--ok {
+  color: var(--ss-success-text);
+  font-weight: 500;
+}
+
+.fm-screen .fc-cal__grid {
+  position: relative;
+  height: 220px;
+}
+
+.fm-screen .fc-cal__hour {
+  position: absolute;
+  left: 56px;
+  right: 0;
+  height: 0;
+  border-top: 1px solid var(--ss-line);
+}
+
+.fm-screen .fc-cal__label {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: -7px;
+  color: var(--ss-text);
+  font-size: 10.5px;
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.fm-screen .fc-ev,
+.fm-screen .fc-free {
+  position: absolute;
+  left: 58px;
+  right: 12px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  margin-top: 1px;
+  padding: 0 8px;
+  border-radius: 6px;
+}
+
+.fm-screen .fc-ev--tall {
+  align-items: flex-start;
+  padding-top: 10px;
+}
+
+.fm-screen .fc-ev--busy {
+  background: #e3ebf6;
+  transition: box-shadow 250ms;
+}
+
+.fm-screen .fc-ev--busy[data-checking] {
+  box-shadow: 0 0 0 2px var(--ss-accent);
+}
+
+/* The free half hours: a dashed edge drawn at its size, only fading */
+.fm-screen .fc-free {
+  will-change: transform;
+  border: 1.5px dashed var(--ss-accent);
+  background: rgb(180 83 42 / 0.06);
+  opacity: 0;
+  transition:
+    opacity 300ms,
+    box-shadow 250ms;
+}
+
+.fm-screen .fc-free[data-on] {
+  opacity: 1;
+}
+
+.fm-screen .fc-free[data-pick] {
+  border-style: solid;
+  box-shadow: 0 0 0 3px rgb(180 83 42 / 0.15);
+}
+
+.fm-screen .fc-free__label {
+  color: var(--ss-accent-text);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+/* The new event arrives whole, from just above */
+.fm-screen .fc-ev--new {
+  z-index: 1;
+  background: #039be5;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  transition:
+    opacity 350ms,
+    transform 500ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: transform;
+}
+
+.fm-screen .fc-ev--new[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+.fm-screen .fc-ev__title {
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+/* Airtable */
+.fm-screen .fc-air {
+  padding: 0 0 8px;
+}
+
+.fm-screen .fc-air__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--ss-line);
+}
+
+.fm-screen .fc-air__table {
+  padding: 8px 16px 0;
+}
+
+.fm-screen .fc-air__name {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ss-text-faint);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 14px;
+  text-transform: uppercase;
+}
+
+.fm-screen .fc-air__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+  border-top: 1px solid var(--ss-line-faint);
+  font-size: 10.5px;
+  line-height: 1.3;
+}
+
+.fm-screen .fc-air__row > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fm-screen .fc-air__row > :last-child {
+  justify-self: end;
+}
+
+.fm-screen .fc-air__row--head {
+  min-height: 18px;
+  border-top: 0;
+  color: var(--ss-text);
+  font-weight: 500;
+}
+
+.fm-screen .fc-air__row--new {
+  color: var(--ss-text-strong);
+}
+
+.fm-screen .fc-air__tag {
+  max-width: 100%;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #d1f7c4;
+  color: #1f6b10;
+  font-weight: 500;
+}
+
+.fm-screen .fc-air__row--filler > .ss-bar {
+  justify-self: start;
+}
+
+@keyframes fc-pulse {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+@keyframes fc-blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ── The lane map ───────────────────────────────────────────────────────── */
+
+.fm-screen .fl--wide {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  height: 100%;
+}
+
+.fm-screen .fl-lane {
+  box-sizing: border-box;
+  padding: 9px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  transition:
+    opacity 450ms,
+    box-shadow 300ms;
+}
+
+.fm-screen .fl--wide[data-lit] .fl-lane:not([data-lit]) {
+  opacity: 0.42;
+}
+
+.fm-screen .fl-lane[data-lit] {
+  box-shadow:
+    0 0 0 2.5px var(--tone),
+    0 8px 22px rgb(20 24 33 / 0.1);
+}
+
+.fm-screen .fl-lane__head {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+}
+
+.fm-screen .fl-lane__n {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--tone);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.fm-screen .fl-lane__title {
+  overflow: hidden;
+  color: #17171c;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fm-screen .fl-lane__concept {
+  color: var(--tone);
+}
+
+.fm-screen .fl-steps {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fm-screen .fl-step {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) 10px;
+  align-items: center;
+  gap: 7px;
+  height: 14px;
+  padding: 0 4px 0 2px;
+  border-radius: 4px;
+  color: #2a2a33;
+  font-size: 9px;
+  line-height: 1;
+  transition:
+    background-color 250ms,
+    box-shadow 250ms,
+    color 250ms;
+}
+
+.fm-screen .fl-step__icon {
+  display: grid;
+  place-items: center;
+}
+
+.fm-screen .fl-step__icon > svg {
+  display: block;
+  width: 11px;
+  height: 11px;
+}
+
+/* The step's mark: a check once passed, a dot while it runs */
+.fm-screen .fl-step__mark {
+  display: grid;
+  place-items: center;
+}
+
+.fm-screen .fl-step__mark > * {
+  grid-area: 1 / 1;
+}
+
+.fm-screen .fl-step__run {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tone);
+  opacity: 0;
+  transition: opacity 250ms;
+}
+
+.fm-screen .fl-step[data-state='now'] .fl-step__run {
+  opacity: 1;
+  animation: fc-blink 1.1s ease-in-out infinite;
+}
+
+.fm-screen .fl-step__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fm-screen .fl-step__check {
+  color: var(--tone);
+  opacity: 0;
+  transition: opacity 250ms;
+}
+
+.fm-screen .fl-step[data-state='done'] {
+  color: #55556a;
+}
+
+.fm-screen .fl-step[data-state='done'] .fl-step__check {
+  opacity: 1;
+}
+
+.fm-screen .fl-step[data-state='now'] {
+  background: #fff;
+  box-shadow:
+    inset 2px 0 0 var(--tone),
+    0 1px 3px rgb(20 24 33 / 0.12);
+  color: #17171c;
+}
+
+/* Compact: the lit lane alone, under a strip of every lane's number */
+.fm-screen .fl--compact {
+  display: grid;
+  gap: 10px;
+}
+
+.fm-screen .fl-strip {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fm-screen .fl-strip__n {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--tone);
+  font-size: 11px;
+  font-weight: 700;
+  transition:
+    background-color 300ms,
+    color 300ms;
+}
+
+.fm-screen .fl-strip__n[data-on] {
+  border-color: var(--tone);
+  background: var(--tone);
+  color: #fff;
+}
+
+.fm-screen .fl-deck {
+  display: grid;
+}
+
+.fm-screen .fl-deck > .fl-lane {
+  grid-area: 1 / 1;
+  align-self: start;
+}
+
+.fm-screen .fl--compact .fl-lane {
+  padding: 12px;
+  opacity: 0;
+  transition:
+    opacity 400ms ease,
+    box-shadow 300ms;
+}
+
+.fm-screen .fl--compact .fl-lane[data-lit] {
+  opacity: 1;
+}
+
+.fm-screen .fl--compact .fl-lane__head {
+  grid-template-columns: 22px minmax(0, 1fr) 16px;
+  margin-bottom: 10px;
+}
+
+.fm-screen .fl--compact .fl-lane__n {
+  width: 22px;
+  height: 22px;
+  font-size: 11.5px;
+}
+
+.fm-screen .fl--compact .fl-lane__title {
+  font-size: 14px;
+}
+
+.fm-screen .fl--compact .fl-step {
+  grid-template-columns: 22px minmax(0, 1fr) 12px;
+  gap: 8px;
+  height: 23px;
+  padding: 0 6px 0 0;
+  font-size: 12px;
+}
+
+.fm-screen .fl--compact .fl-step__icon > svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Film 1: AI Appointment Setter ──────────────────────────────────────── */
+
+.fm-screen .fa {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 1px 1px, rgb(20 24 33 / 0.08) 1px, transparent 1.5px) 0 0 / 22px 22px,
+    #f3f4f7;
+}
+
+.fm-screen .fa-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+.fm-screen .fa-before,
+.fm-screen .fa-apps,
+.fm-screen .fa-map {
+  will-change: transform;
+  transition:
+    opacity 600ms ease,
+    transform 700ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* The caption, one line under the scene (two on a phone) */
+.fm-screen .fa-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  border-top: 1px solid rgb(20 24 33 / 0.07);
+  background: #fbfbfc;
+  text-align: center;
+}
+
+.fm-screen .fa-cap__text {
+  position: absolute;
+  inset: 0 24px;
+  display: grid;
+  place-items: center;
+  color: var(--ss-text-strong);
+  font-weight: 500;
+  text-wrap: balance;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.fm-screen .fa-cap__text[data-on] {
+  opacity: 1;
+  transition-delay: 180ms;
+}
+
+/* A still's captions are text under it, so its strip goes */
+.fm-stills .fm-screen .fa-cap {
+  display: none;
+}
+
+/* The end frame: the outcome over the faded scene */
+.fm-screen .fa-end {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 18px;
+  padding: 0 48px;
+  background: rgb(243 244 247 / 0.94);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 700ms ease;
+  pointer-events: none;
+}
+
+.fm-screen .fa-end[data-on] {
+  opacity: 1;
+}
+
+.fm-screen .fa-end__line {
+  max-width: 640px;
+  margin: 0;
+  color: var(--ss-text-strong);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.fm-screen .fa-end__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 16px;
+  border: 1px solid var(--ss-accent);
+  border-radius: 999px;
+  color: var(--ss-accent-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Wide, 960 by 540: the apps in a row over the map, the caption under both */
+.fm-screen .fa--wide .fa-world {
+  height: 490px;
+}
+
+.fm-screen .fa--wide .fa-cap {
+  height: 50px;
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.fm-screen .fa--wide .fa-before,
+.fm-screen .fa--wide .fa-apps {
+  position: absolute;
+  inset: 0;
+}
+
+.fm-screen .fa--wide .fc-missed {
+  top: 56px;
+  left: 210px;
+  width: 540px;
+  padding: 24px 28px 10px;
+}
+
+.fm-screen .fa--wide .fc-missed .fc-strong {
+  font-size: 17px;
+}
+
+.fm-screen .fa--wide .fc-missed .fc-muted,
+.fm-screen .fa--wide .fc-missed__at {
+  font-size: 14px;
+}
+
+.fm-screen .fa--wide .fc-missed__head {
+  padding-bottom: 16px;
+}
+
+.fm-screen .fa--wide .fc-missed__row {
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.fm-screen .fa--wide .fc-missed__icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* A tall card holds the whole call, so it reads from the top */
+.fm-screen .fa--wide .fc-call__lines {
+  justify-content: flex-start;
+  mask-image: none;
+}
+
+.fm-screen .fa--wide .fc-cal {
+  top: 22px;
+  left: 34px;
+  width: 280px;
+  height: 242px;
+}
+
+.fm-screen .fa--wide .fc-call {
+  top: 22px;
+  left: 328px;
+  width: 304px;
+  height: 242px;
+}
+
+.fm-screen .fa--wide .fc-air {
+  top: 22px;
+  left: 646px;
+  width: 280px;
+  height: 242px;
+}
+
+.fm-screen .fa--wide .fa-map {
+  position: absolute;
+  top: 294px;
+  left: 30px;
+  right: 30px;
+  height: 180px;
+}
+
+/* Two plates: the case's apps, and the build's map they sit on */
+.fm-screen .fa-plate {
+  position: absolute;
+  border-radius: 18px;
+  background: rgb(255 255 255 / 0.55);
+}
+
+/* Bands: the apps' plate runs off the top, the map's off the bottom */
+.fm-screen .fa--wide .fa-apps > .fa-plate {
+  top: -40px;
+  left: 20px;
+  right: 20px;
+  height: 316px;
+}
+
+.fm-screen .fa--wide .fa-map > .fa-plate {
+  inset: -10px -10px -66px;
+  z-index: -1;
+}
+
+/* Moved in on the build, the app screens step back */
+.fm-screen .fa--wide[data-view='map'] .fa-apps {
+  opacity: 0;
+}
+
+.fm-screen .fa--wide .fa-before {
+  opacity: 0;
+}
+
+.fm-screen .fa--wide[data-view='before'] .fa-before {
+  opacity: 1;
+}
+
+.fm-screen .fa--wide[data-view='before'] .fa-apps,
+.fm-screen .fa--wide[data-view='before'] .fa-map {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Compact, 300 by 500: one view at a time, sliding across */
+.fm-screen .fa--compact .fa-world {
+  height: 420px;
+}
+
+.fm-screen .fa--compact .fa-cap__text {
+  inset: 0 16px;
+}
+
+.fm-screen .fa--compact .fa-cap {
+  height: 80px;
+  padding: 0 16px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.fm-screen .fa--compact .fa-before,
+.fm-screen .fa--compact .fa-apps,
+.fm-screen .fa--compact .fa-map {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateX(28px);
+}
+
+.fm-screen .fa--compact[data-view='before'] .fa-before,
+.fm-screen .fa--compact[data-view='apps'] .fa-apps,
+.fm-screen .fa--compact[data-view='map'] .fa-map {
+  opacity: 1;
+  transform: none;
+}
+
+.fm-screen .fa--compact[data-view='map'] .fa-apps,
+.fm-screen .fa--compact[data-view='end'] .fa-apps,
+.fm-screen .fa--compact[data-view='apps'] .fa-before {
+  transform: translateX(-28px);
+}
+
+.fm-screen .fa--compact[data-view='end'] .fa-map {
+  opacity: 0.25;
+  transform: none;
+}
+
+.fm-screen .fa--compact .fc-missed {
+  top: 16px;
+  left: 16px;
+  right: 16px;
+}
+
+.fm-screen .fa--compact .fa-lanechip {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+.fm-screen .fa--compact .fa-lanechip[data-on] {
+  opacity: 1;
+}
+
+.fm-screen .fa-lanechip__n {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.fm-screen .fa-lanechip__text {
+  overflow: hidden;
+  color: var(--ss-text-strong);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fm-screen .fa--compact .fc-call {
+  top: 48px;
+  left: 16px;
+  right: 16px;
+  height: 190px;
+}
+
+.fm-screen .fa--compact .fa-lower {
+  position: absolute;
+  top: 250px;
+  left: 16px;
+  right: 16px;
+  height: 200px;
+}
+
+.fm-screen .fa--compact .fa-lower .fc-card {
+  position: relative;
+  height: 200px;
+}
+
+.fm-screen .fa--compact .fc-air__row--head {
+  display: none;
+}
+
+.fm-screen .fa--compact .fa-map {
+  padding: 16px;
+}
+
+.fm-screen .fa--compact .fa-end {
+  gap: 14px;
+  padding: 0 20px;
+}
+
+.fm-screen .fa--compact .fa-end__line {
+  font-size: 21px;
+}
+
+.fm-screen .fa--compact .fa-end__cta {
+  font-size: 13px;
+}
