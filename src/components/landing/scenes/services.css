@@ -341,6 +341,16 @@
   margin-inline: auto;
 }
 
+/* The same for a card too small for the wide design (under 380 x 238),
+   whose narrow one is 360 x 400 */
+@media (min-width: 768px) {
+  @container (max-width: 379px) or (max-height: 237px) {
+    .svc-fig .ps-frame {
+      width: min(100cqw, 100cqh * 360 / 400);
+    }
+  }
+}
+
 /* Phones: the open row's scene takes its narrow design's own height */
 @media (max-width: 767px) {
   .svc-board .svc-fig {

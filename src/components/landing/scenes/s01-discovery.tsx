@@ -1,7 +1,7 @@
 'use client'
 
 import { Badge, Bar, Check, Chip, Window, type Act } from '@/components/stageshow/kit'
-import { SceneStage, SHEET, type SceneDef, type SceneProps } from '@/components/landing/scenes/scene'
+import { SceneStage, SHEET_COMPACT, type SceneDef, type SceneProps } from '@/components/landing/scenes/scene'
 
 /**
  * Process step 01 (Discovery): the call notes for the invoice job. The
@@ -16,7 +16,7 @@ const PEOPLE = ['Accounts payable', 'Budget owner', 'Site manager']
 const START: S = { quote: '', typing: false, people: 0, success: false, out: false }
 
 const discovery: SceneDef<S> = {
-  size: SHEET,
+  size: SHEET_COMPACT,
   start: START,
   poster: { ...START, quote: QUOTE, people: PEOPLE.length, success: true },
   hold: 2600,
@@ -50,7 +50,7 @@ const discovery: SceneDef<S> = {
     await a.wait(300)
   },
 
-  render: s => (
+  render: (s, layout) => (
     <Window title='Call notes' className='ps-hero'>
       <div className='ps-body ps01' data-out={s.out || undefined}>
         <div className='ps01-head'>
@@ -68,7 +68,9 @@ const discovery: SceneDef<S> = {
 
         <div className='ps01-section'>
           <span className='ps-label'>Who touches it</span>
-          <div className='ps01-people'>
+          {/* Keyed by layout: a chip measures its width once, so the row remounts
+              to measure again at the phone's type size */}
+          <div key={layout} className='ps01-people'>
             {PEOPLE.map((name, i) => (
               <Chip key={name} show={i < s.people} gap={6}>
                 {name}

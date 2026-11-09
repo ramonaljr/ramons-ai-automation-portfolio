@@ -1,7 +1,7 @@
 'use client'
 
 import { Badge, Bar, BrandMark, Button, Card, Check, Icon, Roll, Window, type Act } from '@/components/stageshow/kit'
-import { SceneStage, SHEET, type SceneDef, type SceneProps } from '@/components/landing/scenes/scene'
+import { SceneStage, SHEET_COMPACT, type SceneDef, type SceneProps } from '@/components/landing/scenes/scene'
 
 /**
  * Process step 06 (Launch & optimize): the live system checking an invoice
@@ -21,7 +21,7 @@ const START: S = { card: false, done: 0, running: false, approved: false, booked
 const CHECKS = ['No duplicate found', 'Matches PO 7731', 'Delivery received']
 
 const live: SceneDef<S> = {
-  size: SHEET,
+  size: SHEET_COMPACT,
   start: START,
   poster: { ...START, card: true, done: 3, approved: true, booked: true },
   hold: 2400,

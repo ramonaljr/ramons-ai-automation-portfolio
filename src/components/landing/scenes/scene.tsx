@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from 'react'
 
-import { Stage, type Act, type StageProps } from '@/components/stageshow/kit'
+import { Stage, type Act, type Layout, type StageProps } from '@/components/stageshow/kit'
 
 /**
  * One scene, three ways to show it:
@@ -42,7 +42,9 @@ export type SceneDef<S extends object> = {
   /** How long a loop holds its payoff, in ms. */
   hold?: number
   cursor?: StageProps<S>['cursor']
-  render: (s: S) => ReactNode
+
+  /** `layout` is 'compact' below the size's `compact.below`, for scenes placed in stage pixels. */
+  render: (s: S, layout: Layout) => ReactNode
 }
 
 /** The size Process and Engagement scenes share, with a narrow design. */
@@ -91,7 +93,7 @@ export function SceneStage<S extends object>({ def, mode = 'loop' }: SceneProps 
       play={mode === 'turn' ? 'once' : 'loop'}
       cursor={def.cursor}
     >
-      {s => def.render(s)}
+      {(s, _rect, layout) => def.render(s, layout)}
     </Stage>
   )
 }

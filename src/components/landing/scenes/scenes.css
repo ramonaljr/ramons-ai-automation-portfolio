@@ -563,7 +563,7 @@
   left: 330px;
 }
 
-/* ---------- Narrow designs for 02 and 04 ---------- */
+/* ---------- Narrow designs, for phones: a 360 x 440 stage ---------- */
 
 /* Narrower than tall, a desktop window reads as squashed: on phones the
    sheet is a page, as 05's report is */
@@ -582,6 +582,105 @@
 
 .ps .ss-stage[data-layout='compact'] .ps04-head {
   font-size: 13px;
+}
+
+/* 01: the quote, names and outcome set for a 288px column */
+.ps .ss-stage[data-layout='compact'] .ps01 {
+  gap: 16px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps01-head {
+  font-size: 13px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps01-quote {
+  padding-inline: 10px;
+  font-size: 12.5px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps01-people .ss-chip {
+  padding: 0 8px;
+  font-size: 10.5px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps01-success {
+  font-size: 12px;
+}
+
+/* 03: the same row of tools, closer (positions in s03-design.tsx) */
+.ps .ss-stage[data-layout='compact'] .ps03-head {
+  font-size: 13px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps03-node,
+.ps .ss-stage[data-layout='compact'] .ps03-tile {
+  width: 36px;
+  height: 36px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps03-tile {
+  border-radius: 9px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps03-node__label {
+  top: 42px;
+  width: 60px;
+  margin-left: -30px;
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps03-issue {
+  top: 188px;
+  left: 80px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps03-signed {
+  margin-top: 188px;
+}
+
+/* 05: a narrower report, the handover card in its corner */
+.ps .ss-stage[data-layout='compact'] .ps05-hero {
+  width: 290px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps05-head {
+  font-size: 13px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps05-case {
+  height: 28px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps05-handover {
+  width: 168px;
+}
+
+/* 06: the invoice to the right, the Slack card over its filler rows */
+.ps .ss-stage[data-layout='compact'] .ps06-invoice {
+  left: 92px;
+  width: 248px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps06-inv {
+  padding: 18px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps06-inv__total {
+  font-size: 23px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps06-pay {
+  font-size: 11.5px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps06-slack {
+  width: 200px;
+}
+
+.ps .ss-stage[data-layout='compact'] .ps06-rest {
+  top: 400px;
+  left: 300px;
 }
 
 /* ---------- Engagement: one sheet per way of working (engagement-scenes.tsx) ---------- */

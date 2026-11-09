@@ -1,7 +1,7 @@
 'use client'
 
 import { Bar, Card, Check, Roll, Window, type Act } from '@/components/stageshow/kit'
-import { SceneStage, SHEET, type SceneDef, type SceneProps } from '@/components/landing/scenes/scene'
+import { SceneStage, SHEET_COMPACT, type SceneDef, type SceneProps } from '@/components/landing/scenes/scene'
 
 /**
  * Process step 05 (Testing & handover): the test cases run one by one,
@@ -28,7 +28,7 @@ const HANDOVER = ['Runbook', 'Walkthrough video', 'Access list']
 const passed = (done: number) => Math.min(done, TOTAL)
 
 const testing: SceneDef<S> = {
-  size: SHEET,
+  size: SHEET_COMPACT,
   start: START,
   poster: { done: TOTAL, running: -1, handover: true, handed: HANDOVER.length, out: false },
   hold: 2400,

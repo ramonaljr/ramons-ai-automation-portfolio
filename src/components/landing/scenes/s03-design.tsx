@@ -1,7 +1,7 @@
 'use client'
 
 import { Badge, Bar, Connector, Icon, Window, type Act } from '@/components/stageshow/kit'
-import { SceneStage, SHEET, type SceneDef, type SceneProps } from '@/components/landing/scenes/scene'
+import { SceneStage, SHEET_COMPACT, type SceneDef, type SceneProps } from '@/components/landing/scenes/scene'
 import { ToolMark, type Tool } from '@/components/landing/scenes/tool-mark'
 
 /**
@@ -26,13 +26,16 @@ const NODES: { tool: Tool; label: string }[] = [
 ]
 
 // Tile centres in stage pixels; the layout in scenes.css matches
-const X = [92, 176, 260, 344, 428]
-const Y = 164
-const HALF = 20
+/** Where the map sits, in stage pixels: wide, and the phone's narrow design. */
+const MAP = {
+  wide: { x: [92, 176, 260, 344, 428], y: 164, half: 20, issue: 254 },
+  compact: { x: [60, 120, 180, 240, 300], y: 116, half: 18, issue: 188 }
+}
+
 const CHECK = 2
 
 const design: SceneDef<S> = {
-  size: SHEET,
+  size: SHEET_COMPACT,
   start: START,
   poster: { tiles: NODES.length, lines: NODES.length - 1, branch: true, signed: true, out: false },
   hold: 2600,
@@ -70,76 +73,80 @@ const design: SceneDef<S> = {
     await a.wait(300)
   },
 
-  render: s => (
-    <>
-      <Window title='System map' className='ps-hero'>
-        <div className='ps-body ps03' data-out={s.out || undefined}>
-          <div className='ps03-head'>
-            <span className='ps-strong'>Inbox to bill, one approval</span>
-            <span className='ps-faint'>Rev. A</span>
+  render: (s, layout) => {
+    const { x: X, y: Y, half: HALF, issue: ISSUE } = MAP[layout]
+
+    return (
+      <>
+        <Window title='System map' className='ps-hero'>
+          <div className='ps-body ps03' data-out={s.out || undefined}>
+            <div className='ps03-head'>
+              <span className='ps-strong'>Inbox to bill, one approval</span>
+              <span className='ps-faint'>Rev. A</span>
+            </div>
+            <div className='ps03-signed ps-in' data-in={s.signed || undefined}>
+              <Badge tone='success' icon={<Icon name='check' size={12} stroke={2} />}>
+                Signed off
+              </Badge>
+              <span className='ps-muted'>Ready to build</span>
+            </div>
+            <div className='ps-filler ps03-filler'>
+              {[
+                [132, 48],
+                [176, 36],
+                [104, 52]
+              ].map(([left, right], i) => (
+                <div key={i}>
+                  <Bar w={left} h={5} tone={2} />
+                  <Bar w={right} h={5} tone={2} />
+                </div>
+              ))}
+            </div>
           </div>
-          <div className='ps03-signed ps-in' data-in={s.signed || undefined}>
-            <Badge tone='success' icon={<Icon name='check' size={12} stroke={2} />}>
-              Signed off
-            </Badge>
-            <span className='ps-muted'>Ready to build</span>
-          </div>
-          <div className='ps-filler ps03-filler'>
-            {[
-              [132, 48],
-              [176, 36],
-              [104, 52]
-            ].map(([left, right], i) => (
-              <div key={i}>
-                <Bar w={left} h={5} tone={2} />
-                <Bar w={right} h={5} tone={2} />
-              </div>
-            ))}
+        </Window>
+
+        <div className='ps03-map' data-out={s.out || undefined}>
+          {NODES.map((node, i) => (
+            <div
+              key={node.tool}
+              className='ps03-node ps-in'
+              data-in={i < s.tiles || undefined}
+              style={{ left: X[i] - HALF, top: Y - HALF }}
+            >
+              <span className='ps-tile ps03-tile'>
+                <ToolMark tool={node.tool} size={layout === 'compact' ? 16 : 18} />
+              </span>
+              <span className='ps03-node__label'>{node.label}</span>
+            </div>
+          ))}
+          <div className='ps03-issue ps-in' data-in={s.branch || undefined}>
+            Problems go to accounts payable
           </div>
         </div>
-      </Window>
 
-      <div className='ps03-map' data-out={s.out || undefined}>
-        {NODES.map((node, i) => (
-          <div
-            key={node.tool}
-            className='ps03-node ps-in'
-            data-in={i < s.tiles || undefined}
-            style={{ left: X[i] - HALF, top: Y - HALF }}
-          >
-            <span className='ps-tile ps03-tile'>
-              <ToolMark tool={node.tool} size={18} />
-            </span>
-            <span className='ps03-node__label'>{node.label}</span>
-          </div>
+        {X.slice(1).map((x, i) => (
+          <Connector
+            key={x}
+            from={{ x: X[i] + HALF + 4, y: Y }}
+            to={{ x: x - HALF - 4, y: Y }}
+            route='straight'
+            arrow
+            show={!s.out && i < s.lines}
+            className='ps03-line'
+          />
         ))}
-        <div className='ps03-issue ps-in' data-in={s.branch || undefined}>
-          Problems go to accounts payable
-        </div>
-      </div>
-
-      {X.slice(1).map((x, i) => (
         <Connector
-          key={x}
-          from={{ x: X[i] + HALF + 4, y: Y }}
-          to={{ x: x - HALF - 4, y: Y }}
+          from={{ x: X[CHECK], y: Y + 46 }}
+          to={{ x: X[CHECK], y: ISSUE }}
           route='straight'
           arrow
-          show={!s.out && i < s.lines}
+          dashed
+          show={!s.out && s.branch}
           className='ps03-line'
         />
-      ))}
-      <Connector
-        from={{ x: X[CHECK], y: Y + 46 }}
-        to={{ x: X[CHECK], y: 254 }}
-        route='straight'
-        arrow
-        dashed
-        show={!s.out && s.branch}
-        className='ps03-line'
-      />
-    </>
-  )
+      </>
+    )
+  }
 }
 
 export function Design(props: SceneProps) {

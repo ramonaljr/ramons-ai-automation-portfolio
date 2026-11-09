@@ -155,6 +155,16 @@
   margin-inline: auto;
 }
 
+/* Too small for the wide design (a sheet under 400px wide: the box under
+   400 x 354), the stage takes its narrow one, which is taller, 360 x 440.
+   Sized by the wide proportion it would run off the top of the box. */
+@container (max-width: 399px) or (max-height: 353px) {
+  .proc-frame .ps-frame,
+  .proc-list-fig .ps-frame {
+    width: min(100cqw, 100cqh * 360 / 440);
+  }
+}
+
 /* The narrow design (Stage's compact layout): a tighter gutter and body */
 .ps .ss-stage[data-layout='compact'] {
   --gutter: 20px;
@@ -162,4 +172,6 @@
 
 .ps .ss-stage[data-layout='compact'] .ps-body {
   padding: 16px;
+  /* Nothing wide may stretch the page past the window */
+  grid-template-columns: minmax(0, 1fr);
 }
