@@ -4,176 +4,186 @@
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --no-pdf-header-footer \
     --print-to-pdf=public/ramon-vallejera-cv.pdf docs/cv/cv.html
   Keep the title, name and projects in step with src/lib/portfolio.ts and the case studies.
+
+  Built to read cleanly in applicant tracking systems (ATS): one column, so
+  text extracts in reading order; standard section names (Summary, Skills,
+  Experience, Projects, Education, Certifications); every role on its own with
+  title, employer, place and dates; dates as "Mon YYYY - Mon YYYY"; links
+  written out as text; real text, no icons or images. The type is Helvetica
+  Neue: the Inter web font printed words in broken runs ("Aut / omat / ion")
+  that text extraction, and so an ATS, reads as fragments.
 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Ramon Vallejera Jr. resume</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@800&display=block" rel="stylesheet">
 <style>
-  @page { size: Letter; margin: 0.5in 0.55in 0.5in; }
+  @page { size: Letter; margin: 0.5in 0.6in 0.5in; }
   :root { --ink: #1d1d1b; --ink-2: #3a3a38; --muted: #6b6b68; --accent: #c4361f; --rule: #a9a9a6; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Inter, sans-serif; color: var(--ink-2); font-size: 12px; line-height: 1.55; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  a { color: var(--accent); text-decoration: none; }
+  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: var(--ink-2); font-size: 11.6px; line-height: 1.5; font-variant-ligatures: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  a { color: var(--ink-2); text-decoration: none; }
+  strong { font-weight: 600; color: var(--ink); }
 
-  header h1 { font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 37px; letter-spacing: -0.035em; line-height: 1.1; color: var(--ink); }
-  .tagline { margin-top: 7px; color: var(--accent); font-size: 10.2px; font-weight: 500; letter-spacing: 0.17em; text-transform: uppercase; }
-  .contact { margin-top: 9px; font-size: 11.4px; color: var(--ink); line-height: 1.75; }
-  .contact span, .contact a { margin-right: 14px; }
-  .bar { height: 6px; background: var(--accent); margin: 12px 0 0; }
+  header h1 { font-weight: 700; font-size: 34px; letter-spacing: -0.02em; line-height: 1.1; color: var(--ink); }
+  .tagline { margin-top: 6px; color: var(--accent); font-size: 12px; font-weight: 600; }
+  .contact { margin-top: 7px; font-size: 11px; color: var(--ink); line-height: 1.7; }
+  .bar { height: 5px; background: var(--accent); margin: 10px 0 0; }
 
-  section { display: grid; grid-template-columns: 138px 1fr; padding: 12px 0 12px; border-top: 2px solid var(--rule); }
-  section:first-of-type { border-top: 0; }
-  section > h2 { font-size: 9.2px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); padding-top: 3px; line-height: 1.6; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; column-gap: 26px; row-gap: 10px; }
-  h3 { font-size: 12.8px; font-weight: 700; color: var(--ink); line-height: 1.45; }
-  h4 { font-size: 12px; font-weight: 700; color: var(--ink); line-height: 1.45; }
+  /* One column: each heading sits above its section. */
+  section { padding: 10px 0 4px; }
+  section > h2 { margin-bottom: 6px; padding-bottom: 3px; border-bottom: 1.5px solid var(--rule); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); }
+  h3 { font-size: 12.4px; font-weight: 700; color: var(--ink); line-height: 1.4; }
   .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-  .date { font-size: 10.8px; font-weight: 500; color: var(--muted); white-space: nowrap; }
-  .sub { color: var(--accent); font-size: 11.4px; font-weight: 500; }
-  .item { margin-top: 11px; break-inside: avoid; }
-  .item:first-child { margin-top: 0; }
-  .intro { margin-bottom: 10px; }
-  .intro a { margin-left: 12px; }
+  .date { font-size: 11px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+  .sub { color: var(--accent); font-size: 11.2px; font-weight: 500; }
+  .item { margin-top: 9px; break-inside: avoid; }
+  section > .item:first-of-type { margin-top: 0; }
   ul { padding-left: 15px; margin-top: 2px; }
   li { margin-top: 1px; }
-  .group { border-left: 3px solid #d6d6d3; padding-left: 13px; margin-top: 6px; }
-  .group .item { margin-top: 8px; }
-  .group .item:first-child { margin-top: 0; }
+  .skills p + p { margin-top: 2px; }
   .note { color: var(--muted); }
-  .tag { color: var(--accent); }
-  /* Each project links its case study on the site and its workflow on GitHub. */
-  .links { display: flex; gap: 12px; font-size: 10.8px; font-weight: 500; white-space: nowrap; }
-  .links a { color: var(--ink); border-bottom: 1px solid var(--rule); }
+  .links { margin-top: 1px; font-size: 10.6px; color: var(--muted); }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Ramon Vallejera, Jr., MBA</h1>
-  <p class="tagline">AI Automation Engineer · n8n, LLM workflows &amp; process automation</p>
+  <h1>Ramon Vallejera Jr., MBA</h1>
+  <p class="tagline">AI Automation Specialist | n8n, Zapier, Make, AI agents and process automation</p>
   <p class="contact">
-    <span>Cagayan de Oro, Philippines (Remote)</span>
-    <a href="mailto:ramonvallejerajr@gmail.com">ramonvallejerajr@gmail.com</a>
-    <span>+63 926 717 1181</span>
-    <a href="https://www.linkedin.com/in/ramon-vallejera-jr-mba-6976a3115/">LinkedIn</a>
-    <a href="https://github.com/ramonaljr">GitHub</a>
-    <a href="https://www.upwork.com/freelancers/~01b91218e9b141a711">Upwork</a>
-    <br><a href="https://ramonvallejera.com/">ramonvallejera.com</a>
+    Cagayan de Oro, Philippines (Remote) | ramonvallejerajr@gmail.com | +63 926 717 1181<br>
+    <a href="https://ramonvallejera.com/">ramonvallejera.com</a> |
+    <a href="https://www.linkedin.com/in/ramon-vallejera-jr-mba-6976a3115/">linkedin.com/in/ramon-vallejera-jr-mba-6976a3115</a> |
+    <a href="https://github.com/ramonaljr">github.com/ramonaljr</a> |
+    <a href="https://www.upwork.com/freelancers/~01b91218e9b141a711">upwork.com/freelancers/~01b91218e9b141a711</a>
   </p>
   <div class="bar"></div>
 </header>
 
 <section>
-  <h2>Profile</h2>
-  <p>AI automation engineer with ten years in finance operations and an MBA. Builds workflows and AI agents in n8n with Claude, OpenAI and the business tools teams already use. Having run invoicing, reconciliation, reporting and approvals by hand, designs automations around real business rules and controls — documented and maintainable, so the people who inherit them can run them.</p>
+  <h2>Summary</h2>
+  <p>AI automation specialist with more than ten years in finance and accounting and an MBA. Builds workflows and AI agents in n8n, Zapier and Make, connected to the business tools teams already use. Having run invoicing, reconciliation, reporting and approvals by hand, designs automations around real business rules and controls, documented and maintainable so the people who inherit them can run them.</p>
+</section>
+
+<section class="skills">
+  <h2>Skills</h2>
+  <p><strong>Automation:</strong> n8n (cloud and self-hosted), Zapier, Make; workflow design, triggers, webhooks, error handling</p>
+  <p><strong>AI and LLM:</strong> OpenAI, Claude, Gemini and Groq APIs; prompt engineering; AI agents; RAG (Pinecone); voice agents (VAPI)</p>
+  <p><strong>Integration:</strong> REST APIs, JSON, Google Workspace, Airtable, Slack, Gmail, QuickBooks, Pipedrive, Apollo, PostgreSQL</p>
+  <p><strong>Accounting and finance:</strong> financial statements, month-end close, accounts payable and receivable, account reconciliation, audit, cost and variance analysis, tax compliance, DCF valuation and forecasting; QuickBooks, SAP, Sage, Excel (advanced)</p>
 </section>
 
 <section>
-  <h2>Skills</h2>
-  <div class="grid2">
-    <div><h4>Automation</h4><p>n8n (cloud &amp; self-hosted), Zapier, Make; workflow design, triggers, webhooks</p></div>
-    <div><h4>AI / LLM</h4><p>Claude, OpenAI, Gemini, Groq APIs; prompt engineering; AI agents; RAG (Pinecone); voice agents (VAPI)</p></div>
-    <div><h4>Integration</h4><p>REST APIs, JSON, Google Workspace, Airtable, Slack, Gmail, QuickBooks, Pipedrive, Apollo, PostgreSQL</p></div>
-    <div><h4>Accounting &amp; Finance</h4><p>Financial statements, month-end close, AP/AR, reconciliation, cost &amp; variance analysis, tax compliance, DCF valuation &amp; forecasting; QuickBooks, SAP, Sage, Excel (advanced)</p></div>
+  <h2>Experience</h2>
+
+  <div class="item">
+    <div class="row"><h3>Financial Analyst</h3><span class="date">Jun 2022 - Present</span></div>
+    <p class="sub">My Mountain Mover (Independent Contractor) | United States, Remote</p>
+    <ul>
+      <li>Maintain DCF valuation models and financial statement forecasts across a portfolio of US-listed companies.</li>
+      <li>Turn earnings calls and investor guidance into revised assumptions every quarter, so each model reflects the latest numbers.</li>
+      <li>Research filings and market data and turn them into structured reports.</li>
+    </ul>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>Course Instructor</h3><span class="date">Dec 2020 - May 2023</span></div>
+    <p class="sub">Xavier University - Ateneo de Cagayan | Cagayan de Oro, Philippines</p>
+    <ul><li>Taught business, finance and accounting courses, breaking complex processes into clear, step-by-step systems.</li></ul>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>Branch Accountant</h3><span class="date">Apr 2020 - Mar 2021</span></div>
+    <p class="sub">Johndorf Ventures Corporation | Cagayan de Oro, Philippines</p>
+    <ul>
+      <li>Led a 10-person accounting team delivering monthly and annual financial statements on a fixed close cycle.</li>
+      <li>Owned and documented the month-end close, account reconciliations and approval processes across accounts payable, accounts receivable and disbursements in SAP.</li>
+    </ul>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>Project Cost Accountant</h3><span class="date">Aug 2016 - Apr 2020</span></div>
+    <p class="sub">Johndorf Ventures Corporation | Cagayan de Oro, Philippines</p>
+    <ul>
+      <li>Performed standard costing and budget-versus-actual variance analysis on the developer's projects.</li>
+      <li>Reconciled material, labor and overhead costs against the item ledger; built and maintained recurring cost and project reporting workbooks.</li>
+    </ul>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>Accounts Payable Supervisor and Tax Compliance Analyst</h3><span class="date">Jul 2015 - Oct 2018</span></div>
+    <p class="sub">Johndorf Ventures Corporation | Cagayan de Oro, Philippines</p>
+    <ul>
+      <li>Supervised the full accounts payable cycle: invoice processing, vendor reconciliation, aging and voucher controls.</li>
+      <li>Managed statutory tax compliance and the filing calendar, so every return was filed on time.</li>
+    </ul>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>Accounting and Audit Staff</h3><span class="date">Oct 2013 - May 2014</span></div>
+    <p class="sub">Vallejera Accounting Firm | Cagayan de Oro, Philippines</p>
+    <ul>
+      <li>Prepared client financial statements, notes and audit reports; performed audit work on cash, property and equipment, accounts receivable and accounts payable.</li>
+      <li>Recorded client sales, purchases and expenses and filed VAT, percentage, withholding and income tax returns using QuickBooks.</li>
+    </ul>
   </div>
 </section>
 
 <section>
   <h2>Projects</h2>
-  <div>
-    <p class="intro">End-to-end automations built in n8n: write-ups on my site, workflows on GitHub.<a href="https://ramonvallejera.com/#portfolio">View all 7 projects</a></p>
+  <p class="note">End-to-end automations built in n8n, with write-ups at ramonvallejera.com and workflows at github.com/ramonaljr.</p>
 
-    <div class="item">
-      <div class="row"><h3>AI Invoice Processing &amp; Approval</h3><span class="date"><span class="tag">Sample client build</span> · Sep 2026</span></div>
-      <div class="row"><p class="sub">n8n · OpenAI · Gmail · Airtable · Slack · QuickBooks</p><p class="links"><a href="https://ramonvallejera.com/case-study/ai-invoice-processing-approval">Case study ↗</a><a href="https://github.com/ramonaljr/n8n-ai-invoice-processing-approval">GitHub ↗</a></p></div>
-      <p>Reads invoices from Gmail, skips duplicates and has AI extract the details, then checks each against the purchase order and delivery record before Slack approval and posting to QuickBooks. Built for construction billing: progress payments, retention and lien waivers.</p>
-    </div>
+  <div class="item">
+    <div class="row"><h3>AI Invoice Processing and Approval</h3><span class="date">Sep 2026</span></div>
+    <p class="sub">Sample client build | n8n, OpenAI, Gmail, Airtable, Slack, QuickBooks</p>
+    <p>Reads invoices from Gmail, skips duplicates and has AI extract the details, then checks each against the purchase order and delivery record before Slack approval and posting to QuickBooks. Built for construction billing: progress payments, retention and lien waivers.</p>
+    <p class="links"><a href="https://ramonvallejera.com/case-study/ai-invoice-processing-approval">ramonvallejera.com/case-study/ai-invoice-processing-approval</a></p>
+  </div>
 
-    <div class="item">
-      <div class="row"><h3>AI Unpaid Invoice Reminders</h3><span class="date"><span class="tag">Sample client build</span> · Sep 2026</span></div>
-      <div class="row"><p class="sub">n8n · QuickBooks · Pipedrive · PostgreSQL · OpenAI · Gmail · Slack</p><p class="links"><a href="https://ramonvallejera.com/case-study/ai-unpaid-invoice-reminders">Case study ↗</a><a href="https://github.com/ramonaljr/n8n-ai-unpaid-invoice-reminders">GitHub ↗</a></p></div>
-      <p>Checks QuickBooks, Pipedrive and the collections database every morning and sends reminders by set rules. AI writes the emails and reads customer replies; a dispute stops all reminders until a person resolves it.</p>
-    </div>
+  <div class="item">
+    <div class="row"><h3>AI Unpaid Invoice Reminders</h3><span class="date">Sep 2026</span></div>
+    <p class="sub">Sample client build | n8n, QuickBooks, Pipedrive, PostgreSQL, OpenAI, Gmail, Slack</p>
+    <p>Checks QuickBooks, Pipedrive and the collections database every morning and sends reminders by set rules. AI writes the emails and reads customer replies; a dispute stops all reminders until a person resolves it.</p>
+    <p class="links"><a href="https://ramonvallejera.com/case-study/ai-unpaid-invoice-reminders">ramonvallejera.com/case-study/ai-unpaid-invoice-reminders</a></p>
+  </div>
 
-    <div class="item">
-      <div class="row"><h3>AI Appointment Setter</h3><span class="date">Aug 2026</span></div>
-      <div class="row"><p class="sub">n8n · VAPI · Google Calendar · Airtable</p><p class="links"><a href="https://ramonvallejera.com/case-study/ai-appointment-setter">Case study ↗</a><a href="https://github.com/ramonaljr/n8n-ai-appointment-setter">GitHub ↗</a></p></div>
-      <p>VAPI voice agent backed by n8n webhooks that checks Google Calendar availability and books, reschedules and cancels appointments in real time — logging bookings and call results to Airtable.</p>
-    </div>
+  <div class="item">
+    <div class="row"><h3>AI Appointment Setter</h3><span class="date">Aug 2026</span></div>
+    <p class="sub">n8n, VAPI, Google Calendar, Airtable</p>
+    <p>VAPI voice agent backed by n8n webhooks that checks Google Calendar availability and books, reschedules and cancels appointments in real time, logging bookings and call results to Airtable.</p>
+    <p class="links"><a href="https://ramonvallejera.com/case-study/ai-appointment-setter">ramonvallejera.com/case-study/ai-appointment-setter</a></p>
+  </div>
 
-    <div class="item">
-      <div class="row"><h3>HR Evaluation and Job Posting Assistant with AI</h3><span class="date">Aug 2026</span></div>
-      <div class="row"><p class="sub">n8n · Groq · OpenAI · Airtable · Gmail · Google Calendar</p><p class="links"><a href="https://ramonvallejera.com/case-study/hr-evaluation-assistant">Case study ↗</a><a href="https://github.com/ramonaljr/n8n-hr-evaluation-assistant">GitHub ↗</a></p></div>
-      <p>Takes applications by form and uses an AI agent to evaluate each CV against its job posting, tagging candidates as potential hire or rejected. Shortlisted candidates get a tailored questionnaire, a personal interview invitation via Gmail and a booked slot in Google Calendar; the interviewer gets screening questions.</p>
-    </div>
+  <div class="item">
+    <div class="row"><h3>HR Evaluation and Job Posting Assistant with AI</h3><span class="date">Aug 2026</span></div>
+    <p class="sub">n8n, Groq, OpenAI, Airtable, Gmail, Google Calendar</p>
+    <p>Takes applications by form and uses an AI agent to evaluate each CV against its job posting, tagging candidates as potential hire or rejected. Shortlisted candidates get a tailored questionnaire, a personal interview invitation via Gmail and a booked slot in Google Calendar; the interviewer gets screening questions.</p>
+    <p class="links"><a href="https://ramonvallejera.com/case-study/hr-evaluation-assistant">ramonvallejera.com/case-study/hr-evaluation-assistant</a></p>
   </div>
 </section>
 
 <section>
-  <h2>Experience</h2>
-  <div>
-    <div class="item">
-      <div class="row"><h3>Financial Analyst</h3><span class="date">Jun 2022 — Present</span></div>
-      <p class="sub">My Mountain Mover (Independent Contractor) · United States, Remote</p>
-      <ul>
-        <li>Maintain DCF valuation models and financial statement forecasts across a portfolio of listed companies, turning earnings-call and investor guidance into revised assumptions each quarter.</li>
-        <li>Use Claude and other AI tools daily to accelerate research, analysis and reporting.</li>
-      </ul>
-    </div>
-
-    <div class="item">
-      <div class="row"><h3>Course Instructor</h3><span class="date">Dec 2020 — May 2023</span></div>
-      <p class="sub">Xavier University – Ateneo de Cagayan · Cagayan de Oro</p>
-      <ul><li>Taught business, finance and accounting courses, breaking complex processes into clear, step-by-step systems.</li></ul>
-    </div>
-
-    <div class="item">
-      <div class="row"><h3>Johndorf Ventures Corporation</h3><span class="date">Jul 2015 — Mar 2021</span></div>
-      <p class="sub">Real estate developer · Cagayan de Oro</p>
-      <div class="group">
-        <div class="item">
-          <div class="row"><h4>Branch Accountant</h4><span class="date">Apr 2020 — Mar 2021</span></div>
-          <ul>
-            <li>Led a 10-person accounting team delivering monthly and annual financial statements on a fixed close cycle.</li>
-            <li>Owned and documented close, reconciliation and approval processes across AP, AR and disbursement — the process mapping automation work depends on.</li>
-          </ul>
-        </div>
-        <div class="item">
-          <div class="row"><h4>Project Cost Accountant</h4><span class="date">Aug 2016 — Apr 2020</span></div>
-          <ul>
-            <li>Performed standard costing and variance analysis; reconciled material, labor and overhead costs against the item ledger.</li>
-            <li>Built and maintained recurring cost and project reporting workbooks.</li>
-          </ul>
-        </div>
-        <div class="item">
-          <div class="row"><h4>Accounts Payable Supervisor / Tax Compliance Analyst</h4><span class="date">Jul 2015 — Oct 2018</span></div>
-          <ul>
-            <li>Supervised the full AP cycle: invoice processing, vendor reconciliation, aging and voucher controls.</li>
-            <li>Managed statutory tax compliance and filing calendars — high-volume, rules-based, deadline-driven work.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+  <h2>Education</h2>
+  <div class="item">
+    <div class="row"><h3>Master of Business Administration</h3><span class="date">2016 - 2018</span></div>
+    <p>Ateneo de Cagayan University, Cagayan de Oro, Philippines</p>
+  </div>
+  <div class="item">
+    <div class="row"><h3>Bachelor of Science in Accountancy</h3><span class="date">2014</span></div>
+    <p>Pilgrim Christian College, Cagayan de Oro, Philippines <span class="note">(first two years at Liceo de Cagayan University, 2010 - 2012)</span></p>
   </div>
 </section>
 
 <section>
-  <h2>Education &amp;<br>Certifications</h2>
-  <div class="grid2">
-    <div>
-      <h4>Education</h4>
-      <p><strong style="font-weight:500;color:var(--ink)">Master of Business Administration</strong><br>Ateneo de Cagayan University, 2016–2018</p>
-      <p style="margin-top:6px"><strong style="font-weight:500;color:var(--ink)">BS Accountancy</strong><br>Pilgrim Christian College, 2014<br><span class="note">First two years at Liceo de Cagayan University, 2010–2012</span></p>
-    </div>
-    <div>
-      <h4>Certifications</h4>
-      <p><a href="https://ude.my/UC-f83a62bd-27e1-4391-8f2b-b6bdbd619d48" style="font-weight:500">n8n – AI Agents, AI Automations &amp; AI Voice Agents</a><br>Udemy, Aug 2026 · 58.5 hrs</p>
-      <p style="margin-top:6px"><strong style="font-weight:500;color:var(--ink)">Intuit QuickBooks Certified ProAdvisor</strong><br>Intuit, 2020</p>
-    </div>
+  <h2>Certifications</h2>
+  <div class="item">
+    <div class="row"><h3>n8n: AI Agents, AI Automations and AI Voice Agents</h3><span class="date">Aug 2026</span></div>
+    <p>Udemy, 58.5 hours | <a href="https://ude.my/UC-f83a62bd-27e1-4391-8f2b-b6bdbd619d48">ude.my/UC-f83a62bd-27e1-4391-8f2b-b6bdbd619d48</a></p>
+  </div>
+  <div class="item">
+    <div class="row"><h3>Intuit QuickBooks Certified ProAdvisor</h3><span class="date">2020</span></div>
+    <p>Intuit</p>
   </div>
 </section>
 
