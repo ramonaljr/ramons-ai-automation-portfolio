@@ -217,7 +217,31 @@ export function WorkCanvas({
   const artRef = useRef<HTMLDivElement>(null)
   const [markup, setMarkup] = useState<string | null>(null)
 
+  // Fetched and tagged only as the card comes within a screen of view.
+  // Tagging measures every element of the drawing, and doing it for every
+  // card while the page loaded held the main thread for over a second.
+  const [near, setNear] = useState(false)
+
   useEffect(() => {
+    const host = hostRef.current
+
+    if (!host || near) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) setNear(true)
+      },
+      { rootMargin: '100% 0px' }
+    )
+
+    observer.observe(host)
+
+    return () => observer.disconnect()
+  }, [near])
+
+  useEffect(() => {
+    if (!near) return
+
     let live = true
 
     loadSvg(src)
@@ -232,7 +256,7 @@ export function WorkCanvas({
     return () => {
       live = false
     }
-  }, [src, idSuffix, label])
+  }, [near, src, idSuffix, label])
 
   /**
    * The SVG is injected here rather than rendered through React.

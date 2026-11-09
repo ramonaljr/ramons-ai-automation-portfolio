@@ -84,26 +84,40 @@ function useJourney(frame: (dt: number, cadence: number, fade: number) => void) 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    const fadeOf = () => {
-      const progress = window.scrollY / window.innerHeight
+    // Read in the scroll and resize events, never in the frame: reading
+    // scrollY or innerHeight after the frame has written to the page makes
+    // the browser lay the whole page out again, every frame.
+    let scroll = window.scrollY
+    let viewport = window.innerHeight
 
-      // Full while the hero fills the screen, gone before the work strip.
-      return Math.max(0, Math.min(1, (0.75 - progress) / 0.45))
+    // Full while the hero fills the screen, gone before the work strip.
+    const fadeOf = () => Math.max(0, Math.min(1, (0.75 - scroll / viewport) / 0.45))
+
+    const onResize = () => {
+      viewport = window.innerHeight
     }
+
+    window.addEventListener('resize', onResize)
 
     if (reduced) {
       frameRef.current(0, 0, fadeOf())
 
-      const onScroll = () => frameRef.current(0, 0, fadeOf())
+      const onScroll = () => {
+        scroll = window.scrollY
+        frameRef.current(0, 0, fadeOf())
+      }
 
       window.addEventListener('scroll', onScroll, { passive: true })
 
-      return () => window.removeEventListener('scroll', onScroll)
+      return () => {
+        window.removeEventListener('scroll', onScroll)
+        window.removeEventListener('resize', onResize)
+      }
     }
 
     let raf = 0
     let last = 0
-    let lastScroll = window.scrollY
+    let lastScroll = scroll
     let scrollSpeed = 0
     let boost = 0
 
@@ -112,7 +126,6 @@ function useJourney(frame: (dt: number, cadence: number, fade: number) => void) 
 
       last = now
 
-      const scroll = window.scrollY
       const speed = Math.abs(scroll - lastScroll) / Math.max(dt, 1 / 120)
 
       lastScroll = scroll
@@ -128,15 +141,39 @@ function useJourney(frame: (dt: number, cadence: number, fade: number) => void) 
 
       const fade = fadeOf()
 
-      if (fade > 0) frameRef.current(dt, CADENCE + (CADENCE_MAX - CADENCE) * boost, fade)
-      else frameRef.current(0, 0, 0)
+      if (fade > 0) {
+        frameRef.current(dt, CADENCE + (CADENCE_MAX - CADENCE) * boost, fade)
+        raf = requestAnimationFrame(tick)
 
+        return
+      }
+
+      // Scrolled past the hero: hide once and sleep until it comes back
+      frameRef.current(0, 0, 0)
+      raf = 0
+    }
+
+    const wake = () => {
+      if (raf || fadeOf() === 0) return
+
+      last = 0
+      lastScroll = scroll
       raf = requestAnimationFrame(tick)
     }
 
+    const onScroll = () => {
+      scroll = window.scrollY
+      wake()
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
     raf = requestAnimationFrame(tick)
 
-    return () => cancelAnimationFrame(raf)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+    }
   }, [])
 }
 

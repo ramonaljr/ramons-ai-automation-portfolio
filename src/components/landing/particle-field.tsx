@@ -334,6 +334,22 @@ export function ParticleField({ className = '' }: { className?: string }) {
     // first line harder to read, so leaves fade out as they near this copy.
     const clearOf = [...document.querySelectorAll<HTMLElement>('[data-leaf-clear]')]
 
+    // Where things are, measured in the scroll and resize events rather than
+    // in the frame. Measuring in the frame, after the page's other animations
+    // had written to it, made the browser lay out the whole page every frame.
+    let scrollNow = window.scrollY
+    let origin = box.getBoundingClientRect()
+    let rects: DOMRect[] = []
+
+    const measure = () => {
+      scrollNow = window.scrollY
+      origin = box.getBoundingClientRect()
+
+      // Only the copy still on screen; past the hero this is empty and every
+      // leaf draws at full strength.
+      rects = clearOf.map(el => el.getBoundingClientRect()).filter(r => r.bottom > 0 && r.top < origin.bottom)
+    }
+
     /** 0 inside the copy (plus a margin), rising to 1 a short way outside it. */
     const clearance = (x: number, y: number, rects: DOMRect[]) => {
       let nearest = Infinity
@@ -354,7 +370,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
     let gustAt = between(GUST_GAP, Math.random()) * 0.5
     let gustDir = 1
     let gustPower = 1
-    let lastScroll = window.scrollY
+    let lastScroll = scrollNow
 
     /** Smoothed scroll speed, px/s, and the stir it raises (0-1). */
     let scrollSpeed = 0
@@ -385,7 +401,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
         gustPower = 0.65 + Math.random() * 0.35
       }
 
-      const scroll = window.scrollY
+      const scroll = scrollNow
 
       // A jump (an anchor link) is not a flick; only ordinary scrolling stirs.
       const moved = Math.max(-600, Math.min(600, scroll - lastScroll))
@@ -426,12 +442,6 @@ export function ParticleField({ className = '' }: { className?: string }) {
     const draw = () => {
       ctx.setTransform(1, 0, 0, 1, 0, 0)
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      const origin = box.getBoundingClientRect()
-
-      // Only the copy still on screen; past the hero this is empty and every
-      // leaf draws at full strength.
-      const rects = clearOf.map(el => el.getBoundingClientRect()).filter(r => r.bottom > 0 && r.top < origin.bottom)
 
       for (const leaf of leaves) {
         const x = leaf.x + Math.sin(clock * leaf.swayRate + leaf.phase) * leaf.sway
@@ -475,7 +485,8 @@ export function ParticleField({ className = '' }: { className?: string }) {
       if (running) return
       running = true
       last = 0
-      lastScroll = window.scrollY
+      measure()
+      lastScroll = scrollNow
 
       if (reduced) draw()
       else raf = requestAnimationFrame(tick)
@@ -492,8 +503,15 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
     const ro = new ResizeObserver(() => {
       resize()
+      measure()
       if (reduced) draw()
     })
+
+    const onScroll = () => {
+      if (running) measure()
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
 
     io.observe(wrap)
     ro.observe(box)
@@ -517,6 +535,7 @@ export function ParticleField({ className = '' }: { className?: string }) {
       ro.disconnect()
       themeObserver.disconnect()
       document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('scroll', onScroll)
       wrap.classList.remove('is-canvas-ready')
     }
   }, [])
