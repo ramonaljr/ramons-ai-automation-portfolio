@@ -1,6 +1,6 @@
 # Stageshow film plans: all 10 case studies
 
-A plan, not yet built. It replaces each case study's hand-drawn Storify film
+A plan, not yet built; every decision in it is settled (see the end). It replaces each case study's hand-drawn Storify film
 (`public/films/<slug>.mp4`, about 3½ minutes, a robot narrator touring every
 lane) with a **fused film** made in Stageshow: the short product-style clip and
 the build walkthrough in one piece, in the site's own look.
@@ -210,7 +210,7 @@ something, not by being shown seventeen boxes in a row.
 6. **Each film passes the same checks as the site's scenes:** a frame-by-frame
    film strip, a still at 360 px wide, and reduced motion.
 
-## Decisions for Ramon
+## Decisions (all settled 2026-11-10)
 
 1. ~~**The hand-drawn films:** retire or keep?~~ **Retire** (Ramon,
    2026-11-10): each one goes when its replacement is live (step 5 above).
@@ -220,4 +220,7 @@ something, not by being shown seventeen boxes in a row.
 3. ~~**Live in the dialog** or an MP4 there too?~~ **Live** (Ramon,
    2026-11-10): the dialog's Film toggle plays the scene itself; the MP4s
    are for the Walkthrough link, YouTube and LinkedIn only.
-4. **Length:** 60 to 90 seconds, against 3½ minutes now.
+4. ~~**Length?**~~ **60 to 90 seconds** (Ramon, 2026-11-10), against 3½
+   minutes now.
+
+All four are settled, so the plan is ready to build from step 1.
