@@ -889,9 +889,10 @@
 .fm-screen .fl-token {
   position: absolute;
   top: 0;
-  right: -13px;
+  right: -14px;
   display: grid;
   place-items: center;
+  width: 24px;
   height: 14px;
   opacity: 0;
   transition:
@@ -1147,10 +1148,30 @@
   transition: transform 1100ms cubic-bezier(0.65, 0, 0.35, 1);
 }
 
+/* A talking robot bobs. The bob's phase always runs and only its height
+   eases in and out, so a robot that stops talking settles, never snaps. */
+@property --tw-bob {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --tw-amp {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 .fm-screen .tw-actor .rb {
+  translate: 0 calc(var(--tw-bob) * var(--tw-amp));
+  will-change: transform;
+  animation: tw-bob 0.42s ease-in-out infinite alternate;
+
+  /* A robot walking on fades for most of its walk, not just the start */
   transition:
-    opacity 500ms ease,
-    transform 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
+    opacity 800ms ease,
+    transform 700ms cubic-bezier(0.25, 0.8, 0.25, 1),
+    --tw-amp 240ms ease;
 }
 
 .fm-screen .tw-actor[data-out] .rb {
@@ -1159,35 +1180,41 @@
 }
 
 .fm-screen .tw-actor[data-talking]:not([data-out]) .rb {
-  animation: tw-bob 0.42s ease-in-out infinite alternate;
+  --tw-amp: -2px;
 }
 
 @keyframes tw-bob {
-  from {
-    transform: none;
-  }
-
   to {
-    transform: translateY(-2px);
+    --tw-bob: 1;
   }
 }
 
-/* A bubble: drawn in ink, its words set in the site's type */
+/* A bubble: drawn in ink, its words set in the site's type. It rises in
+   once and only fades out; its words crossfade while the speaker keeps it. */
 .fm-screen .tw-say {
   z-index: 3;
   display: grid;
   place-items: center;
   opacity: 0;
-  transform: translateY(6px) scale(0.97);
-  transition:
-    opacity 200ms ease,
-    transform 280ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: transform, opacity;
+  transition: opacity 200ms ease;
 }
 
 .fm-screen .tw-say[data-on] {
   opacity: 1;
-  transform: none;
-  transition-delay: 120ms;
+  transition-delay: 100ms;
+}
+
+/* Over the paper a bubble rises in; in the band the two share one place, so
+   they only crossfade there */
+.fm-screen .tw-say--ink[data-on] {
+  animation: tw-rise 300ms cubic-bezier(0.25, 0.8, 0.25, 1) 100ms backwards;
+}
+
+@keyframes tw-rise {
+  from {
+    transform: translateY(6px);
+  }
 }
 
 .fm-screen .tw-say__ink {
@@ -1201,8 +1228,15 @@
   stroke-width: 2.2;
 }
 
-.fm-screen .tw-say__text {
+.fm-screen .tw-say__words {
   position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+
+.fm-screen .tw-say__text {
+  grid-area: 1 / 1;
   margin: 0;
   padding: 0 28px;
   color: var(--ink);
@@ -1211,6 +1245,13 @@
   line-height: 1.25;
   text-align: center;
   text-wrap: balance;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.fm-screen .tw-say__text[data-on] {
+  opacity: 1;
+  transition-delay: 120ms;
 }
 
 /* ── The marker pen (marker.tsx) ────────────────────────────────────────── */
@@ -1229,7 +1270,7 @@
 
 .fm-screen .tw-marker[data-on] {
   opacity: 1;
-  transition: none;
+  transition: opacity 160ms ease-out;
 }
 
 .fm-screen .tw-marker path {
@@ -1255,6 +1296,10 @@
 @media (prefers-reduced-motion: reduce) {
   .fm-screen .tw-marker path {
     stroke-dashoffset: 0;
+  }
+
+  .fm-screen .tw-actor .rb {
+    animation: none;
   }
 }
 
@@ -1353,21 +1398,24 @@
 }
 
 .fm-screen .fa-apps > .fa-plate {
-  top: -40px;
-  left: 20px;
-  right: 20px;
-  height: 316px;
+  top: -200px;
+  left: -200px;
+  right: -200px;
+  height: 478px;
+  border-radius: 0;
 }
 
 .fm-screen .fa-map > .fa-plate {
-  inset: -10px -10px -66px;
+  /* Run past the frame's sides, so no sliver of gutter shows on a phone */
+  inset: -10px -200px;
   z-index: -1;
+  border-radius: 0;
 }
 
 .fm-screen .fa-token {
   display: block;
   width: 24px;
-  height: 15px;
+  height: 14px;
   overflow: visible;
 }
 
@@ -1383,22 +1431,33 @@
 
 .fm-screen .fa-cta {
   position: absolute;
+  right: 0;
   bottom: 22px;
-  left: 50%;
+  left: 0;
   z-index: 4;
-  display: inline-flex;
+
+  /* Centred by layout, not translate(-50%), so its icon lands on whole pixels */
+  display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0;
-  padding: 8px 18px;
-  border: 1.5px solid var(--fm-accent);
+  box-sizing: border-box;
+  justify-content: center;
+
+  /* Even sides all round, so the icon centres on whole pixels */
+  width: 200px;
+  height: 40px;
+  margin: 0 auto;
+  padding: 0;
+  will-change: transform, opacity;
+  line-height: 1;
+  border: 2px solid var(--fm-accent);
   border-radius: 999px;
   background: var(--paper-w);
   color: var(--fm-accent);
   font-size: 15px;
   font-weight: 600;
   opacity: 0;
-  transform: translate(-50%, 8px);
+  transform: translateY(8px);
   transition:
     opacity 300ms ease,
     transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -1406,7 +1465,7 @@
 
 .fm-screen .fa-cta[data-on] {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: none;
 }
 
 /* ── Film 1's front desk, in ink ────────────────────────────────────────── */
@@ -1497,6 +1556,7 @@
 
 .fm-screen .fd-missed {
   opacity: 0;
+  will-change: transform;
   transform: translateY(8px);
   transition:
     opacity 400ms ease,
@@ -1678,6 +1738,17 @@
   padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
     max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
   background: #0d0f14;
+}
+
+/* A transform or filter on anything holding the film (the case-study dialog's
+   zoom-in and blur) would pin the fixed player inside it, not the window.
+   While it is full screen, those holding it drop theirs; nothing inside it does. */
+:has(.fm[data-full]) {
+  transform: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  contain: none !important;
+  will-change: auto !important;
 }
 
 /* The stage as large as the screen allows, always 16:9, the controls under it */

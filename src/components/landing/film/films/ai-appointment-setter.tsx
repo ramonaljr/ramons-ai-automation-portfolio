@@ -545,7 +545,7 @@ function DeskFront({ s }: { s: S }) {
 
 /** The case, drawn small: Leo's phone, riding the lit lane. */
 const TOKEN = (
-  <svg className='fa-token' viewBox='0 0 26 16'>
+  <svg className='fa-token' viewBox='0 0 26 15'>
     <Ink className='fa-token__pill' pts={rr(1, 1, 24, 14, 7)} seed={81} amp={0.5} passes={1} />
     <Ink className='fa-token__phone' pts={rr(9.5, 3.5, 7, 9, 2)} seed={82} amp={0.3} passes={1} />
   </svg>

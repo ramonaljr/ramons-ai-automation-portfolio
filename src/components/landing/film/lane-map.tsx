@@ -79,7 +79,7 @@ export function LaneMap({ lanes, lit, step, token }: { lanes: Lane[]; lit: numbe
           lane={l}
           lit={l.n === lit}
           step={l.n === lit ? step : -1}
-          token={l.n === lit ? token : undefined}
+          token={token}
         />
       ))}
     </div>
@@ -123,8 +123,8 @@ function LaneBox({ lane, lit, step, token }: { lane: Lane; lit: boolean; step: n
         {token && (
           <li
             className='fl-token'
-            data-on={step >= 0 || undefined}
-            style={{ transform: `translateY(${Math.max(step, 0) * PITCH}px)` }}
+            data-on={(lit && step >= 0) || undefined}
+            style={{ transform: `translateY(${lit ? Math.max(step, 0) * PITCH : 0}px)` }}
             aria-hidden='true'
           >
             {token}

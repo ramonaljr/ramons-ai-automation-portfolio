@@ -56,6 +56,7 @@ const BUBBLE = {
 } as const
 
 const BUBBLE_INK = rr(0, 0, BUBBLE.ink.w, BUBBLE.ink.h, 20)
+
 const BUBBLE_BAND = rr(0, 0, BUBBLE.build.w, BUBBLE.build.h, 20)
 
 /** The tails: off the band bubble's ends, or down from the paper bubble. */
@@ -82,7 +83,33 @@ function boxOf(spot: Spot) {
   return { left: spot.x - spot.w / 2, top: spot.y - h * FEET, h }
 }
 
-function Bubble({ line, on, world, spot }: { line: Line; on: boolean; world: 'ink' | 'build'; spot: Spot }) {
+/**
+ * A speaker's bubble. It stays up while the same robot says one line after
+ * another, and only its words change, so consecutive lines never pop.
+ */
+function Bubble({
+  on,
+  world,
+  spot,
+  lines,
+  at
+}: {
+  on: boolean
+  world: 'ink' | 'build'
+  spot: Spot
+  lines: readonly { text: string; i: number }[]
+  at: number
+}) {
+  const words = (
+    <div className='tw-say__words'>
+      {lines.map(l => (
+        <p key={l.i} className='tw-say__text' data-on={l.i === at || undefined}>
+          {l.text}
+        </p>
+      ))}
+    </div>
+  )
+
   if (world === 'build') {
     const b = BUBBLE.build
     const left = spot.x < STAGE.w / 2
@@ -99,20 +126,20 @@ function Bubble({ line, on, world, spot }: { line: Line; on: boolean; world: 'in
           style={{ left: -20, width: b.w + 40, height: b.h }}
           aria-hidden='true'
         >
-          <Ink className='tw-say__shape' pts={BUBBLE_BAND} seed={71} amp={1.2} />
+          <Ink className='tw-say__shape' pts={BUBBLE_BAND} seed={left ? 71 : 72} amp={1.2} />
           <Ink className='tw-say__shape' pts={left ? TAIL_LEFT : TAIL_RIGHT} seed={73} amp={0.8} closed={false} />
         </svg>
-        <p className='tw-say__text'>{line.text}</p>
+        {words}
       </div>
     )
   }
 
   const b = BUBBLE.ink
   const box = boxOf(spot)
-  const x = Math.min(Math.max(spot.x - b.w / 2, 20), STAGE.w - b.w - 20)
+  const x = Math.round(Math.min(Math.max(spot.x - b.w / 2, 20), STAGE.w - b.w - 20))
 
   // Its foot sits just over the speaker's head, clear of the "?" tag's place
-  const y = Math.max(16, box.top + box.h * 0.12 - b.h - 18)
+  const y = Math.round(Math.max(16, box.top + box.h * 0.12 - b.h - 18))
   const tx = Math.min(Math.max(spot.x - x, 40), b.w - 40)
 
   const tail: Pt[] = [
@@ -132,7 +159,7 @@ function Bubble({ line, on, world, spot }: { line: Line; on: boolean; world: 'in
         <Ink className='tw-say__shape' pts={BUBBLE_INK} seed={71} amp={1.2} />
         <Ink className='tw-say__shape' pts={tail} seed={75} amp={0.8} closed={false} />
       </svg>
-      <p className='tw-say__text'>{line.text}</p>
+      {words}
     </div>
   )
 }
@@ -206,11 +233,16 @@ export function TalkBand({
 
       <div className='tw-front'>{front}</div>
 
-      {lines.map((l, i) => {
-        const a = actors.find(o => o.who === l.who)
-
-        return a ? <Bubble key={i} line={l} on={i === at} world={world} spot={a.spot} /> : null
-      })}
+      {actors.map(a => (
+        <Bubble
+          key={a.who}
+          on={speaker === a.who}
+          world={world}
+          spot={a.spot}
+          lines={lines.flatMap((l, i) => (l.who === a.who ? [{ text: l.text, i }] : []))}
+          at={at}
+        />
+      ))}
     </div>
   )
 }
