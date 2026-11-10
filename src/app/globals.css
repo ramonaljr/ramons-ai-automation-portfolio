@@ -484,7 +484,17 @@
   opacity: 0;
 }
 
+/* Rings out from a tool as the run reaches it (scale and opacity only) */
+.intro-flow-ping {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px var(--mark);
+  opacity: 0;
+}
+
 .intro-flow-line {
+  position: relative;
   display: block;
   width: 3.25rem;
   height: 1px;
@@ -498,6 +508,22 @@
   background: var(--accent);
   transform: scaleX(0);
   transform-origin: 0 50%;
+}
+
+/* The work on its way: a dot at the head of the fill, moved by x only */
+.intro-flow-pulse {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--accent) 16%, transparent),
+    0 0 10px color-mix(in oklab, var(--accent) 45%, transparent);
+  opacity: 0;
 }
 
 /* The chat button sits above the glass (z 110 to its 100), so it waits
