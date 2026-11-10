@@ -6,13 +6,15 @@ import { AppointmentSetterFilm } from '@/components/landing/film/films/ai-appoin
 import { InvoiceApprovalFilm } from '@/components/landing/film/films/ai-invoice-processing-approval'
 import { UnpaidRemindersFilm } from '@/components/landing/film/films/ai-unpaid-invoice-reminders'
 import { OrderStockFilm } from '@/components/landing/film/films/order-stock-check'
+import { LeadScoringFilm } from '@/components/landing/film/films/solar-lead-scoring-follow-up'
 import type { LiveFilmSlug } from '@/components/landing/film/live-films'
 
 const FILMS: Record<LiveFilmSlug, ComponentType> = {
   'ai-appointment-setter': AppointmentSetterFilm,
   'ai-invoice-processing-approval': InvoiceApprovalFilm,
   'ai-unpaid-invoice-reminders': UnpaidRemindersFilm,
-  'order-stock-check': OrderStockFilm
+  'order-stock-check': OrderStockFilm,
+  'solar-lead-scoring-follow-up': LeadScoringFilm
 }
 
 /**

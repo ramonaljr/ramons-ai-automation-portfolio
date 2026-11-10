@@ -8,13 +8,15 @@ import * as appointments from './ai-appointment-setter-lines'
 import * as invoices from './ai-invoice-processing-approval-lines'
 import * as reminders from './ai-unpaid-invoice-reminders-lines'
 import * as stock from './order-stock-check-lines'
+import * as leads from './solar-lead-scoring-follow-up-lines'
 
 /** Every film's talk, by its case study's slug. */
 const FILMS: Record<string, { IMPACT: string; LINES: readonly Line[] }> = {
   'ai-appointment-setter': appointments,
   'ai-invoice-processing-approval': invoices,
   'ai-unpaid-invoice-reminders': reminders,
-  'order-stock-check': stock
+  'order-stock-check': stock,
+  'solar-lead-scoring-follow-up': leads
 }
 
 /** The case study's own impactHighlight, read from its .mdx. */
