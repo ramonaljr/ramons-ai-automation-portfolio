@@ -928,6 +928,41 @@
   --rb-dark: #879a41;
 }
 
+.fm-screen .rb--karan {
+  --rb-body: #e7b94c;
+  --rb-dark: #a68537;
+}
+
+.fm-screen .rb--isa {
+  --rb-body: #e98fb6;
+  --rb-dark: #a86783;
+}
+
+.fm-screen .rb--jeson {
+  --rb-body: #93aa5c;
+  --rb-dark: #6a7a42;
+}
+
+.fm-screen .rb--myk {
+  --rb-body: #f29e9e;
+  --rb-dark: #ae7272;
+}
+
+.fm-screen .rb--unix {
+  --rb-body: #7cc9a8;
+  --rb-dark: #599179;
+}
+
+.fm-screen .rb--samantha {
+  --rb-body: #f7c3a1;
+  --rb-dark: #b28c74;
+}
+
+.fm-screen .rb--carlos {
+  --rb-body: #9c4a5e;
+  --rb-dark: #703544;
+}
+
 .fm-screen .rb-shadow {
   fill: var(--ink);
   opacity: 0.25;
@@ -1086,6 +1121,68 @@
   font-weight: 700;
   text-anchor: middle;
   dominant-baseline: central;
+}
+
+/* The other heads and what the robots wear, in the engine's colours */
+.fm-screen .rb-star__star path {
+  fill: var(--ink-bulb);
+  stroke-width: 1.6;
+}
+
+.fm-screen .rb-cap__crown path {
+  fill: #e4572e;
+  stroke-width: 2;
+}
+
+.fm-screen .rb-cap__brim path {
+  fill: #c0431f;
+  stroke-width: 1.8;
+}
+
+.fm-screen .rb-heart__heart {
+  fill: #e5537a;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+
+.fm-screen .rb-leaf__stem {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.fm-screen .rb-leaf__leaf path {
+  fill: #8fd694;
+  stroke-width: 1.6;
+}
+
+.fm-screen .rb-flower__petal path {
+  fill: #fff1f6;
+  stroke-width: 1.3;
+}
+
+.fm-screen .rb-flower__heart {
+  fill: var(--ink-bulb);
+}
+
+.fm-screen .rb-face--visor .rb-mouth {
+  stroke: var(--ink);
+  stroke-width: 2.4;
+}
+
+.fm-screen .rb-tie path {
+  fill: #2e5e9e;
+  stroke-width: 1.6;
+}
+
+.fm-screen .rb-glasses {
+  fill: none;
+  stroke: #e9e4ff;
+  stroke-width: 1.6;
+}
+
+.fm-screen .rb-mustache {
+  fill: #fff;
 }
 
 /* ── The talk band (talk-band.tsx) ──────────────────────────────────────── */

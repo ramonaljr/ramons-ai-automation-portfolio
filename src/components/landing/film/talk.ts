@@ -21,7 +21,17 @@ export type Line = {
   pose?: Pose
 }
 
-export const NAMES: Record<Who, string> = { dennice: 'Dennice', leo: 'Leo' }
+export const NAMES: Record<Who, string> = {
+  dennice: 'Dennice',
+  leo: 'Leo',
+  karan: 'Karan',
+  isa: 'Isa',
+  jeson: 'Jeson',
+  myk: 'Myk',
+  unix: 'Unix',
+  samantha: 'Samantha',
+  carlos: 'Carlos'
+}
 
 /** At most this many lines a film, and words a line (the end line, the case study's own sentence, aside). */
 export const MAX_LINES = 22
