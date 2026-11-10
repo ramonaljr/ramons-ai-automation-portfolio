@@ -461,6 +461,7 @@ function DemoCard({
     <section
       className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'
       aria-label='Interactive demo'
+      data-demo-platform={platformOf(platform)}
     >
       <div className='border-rule mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b px-1 pb-3'>
         <p className='text-accent font-mono text-xs font-medium tracking-[0.2em] uppercase'>INTERACTIVE DEMO</p>

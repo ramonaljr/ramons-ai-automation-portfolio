@@ -679,6 +679,8 @@
 /* ─── Guidance: the three steps in the card header, the Execute invite, the coach strip ─── */
 
 .demo-guide {
+  --guide: #ff6d5a;
+
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
@@ -717,9 +719,18 @@
 }
 
 .demo-guide li[data-state='current'] .demo-guide-step {
-  border-color: var(--accent);
-  background: color-mix(in oklab, var(--accent) 8%, transparent);
+  border-color: var(--guide);
+  background: color-mix(in oklab, var(--guide) 8%, transparent);
   color: var(--ink);
+}
+
+/* The lit step takes the colour of the platform's own run button. */
+[data-demo-platform='make'] .demo-guide {
+  --guide: #6d00cc;
+}
+
+[data-demo-platform='zapier'] .demo-guide {
+  --guide: #ff4f00;
 }
 
 button.demo-guide-step {
@@ -727,11 +738,11 @@ button.demo-guide-step {
 }
 
 button.demo-guide-step:hover {
-  background: color-mix(in oklab, var(--accent) 14%, transparent);
+  background: color-mix(in oklab, var(--guide) 14%, transparent);
 }
 
 button.demo-guide-step:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--guide);
   outline-offset: 2px;
 }
 
@@ -750,9 +761,9 @@ button.demo-guide-step:focus-visible {
 }
 
 .demo-guide li[data-state='current'] .demo-guide-num {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--accent-foreground);
+  border-color: var(--guide);
+  background: var(--guide);
+  color: #fff;
 }
 
 .demo-guide li[data-state='done'] .demo-guide-num {
