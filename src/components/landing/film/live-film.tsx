@@ -8,6 +8,7 @@ import { UnpaidRemindersFilm } from '@/components/landing/film/films/ai-unpaid-i
 import { OrderStockFilm } from '@/components/landing/film/films/order-stock-check'
 import { LeadScoringFilm } from '@/components/landing/film/films/solar-lead-scoring-follow-up'
 import { ProspectingFilm } from '@/components/landing/film/films/ai-prospecting-apollo'
+import { ClientPipelineFilm } from '@/components/landing/film/films/airtable-crm-lead-engagement'
 import type { LiveFilmSlug } from '@/components/landing/film/live-films'
 
 const FILMS: Record<LiveFilmSlug, ComponentType> = {
@@ -16,7 +17,8 @@ const FILMS: Record<LiveFilmSlug, ComponentType> = {
   'ai-unpaid-invoice-reminders': UnpaidRemindersFilm,
   'order-stock-check': OrderStockFilm,
   'solar-lead-scoring-follow-up': LeadScoringFilm,
-  'ai-prospecting-apollo': ProspectingFilm
+  'ai-prospecting-apollo': ProspectingFilm,
+  'airtable-crm-lead-engagement': ClientPipelineFilm
 }
 
 /**

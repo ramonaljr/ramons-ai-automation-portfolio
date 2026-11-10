@@ -10,6 +10,7 @@ import * as reminders from './ai-unpaid-invoice-reminders-lines'
 import * as stock from './order-stock-check-lines'
 import * as leads from './solar-lead-scoring-follow-up-lines'
 import * as prospects from './ai-prospecting-apollo-lines'
+import * as pipeline from './airtable-crm-lead-engagement-lines'
 
 /** Every film's talk, by its case study's slug. */
 const FILMS: Record<string, { IMPACT: string; LINES: readonly Line[] }> = {
@@ -18,7 +19,8 @@ const FILMS: Record<string, { IMPACT: string; LINES: readonly Line[] }> = {
   'ai-unpaid-invoice-reminders': reminders,
   'order-stock-check': stock,
   'solar-lead-scoring-follow-up': leads,
-  'ai-prospecting-apollo': prospects
+  'ai-prospecting-apollo': prospects,
+  'airtable-crm-lead-engagement': pipeline
 }
 
 /** The case study's own impactHighlight, read from its .mdx. */
