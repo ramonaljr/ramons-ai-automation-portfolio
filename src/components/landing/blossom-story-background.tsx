@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 
 import { usePrefersReducedMotion } from '@/components/landing/motion'
-import { JourneyRanges, JourneyWalker } from '@/components/landing/hero-journey'
+import { JourneyRanges } from '@/components/landing/hero-journey'
 
 type Mood = 'golden' | 'calm' | 'close'
 
@@ -208,9 +208,6 @@ export function BlossomStoryBackground() {
           <i />
         </div>
         <div className='blossom-story-horizon absolute inset-x-0 bottom-0' />
-
-        {/* In front of the branches and the light, behind the falling leaves. */}
-        <JourneyWalker />
       </div>
     </div>
   )
