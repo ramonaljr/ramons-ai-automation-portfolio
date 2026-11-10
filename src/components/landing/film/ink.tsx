@@ -1,4 +1,4 @@
-import { BOILS, inkPath, type Pt } from '@/components/landing/film/sketch'
+import { inkPath, type Pt } from '@/components/landing/film/sketch'
 
 type Props = {
   pts: readonly Pt[]
@@ -12,21 +12,23 @@ type Props = {
 }
 
 /**
- * One inked shape, as the hand-drawn films draw it: three frames of the same
- * line, shown in turn eight times a second (film.css, "Ink"). The first pass
+ * One inked shape, as the hand-drawn films draw it, held still. The first pass
  * takes the shape's fill; later passes are a fainter second stroke. Fill and
  * stroke colours come from `className`.
+ *
+ * One frame, not the hand-drawn films' three boiling at eight a second: in a
+ * live page that redrew every line in the film eight times a second, which
+ * read as the whole film flickering, and Chrome on a Mac could flash a frame
+ * blank between two copies.
  */
 export function Ink({ pts, seed, amp, closed, passes = 2, className }: Props) {
   return (
     <g className={className ? `ink ${className}` : 'ink'}>
-      {BOILS.map(boil => (
-        <g key={boil} className='ink__f' data-f={boil}>
-          {Array.from({ length: passes }, (_, pass) => (
-            <path key={pass} d={inkPath(pts, { seed, amp, closed, boil, pass })} />
-          ))}
-        </g>
-      ))}
+      <g className='ink__f'>
+        {Array.from({ length: passes }, (_, pass) => (
+          <path key={pass} d={inkPath(pts, { seed, amp, closed, boil: 0, pass })} />
+        ))}
+      </g>
     </g>
   )
 }

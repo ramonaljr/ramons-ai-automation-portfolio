@@ -1056,7 +1056,7 @@
   color: #17171c;
 }
 
-/* ── Ink (ink.tsx): the hand-drawn films' line, boiling ─────────────────── */
+/* ── Ink (ink.tsx): the hand-drawn films' line, held still ─────────────── */
 
 /* The drawn world's colours, from the Storify engine (engine-core.js) */
 .fm,
@@ -1083,61 +1083,6 @@
 .fm-screen .ink__f path + path {
   fill: none !important;
   opacity: 0.4;
-}
-
-/* Three frames, eight a second: each frame shows for 125 ms in turn */
-.fm-screen .ink__f {
-  visibility: hidden;
-  animation: ink-boil 375ms steps(1, end) infinite;
-}
-
-.fm-screen .ink__f[data-f='1'] {
-  animation-delay: -250ms;
-}
-
-.fm-screen .ink__f[data-f='2'] {
-  animation-delay: -125ms;
-}
-
-@keyframes ink-boil {
-  0%,
-  33.32% {
-    visibility: visible;
-  }
-
-  33.33%,
-  100% {
-    visibility: hidden;
-  }
-}
-
-/* Settled, or reduced motion: the line holds on its first frame */
-.fm-screen [data-ink='still'] .ink__f {
-  animation: none;
-}
-
-.fm-screen [data-ink='still'] .ink__f[data-f='0'] {
-  visibility: visible;
-}
-
-/* The desk out of sight (the build world, faded to nothing): it holds too,
-   rather than repaint lines no one sees eight times a second */
-.fm-screen .fa-desk:not([data-on]) .ink__f {
-  animation: none;
-}
-
-.fm-screen .fa-desk:not([data-on]) .ink__f[data-f='0'] {
-  visibility: visible;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .fm-screen .ink__f {
-    animation: none;
-  }
-
-  .fm-screen .ink__f[data-f='0'] {
-    visibility: visible;
-  }
 }
 
 /* ── The riding token on the lane map (lane-map.tsx) ───────────────────── */
