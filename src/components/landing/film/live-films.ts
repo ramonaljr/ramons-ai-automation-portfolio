@@ -8,10 +8,10 @@ export const LIVE_FILMS = ['ai-appointment-setter', 'ai-invoice-processing-appro
 export type LiveFilmSlug = (typeof LIVE_FILMS)[number]
 
 /**
- * The live films the dialog plays in place of the MP4. Empty for now: the
- * hand-drawn films stay on all ten case studies (Ramon, 2026-11-10). Add a
- * slug here to switch its dialog over.
+ * The live films the dialog plays in place of the MP4: all ten (Ramon,
+ * 2026-11-10). Take a slug out to put its dialog back on the hand-drawn MP4,
+ * which stays in public/films for the Walkthrough link either way.
  */
-const SHOWN: readonly LiveFilmSlug[] = []
+const SHOWN: readonly LiveFilmSlug[] = [...LIVE_FILMS]
 
 export const hasLiveFilm = (slug: string): slug is LiveFilmSlug => (SHOWN as readonly string[]).includes(slug)
