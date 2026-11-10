@@ -32,6 +32,12 @@ const SKIP_EVENTS = ['pointerdown', 'keydown', 'wheel', 'touchstart'] as const
 /** The workflow under the name: an email in, n8n, a message out. */
 const FLOW: Tool[] = ['gmail', 'n8n', 'slack']
 
+/** The run's beats, in seconds: when the first tool lights, each line's
+ *  travel time, and the pause on each tool before the pulse leaves it. */
+const RUN_START = 0.5
+const RUN_LEG = 0.34
+const RUN_REST = 0.08
+
 /** The name with its suffix split off, so the suffix can take the accent. */
 const NAME_WORDS = PROFILE.name.split(' ')
 const SUFFIX = NAME_WORDS[NAME_WORDS.length - 1]
@@ -58,10 +64,11 @@ const noSubscribe = () => () => {}
  * The opening is the landing page itself, out of focus. The page sits behind
  * frosted glass like the nav bar's; over it the monogram draws, the brand line
  * and the name rise in the hero's own display type, and a small workflow runs
- * under them (Gmail, n8n, Slack, each lighting in its own colour as the line
- * reaches it). Then the glass clears and the hero comes into focus where it
- * stands. Nothing here pretends to load: it is about a second and a half, and
- * any input hurries it.
+ * under them (a pulse carries the work from Gmail through n8n to Slack, each
+ * lighting in its own colour as it arrives). Then the copy leaves, the
+ * monogram glides into the nav's mark, and the hero rises as the glass clears.
+ * Nothing here pretends to load: it is under two seconds, and any input
+ * hurries it.
  */
 export function IntroAnimation({ onDone }: { onDone: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -108,23 +115,118 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
         .fromTo('.intro-word', { y: 0, yPercent: 110 }, { yPercent: 0, duration: 1, stagger: 0.08 }, 0.2)
         .fromTo('.intro-flow', { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.35)
 
-        // The run: each mark lights as the line reaches it
-        .to('.intro-flow-lit', { autoAlpha: 1, duration: 0.3, stagger: 0.35, ease: 'power2.out' }, 0.5)
-        .fromTo(
-          '.intro-flow-fill',
-          { scaleX: 0 },
-          { scaleX: 1, duration: 0.3, stagger: 0.35, ease: 'power1.inOut' },
-          0.6
+      // The run: a pulse carries the work along each line, and each tool
+      // lights, pops and pings as it arrives, so it reads as something moving
+      // from Gmail through n8n to Slack rather than three icons changing colour.
+      const q = gsap.utils.selector(rootRef)
+      const nodes = q('.intro-flow-node')
+      const lits = q('.intro-flow-lit')
+      const pings = q('.intro-flow-ping')
+      const lines = q('.intro-flow-line')
+
+      const arrive = (i: number, at: number) => {
+        tl.to(lits[i], { autoAlpha: 1, duration: 0.25, ease: 'power2.out' }, at)
+          .to(
+            nodes[i],
+            {
+              keyframes: [
+                { scale: 1.12, duration: 0.12, ease: 'power2.out' },
+                { scale: 1, duration: 0.4 }
+              ]
+            },
+            at
+          )
+          .fromTo(
+            pings[i],
+            { scale: 1, autoAlpha: 0.6 },
+            { scale: 1.7, autoAlpha: 0, duration: 0.6, ease: 'power2.out' },
+            at
+          )
+      }
+
+      const travel = (i: number, at: number) => {
+        const line = lines[i]
+        const pulse = line.querySelector('.intro-flow-pulse')
+        const fill = line.querySelector('.intro-flow-fill')
+
+        tl.fromTo(
+          pulse,
+          { x: 0, autoAlpha: 0 },
+          { x: () => line.offsetWidth, duration: RUN_LEG, ease: 'power1.inOut' },
+          at
         )
-        .addLabel('clear', 1.45)
+          .to(pulse, { autoAlpha: 1, duration: 0.08, ease: 'none' }, at)
+          .to(pulse, { autoAlpha: 0, duration: 0.1, ease: 'none' }, at + RUN_LEG - 0.08)
+          .fromTo(fill, { scaleX: 0 }, { scaleX: 1, duration: RUN_LEG, ease: 'power1.inOut' }, at)
+      }
 
-        // The copy leaves first, then the glass clears behind it.
-        .to('.intro-stack', { autoAlpha: 0, y: -24, duration: 0.5, ease: 'power2.in' }, 'clear')
-        .to('.intro-glass', { autoAlpha: 0, duration: 0.9, ease: 'power2.inOut' }, 'clear+=0.15')
+      nodes.forEach((_, i) => {
+        const at = RUN_START + i * (RUN_LEG + RUN_REST)
 
-        // The hero's own timeline starts as the glass clears, so its headline
-        // is already rising when it comes into focus.
-        .call(onDone, undefined, 'clear+=0.2')
+        arrive(i, at)
+        if (i < lines.length) travel(i, at + RUN_REST)
+      })
+
+      tl.addLabel('clear', RUN_START + lines.length * (RUN_LEG + RUN_REST) + 0.36)
+
+        // The copy leaves first, top line first, while the monogram stays.
+        .to(
+          ['.intro-eyebrow', '.intro-name', '.intro-flow'],
+          { autoAlpha: 0, y: -16, duration: 0.4, stagger: 0.04, ease: 'power2.in' },
+          'clear'
+        )
+        .to('.intro-glass', { autoAlpha: 0, duration: 0.8, ease: 'power2.inOut' }, 'clear+=0.3')
+
+        // The hero starts once the copy has gone, so the two never overlap:
+        // its headline rises as the glass clears, not through the intro's.
+        .call(onDone, undefined, 'clear+=0.42')
+
+      // The monogram glides into the nav's own mark and settles there as the
+      // glass clears, so the opening hands the brand to the page instead of
+      // fading it out. Measured when the flight starts, not now, in case a
+      // skip scrolled the page and the nav tightened. No nav mark (it is
+      // hidden, say): the monogram simply leaves with the copy.
+      const mark = q('.intro-stack-mark')[0]
+      const navMark = document.querySelector<HTMLElement>('.site-nav .nav-brand-mark')
+
+      if (navMark && navMark.offsetWidth > 0) {
+        let leg: { x: number; y: number; scale: number } | undefined
+
+        const measure = () => {
+          if (leg) return leg
+
+          const from = mark.getBoundingClientRect()
+          const to = navMark.getBoundingClientRect()
+
+          leg = {
+            x: to.left + to.width / 2 - (from.left + from.width / 2),
+            y: to.top + to.height / 2 - (from.top + from.height / 2),
+            scale: to.width / from.width
+          }
+
+          return leg
+        }
+
+        // The nav's mark waits out of sight, so there is only ever one
+        // monogram on screen, and takes over as the flying one settles on it.
+        // Reverted with the context if the intro is torn down part way.
+        tl.set(navMark, { autoAlpha: 0 }, 0)
+          .to(
+            mark,
+            {
+              x: () => measure().x,
+              y: () => measure().y,
+              scale: () => measure().scale,
+              duration: 0.95,
+              ease: 'expo.inOut'
+            },
+            'clear+=0.1'
+          )
+          .to(navMark, { autoAlpha: 1, duration: 0.2, ease: 'none' }, 'clear+=0.9')
+          .to(mark, { autoAlpha: 0, duration: 0.2, ease: 'none' }, 'clear+=0.9')
+      } else {
+        tl.to(mark, { autoAlpha: 0, y: -16, duration: 0.4, ease: 'power2.in' }, 'clear')
+      }
 
       const skip = () => {
         if (tl.time() < tl.labels.clear) tl.seek('clear')
@@ -177,6 +279,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
                 {i > 0 && (
                   <span className='intro-flow-line'>
                     <span className='intro-flow-fill' />
+                    <span className='intro-flow-pulse' />
                   </span>
                 )}
                 <span
@@ -190,6 +293,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
                 >
                   <span className='intro-flow-mark' />
                   <span className='intro-flow-mark intro-flow-lit' />
+                  <span className='intro-flow-ping' />
                 </span>
               </Fragment>
             ))}
