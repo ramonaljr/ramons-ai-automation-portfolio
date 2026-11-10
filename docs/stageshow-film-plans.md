@@ -1,6 +1,6 @@
 # Stageshow film plans: all 10 case studies
 
-A plan, not yet built; every decision in it is settled (see the end). It replaces each case study's hand-drawn Storify film
+**Two Worlds (2026-11-10):** film 1 is rebuilt as a Two Worlds film and approved, and films 2 to 10 are being built the same way (see Status, at the end). The hand-drawn films stay on all ten case studies until Ramon says otherwise. The plan replaces each case study's hand-drawn Storify film
 (`public/films/<slug>.mp4`, about 3½ minutes, a robot narrator touring every
 lane) with a **fused film** made in Stageshow: the short product-style clip and
 the build walkthrough in one piece, in the site's own look.
@@ -25,9 +25,25 @@ something, not by being shown seventeen boxes in a row.
   greys, Satoshi type, terracotta accent; app screens drawn as clean cards
   (Gmail, Calendar, Slack, Sheets, Airtable…) with their real marks from
   `kit/brands` and `scenes/tool-mark.tsx`.
-- **No narrator character.** Short captions carry the words (Dennice and the
-  others go). Captions work with the sound off, which is how most people
-  watch.
+- **Two Worlds** (`docs/plans/2026-11-10-two-worlds-films.md`, which
+  replaces the old "no narrator" rule). Drawn means people and the problem;
+  clean means the build:
+  - **The stage:** one 16:9 layout on every screen, 960 by 540. The build
+    fills the top 420 px; a band of inked paper runs along the foot, with
+    the robots in it.
+  - **The roles:** the **owner** (whose job this was) explains every step
+    and says every fact; the **case** (whose call, invoice or form drives
+    the tour) speaks its own lines and asks what a visitor would ask; a
+    **third** (an approver or manager) joins at their lane in some films.
+  - **The robots talk for the whole film**, one bubble at a time, question
+    then answer, in the words on screen (no sound).
+  - **The six moves:** Before in ink; the paper settles into the band as the
+    case arrives; the discussion through the build; an inked token riding
+    the lit lane; one or two marker loops or underlines on the key moment;
+    the end back in ink with the outcome and "Run it yourself below".
+  - **Limits:** 22 lines at most, 9 words a line (the outcome sentence
+    aside); a line holds for `1500 + 32 × characters` ms, 2 s at least. A
+    film that feels rushed loses lines; its length does not grow.
 - **60 to 90 seconds**, in five parts:
   1. **Before** (about 8 s): the pain as a screen, not a story. A missed-call
      log, an inbox of `scan001.pdf`s, a lead waiting three hours.
@@ -42,7 +58,8 @@ something, not by being shown seventeen boxes in a row.
   5. **End frame** (about 4 s): the outcome in words, the same sentence as
      the case study's `impactHighlight`, and "Run it yourself below", which
      points to the runnable demo already in the dialog.
-- **Reduced motion:** a still per part, with the captions as text.
+- **Reduced motion:** the ink holds still, a still per part, and each
+  part's lines as text (`Name: line`).
 
 ## Where it goes
 
@@ -53,8 +70,8 @@ something, not by being shown seventeen boxes in a row.
   gets play/pause, the five parts as chapter chips to jump between, and
   starts only on a click, as the video does now.
 - **Off the site: rendered to MP4.** The same scene captured through the
-  playground's `film.mjs`: 16:9 for YouTube and the **Walkthrough** link,
-  and a 4:5 cut of parts 2 and 3 for LinkedIn.
+  playground's `film.mjs`: 16:9 only, for YouTube, LinkedIn and the
+  **Walkthrough** link.
 - **Not a copy of the runnable demo.** The demo below the film lets visitors
   run the workflow on its canvas; the film tells the story around it.
 
@@ -201,14 +218,15 @@ something, not by being shown seventeen boxes in a row.
    Once the pilot has settled the shared pieces, the batches touch separate
    files and can run in parallel sessions.
 4. **Switch the dialog over** for each film as it passes review, then render
-   the MP4s (16:9 and the 4:5 LinkedIn cut).
+   the MP4s (16:9 only).
 5. **Retire the hand-drawn film** in the same change: delete
    `public/films/<slug>.mp4` and `<slug>.jpg`, point `videoUrl` at the
    Stageshow MP4 (the Walkthrough link), and drop `videoPoster`. When the last
    of the ten is replaced, remove `docs/storify-films/` and the two Storify
    plan docs; git history keeps them.
 6. **Each film passes the same checks as the site's scenes:** a frame-by-frame
-   film strip, a still at 360 px wide, and reduced motion.
+   the rehearsal gate at 1040 px and at 660 px (a phone on its side),
+   reduced motion, and the real dialog, full screen included.
 
 ## Decisions (all settled 2026-11-10)
 
@@ -223,4 +241,38 @@ something, not by being shown seventeen boxes in a row.
 4. ~~**Length?**~~ **60 to 90 seconds** (Ramon, 2026-11-10), against 3½
    minutes now.
 
-All four are settled, so the plan is ready to build from step 1.
+## Casting (Two Worlds)
+
+Casts are as in each case's hand-drawn film (`docs/storify-films/films/<slug>.js`, first line). Each turn and marker is checked against the film's `.mdx` before its script is written.
+
+| # | Film | Owner | Case | Third | Token | The turn | Marker lands on |
+|---|---|---|---|---|---|---|---|
+| 1 | AI Appointment Setter | Dennice, front desk | Leo, a caller | | The call | 2:00 is taken | Checked again right before booking |
+| 2 | AI Invoice Processing & Approval | Dennice, accounts payable | *(the invoice)* | Karan, budget owner | The invoice PDF | The AI is unsure, or a rule flags it | Karan's approval in Slack |
+| 3 | AI Prospecting with Apollo | Dennice, sales rep | Karan, sales manager, asks | | A prospect card | People already known are skipped | Nothing is sent until a person approves |
+| 4 | AI Unpaid Invoice Reminders | Dennice, collections | Isa, a customer | | The overdue invoice | Isa disputes it | Every reminder stops until a person clears it |
+| 5 | Client Pipeline Emails | Dennice, agency owner | Jeson, a client | | The client card | Still Quoted after 2 days | One nudge, handled once |
+| 6 | Gmail Attachment Filing | Karan, bookkeeper | Leo, a client | | `scan001.pdf` | Several files in one email | The new, findable name |
+| 7 | New Employee Onboarding | Myk, HR | Unix, the new hire | | The intake form | Two check-ins due the same day | At most one email a day |
+| 8 | HR Evaluation & Job Posting Assistant | Myk, hiring team | Samantha, an applicant | Carlos, the interviewer | The CV | The proposed time must be free | Confirmed free before it's booked |
+| 9 | Order Stock Check | Dennice, shop owner | Samantha, a customer | | Two order slips | One order is short of stock | On hold, and the customer told why |
+| 10 | Lead Scoring & Follow-Up | Dennice, sales rep | Jeson, a business owner | Karan, sales manager | The enquiry, with its clock | The 15 minutes run out | The handover to Karan |
+
+Film 2's case is an invoice, so Karan asks the questions and then plays his own part when the approval reaches him. Film 3's hand-drawn film has only Dennice, so Karan joins as the sales manager who asks (both as suggested in the Two Worlds plan; Ramon approved going ahead, 2026-11-10).
+
+## Status (2026-11-10)
+
+- **Film 1 is rebuilt as a Two Worlds film and approved** (Ramon,
+  2026-11-10): 76 seconds, Dennice and Leo in ink talking it through from
+  start to end, full screen and landscape on phones. Rehearsal notes:
+  `src/components/landing/film/films/REHEARSAL.md`.
+- **All nine robots the films cast are drawn in ink** (`cast.tsx`).
+- **The hand-drawn films stay on all ten for now** (Ramon, 2026-11-10). This
+  overrides decision 1 until Ramon says otherwise: steps 4 and 5 are paused,
+  so nothing in `public/films/` is deleted or replaced, `videoUrl` and
+  `videoPoster` stay, and `docs/storify-films/` stays.
+- **The dialog plays the MP4 still**, film 1 included. The live films are
+  switched off in `live-films.ts` (`SHOWN` is empty); adding a slug there
+  switches that dialog to its live film, with nothing else to change.
+- **Films 2 to 10 are under way** in three batches (step 3), each on its own
+  branch from `two-worlds-film`.

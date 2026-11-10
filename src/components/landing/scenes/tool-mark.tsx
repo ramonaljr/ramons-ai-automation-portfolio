@@ -9,7 +9,9 @@ export const TOOLS = {
   googlesheets: { slug: 'googlesheets', color: '#34A853', name: 'Google Sheets' },
   hubspot: { slug: 'hubspot', color: '#FF7A59', name: 'HubSpot' },
   slack: { slug: 'slack', color: '#4A154B', name: 'Slack' },
-  quickbooks: { slug: 'quickbooks', color: '#2CA01C', name: 'QuickBooks' }
+  quickbooks: { slug: 'quickbooks', color: '#2CA01C', name: 'QuickBooks' },
+  make: { slug: 'make', color: '#6D00CC', name: 'Make' },
+  zapier: { slug: 'zapier', color: '#FF4F00', name: 'Zapier' }
 } as const
 
 export type Tool = keyof typeof TOOLS
