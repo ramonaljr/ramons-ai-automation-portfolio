@@ -675,3 +675,237 @@
 .n8n-demo[data-ran] :is(.n8n-edges, .make-links, .zap-links) g:not([data-lit]) {
   opacity: 0.28;
 }
+
+/* ─── Guidance: the three steps in the card header, the Execute invite, the coach strip ─── */
+
+.demo-guide {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-guide li {
+  min-width: 0;
+}
+
+.demo-guide-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-3);
+  font: inherit;
+  text-align: left;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.demo-guide li[data-state='next'] .demo-guide-step {
+  opacity: 0.6;
+}
+
+.demo-guide li[data-state='current'] .demo-guide-step {
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 8%, transparent);
+  color: var(--ink);
+}
+
+button.demo-guide-step {
+  cursor: pointer;
+}
+
+button.demo-guide-step:hover {
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+}
+
+button.demo-guide-step:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.demo-guide-num {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.demo-guide li[data-state='current'] .demo-guide-num {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.demo-guide li[data-state='done'] .demo-guide-num {
+  border-color: #29a568;
+  background: #29a568;
+  color: #fff;
+}
+
+.demo-guide-text {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.demo-guide-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.demo-guide-detail {
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.demo-guide-arrow {
+  animation: demo-nudge 1.4s ease-in-out infinite;
+}
+
+/* Before the first run, the Execute button breathes so it reads as the thing to press. */
+.n8n-demo {
+  --invite: #ff6d5a;
+}
+.n8n-demo[data-platform='make'] {
+  --invite: #6d00cc;
+}
+.n8n-demo[data-platform='zapier'] {
+  --invite: #ff4f00;
+}
+
+.n8n-execute[data-invite] {
+  animation: demo-invite 2.2s ease-out infinite;
+}
+
+/* The coach strip: one line on what to do now, bottom centre between the zoom and the note. */
+.n8n-coach {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  z-index: 3;
+  max-width: calc(100% - 300px);
+  transform: translateX(-50%);
+}
+
+.n8n-coach-tip {
+  margin: 0;
+  overflow: hidden;
+  padding: 7px 14px;
+  border: 1px solid #3c3c40;
+  border-radius: 999px;
+  background: rgb(35 35 35 / 0.88);
+  color: #cfcfd4;
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+}
+
+.n8n-coach-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--invite);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -8px var(--invite);
+  animation: demo-rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.n8n-coach-cta:hover {
+  filter: brightness(1.08);
+}
+
+.n8n-coach-cta svg {
+  animation: demo-nudge 1.4s ease-in-out infinite;
+}
+
+.n8n-demo:is([data-platform='make'], [data-platform='zapier']) .n8n-coach-tip {
+  border-color: #dcdcdc;
+  background: rgb(255 255 255 / 0.94);
+  color: #444;
+}
+
+.demo-results-anchor {
+  scroll-margin-top: 24px;
+}
+
+@keyframes demo-invite {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--invite) 60%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 12px color-mix(in oklab, var(--invite) 0%, transparent);
+  }
+}
+
+@keyframes demo-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes demo-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (max-width: 640px) {
+  .demo-guide {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .n8n-coach {
+    bottom: 60px;
+    max-width: calc(100% - 24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .n8n-execute[data-invite],
+  .demo-guide-arrow,
+  .n8n-coach-cta,
+  .n8n-coach-cta svg {
+    animation: none;
+  }
+}
