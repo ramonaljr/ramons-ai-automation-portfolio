@@ -1,6 +1,8 @@
 'use client'
 
-import { PhoneCall, PhoneMissed } from 'lucide-react'
+import type { ReactNode } from 'react'
+
+import { FileText, PhoneCall, PhoneMissed, TriangleAlert } from 'lucide-react'
 
 import { Badge, Bar, BrandMark, Check, Collapse, Roll, Spinner, States, Stream } from '@/components/stageshow/kit'
 import { ToolMark } from '@/components/landing/scenes/tool-mark'
@@ -272,6 +274,190 @@ export function AirtableCard({
           )}
         </div>
       ))}
+    </section>
+  )
+}
+
+/* ── A mailbox: the messages a run picks up ─────────────────────────────── */
+
+export type Mail = { from: string; subject: string; attach?: string[]; shown: boolean; read?: boolean }
+
+/** `status` sits in the head, as the calendar's does: one short state at a time. */
+export function MailCard({
+  mark,
+  title,
+  status,
+  mails,
+  target = 'mail'
+}: {
+  mark: ReactNode
+  title: string
+  status: string
+  mails: Mail[]
+  target?: string
+}) {
+  return (
+    <section className='fc-card fc-mail' data-target={target}>
+      <div className='fc-cal__head'>
+        {mark}
+        <span className='fc-strong'>{title}</span>
+        <Roll variant='fade' className='fc-head__status'>
+          {status}
+        </Roll>
+      </div>
+      <ul className='fc-mail__list'>
+        {mails.map(m => (
+          <li key={m.subject} className='fc-mail__row fc-in' data-in={m.shown || undefined} data-read={m.read || undefined}>
+            <span className='fc-mail__dot' />
+            <span className='fc-mail__who'>
+              <span className='fc-strong'>{m.from}</span>
+              <span className='fc-muted'>{m.subject}</span>
+              {m.attach && (
+                <span className='fc-mail__files'>
+                  {m.attach.map(f => (
+                    <span key={f} className='fc-file'>
+                      <FileText size={12} {...ICON} />
+                      {f}
+                    </span>
+                  ))}
+                </span>
+              )}
+            </span>
+          </li>
+        ))}
+        {/* Filler: an older message, already read */}
+        <li className='fc-mail__row fc-mail__row--filler'>
+          <span className='fc-mail__dot' />
+          <span className='fc-mail__who'>
+            <Bar w={90} h={5} tone={2} />
+            <Bar w={140} h={5} tone={2} />
+          </span>
+        </li>
+      </ul>
+    </section>
+  )
+}
+
+/* ── Slack: a channel's posts, with buttons a person presses ────────────── */
+
+export type SlackButton = { label: string; tone?: 'go' | 'stop' | 'plain'; pressed?: boolean }
+
+export type Post = {
+  who: string
+  text: string
+  shown: boolean
+  buttons?: SlackButton[]
+
+  /** What pressing a button did, under the post once `replied`. */
+  reply?: string
+  replied?: boolean
+
+  /** A marker target on the reply, for the films' pen. */
+  target?: string
+}
+
+export function SlackCard({ channel, posts }: { channel: string; posts: Post[] }) {
+  return (
+    <section className='fc-card fc-slack' data-target='slack'>
+      <div className='fc-cal__head'>
+        <ToolMark tool='slack' size={18} />
+        <span className='fc-strong'>{channel}</span>
+      </div>
+      <div className='fc-slack__posts'>
+        {posts.map(p => (
+          <Collapse key={p.text} open={p.shown} reveal='drop'>
+            <div className='fc-post'>
+              <span className='fc-post__avatar'>
+                <ToolMark tool='n8n' size={14} />
+              </span>
+              <div className='fc-post__body'>
+                <span className='fc-post__who'>{p.who}</span>
+                <span className='fc-post__text'>{p.text}</span>
+                {p.buttons && (
+                  <span className='fc-post__buttons'>
+                    {p.buttons.map(b => (
+                      <span key={b.label} className={`fc-btn fc-btn--${b.tone ?? 'plain'}`} data-pressed={b.pressed || undefined}>
+                        {b.label}
+                      </span>
+                    ))}
+                  </span>
+                )}
+                {p.reply && (
+                  <Collapse open={!!p.replied} reveal='clip'>
+                    <span className='fc-post__reply' data-target={p.target}>
+                      <Check on={!!p.replied} size={12} />
+                      {p.reply}
+                    </span>
+                  </Collapse>
+                )}
+              </div>
+            </div>
+          </Collapse>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/* ── A record a run fills in: fields, then the checks made on them ──────── */
+
+export type Field = { label: string; value: string; shown: boolean }
+
+export type CheckState = 'wait' | 'ok' | 'flag'
+
+export type CheckRow = { label: string; state: CheckState }
+
+export function RecordCard({
+  mark,
+  title,
+  status,
+  tone = 'neutral',
+  fields,
+  checks,
+  checksTitle,
+  target
+}: {
+  mark: ReactNode
+  title: string
+  status: string
+  tone?: 'neutral' | 'ok' | 'warn'
+  fields: Field[]
+  checks?: CheckRow[]
+  checksTitle?: string
+  target: string
+}) {
+  return (
+    <section className='fc-card fc-rec' data-target={target}>
+      <div className='fc-cal__head'>
+        {mark}
+        <span className='fc-strong'>{title}</span>
+        <Roll variant='fade' className='fc-head__status' data-tone={tone}>
+          {status}
+        </Roll>
+      </div>
+      <dl className='fc-rec__fields'>
+        {fields.map(f => (
+          <div key={f.label} className='fc-rec__field'>
+            <dt>{f.label}</dt>
+            <dd className='fc-in' data-in={f.shown || undefined}>
+              {f.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {checks && (
+        <div className='fc-rec__checks' data-target={`${target}-checks`}>
+          {checksTitle && <span className='fc-air__name'>{checksTitle}</span>}
+          {checks.map(c => (
+            <div key={c.label} className='fc-rec__check' data-state={c.state}>
+              <span className='fc-rec__tick'>
+                {c.state === 'flag' ? <TriangleAlert size={12} {...ICON} /> : <Check on={c.state === 'ok'} size={12} />}
+              </span>
+              {c.label}
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   )
 }

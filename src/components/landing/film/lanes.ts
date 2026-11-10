@@ -31,6 +31,10 @@ const BREAKS = { bg: '#FDECEA', border: '#F1B5AF', accent: '#D6453A' }
 
 type Diagram = { slug: string; stages: { title: string; concept?: string; steps: LaneStep[] }[] }
 
+/** diagrams.json keeps its text HTML-escaped for the SVGs; the films show it as text. */
+const plain = (text: string) =>
+  text.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+
 export function lanesOf(slug: string): Lane[] {
   const diagram = (diagrams as Diagram[]).find(d => d.slug === slug)
 
@@ -38,10 +42,10 @@ export function lanesOf(slug: string): Lane[] {
 
   return diagram.stages.map((stage, i) => ({
     n: i + 1,
-    title: stage.title,
+    title: plain(stage.title),
     concept: stage.concept ?? 'checkCircle',
     tone: /something breaks/i.test(stage.title) ? BREAKS : PALETTE[i % PALETTE.length]!,
-    steps: stage.steps.map(step => ({ name: step.name, icon: step.icon }))
+    steps: stage.steps.map(step => ({ name: plain(step.name), icon: step.icon }))
   }))
 }
 

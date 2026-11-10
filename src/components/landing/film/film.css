@@ -653,6 +653,256 @@
   }
 }
 
+/* A card head's status, set flush right */
+.fm-screen .fc-head__status {
+  margin-left: auto;
+  color: var(--ss-text);
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.fm-screen .fc-head__status[data-tone='ok'] {
+  color: var(--ss-success-text);
+}
+
+.fm-screen .fc-head__status[data-tone='warn'] {
+  color: #a8590b;
+}
+
+/* A mailbox */
+.fm-screen .fc-mail__list {
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+}
+
+.fm-screen .fc-mail__row {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--ss-line-faint);
+}
+
+.fm-screen .fc-mail__dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--ss-accent);
+  transition: opacity 300ms ease;
+}
+
+.fm-screen .fc-mail__row[data-read] .fc-mail__dot,
+.fm-screen .fc-mail__row--filler .fc-mail__dot {
+  opacity: 0;
+}
+
+.fm-screen .fc-mail__row--filler {
+  border-bottom: 0;
+}
+
+.fm-screen .fc-mail__who {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.fm-screen .fc-mail__who > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fm-screen .fc-mail__files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.fm-screen .fc-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--ss-line);
+  border-radius: 6px;
+  color: var(--ss-text-strong);
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+.fm-screen .fc-file svg {
+  color: #d6453a;
+}
+
+/* Slack */
+.fm-screen .fc-slack {
+  display: flex;
+  flex-direction: column;
+}
+
+/* A channel keeps its newest post in view, as Slack does: older ones scroll
+   up and out under the head */
+.fm-screen .fc-slack__posts {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 0;
+  overflow: hidden;
+  padding: 4px 0;
+  mask-image: linear-gradient(to bottom, transparent, #000 18px);
+}
+
+.fm-screen .fc-post {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+  padding: 8px 16px;
+}
+
+.fm-screen .fc-post__avatar {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #fdeaf0;
+}
+
+.fm-screen .fc-post__body {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.fm-screen .fc-post__who {
+  color: var(--ss-text-strong);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.fm-screen .fc-post__text {
+  color: var(--ss-text-strong);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.fm-screen .fc-post__buttons {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.fm-screen .fc-btn {
+  display: inline-grid;
+  place-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border: 1px solid var(--ss-line);
+  border-radius: 6px;
+  color: var(--ss-text-strong);
+  font-size: 10.5px;
+  font-weight: 600;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    transform 160ms ease;
+}
+
+.fm-screen .fc-btn--go {
+  border-color: #007a5a;
+  color: #007a5a;
+}
+
+.fm-screen .fc-btn--stop {
+  color: #b42318;
+}
+
+.fm-screen .fc-btn[data-pressed] {
+  background: #007a5a;
+  color: #fff;
+}
+
+.fm-screen .fc-post__reply {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 2px;
+  color: var(--ss-success-text);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+/* A record: fields, then the checks made on them */
+.fm-screen .fc-rec__fields {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 6px 16px 4px;
+}
+
+.fm-screen .fc-rec__field {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  align-items: center;
+  min-height: 20px;
+  border-bottom: 1px solid var(--ss-line-faint);
+  font-size: 10.5px;
+  line-height: 1.3;
+}
+
+.fm-screen .fc-rec__field dt {
+  color: var(--ss-text);
+}
+
+.fm-screen .fc-rec__field dd {
+  overflow: hidden;
+  margin: 0;
+  color: var(--ss-text-strong);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fm-screen .fc-rec__checks {
+  display: grid;
+  gap: 2px;
+  margin: 2px 10px 0;
+  padding: 4px 6px;
+}
+
+.fm-screen .fc-rec__check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ss-text);
+  font-size: 10.5px;
+  line-height: 16px;
+  transition: color 250ms ease;
+}
+
+.fm-screen .fc-rec__check[data-state='ok'] {
+  color: var(--ss-text-strong);
+}
+
+.fm-screen .fc-rec__check[data-state='flag'] {
+  color: #a8590b;
+}
+
+.fm-screen .fc-rec__tick {
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+}
+
 /* ── The lane map ───────────────────────────────────────────────────────── */
 
 .fm-screen .fl--wide {
@@ -1894,4 +2144,57 @@
   .fm[data-full] .fm-chips {
     display: none;
   }
+}
+
+/* ── Film 2: AI Invoice Processing & Approval ───────────────────────────── */
+
+/* Four cards across the 1120 px build: mail, the AI's read, Slack, the bill */
+.fm-screen .fb .fc-card {
+  top: 22px;
+  width: 248px;
+  height: 242px;
+}
+
+.fm-screen .fb .fc-mail {
+  left: 40px;
+}
+
+.fm-screen .fb [data-target='invoice'] {
+  left: 304px;
+}
+
+.fm-screen .fb .fc-slack {
+  left: 568px;
+}
+
+.fm-screen .fb [data-target='quickbooks'] {
+  left: 832px;
+}
+
+.fm-screen .fb-board path:first-child {
+  fill: #d9b98c;
+}
+
+.fm-screen .fb-sheet path:first-child,
+.fm-screen .fa-token__doc path:first-child {
+  fill: var(--paper-w);
+}
+
+.fm-screen .fb-sheet path {
+  stroke-width: 1.6;
+}
+
+.fm-screen .fb-folder path:first-child {
+  fill: #e9c46a;
+}
+
+.fm-screen .fd .fb-folder__label {
+  font-size: 13px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.fm-screen .fd .fb-twice {
+  fill: var(--ink-mark);
+  font-weight: 700;
 }
