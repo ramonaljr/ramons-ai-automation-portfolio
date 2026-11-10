@@ -1120,6 +1120,16 @@
   visibility: visible;
 }
 
+/* The desk out of sight (the build world, faded to nothing): it holds too,
+   rather than repaint lines no one sees eight times a second */
+.fm-screen .fa-desk:not([data-on]) .ink__f {
+  animation: none;
+}
+
+.fm-screen .fa-desk:not([data-on]) .ink__f[data-f='0'] {
+  visibility: visible;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fm-screen .ink__f {
     animation: none;

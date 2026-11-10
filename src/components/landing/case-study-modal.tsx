@@ -215,9 +215,12 @@ export function CaseStudyModal({
    */
   if (typeof document === 'undefined') return null
 
+  // No backdrop blur: the panel fills the window, so it would never show, and
+  // under a live film Chrome re-blurred the whole page on every repaint of the
+  // film's ink, eight a second, flashing the page through on a Mac.
   return createPortal(
     <div
-      className='bg-ink/60 animate-in fade-in fixed inset-0 z-[200] flex items-center justify-center backdrop-blur-sm duration-200'
+      className='bg-ink/60 animate-in fade-in fixed inset-0 z-[200] flex items-center justify-center duration-200'
       onClick={onClose}
       role='dialog'
       aria-modal='true'
