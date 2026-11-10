@@ -2,35 +2,150 @@
 
 import type { ReactNode } from 'react'
 
+import { Ink } from '@/components/landing/film/ink'
+import { ell, ln, rr, type Pt } from '@/components/landing/film/sketch'
+
 /**
- * The films' two robots, carried over from the hand-drawn Storify films and
- * redrawn flat in the site's colours: Dennice, who keeps the front desk, and
- * Leo, who calls it. Plus the desk they meet at. Drawn in SVG so they scale
- * with the stage; every colour comes from film.css, so a robot only says who
- * it is and how it feels.
+ * The films' robots, in ink: the hand-drawn films' cast, drawn with the
+ * Storify engine's own shapes and seeds (docs/storify-films/engine-core.js,
+ * `CAST`, `drawChar` and `drawHead`), so each robot here is the robot in
+ * those films line for line. Only Dennice and Leo are ported so far; the
+ * others follow when their films are built.
+ *
+ * A robot stands with its feet on y = 0 of its viewBox, centred on x = 0.
+ * Every robot shares one viewBox, so robots drawn at the same width are drawn
+ * at the same scale. Colours come from film.css ("The cast, in ink").
  */
 
 export type Mood = 'off' | 'normal' | 'puzzled' | 'happy'
 
 export type Who = 'dennice' | 'leo'
 
+/** `talk` raises a hand while speaking; `phone` holds one to the ear; `down` points at what's below. */
+export type Pose = 'idle' | 'talk' | 'phone' | 'down'
+
+export const VIEW = { x: -80, y: -135, w: 160, h: 145 } as const
+
+/** Where a robot's feet sit, from the top of its box, as a share of its height. */
+export const FEET = -VIEW.y / VIEW.h
+
+type Spec = { w: number; h: number; r: number; head: 'bulb' | 'beanie'; name: string }
+
+/** The engine's `CAST` entries, unchanged. */
+const SPECS: Record<Who, Spec> = {
+  dennice: { name: 'Dennice', w: 80, h: 70, r: 28, head: 'bulb' },
+  leo: { name: 'Leo', w: 70, h: 72, r: 22, head: 'beanie' }
+}
+
 const MOODS: Mood[] = ['off', 'normal', 'puzzled', 'happy']
 
-/** Every face is drawn, and the one showing crossfades in as the last goes. */
-function Face({ mood, on }: { mood: Mood; on: boolean }) {
+const POSES: Pose[] = ['idle', 'talk', 'phone', 'down']
+
+/** The engine's hand positions per pose, before scaling to the robot's size. */
+const HANDS: Record<Pose, [Pt, Pt]> = {
+  idle: [
+    [-48, -28],
+    [48, -28]
+  ],
+  talk: [
+    [-48, -28],
+    [52, -50]
+  ],
+  phone: [
+    [-48, -28],
+    [30, -70]
+  ],
+  down: [
+    [-48, -28],
+    [58, -8]
+  ]
+}
+
+/** Everything about a robot that only depends on who it is, worked out once. */
+function geometry(who: Who) {
+  const c = SPECS[who]
+  const W2 = c.w / 2
+  const top = -16 - c.h
+  const kx = c.w / 80
+  const ky = c.h / 70
+
+  // The engine seeds each robot by its name and width, so the wobble matches
+  const seed = c.name.length * 37 + c.w
+  const scW = Math.min(56, c.w * 0.7)
+  const scH = Math.min(34, c.h * 0.48)
+  const scY = top + 9
+  const ey = scY + scH * 0.42
+  const my = scY + scH * 0.78
+  const lx = Math.min(13, W2 * 0.35)
+  const sh = -16 - c.h * 0.43
+
+  return { c, W2, top, kx, ky, seed, scW, scH, scY, ey, my, lx, sh }
+}
+
+type G = ReturnType<typeof geometry>
+
+function Body({ g }: { g: G }) {
+  const { c, W2, top, seed, lx } = g
+
   return (
-    <g className='rb-mood' data-on={on || undefined}>
-      <Features mood={mood} />
+    <>
+      <ellipse className='rb-shadow' cx='0' cy='2' rx={W2 * 0.75} ry='4' />
+      <Ink className='rb-leg' pts={ln(-lx, -18, -lx, -5)} closed={false} seed={seed + 1} amp={0.4} passes={1} />
+      <Ink className='rb-leg' pts={ln(lx, -18, lx, -5)} closed={false} seed={seed + 2} amp={0.4} passes={1} />
+      <Ink className='rb-foot' pts={ell(-lx - 1, -4, 10, 5)} seed={seed + 3} amp={0.4} />
+      <Ink className='rb-foot' pts={ell(lx + 1, -4, 10, 5)} seed={seed + 4} amp={0.4} />
+      <Ink className='rb-body' pts={rr(-W2, top, c.w, c.h, c.r)} seed={seed + 5} />
+      <ellipse
+        className='rb-shine'
+        cx={-W2 * 0.45}
+        cy={top + c.h * 0.8}
+        rx={W2 * 0.25}
+        ry='6'
+        transform={`rotate(-28.6 ${-W2 * 0.45} ${top + c.h * 0.8})`}
+      />
+    </>
+  )
+}
+
+function Head({ g }: { g: G }) {
+  const { W2, top: hb, seed } = g
+
+  if (g.c.head === 'bulb') {
+    return (
+      <g className='rb-bulb'>
+        <Ink className='rb-stem' pts={ln(0, hb, 3, hb - 15)} closed={false} seed={seed + 6} amp={0.4} passes={1} />
+        <circle className='rb-bulb__glow' cx='3' cy={hb - 20} r='9' />
+        <Ink className='rb-bulb__lamp' pts={ell(3, hb - 20, 5, 5, 10)} seed={seed + 7} amp={0.3} />
+      </g>
+    )
+  }
+
+  const R = W2 * 0.66
+
+  return (
+    <g className='rb-beanie'>
+      <path className='rb-beanie__cap' d={`M${-R} ${hb + 9}A${R} ${R} 0 0 1 ${R} ${hb + 9}Z`} />
+      <Ink className='rb-beanie__band' pts={rr(-R - 2, hb + 3, 2 * R + 4, 8, 3)} seed={seed + 50} amp={0.3} />
+      <Ink className='rb-beanie__pom' pts={ell(0, hb + 9 - R - 4, 6, 6, 10)} seed={seed + 51} amp={0.3} />
     </g>
   )
 }
 
-function Features({ mood }: { mood: Mood }) {
+/** A face per mood, drawn plain as the engine draws faces: only outlines wobble. */
+function Face({ g, mood }: { g: G; mood: Mood }) {
+  const { ey, my } = g
+  const ex = [-11, 11]
+
+  const arc = (cx: number, cy: number, r: number, a0: number, a1: number) =>
+    `M${cx + r * Math.cos(a0)} ${cy + r * Math.sin(a0)}A${r} ${r} 0 0 1 ${cx + r * Math.cos(a1)} ${cy + r * Math.sin(a1)}`
+
   if (mood === 'off') {
     return (
       <g className='rb-face rb-face--off'>
-        <path d='M45 69h10M65 69h10' />
-        <path d='M56 79h8' />
+        {ex.map(e => (
+          <path key={e} d={`M${e - 5} ${ey + 2}h10`} />
+        ))}
+        <path d={`M-4 ${my - 3}h8`} />
       </g>
     )
   }
@@ -38,8 +153,10 @@ function Features({ mood }: { mood: Mood }) {
   if (mood === 'happy') {
     return (
       <g className='rb-face'>
-        <path d='M45 71q5-7 10 0M65 71q5-7 10 0' />
-        <path d='M52 77q8 7 16 0' />
+        {ex.map(e => (
+          <path key={e} d={arc(e, ey + 3, 5, Math.PI * 1.1, Math.PI * 1.9)} />
+        ))}
+        <path d={arc(0, my - 5, 6, Math.PI * 0.15, Math.PI * 0.85)} />
       </g>
     )
   }
@@ -47,114 +164,129 @@ function Features({ mood }: { mood: Mood }) {
   if (mood === 'puzzled') {
     return (
       <g className='rb-face'>
-        <g className='rb-eyes'>
-          <ellipse cx='50' cy='68' rx='3.6' ry='6' />
-          <ellipse cx='70' cy='69' rx='2.6' ry='3.4' />
-        </g>
-        <path d='M54 80q3-3 6 0t6 0' />
+        <ellipse className='rb-eye' cx={ex[0]} cy={ey} rx='3.6' ry='6' />
+        <ellipse className='rb-eye' cx={ex[1]} cy={ey + 1} rx='2.6' ry='3' />
+        <path d={`M-6 ${my}Q-2 ${my - 4} 1 ${my}Q4 ${my + 4} 7 ${my}`} />
       </g>
     )
   }
 
   return (
     <g className='rb-face'>
-      <g className='rb-eyes'>
-        <ellipse cx='50' cy='68' rx='3.6' ry='6' />
-        <ellipse cx='70' cy='68' rx='3.6' ry='6' />
-      </g>
-      <path d='M54 78q6 4 12 0' />
+      {ex.map(e => (
+        <ellipse key={e} className='rb-eye rb-eye--blink' cx={e} cy={ey} rx='3.6' ry='6' />
+      ))}
+      <path d={arc(0, my - 6, 5, Math.PI * 0.2, Math.PI * 0.8)} />
     </g>
   )
 }
 
-/** A robot, 120 by 140, standing on its feet at the bottom of the box. */
-export function Robot({ who, mood = 'normal', phone = false }: { who: Who; mood?: Mood; phone?: boolean }) {
+function Arms({ g, pose }: { g: G; pose: Pose }) {
+  const { W2, kx, ky, sh, seed } = g
+  const hands = HANDS[pose].map(([hx, hy]) => [hx * kx, -16 + (hy + 16) * ky] as const)
+  const shoulders = [-(W2 - 4), W2 - 4]
+
   return (
-    <svg className={`rb rb--${who}`} data-mood={mood} viewBox='0 0 120 140' aria-hidden='true'>
-      <ellipse className='rb-shadow' cx='60' cy='135' rx='30' ry='3.5' />
-      <path className='rb-limb' d='M47 112v14M73 112v14' />
-      <ellipse className='rb-dark' cx='45' cy='129' rx='10' ry='5.5' />
-      <ellipse className='rb-dark' cx='75' cy='129' rx='10' ry='5.5' />
-      <path className='rb-limb' d='M26 82 13 102' />
-      <circle className='rb-dark' cx='13' cy='102' r='6' />
-      {phone ? (
-        <>
-          <path className='rb-limb' d='M94 80 105 58' />
-          <rect className='rb-phone' x='99' y='30' width='13' height='27' rx='4' />
-          <circle className='rb-dark' cx='105' cy='58' r='6' />
-        </>
-      ) : (
-        <>
-          <path className='rb-limb' d='M94 82 107 102' />
-          <circle className='rb-dark' cx='107' cy='102' r='6' />
-        </>
-      )}
-      <rect className='rb-body' x='22' y='44' width='76' height='72' rx='26' />
-      <ellipse className='rb-shine' cx='38' cy='104' rx='9' ry='4.5' transform='rotate(-28 38 104)' />
-      <rect className='rb-screen' x='33' y='54' width='54' height='32' rx='12' />
-      {MOODS.map(m => (
-        <Face key={m} mood={m} on={m === mood} />
+    <>
+      {hands.map((h, i) => (
+        <g key={i}>
+          <Ink
+            className='rb-arm'
+            pts={ln(shoulders[i]!, sh, h[0], h[1])}
+            closed={false}
+            seed={seed + 20 + i}
+            amp={0.5}
+            passes={1}
+          />
+          <Ink className='rb-hand' pts={ell(h[0], h[1], 5.5, 5.5, 10)} seed={seed + 22 + i} amp={0.3} />
+        </g>
       ))}
-      {who === 'dennice' ? (
-        <g className='rb-bulb'>
-          <path className='rb-limb rb-limb--thin' d='M60 44V31' />
-          <circle className='rb-bulb__glow' cx='60' cy='24' r='12' />
-          <circle className='rb-bulb__lamp' cx='60' cy='24' r='7' />
-        </g>
-      ) : (
-        <g className='rb-beanie'>
-          <path className='rb-beanie__cap' d='M29 52a31 27 0 0 1 62 0z' />
-          <rect className='rb-beanie__band' x='27' y='45' width='66' height='10' rx='5' />
-          <circle className='rb-beanie__cap' cx='60' cy='22' r='6' />
-        </g>
+      {pose === 'phone' && (
+        <Ink className='rb-phone' pts={rr(hands[1][0] - 6, hands[1][1] - 16, 12, 30, 5)} seed={seed + 26} amp={0.3} />
       )}
-    </svg>
+    </>
   )
 }
 
-/** The front desk's phone, shaking while it rings. */
-export function DeskPhone({ ringing }: { ringing: boolean }) {
+/** The engine's "?" over a puzzled robot, never mirrored. */
+function Puzzled({ g }: { g: G }) {
+  const bx = g.W2 - 4
+  const by = g.top - 44
+
   return (
-    <svg className='fd-phone' data-ring={ringing || undefined} viewBox='0 0 80 48' aria-hidden='true'>
-      <path className='fd-phone__ring' d='M8 14q-5 8 0 16M2 10q-7 12 0 24M72 14q5 8 0 16M78 10q7 12 0 24' />
-      <g className='fd-phone__set'>
-        <path className='fd-phone__base' d='M22 22h36l6 22a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2z' />
-        <rect className='fd-phone__keys' x='31' y='28' width='18' height='10' rx='2' />
-        <path className='fd-phone__handset' d='M14 14q0-8 8-8h36q8 0 8 8v4q0 3-3 3h-7q-3 0-3-3v-3H28v3q0 3-3 3h-8q-3 0-3-3z' />
-      </g>
-    </svg>
+    <g className='rb-q'>
+      <Ink className='rb-q__tag' pts={rr(bx, by, 26, 30, 8)} seed={g.seed + 27} />
+      <text x={bx + 13} y={by + 16} className='rb-q__mark'>
+        ?
+      </text>
+    </g>
   )
 }
 
-/** A speech bubble, its tail pointing down at whoever is speaking. */
-export function Say({
-  on,
-  tail,
-  className,
-  children
+/** Each robot's drawing, worked out once: only which face, pose and tag show changes. */
+const DRAWN: Record<Who, { body: ReactNode; faces: Record<Mood, ReactNode>; arms: Record<Pose, ReactNode>; q: ReactNode }> =
+  Object.fromEntries(
+    (Object.keys(SPECS) as Who[]).map(who => {
+      const g = geometry(who)
+
+      return [
+        who,
+        {
+          body: (
+            <>
+              <Body g={g} />
+              <Head g={g} />
+              <Ink
+                className='rb-screen'
+                pts={rr(-g.scW / 2, g.scY, g.scW, g.scH, 12)}
+                seed={g.seed + 14}
+                amp={1.1}
+              />
+            </>
+          ),
+          faces: Object.fromEntries(MOODS.map(m => [m, <Face key={m} g={g} mood={m} />])) as Record<Mood, ReactNode>,
+          arms: Object.fromEntries(POSES.map(p => [p, <Arms key={p} g={g} pose={p} />])) as Record<Pose, ReactNode>,
+          q: <Puzzled g={g} />
+        }
+      ]
+    })
+  ) as Record<Who, { body: ReactNode; faces: Record<Mood, ReactNode>; arms: Record<Pose, ReactNode>; q: ReactNode }>
+
+export function Robot({
+  who,
+  mood = 'normal',
+  pose = 'idle',
+  facing = 'right'
 }: {
-  on: boolean
-  tail: 'left' | 'right'
-  className: string
-  children: ReactNode
+  who: Who
+  mood?: Mood
+  pose?: Pose
+  facing?: 'left' | 'right'
 }) {
-  return (
-    <p className={`fd-say fd-say--${tail} ${className}`} data-on={on || undefined}>
-      {children}
-    </p>
-  )
-}
+  const d = DRAWN[who]
 
-/** The voice agent, on the desk's line: a tag with a moving voice. */
-export function AgentTag({ on, talking }: { on: boolean; talking: boolean }) {
   return (
-    <div className='fd-agent' data-on={on || undefined} data-talking={talking || undefined}>
-      <span className='fd-agent__wave' aria-hidden='true'>
-        {[0, 1, 2, 3, 4].map(i => (
-          <span key={i} />
+    <svg
+      className={`rb rb--${who}`}
+      data-mood={mood}
+      data-pose={pose}
+      viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`}
+      aria-hidden='true'
+    >
+      <g transform={facing === 'left' ? 'scale(-1 1)' : undefined}>
+        {d.body}
+        {MOODS.map(m => (
+          <g key={m} className='rb-mood' data-on={m === mood || undefined}>
+            {d.faces[m]}
+          </g>
         ))}
-      </span>
-      Voice agent
-    </div>
+        {POSES.map(p => (
+          <g key={p} className='rb-pose' data-on={p === pose || undefined}>
+            {d.arms[p]}
+          </g>
+        ))}
+      </g>
+      {d.q}
+    </svg>
   )
 }

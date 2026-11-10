@@ -1,6 +1,6 @@
 'use client'
 
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 import {
   Calendar,
@@ -65,45 +65,22 @@ const CONCEPTS: Record<string, LucideIcon> = {
  * The process map in the case study's design: a box per lane in the map's
  * own colours, numbered as the map numbers them, with its steps listed in
  * order. One lane can be lit: the others dim, the steps it has passed take a
- * check and the step it is on stands out, with a dot for running. `wide` draws every lane in a row
- * (each a `data-target` for the camera to move in on); `compact` shows only
- * the lit lane, under a strip of the lanes' numbers.
+ * check and the step it is on stands out, with a dot for running. Every lane
+ * is drawn in a row, each a `data-target` for the camera to move in on, and
+ * each step a target for the marker (`step-<lane>-<i>`). A `token`, the
+ * film's case drawn small, rides along the lit lane's steps.
  */
-export function LaneMap({
-  lanes,
-  lit,
-  step,
-  layout
-}: {
-  lanes: Lane[]
-  lit: number
-  step: number
-  layout: 'wide' | 'compact'
-}) {
-  if (layout === 'compact') {
-    return (
-      <div className='fl fl--compact'>
-        <ol className='fl-strip' aria-hidden='true'>
-          {lanes.map(l => (
-            <li key={l.n} className='fl-strip__n' data-on={l.n === lit || undefined} style={toneOf(l)}>
-              {l.n}
-            </li>
-          ))}
-        </ol>
-        {/* Every lane in one place, the lit one showing: a change of lane crossfades */}
-        <div className='fl-deck'>
-          {lanes.map(l => (
-            <LaneBox key={l.n} lane={l} lit={l.n === lit} step={l.n === lit ? step : -1} />
-          ))}
-        </div>
-      </div>
-    )
-  }
-
+export function LaneMap({ lanes, lit, step, token }: { lanes: Lane[]; lit: number; step: number; token?: ReactNode }) {
   return (
     <div className='fl fl--wide' data-lit={lit > 0 || undefined}>
       {lanes.map(l => (
-        <LaneBox key={l.n} lane={l} lit={l.n === lit} step={l.n === lit ? step : -1} />
+        <LaneBox
+          key={l.n}
+          lane={l}
+          lit={l.n === lit}
+          step={l.n === lit ? step : -1}
+          token={l.n === lit ? token : undefined}
+        />
       ))}
     </div>
   )
@@ -112,7 +89,10 @@ export function LaneMap({
 const toneOf = (lane: Lane) =>
   ({ '--bg': lane.tone.bg, '--border': lane.tone.border, '--tone': lane.tone.accent }) as CSSProperties
 
-function LaneBox({ lane, lit, step }: { lane: Lane; lit: boolean; step: number }) {
+/** One step's height on the map, with the gap under it (film.css, `.fl-step` and `.fl-steps`). */
+const PITCH = 15
+
+function LaneBox({ lane, lit, step, token }: { lane: Lane; lit: boolean; step: number; token?: ReactNode }) {
   const Concept = CONCEPTS[lane.concept] ?? CircleCheck
 
   return (
@@ -127,6 +107,7 @@ function LaneBox({ lane, lit, step }: { lane: Lane; lit: boolean; step: number }
           <li
             key={`${s.name}-${i}`}
             className='fl-step'
+            data-target={`step-${lane.n}-${i}`}
             data-state={!lit || step < 0 ? undefined : i < step ? 'done' : i === step ? 'now' : undefined}
           >
             {/* The step's icon from diagrams.json: our own drawing, as the map shows it */}
@@ -138,6 +119,17 @@ function LaneBox({ lane, lit, step }: { lane: Lane; lit: boolean; step: number }
             </span>
           </li>
         ))}
+        {/* The case, drawn, riding along the lit lane's steps */}
+        {token && (
+          <li
+            className='fl-token'
+            data-on={step >= 0 || undefined}
+            style={{ transform: `translateY(${Math.max(step, 0) * PITCH}px)` }}
+            aria-hidden='true'
+          >
+            {token}
+          </li>
+        )}
       </ol>
     </section>
   )

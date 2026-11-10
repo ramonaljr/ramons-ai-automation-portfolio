@@ -1,7 +1,8 @@
 /* The Stageshow films (film-stage.tsx and films/). Everything is scoped
    under .fm (the player) or .fm-screen (a film's stage), so nothing reaches
    the rest of the sheet. Prefixes: fm- the player, fc- the app cards, fl- the
-   lane map, fa- the Appointment Setter film. */
+   lane map, ink and rb- the drawn world and its robots, tw- the talk band,
+   fa- and fd- the Appointment Setter film. */
 
 /* ── The player ─────────────────────────────────────────────────────────── */
 
@@ -793,1067 +794,6 @@
   color: #17171c;
 }
 
-/* Compact: the lit lane alone, under a strip of every lane's number */
-.fm-screen .fl--compact {
-  display: grid;
-  gap: 10px;
-}
-
-.fm-screen .fl-strip {
-  display: flex;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.fm-screen .fl-strip__n {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border: 1.5px solid var(--border);
-  border-radius: 50%;
-  background: var(--bg);
-  color: var(--tone);
-  font-size: 11px;
-  font-weight: 700;
-  transition:
-    background-color 300ms,
-    color 300ms;
-}
-
-.fm-screen .fl-strip__n[data-on] {
-  border-color: var(--tone);
-  background: var(--tone);
-  color: #fff;
-}
-
-.fm-screen .fl-deck {
-  display: grid;
-}
-
-.fm-screen .fl-deck > .fl-lane {
-  grid-area: 1 / 1;
-  align-self: start;
-}
-
-.fm-screen .fl--compact .fl-lane {
-  padding: 12px;
-  opacity: 0;
-  transition:
-    opacity 400ms ease,
-    box-shadow 300ms;
-}
-
-.fm-screen .fl--compact .fl-lane[data-lit] {
-  opacity: 1;
-}
-
-.fm-screen .fl--compact .fl-lane__head {
-  grid-template-columns: 22px minmax(0, 1fr) 16px;
-  margin-bottom: 10px;
-}
-
-.fm-screen .fl--compact .fl-lane__n {
-  width: 22px;
-  height: 22px;
-  font-size: 11.5px;
-}
-
-.fm-screen .fl--compact .fl-lane__title {
-  font-size: 14px;
-}
-
-.fm-screen .fl--compact .fl-step {
-  grid-template-columns: 22px minmax(0, 1fr) 12px;
-  gap: 8px;
-  height: 23px;
-  padding: 0 6px 0 0;
-  font-size: 12px;
-}
-
-.fm-screen .fl--compact .fl-step__icon > svg {
-  width: 14px;
-  height: 14px;
-}
-
-/* ── Film 1: AI Appointment Setter ──────────────────────────────────────── */
-
-.fm-screen .fa {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 1px 1px, rgb(20 24 33 / 0.08) 1px, transparent 1.5px) 0 0 / 22px 22px,
-    #f3f4f7;
-}
-
-.fm-screen .fa-world {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  overflow: hidden;
-}
-
-.fm-screen .fa-before,
-.fm-screen .fa-apps,
-.fm-screen .fa-map {
-  will-change: transform;
-  transition:
-    opacity 600ms ease,
-    transform 700ms cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-/* The caption, one line under the scene (two on a phone) */
-.fm-screen .fa-cap {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 24px;
-  border-top: 1px solid rgb(20 24 33 / 0.07);
-  background: #fbfbfc;
-  text-align: center;
-}
-
-.fm-screen .fa-cap__text {
-  position: absolute;
-  inset: 0 24px;
-  display: grid;
-  place-items: center;
-  color: var(--ss-text-strong);
-  font-weight: 500;
-  text-wrap: balance;
-  opacity: 0;
-  transition: opacity 300ms ease;
-}
-
-.fm-screen .fa-cap__text[data-on] {
-  opacity: 1;
-  transition-delay: 180ms;
-}
-
-/* A still's captions are text under it, so its strip goes */
-.fm-stills .fm-screen .fa-cap {
-  display: none;
-}
-
-/* The end frame: the outcome over the faded scene */
-.fm-screen .fa-end {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  gap: 18px;
-  padding: 0 48px;
-  background: rgb(243 244 247 / 0.94);
-  text-align: center;
-  opacity: 0;
-  transition: opacity 700ms ease;
-  pointer-events: none;
-}
-
-.fm-screen .fa-end[data-on] {
-  opacity: 1;
-}
-
-.fm-screen .fa-end__line {
-  max-width: 640px;
-  margin: 0;
-  color: var(--ss-text-strong);
-  font-size: 30px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-  text-wrap: balance;
-}
-
-.fm-screen .fa-end__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 8px 16px;
-  border: 1px solid var(--ss-accent);
-  border-radius: 999px;
-  color: var(--ss-accent-text);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* Wide, 960 by 540: the apps in a row over the map, the caption under both */
-.fm-screen .fa--wide .fa-world {
-  height: 490px;
-}
-
-.fm-screen .fa--wide .fa-cap {
-  height: 50px;
-  font-size: 17px;
-  line-height: 1.3;
-}
-
-.fm-screen .fa--wide .fa-before,
-.fm-screen .fa--wide .fa-apps {
-  position: absolute;
-  inset: 0;
-}
-
-.fm-screen .fa--wide .fc-missed {
-  top: 46px;
-  left: 530px;
-  width: 380px;
-  padding: 22px 24px 8px;
-}
-
-.fm-screen .fa--wide .fc-missed .fc-strong {
-  font-size: 17px;
-}
-
-.fm-screen .fa--wide .fc-missed .fc-muted,
-.fm-screen .fa--wide .fc-missed__at {
-  font-size: 14px;
-}
-
-.fm-screen .fa--wide .fc-missed__head {
-  padding-bottom: 16px;
-}
-
-.fm-screen .fa--wide .fc-missed__row {
-  grid-template-columns: 20px minmax(0, 1fr) auto;
-  gap: 16px;
-  padding: 16px 0;
-}
-
-.fm-screen .fa--wide .fc-missed__icon {
-  width: 20px;
-  height: 20px;
-}
-
-/* A tall card holds the whole call, so it reads from the top */
-.fm-screen .fa--wide .fc-call__lines {
-  justify-content: flex-start;
-  mask-image: none;
-}
-
-.fm-screen .fa--wide .fc-cal {
-  top: 22px;
-  left: 34px;
-  width: 280px;
-  height: 242px;
-}
-
-.fm-screen .fa--wide .fc-call {
-  top: 22px;
-  left: 328px;
-  width: 304px;
-  height: 242px;
-}
-
-.fm-screen .fa--wide .fc-air {
-  top: 22px;
-  left: 646px;
-  width: 280px;
-  height: 242px;
-}
-
-.fm-screen .fa--wide .fa-map {
-  position: absolute;
-  top: 294px;
-  left: 30px;
-  right: 30px;
-  height: 180px;
-}
-
-/* Two plates: the case's apps, and the build's map they sit on */
-.fm-screen .fa-plate {
-  position: absolute;
-  border-radius: 18px;
-  background: rgb(255 255 255 / 0.55);
-}
-
-/* Bands: the apps' plate runs off the top, the map's off the bottom */
-.fm-screen .fa--wide .fa-apps > .fa-plate {
-  top: -40px;
-  left: 20px;
-  right: 20px;
-  height: 316px;
-}
-
-.fm-screen .fa--wide .fa-map > .fa-plate {
-  inset: -10px -10px -66px;
-  z-index: -1;
-}
-
-/* Moved in on the build, the app screens step back */
-.fm-screen .fa--wide[data-view='map'] .fa-apps {
-  opacity: 0;
-}
-
-.fm-screen .fa--wide .fa-before {
-  opacity: 0;
-}
-
-.fm-screen .fa--wide[data-view='before'] .fa-before {
-  opacity: 1;
-}
-
-.fm-screen .fa--wide[data-view='before'] .fa-apps,
-.fm-screen .fa--wide[data-view='before'] .fa-map {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-/* Compact, 300 by 500: one view at a time, sliding across */
-.fm-screen .fa--compact .fa-world {
-  height: 420px;
-}
-
-.fm-screen .fa--compact .fa-cap__text {
-  inset: 0 16px;
-}
-
-.fm-screen .fa--compact .fa-cap {
-  height: 80px;
-  padding: 0 16px;
-  font-size: 14px;
-  line-height: 1.35;
-}
-
-.fm-screen .fa--compact .fa-before,
-.fm-screen .fa--compact .fa-apps,
-.fm-screen .fa--compact .fa-map {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transform: translateX(28px);
-}
-
-.fm-screen .fa--compact[data-view='before'] .fa-before,
-.fm-screen .fa--compact[data-view='apps'] .fa-apps,
-.fm-screen .fa--compact[data-view='map'] .fa-map {
-  opacity: 1;
-  transform: none;
-}
-
-.fm-screen .fa--compact[data-view='map'] .fa-apps,
-.fm-screen .fa--compact[data-view='end'] .fa-apps,
-.fm-screen .fa--compact[data-view='apps'] .fa-before {
-  transform: translateX(-28px);
-}
-
-.fm-screen .fa--compact[data-view='end'] .fa-map {
-  opacity: 0.25;
-  transform: none;
-}
-
-.fm-screen .fa--compact .fc-missed {
-  top: 16px;
-  left: 16px;
-  right: 16px;
-}
-
-.fm-screen .fa--compact .fa-lanechip {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  right: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 24px;
-  opacity: 0;
-  transition: opacity 300ms;
-}
-
-.fm-screen .fa--compact .fa-lanechip[data-on] {
-  opacity: 1;
-}
-
-.fm-screen .fa-lanechip__n {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 10.5px;
-  font-weight: 700;
-}
-
-.fm-screen .fa-lanechip__text {
-  overflow: hidden;
-  color: var(--ss-text-strong);
-  font-size: 12px;
-  font-weight: 600;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.fm-screen .fa--compact .fc-call {
-  top: 48px;
-  left: 16px;
-  right: 16px;
-  height: 190px;
-}
-
-.fm-screen .fa--compact .fa-lower {
-  position: absolute;
-  top: 250px;
-  left: 16px;
-  right: 16px;
-  height: 200px;
-}
-
-.fm-screen .fa--compact .fa-lower .fc-card {
-  position: relative;
-  height: 200px;
-}
-
-.fm-screen .fa--compact .fc-air__row--head {
-  display: none;
-}
-
-.fm-screen .fa--compact .fa-map {
-  padding: 16px;
-}
-
-.fm-screen .fa--compact .fa-end {
-  gap: 14px;
-  padding: 0 20px;
-}
-
-.fm-screen .fa--compact .fa-end__line {
-  font-size: 21px;
-}
-
-.fm-screen .fa--compact .fa-end__cta {
-  font-size: 13px;
-}
-
-/* ── The cast (cast.tsx): Dennice and Leo, flat, in the site's colours ──── */
-
-.fm-screen .rb {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-
-.fm-screen .rb--dennice {
-  --rb-body: #8f9bb7;
-  --rb-dark: #5d6885;
-}
-
-.fm-screen .rb--leo {
-  --rb-body: #dac8a4;
-  --rb-dark: #9d8861;
-}
-
-.fm-screen .rb-body {
-  fill: var(--rb-body);
-}
-
-.fm-screen .rb-dark {
-  fill: var(--rb-dark);
-}
-
-.fm-screen .rb-limb {
-  fill: none;
-  stroke: var(--rb-dark);
-  stroke-linecap: round;
-  stroke-width: 6;
-}
-
-.fm-screen .rb-limb--thin {
-  stroke-width: 3;
-}
-
-.fm-screen .rb-shadow {
-  fill: rgb(20 24 33 / 0.1);
-}
-
-.fm-screen .rb-shine {
-  fill: rgb(255 255 255 / 0.22);
-}
-
-.fm-screen .rb-screen,
-.fm-screen .rb-phone {
-  fill: #1d2331;
-}
-
-.fm-screen .rb[data-mood='off'] .rb-screen {
-  fill: #363d4e;
-}
-
-.fm-screen .rb-mood {
-  opacity: 0;
-  transition: opacity 250ms ease;
-}
-
-.fm-screen .rb-mood[data-on] {
-  opacity: 1;
-}
-
-.fm-screen .rb-face {
-  fill: none;
-  stroke: #fff;
-  stroke-linecap: round;
-  stroke-width: 2.4;
-}
-
-.fm-screen .rb-face--off {
-  stroke: rgb(255 255 255 / 0.45);
-}
-
-.fm-screen .rb-eyes {
-  fill: #fff;
-  stroke: none;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: rb-blink 4.2s infinite;
-}
-
-@keyframes rb-blink {
-  0%,
-  93%,
-  100% {
-    transform: none;
-  }
-
-  96% {
-    transform: scaleY(0.15);
-  }
-}
-
-.fm-screen .rb-bulb__lamp,
-.fm-screen .rb-beanie__cap {
-  fill: var(--fm-accent);
-}
-
-.fm-screen .rb-bulb__glow {
-  fill: var(--fm-accent);
-  opacity: 0.18;
-}
-
-.fm-screen .rb[data-mood='off'] .rb-bulb__lamp {
-  fill: #c6cbd5;
-}
-
-.fm-screen .rb[data-mood='off'] .rb-bulb__glow {
-  opacity: 0;
-}
-
-.fm-screen .rb-beanie__band {
-  fill: color-mix(in oklab, var(--fm-accent) 76%, black);
-}
-
-/* ── The front desk at night ────────────────────────────────────────────── */
-
-.fm-screen .fd {
-  position: absolute;
-  inset: 0;
-}
-
-.fm-screen .fd > * {
-  position: absolute;
-  margin: 0;
-}
-
-.fm-screen .fd-window {
-  overflow: hidden;
-  border: 6px solid #fff;
-  border-radius: 10px;
-  background:
-    radial-gradient(circle at 76% 28%, #f3ecd8 0 11%, rgb(243 236 216 / 0.25) 12%, transparent 20%),
-    radial-gradient(circle at 18% 22%, rgb(255 255 255 / 0.8) 0 1.5px, transparent 2px),
-    radial-gradient(circle at 30% 68%, rgb(255 255 255 / 0.7) 0 1.5px, transparent 2px),
-    radial-gradient(circle at 78% 74%, rgb(255 255 255 / 0.7) 0 1.5px, transparent 2px),
-    linear-gradient(#222a3b, #3b4662);
-  box-shadow: 0 0 0 1px rgb(20 24 33 / 0.08);
-}
-
-.fm-screen .fd-window::before,
-.fm-screen .fd-window::after {
-  position: absolute;
-  background: #fff;
-  content: '';
-}
-
-.fm-screen .fd-window::before {
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 4px;
-  margin-left: -2px;
-}
-
-.fm-screen .fd-window::after {
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 4px;
-  margin-top: -2px;
-}
-
-.fm-screen .fd-clock {
-  padding: 6px 12px;
-  border: 1px solid rgb(20 24 33 / 0.12);
-  border-radius: 999px;
-  background: #fff;
-  color: var(--ss-text-strong);
-  font-size: 13px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.fm-screen .fd-floor {
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgb(20 24 33 / 0.12);
-}
-
-.fm-screen .fd-desk {
-  z-index: 1;
-  border-top: 10px solid #d9dde5;
-  border-radius: 12px 12px 0 0;
-  background: #fff;
-  box-shadow: 0 0 0 1px rgb(20 24 33 / 0.08);
-}
-
-/* The desk's front, with its name on it */
-.fm-screen .fd-desk::after {
-  position: absolute;
-  content: attr(data-label);
-  top: 28%;
-  left: 50%;
-  padding: 4px 12px;
-  border: 1px solid rgb(20 24 33 / 0.1);
-  border-radius: 6px;
-  color: var(--ss-text);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transform: translateX(-50%);
-}
-
-.fm-screen .fd-zz {
-  display: flex;
-  gap: 2px;
-  color: var(--ss-text);
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.fm-screen .fd-zz span {
-  animation: fd-zz 2.4s ease-in-out infinite;
-}
-
-.fm-screen .fd-zz span:last-child {
-  font-size: 11px;
-  animation-delay: 0.6s;
-}
-
-@keyframes fd-zz {
-  0%,
-  100% {
-    opacity: 0.25;
-    transform: translateY(2px);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: translateY(-3px);
-  }
-}
-
-.fm-screen .fd-set {
-  z-index: 2;
-}
-
-.fm-screen .fd-phone {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-
-.fm-screen .fd-phone__base {
-  fill: #1d2331;
-}
-
-.fm-screen .fd-phone__handset {
-  fill: #2d3548;
-}
-
-.fm-screen .fd-phone__keys {
-  fill: #59647f;
-}
-
-.fm-screen .fd-phone__ring {
-  fill: none;
-  stroke: var(--fm-accent);
-  stroke-linecap: round;
-  stroke-width: 2.5;
-  opacity: 0;
-  transition: opacity 200ms;
-}
-
-.fm-screen .fd-phone__set {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-}
-
-.fm-screen .fd-phone[data-ring] .fd-phone__ring {
-  animation: fd-ring 0.6s ease-in-out infinite alternate;
-}
-
-.fm-screen .fd-phone[data-ring] .fd-phone__set {
-  animation: fd-shake 0.2s linear infinite;
-}
-
-@keyframes fd-ring {
-  from {
-    opacity: 0.25;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fd-shake {
-  0%,
-  100% {
-    transform: none;
-  }
-
-  25% {
-    transform: rotate(-3deg);
-  }
-
-  75% {
-    transform: rotate(3deg);
-  }
-}
-
-.fm-screen .fd-agent {
-  will-change: transform, opacity;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px 6px 10px;
-  border: 1px solid rgb(20 24 33 / 0.12);
-  border-radius: 999px;
-  background: #fff;
-  color: var(--ss-text-strong);
-  font-size: 13px;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgb(20 24 33 / 0.08);
-  opacity: 0;
-  transform: translateY(6px);
-  transition:
-    opacity 300ms ease,
-    transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.fm-screen .fd-agent[data-on] {
-  opacity: 1;
-  transform: none;
-}
-
-.fm-screen .fd-agent__wave {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  height: 14px;
-}
-
-.fm-screen .fd-agent__wave span {
-  width: 3px;
-  height: 14px;
-  border-radius: 2px;
-  background: var(--fm-accent);
-  transform: scaleY(0.3);
-}
-
-.fm-screen .fd-agent[data-talking] .fd-agent__wave span {
-  animation: fd-wave 0.7s ease-in-out infinite alternate;
-}
-
-.fm-screen .fd-agent__wave span:nth-child(2) {
-  animation-delay: -0.3s;
-}
-
-.fm-screen .fd-agent__wave span:nth-child(3) {
-  animation-delay: -0.55s;
-}
-
-.fm-screen .fd-agent__wave span:nth-child(4) {
-  animation-delay: -0.15s;
-}
-
-.fm-screen .fd-agent__wave span:nth-child(5) {
-  animation-delay: -0.45s;
-}
-
-@keyframes fd-wave {
-  from {
-    transform: scaleY(0.3);
-  }
-
-  to {
-    transform: scaleY(1);
-  }
-}
-
-.fm-screen .fd-leo {
-  will-change: transform, opacity;
-  transition:
-    opacity 500ms ease,
-    transform 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.fm-screen .fd-leo:not([data-in]) {
-  opacity: 0;
-  transform: translateX(16px);
-}
-
-.fm-screen .fd-say {
-  will-change: transform, opacity;
-  z-index: 4;
-  padding: 10px 14px;
-  border: 1px solid rgb(20 24 33 / 0.1);
-  border-radius: 14px;
-  background: #fff;
-  color: var(--ss-text-strong);
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.35;
-  box-shadow: 0 6px 16px rgb(20 24 33 / 0.08);
-  opacity: 0;
-  transform: translateY(6px);
-  transition:
-    opacity 300ms ease,
-    transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.fm-screen .fd-say[data-on] {
-  opacity: 1;
-  transform: none;
-}
-
-/* The tail: a corner turned down toward whoever is speaking */
-.fm-screen .fd-say::after {
-  position: absolute;
-  bottom: -6px;
-  width: 11px;
-  height: 11px;
-  border-right: 1px solid rgb(20 24 33 / 0.1);
-  border-bottom: 1px solid rgb(20 24 33 / 0.1);
-  background: #fff;
-  content: '';
-  transform: rotate(45deg);
-}
-
-.fm-screen .fd-say--left::after {
-  left: var(--tail, 24px);
-}
-
-.fm-screen .fd-say--right::after {
-  right: var(--tail, 24px);
-}
-
-/* Missed calls arrive once the line is quiet */
-.fm-screen .fa-before .fc-missed {
-  will-change: transform, opacity;
-  z-index: 5;
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity 400ms ease,
-    transform 500ms cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.fm-screen .fa-before[data-list] .fc-missed {
-  opacity: 1;
-  transform: none;
-}
-
-/* Wide: the desk on the left, Leo on the right where the calls list lands */
-.fm-screen .fa--wide .fd-window {
-  top: 40px;
-  left: 60px;
-  width: 190px;
-  height: 130px;
-}
-
-.fm-screen .fa--wide .fd-clock {
-  top: 52px;
-  left: 274px;
-}
-
-.fm-screen .fa--wide .fd-floor {
-  top: 466px;
-}
-
-.fm-screen .fa--wide .fd-desk {
-  top: 330px;
-  left: 50px;
-  width: 440px;
-  bottom: 24px;
-}
-
-.fm-screen .fa--wide .fd-dennice {
-  top: 168px;
-  left: 140px;
-  width: 180px;
-}
-
-.fm-screen .fa--wide .fd-zz {
-  top: 166px;
-  left: 316px;
-}
-
-.fm-screen .fa--wide .fd-set {
-  top: 280px;
-  left: 356px;
-  width: 96px;
-}
-
-.fm-screen .fa--wide .fd-agent {
-  top: 236px;
-  left: 350px;
-}
-
-.fm-screen .fa--wide .fd-leo {
-  top: 241px;
-  left: 680px;
-  width: 200px;
-}
-
-.fm-screen .fa--wide .fd-say--leo {
-  --tail: 64px;
-  top: 172px;
-  right: 110px;
-  max-width: 280px;
-}
-
-.fm-screen .fa--wide .fd-say--agent {
-  --tail: 64px;
-  top: 140px;
-  left: 330px;
-  max-width: 300px;
-}
-
-/* Compact: the same desk, stacked into a phone's frame */
-.fm-screen .fa--compact .fd-window {
-  top: 16px;
-  left: 16px;
-  width: 92px;
-  height: 70px;
-  border-width: 4px;
-}
-
-.fm-screen .fa--compact .fd-clock {
-  top: 16px;
-  right: 16px;
-  padding: 5px 10px;
-  font-size: 12px;
-}
-
-.fm-screen .fa--compact .fd-window,
-.fm-screen .fa--compact .fd-clock {
-  transition: opacity 300ms ease;
-}
-
-.fm-screen .fa--compact .fa-before[data-list] .fd-window,
-.fm-screen .fa--compact .fa-before[data-list] .fd-clock {
-  opacity: 0;
-}
-
-.fm-screen .fa--compact .fd-floor {
-  top: 404px;
-}
-
-.fm-screen .fa--compact .fd-desk {
-  top: 300px;
-  left: -80px;
-  width: 260px;
-  bottom: 16px;
-  border-top-width: 8px;
-}
-
-.fm-screen .fa--compact .fd-desk::after {
-  left: 66%;
-  font-size: 11px;
-}
-
-.fm-screen .fa--compact .fd-dennice {
-  top: 194px;
-  left: 26px;
-  width: 120px;
-}
-
-.fm-screen .fa--compact .fd-zz {
-  top: 196px;
-  left: 136px;
-  font-size: 13px;
-}
-
-.fm-screen .fa--compact .fd-set {
-  top: 266px;
-  left: 122px;
-  width: 56px;
-}
-
-.fm-screen .fa--compact .fd-agent {
-  top: 230px;
-  left: 126px;
-  padding: 5px 10px 5px 8px;
-  font-size: 12px;
-}
-
-.fm-screen .fa--compact .fd-leo {
-  top: 281px;
-  left: 182px;
-  width: 110px;
-}
-
-.fm-screen .fa--compact .fd-say {
-  padding: 8px 12px;
-  font-size: 13px;
-  text-wrap: balance;
-}
-
-.fm-screen .fa--compact .fd-say--leo {
-  --tail: 40px;
-  top: 108px;
-  right: 16px;
-  max-width: 190px;
-}
-
-.fm-screen .fa--compact .fd-say--agent {
-  --tail: 130px;
-  top: 160px;
-  left: 16px;
-  max-width: 210px;
-}
-
-.fm-screen .fa--compact .fa-before .fc-missed__row:nth-child(4) {
-  display: none;
-}
-
 /* ── Ink (ink.tsx): the hand-drawn films' line, boiling ─────────────────── */
 
 /* The drawn world's colours, from the Storify engine (engine-core.js) */
@@ -1925,5 +865,756 @@
 
   .fm-screen .ink__f[data-f='0'] {
     visibility: visible;
+  }
+}
+
+/* ── The riding token on the lane map (lane-map.tsx) ───────────────────── */
+
+.fm-screen .fl-steps {
+  position: relative;
+}
+
+.fm-screen .fl-token {
+  position: absolute;
+  top: 0;
+  right: -13px;
+  display: grid;
+  place-items: center;
+  height: 14px;
+  opacity: 0;
+  transition:
+    transform 500ms cubic-bezier(0.25, 0.8, 0.25, 1),
+    opacity 300ms;
+}
+
+.fm-screen .fl-token[data-on] {
+  opacity: 1;
+}
+
+/* The token stands in for the running dot */
+.fm-screen .fl-lane:has(.fl-token[data-on]) .fl-step[data-state='now'] .fl-step__run {
+  opacity: 0;
+}
+
+/* ── The cast, in ink (cast.tsx): the engine's colours ─────────────────── */
+
+.fm-screen .rb {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.fm-screen .rb--dennice {
+  --rb-body: #8c95ec;
+  --rb-dark: #656baa;
+}
+
+.fm-screen .rb--leo {
+  --rb-body: #bcd65a;
+  --rb-dark: #879a41;
+}
+
+.fm-screen .rb-shadow {
+  fill: var(--ink);
+  opacity: 0.25;
+}
+
+.fm-screen .rb-leg path {
+  stroke: var(--rb-dark);
+  stroke-width: 4;
+}
+
+.fm-screen .rb-foot path,
+.fm-screen .rb-hand path {
+  fill: var(--rb-dark);
+  stroke-width: 1.7;
+}
+
+.fm-screen .rb-body path {
+  fill: var(--rb-body);
+  stroke-width: 2.4;
+}
+
+.fm-screen .rb-shine {
+  fill: rgb(255 255 255 / 0.18);
+}
+
+.fm-screen .rb-stem path {
+  stroke-width: 2.5;
+}
+
+.fm-screen .rb-arm path {
+  stroke: var(--rb-dark);
+  stroke-width: 5;
+}
+
+.fm-screen .rb-phone path {
+  fill: #3b3140;
+  stroke-width: 1.8;
+}
+
+.fm-screen .rb-screen path {
+  fill: var(--ink-screen);
+  stroke-width: 2;
+}
+
+.fm-screen .rb[data-mood='off'] .rb-screen path:first-child {
+  fill: #3d3a52;
+}
+
+.fm-screen .rb-bulb__glow {
+  fill: var(--ink-bulb);
+  animation: rb-glow 1.6s ease-in-out infinite alternate;
+}
+
+.fm-screen .rb-bulb__lamp path {
+  fill: var(--ink-bulb);
+  stroke-width: 1.8;
+}
+
+.fm-screen .rb[data-mood='off'] .rb-bulb__glow {
+  opacity: 0;
+  animation: none;
+}
+
+.fm-screen .rb[data-mood='off'] .rb-bulb__lamp path:first-child {
+  fill: #cfc7b6;
+}
+
+@keyframes rb-glow {
+  from {
+    opacity: 0.1;
+  }
+
+  to {
+    opacity: 0.6;
+  }
+}
+
+.fm-screen .rb-beanie__cap {
+  fill: #3e6fb0;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.fm-screen .rb-beanie__band path {
+  fill: #2f5a94;
+  stroke-width: 1.6;
+}
+
+.fm-screen .rb-beanie__pom path {
+  fill: #fff;
+  stroke-width: 1.6;
+}
+
+.fm-screen .rb-face {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.fm-screen .rb-face--off {
+  stroke: rgb(255 255 255 / 0.4);
+}
+
+.fm-screen .rb-eye {
+  fill: #fff;
+  stroke: none;
+}
+
+.fm-screen .rb-eye--blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rb-blink 3.7s infinite;
+}
+
+@keyframes rb-blink {
+  0%,
+  96%,
+  100% {
+    transform: none;
+  }
+
+  98% {
+    transform: scaleY(0.15);
+  }
+}
+
+/* One face and one pose show at a time; they swap at once, as a drawing would */
+.fm-screen .rb-mood,
+.fm-screen .rb-pose {
+  display: none;
+}
+
+.fm-screen .rb-mood[data-on],
+.fm-screen .rb-pose[data-on] {
+  display: inline;
+}
+
+.fm-screen .rb-q {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.fm-screen .rb[data-mood='puzzled'] .rb-q {
+  opacity: 1;
+}
+
+.fm-screen .rb-q__tag path {
+  fill: var(--ink-blue);
+  stroke-width: 2;
+}
+
+.fm-screen .rb-q__mark {
+  fill: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* ── The talk band (talk-band.tsx) ──────────────────────────────────────── */
+
+.fm-screen .tw {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.fm-screen .tw > * {
+  position: absolute;
+}
+
+/* The paper: the whole stage in the drawn world, a band in the build's */
+.fm-screen .tw-paper {
+  inset: 0;
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 60px, rgb(197 211 219 / 0.22) 60px 120px),
+    var(--paper);
+  will-change: transform;
+  transition: transform 1100ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.fm-screen .tw[data-world='build'] .tw-paper {
+  transform: translateY(420px);
+}
+
+.fm-screen .tw-paper__floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--paper-floor);
+}
+
+.fm-screen .tw-paper__ink {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.fm-screen .tw-paper__edge path {
+  stroke-width: 2.6;
+}
+
+.fm-screen .tw-back,
+.fm-screen .tw-front {
+  inset: 0;
+}
+
+.fm-screen .tw-actor {
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  transition: transform 1100ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.fm-screen .tw-actor .rb {
+  transition:
+    opacity 500ms ease,
+    transform 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.fm-screen .tw-actor[data-out] .rb {
+  opacity: 0;
+  transform: translateX(var(--out));
+}
+
+.fm-screen .tw-actor[data-talking]:not([data-out]) .rb {
+  animation: tw-bob 0.42s ease-in-out infinite alternate;
+}
+
+@keyframes tw-bob {
+  from {
+    transform: none;
+  }
+
+  to {
+    transform: translateY(-2px);
+  }
+}
+
+/* A bubble: drawn in ink, its words set in the site's type */
+.fm-screen .tw-say {
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: translateY(6px) scale(0.97);
+  transition:
+    opacity 200ms ease,
+    transform 280ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.fm-screen .tw-say[data-on] {
+  opacity: 1;
+  transform: none;
+  transition-delay: 120ms;
+}
+
+.fm-screen .tw-say__ink {
+  position: absolute;
+  top: 0;
+  overflow: visible;
+}
+
+.fm-screen .tw-say__shape path {
+  fill: var(--paper-w);
+  stroke-width: 2.2;
+}
+
+.fm-screen .tw-say__text {
+  position: relative;
+  margin: 0;
+  padding: 0 28px;
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ── The marker pen (marker.tsx) ────────────────────────────────────────── */
+
+.fm-screen .tw-marker {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+.fm-screen .tw-marker[data-on] {
+  opacity: 1;
+  transition: none;
+}
+
+.fm-screen .tw-marker path {
+  fill: none;
+  stroke: var(--fm-accent);
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3.5;
+}
+
+.fm-screen .tw-marker[data-on] path {
+  animation: tw-draw 500ms ease-out forwards;
+}
+
+@keyframes tw-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fm-screen .tw-marker path {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ── Film 1: AI Appointment Setter ──────────────────────────────────────── */
+
+.fm-screen .fa {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 1px 1px, rgb(20 24 33 / 0.08) 1px, transparent 1.5px) 0 0 / 22px 22px,
+    #f3f4f7;
+}
+
+/* The build: laid out 1120 by 490 and drawn at 960 by 420, above the band.
+   Scaled, not moved, so the camera's sums stay in its own layout. */
+.fm-screen .fa-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 960px;
+  height: 420px;
+  overflow: hidden;
+}
+
+.fm-screen .fa-fit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1120px;
+  height: 490px;
+  transform: scale(0.857143);
+  transform-origin: 0 0;
+}
+
+.fm-screen .fa-apps,
+.fm-screen .fa-map {
+  position: absolute;
+  will-change: opacity;
+  transition: opacity 600ms ease;
+}
+
+.fm-screen .fa-apps {
+  inset: 0;
+}
+
+.fm-screen .fa[data-view='map'] .fa-apps {
+  opacity: 0;
+}
+
+.fm-screen .fa .fc-cal {
+  top: 22px;
+  left: 40px;
+  width: 320px;
+  height: 242px;
+}
+
+.fm-screen .fa .fc-call {
+  top: 22px;
+  left: 390px;
+  width: 340px;
+  height: 242px;
+}
+
+.fm-screen .fa .fc-air {
+  top: 22px;
+  left: 760px;
+  width: 320px;
+  height: 242px;
+}
+
+/* A tall card holds the whole call, so it reads from the top */
+.fm-screen .fa .fc-call__lines {
+  justify-content: flex-start;
+  mask-image: none;
+}
+
+.fm-screen .fc-free-all {
+  position: absolute;
+  left: 58px;
+  right: 12px;
+  pointer-events: none;
+}
+
+.fm-screen .fa-map {
+  top: 294px;
+  left: 30px;
+  right: 30px;
+  height: 180px;
+}
+
+/* Two plates: the case's apps, and the build's map they sit on */
+.fm-screen .fa-plate {
+  position: absolute;
+  border-radius: 18px;
+  background: rgb(255 255 255 / 0.55);
+}
+
+.fm-screen .fa-apps > .fa-plate {
+  top: -40px;
+  left: 20px;
+  right: 20px;
+  height: 316px;
+}
+
+.fm-screen .fa-map > .fa-plate {
+  inset: -10px -10px -66px;
+  z-index: -1;
+}
+
+.fm-screen .fa-token {
+  display: block;
+  width: 24px;
+  height: 15px;
+  overflow: visible;
+}
+
+.fm-screen .fa-token__pill path {
+  fill: var(--paper-w);
+  stroke-width: 1.3;
+}
+
+.fm-screen .fa-token__phone path {
+  fill: var(--ink-screen);
+  stroke-width: 1;
+}
+
+.fm-screen .fa-cta {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 18px;
+  border: 1.5px solid var(--fm-accent);
+  border-radius: 999px;
+  background: var(--paper-w);
+  color: var(--fm-accent);
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition:
+    opacity 300ms ease,
+    transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.fm-screen .fa-cta[data-on] {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ── Film 1's front desk, in ink ────────────────────────────────────────── */
+
+.fm-screen .fa-desk {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 450ms ease;
+}
+
+.fm-screen .fa-desk[data-on] {
+  opacity: 1;
+}
+
+.fm-screen .fd {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.fm-screen .fd text {
+  fill: var(--ink);
+}
+
+.fm-screen .fd-window--night path:first-child {
+  fill: #2a3350;
+}
+
+.fm-screen .fd-window--day path:first-child {
+  fill: #bfdcea;
+}
+
+.fm-screen .fd-moon path:first-child {
+  fill: #f3ecd8;
+}
+
+.fm-screen .fd-sun path:first-child {
+  fill: var(--ink-bulb);
+}
+
+.fm-screen .fd-star {
+  fill: #fff;
+}
+
+.fm-screen .fd-frame path {
+  stroke-width: 3;
+}
+
+.fm-screen .fd-night,
+.fm-screen .fd-day,
+.fm-screen .fd-clock,
+.fm-screen .fd-zz {
+  transition: opacity 700ms ease;
+}
+
+.fm-screen .fd-time:not([data-night]) .fd-night,
+.fm-screen .fd-time:not([data-night]) .fd-clock--night,
+.fm-screen .fd-time:not([data-night]) .fd-zz,
+.fm-screen .fd-time[data-night] .fd-day,
+.fm-screen .fd-time[data-night] .fd-clock--day {
+  opacity: 0;
+}
+
+.fm-screen .fd-tag path:first-child,
+.fm-screen .fd-card path:first-child {
+  fill: var(--paper-w);
+}
+
+.fm-screen .fd-tag path {
+  stroke-width: 1.6;
+}
+
+.fm-screen .fd .fd-clock {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+.fm-screen .fd .fd-zz {
+  fill: #5a5146;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.fm-screen .fd-missed {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 400ms ease,
+    transform 500ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.fm-screen .fd-missed[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+.fm-screen .fd .fd-missed__title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.fm-screen .fd .fd-missed__sub,
+.fm-screen .fd .fd-row__note {
+  fill: #7a6f60;
+  font-size: 13px;
+}
+
+.fm-screen .fd .fd-missed__sub,
+.fm-screen .fd .fd-row__at {
+  text-anchor: end;
+}
+
+.fm-screen .fd .fd-row__from {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.fm-screen .fd .fd-row__at {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fm-screen .fd-row {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.fm-screen .fd-row[data-on] {
+  opacity: 1;
+}
+
+.fm-screen .fd-rule path {
+  stroke: rgb(43 38 33 / 0.3);
+  stroke-width: 1.2;
+}
+
+.fm-screen .fd-miss path {
+  stroke: var(--ink-mark);
+  stroke-width: 2.2;
+}
+
+.fm-screen .fd-desk path:first-child {
+  fill: #c9955e;
+}
+
+.fm-screen .fd-wood path:first-child {
+  fill: #ae7a45;
+}
+
+.fm-screen .fd .fd-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
+
+.fm-screen .fd-phone__base path:first-child {
+  fill: var(--ink-screen);
+}
+
+.fm-screen .fd-phone__set path:first-child {
+  fill: #3b3140;
+}
+
+.fm-screen .fd-phone__key path {
+  fill: #59647f;
+  stroke-width: 1.2;
+}
+
+.fm-screen .fd-phone {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.fm-screen .fd-phone[data-ring] {
+  animation: fd-shake 0.2s linear infinite;
+}
+
+.fm-screen .fd-ring path {
+  fill: none;
+  stroke: var(--ink-mark);
+  stroke-linecap: round;
+  stroke-width: 2.5;
+}
+
+.fm-screen .fd-ring {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.fm-screen .fd-ring[data-on] {
+  animation: fd-ring 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes fd-ring {
+  from {
+    opacity: 0.25;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fd-shake {
+  0%,
+  100% {
+    transform: none;
+  }
+
+  25% {
+    transform: rotate(-3deg);
+  }
+
+  75% {
+    transform: rotate(3deg);
   }
 }

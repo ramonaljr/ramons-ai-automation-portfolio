@@ -209,6 +209,12 @@ export function CalendarDay({
             </div>
           )
         })}
+        {/* The open times together, for the films' marker to circle */}
+        <div
+          className='fc-free-all'
+          data-target='free-times'
+          style={{ top: at(Math.min(...free)), height: at(Math.max(...free)) - at(Math.min(...free)) + HOUR / 2 - 2 }}
+        />
         <div
           className='fc-ev fc-ev--new'
           data-on={cal === 'booked' || undefined}
