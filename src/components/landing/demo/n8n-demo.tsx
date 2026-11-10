@@ -383,25 +383,39 @@ function DemoGuide({
   phase,
   press,
   picked,
+  options,
+  chosen,
+  onPick,
   onResults
 }: {
   phase: Phase
   press: string
   picked?: string
+
+  /** How many sample inputs there are to choose from. */
+  options: number
+
+  /** Whether the reader has chosen a sample (or run one): until then, choosing is the step to do. */
+  chosen: boolean
+  onPick?: () => void
   onResults?: () => void
 }) {
+  const choosing = !chosen && phase === 'idle'
+
   const steps = [
     {
-      title: 'Pick a sample',
-
-      // One is picked from the start, so this step is already met; it says which, and that it can change.
-      detail: picked ? `${picked} · switch anytime` : 'Choose an input on the canvas',
-      state: 'done'
+      title: choosing ? 'Pick a sample input' : 'Pick a sample',
+      detail: choosing
+        ? `${options} to try, each takes a different path`
+        : picked
+          ? `${picked} · switch anytime`
+          : 'Sample ready',
+      state: choosing ? 'current' : 'done'
     },
     {
       title: `Press ${press}`,
       detail: phase === 'running' ? 'Watch each step light up' : 'Run it on the sample',
-      state: phase === 'done' ? 'done' : 'current'
+      state: phase === 'done' ? 'done' : choosing ? 'next' : 'current'
     },
     {
       title: 'See the results',
@@ -434,6 +448,10 @@ function DemoGuide({
           <li key={step.title} data-state={step.state} aria-current={step.state === 'current' ? 'step' : undefined}>
             {last && phase === 'done' && onResults ? (
               <button type='button' className='demo-guide-step' onClick={onResults}>
+                {body}
+              </button>
+            ) : index === 0 && choosing && onPick ? (
+              <button type='button' className='demo-guide-step' onClick={onPick}>
                 {body}
               </button>
             ) : (
@@ -548,6 +566,10 @@ function Canvas({
   // Scenarios are built once, when the canvas mounts, so their dates sit ahead of today.
   const [scenarios] = useState(() => bundle.scenarios(new Date()))
   const [picked, setPicked] = useState(scenarios[0]?.id)
+
+  // With a single sample there is nothing to choose, so that step starts met.
+  const [chosen, setChosen] = useState(scenarios.length < 2)
+  const scenariosRef = useRef<HTMLDivElement>(null)
   const [run, setRun] = useState<Run | null>(null)
   const [open, setOpen] = useState<string | null>(null)
 
@@ -747,12 +769,28 @@ function Canvas({
   const execute = () => {
     if (!scenario) return
     steered.current = false
+    setChosen(true)
     setRun({ scenario, plan: plan(layout, scenario), cursor: 0, done: false })
   }
 
   const pick = (id: string) => {
     setPicked(id)
+    setChosen(true)
     setRun(null)
+  }
+
+  /** From the guide's first step: bring the sample inputs into focus, so the eye finds them. */
+  const pointToSamples = () => {
+    const group = scenariosRef.current
+
+    if (!group) return
+    group.querySelector<HTMLButtonElement>('[aria-checked="true"]')?.focus({ preventScroll: true })
+    group.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' })
+    delete group.dataset.flash
+
+    // Re-trigger the flash on every press: a reflow between removing and adding restarts it.
+    void group.offsetWidth
+    group.dataset.flash = ''
   }
 
   /** Where each node stands in the current run. */
@@ -860,6 +898,9 @@ function Canvas({
             phase={phase}
             press={chrome.run}
             picked={scenarios.length > 1 ? scenario?.label : undefined}
+            options={scenarios.length}
+            chosen={chosen}
+            onPick={pointToSamples}
             onResults={hasResults ? toResults : undefined}
           />
         }
@@ -1020,7 +1061,16 @@ function Canvas({
           {/* ── The editor's own controls ─────────────────────────────────────── */}
 
           <div className='n8n-chrome n8n-toolbar'>
-            <div className='n8n-scenarios' role='radiogroup' aria-label='Sample input'>
+            <div
+              ref={scenariosRef}
+              className='n8n-scenarios'
+              role='radiogroup'
+              aria-label='Sample input'
+              data-invite={!chosen && phase === 'idle' ? '' : undefined}
+              onAnimationEnd={event => {
+                if (event.animationName === 'demo-flash') delete event.currentTarget.dataset.flash
+              }}
+            >
               {scenarios.map(item => (
                 <button
                   key={item.id}
@@ -1040,7 +1090,7 @@ function Canvas({
             <button
               type='button'
               className='n8n-execute'
-              data-invite={phase === 'idle' ? '' : undefined}
+              data-invite={chosen && phase === 'idle' ? '' : undefined}
               disabled={phase === 'running'}
               onClick={execute}
             >
@@ -1085,7 +1135,9 @@ function Canvas({
                   ? 'Click any node to watch its data come in'
                   : phase === 'done'
                     ? 'Click any node to see what it returned'
-                    : `Press ${chrome.run} to start · drag to pan · pinch to zoom`}
+                    : chosen
+                      ? `Press ${chrome.run} to start · drag to pan · pinch to zoom`
+                      : `Start by picking a sample input at the top left, then press ${chrome.run}`}
               </p>
             )}
           </div>
