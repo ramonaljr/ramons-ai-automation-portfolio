@@ -13,6 +13,7 @@ import * as prospects from './ai-prospecting-apollo-lines'
 import * as pipeline from './airtable-crm-lead-engagement-lines'
 import * as hiring from './hr-evaluation-assistant-lines'
 import * as onboarding from './hotel-employee-onboarding-lines'
+import * as filing from './gmail-attachment-filing-lines'
 
 /** Every film's talk, by its case study's slug. */
 const FILMS: Record<string, { IMPACT: string; LINES: readonly Line[] }> = {
@@ -24,7 +25,8 @@ const FILMS: Record<string, { IMPACT: string; LINES: readonly Line[] }> = {
   'ai-prospecting-apollo': prospects,
   'airtable-crm-lead-engagement': pipeline,
   'hr-evaluation-assistant': hiring,
-  'hotel-employee-onboarding': onboarding
+  'hotel-employee-onboarding': onboarding,
+  'gmail-attachment-filing': filing
 }
 
 /** The case study's own impactHighlight, read from its .mdx. */

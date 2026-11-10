@@ -11,6 +11,7 @@ import { ProspectingFilm } from '@/components/landing/film/films/ai-prospecting-
 import { ClientPipelineFilm } from '@/components/landing/film/films/airtable-crm-lead-engagement'
 import { HrEvaluationFilm } from '@/components/landing/film/films/hr-evaluation-assistant'
 import { OnboardingFilm } from '@/components/landing/film/films/hotel-employee-onboarding'
+import { AttachmentFilingFilm } from '@/components/landing/film/films/gmail-attachment-filing'
 import type { LiveFilmSlug } from '@/components/landing/film/live-films'
 
 const FILMS: Record<LiveFilmSlug, ComponentType> = {
@@ -22,7 +23,8 @@ const FILMS: Record<LiveFilmSlug, ComponentType> = {
   'ai-prospecting-apollo': ProspectingFilm,
   'airtable-crm-lead-engagement': ClientPipelineFilm,
   'hr-evaluation-assistant': HrEvaluationFilm,
-  'hotel-employee-onboarding': OnboardingFilm
+  'hotel-employee-onboarding': OnboardingFilm,
+  'gmail-attachment-filing': AttachmentFilingFilm
 }
 
 /**
