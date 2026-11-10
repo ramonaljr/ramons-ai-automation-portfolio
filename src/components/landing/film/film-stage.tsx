@@ -3,7 +3,7 @@
 import '../scenes/look.css'
 import './film.css'
 
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { createContext, use, useEffect, useRef, useState, type ReactNode } from 'react'
 
 import { Maximize2, Pause, Play, RotateCcw, X } from 'lucide-react'
 
@@ -106,36 +106,49 @@ const isPhone = () =>
 /** Screen orientation locking, where a browser has it (Android Chrome, in full screen). */
 type Lockable = ScreenOrientation & { lock?: (o: 'landscape') => Promise<void> }
 
+/**
+ * Holds every film below it on its first frame behind a play button: for a
+ * stage that opens without anyone having asked to watch, so playing always
+ * follows a click. A context, so each film's own component needs no prop.
+ */
+export const FilmWait = createContext(false)
+
 export function FilmStage<S extends object>({ def }: { def: FilmDef<S> }) {
+  const wait = use(FilmWait)
   const reduced = useReducedMotion()
   const [part, setPart] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const [paused, setPaused] = useState(wait)
   const [ended, setEnded] = useState(false)
 
-  // Full screen: the player over the whole page, landscape. On a phone the
-  // film waits behind a cover until someone asks for it full screen.
+  // Full screen: the player over the whole page, landscape. The film waits
+  // behind a cover until asked: to play in place ('play'), or on a phone, to
+  // play full screen ('full').
   const [full, setFull] = useState(false)
-  const [cover, setCover] = useState(false)
+  const [cover, setCover] = useState<false | 'play' | 'full'>(wait ? 'play' : false)
   const root = useRef<HTMLDivElement>(null)
 
   // Bumped to restart the stage: a chapter jump or a replay
   const [run, setRun] = useState(0)
 
-  const [reel] = useState(
-    () =>
-      new Reel<S>(
-        def.parts,
-        i => setPart(i),
-        () => setEnded(true)
-      )
-  )
+  // Held from the first render when waiting: the script starts with the stage, before any effect
+  const [reel] = useState(() => {
+    const r = new Reel<S>(
+      def.parts,
+      i => setPart(i),
+      () => setEnded(true)
+    )
+
+    r.hold(wait)
+
+    return r
+  })
 
   useEffect(() => {
     if (!isPhone()) return
 
     reel.hold(true)
     setPaused(true)
-    setCover(true)
+    setCover('full')
   }, [reel])
 
   const pause = () => {
@@ -216,7 +229,7 @@ export function FilmStage<S extends object>({ def }: { def: FilmDef<S> }) {
   }
 
   const start = () => {
-    void enterFull()
+    if (cover === 'full') void enterFull()
     setCover(false)
     reel.hold(false)
     setPaused(false)
@@ -242,11 +255,11 @@ export function FilmStage<S extends object>({ def }: { def: FilmDef<S> }) {
         </Stage>
 
         {cover && (
-          <button type='button' className='fm-cover' onClick={start}>
+          <button type='button' className='fm-cover' data-kind={cover} onClick={start}>
             <span className='fm-cover__play' aria-hidden='true'>
               <Play size={20} strokeWidth={1.75} />
             </span>
-            Play full screen
+            {cover === 'full' ? 'Play full screen' : 'Play the film'}
           </button>
         )}
       </div>
