@@ -11,6 +11,7 @@ import {
 } from 'react'
 
 import {
+  ArrowDown,
   Bot,
   Braces,
   CalendarDays,
@@ -371,19 +372,103 @@ const platformOf = (name: string): Platform => {
   return key === 'make' || key === 'zapier' ? key : 'n8n'
 }
 
-function DemoCard({ platform, children }: { platform: string; children: ReactNode }) {
+/** Where the reader is in the demo: choosing, watching a run, or done and ready to read the results. */
+type Phase = 'idle' | 'running' | 'done'
+
+/**
+ * The three things to do, in order, with the one to do now lit. The third
+ * step turns into a link down to the results once a run has finished.
+ */
+function DemoGuide({
+  phase,
+  press,
+  picked,
+  onResults
+}: {
+  phase: Phase
+  press: string
+  picked?: string
+  onResults?: () => void
+}) {
+  const steps = [
+    {
+      title: 'Pick a sample',
+
+      // One is picked from the start, so this step is already met; it says which, and that it can change.
+      detail: picked ? `${picked} · switch anytime` : 'Choose an input on the canvas',
+      state: 'done'
+    },
+    {
+      title: `Press ${press}`,
+      detail: phase === 'running' ? 'Watch each step light up' : 'Run it on the sample',
+      state: phase === 'done' ? 'done' : 'current'
+    },
+    {
+      title: 'See the results',
+      detail: onResults ? 'What the run sent, saved and posted, below' : 'Click any node to see its data',
+      state: phase === 'done' ? 'current' : 'next'
+    }
+  ] as const
+
+  return (
+    <ol className='demo-guide' aria-label='How to use this demo'>
+      {steps.map((step, index) => {
+        const last = index === steps.length - 1
+
+        const body = (
+          <>
+            <span className='demo-guide-num' aria-hidden='true'>
+              {step.state === 'done' ? <Check size={12} strokeWidth={3} /> : index + 1}
+            </span>
+            <span className='demo-guide-text'>
+              <span className='demo-guide-title'>
+                {step.title}
+                {last && phase === 'done' && onResults && <ArrowDown size={13} className='demo-guide-arrow' />}
+              </span>
+              <span className='demo-guide-detail'>{step.detail}</span>
+            </span>
+          </>
+        )
+
+        return (
+          <li key={step.title} data-state={step.state} aria-current={step.state === 'current' ? 'step' : undefined}>
+            {last && phase === 'done' && onResults ? (
+              <button type='button' className='demo-guide-step' onClick={onResults}>
+                {body}
+              </button>
+            ) : (
+              <span className='demo-guide-step'>{body}</span>
+            )}
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
+
+function DemoCard({
+  platform,
+  guide,
+  children
+}: {
+  platform: string
+  guide?: ReactNode
+  children: ReactNode
+}) {
   const chrome = CHROME[platformOf(platform)]
 
   return (
     <section
       className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'
       aria-label='Interactive demo'
+      data-demo-platform={platformOf(platform)}
     >
       <div className='border-rule mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b px-1 pb-3'>
         <p className='text-accent font-mono text-xs font-medium tracking-[0.2em] uppercase'>INTERACTIVE DEMO</p>
         <p className='text-ink-3 text-[13px]'>
-          The {platform} build, {chrome.unit}. Pick a sample input and press {chrome.press}.
+          The {platform} build, {chrome.unit}. A simulated run on sample data.
         </p>
+        {guide}
       </div>
       {/* `data-tone` turns the site cursor over on n8n's dark canvas: it
           takes its ink from the surface under it (n8n-demo.css). */}
@@ -458,6 +543,7 @@ function Canvas({
   // Set when the reader pans or zooms during a run: from then on the camera
   // is theirs, so it stops following and does not pull back at the end.
   const steered = useRef(false)
+  const resultsRef = useRef<HTMLDivElement>(null)
 
   // Scenarios are built once, when the canvas mounts, so their dates sit ahead of today.
   const [scenarios] = useState(() => bundle.scenarios(new Date()))
@@ -759,9 +845,25 @@ function Canvas({
   const shown = run?.scenario ?? scenario
   const countOf = (node: DemoNode) => itemCount(run?.scenario.output[node.name])
 
+  const phase: Phase = !run ? 'idle' : run.done ? 'done' : 'running'
+  const hasResults = Boolean(shown?.outcomes?.length)
+
+  const toResults = () =>
+    resultsRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+
   return (
     <>
-      <DemoCard platform={platform}>
+      <DemoCard
+        platform={platform}
+        guide={
+          <DemoGuide
+            phase={phase}
+            press={chrome.run}
+            picked={scenarios.length > 1 ? scenario?.label : undefined}
+            onResults={hasResults ? toResults : undefined}
+          />
+        }
+      >
         <div
           ref={frameRef}
           className='n8n-demo'
@@ -935,7 +1037,13 @@ function Canvas({
               {scenario && <span className='n8n-hint'>{scenario.hint}</span>}
             </div>
 
-            <button type='button' className='n8n-execute' disabled={Boolean(run && !run.done)} onClick={execute}>
+            <button
+              type='button'
+              className='n8n-execute'
+              data-invite={phase === 'idle' ? '' : undefined}
+              disabled={phase === 'running'}
+              onClick={execute}
+            >
               {run && !run.done ? <LoaderCircle size={15} className='n8n-spin' /> : <chrome.Icon size={15} />}
               {run && !run.done ? chrome.running : run ? chrome.again : chrome.run}
             </button>
@@ -963,6 +1071,24 @@ function Canvas({
           </div>
 
           <p className='n8n-chrome n8n-note'>Simulated run · sample data</p>
+
+          {/* What to do next, at the foot of the canvas, where the eye lands after a run. */}
+          <div className='n8n-chrome n8n-coach' data-phase={phase}>
+            {phase === 'done' && hasResults ? (
+              <button type='button' className='n8n-coach-cta' onClick={toResults}>
+                See the results
+                <ArrowDown size={14} />
+              </button>
+            ) : (
+              <p className='n8n-coach-tip'>
+                {phase === 'running'
+                  ? 'Click any node to watch its data come in'
+                  : phase === 'done'
+                    ? 'Click any node to see what it returned'
+                    : `Press ${chrome.run} to start · drag to pan · pinch to zoom`}
+              </p>
+            )}
+          </div>
 
           <p
             className='n8n-chrome n8n-status'
@@ -1035,7 +1161,11 @@ function Canvas({
         </div>
       </DemoCard>
 
-      {shown?.outcomes && <DemoOutcomes outcomes={shown.outcomes} reached={reached} subject='this run' />}
+      {shown?.outcomes && (
+        <div ref={resultsRef} className='demo-results-anchor'>
+          <DemoOutcomes outcomes={shown.outcomes} reached={reached} subject='this run' />
+        </div>
+      )}
     </>
   )
 }
