@@ -17,11 +17,20 @@
   font-family: var(--font-satoshi), system-ui, sans-serif;
 }
 
+.fm,
+.fm-stills {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* The stage is laid out at its design size and scaled to fit; containing its
+   width keeps that design size out of the page's own, on a phone too */
 .fm-screen {
   position: relative;
   overflow: hidden;
   border-radius: 12px;
   background: #f3f4f7;
+  contain: inline-size;
 }
 
 .fm-controls {
@@ -29,6 +38,9 @@
   align-items: center;
   gap: 10px;
   margin-top: 12px;
+
+  /* The chapters scroll rather than widen the page */
+  contain: inline-size;
 }
 
 .fm-play {
@@ -1616,5 +1628,102 @@
 
   75% {
     transform: rotate(3deg);
+  }
+}
+
+/* ── Full screen (film-stage.tsx): landscape over the whole page ────────── */
+
+.fm-full {
+  margin-left: auto;
+}
+
+/* On a phone the film waits behind this until asked for full screen */
+.fm-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  background: rgb(13 15 20 / 0.42);
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fm-cover__play {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--fm-ink);
+}
+
+.fm[data-full] {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  background: #0d0f14;
+}
+
+/* The stage as large as the screen allows, always 16:9, the controls under it */
+.fm[data-full] .fm-screen,
+.fm[data-full] .fm-controls {
+  width: min(100%, calc((100dvh - 96px) * 16 / 9));
+}
+
+.fm[data-full] .fm-controls {
+  margin-top: 0;
+}
+
+.fm[data-full] .fm-chip {
+  border-color: rgb(255 255 255 / 0.18);
+  background: rgb(255 255 255 / 0.06);
+  color: rgb(255 255 255 / 0.82);
+}
+
+.fm[data-full] .fm-play {
+  background: #fff;
+  color: var(--fm-ink);
+}
+
+.fm-rotate {
+  display: none;
+  margin: 0;
+  color: rgb(255 255 255 / 0.8);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Held upright: say so, until the phone is turned */
+@media (orientation: portrait) {
+  .fm[data-full] .fm-rotate {
+    display: block;
+  }
+}
+
+/* A phone on its side: the stage takes the height, the chapters go */
+@media (max-height: 520px) {
+  .fm[data-full] .fm-screen,
+  .fm[data-full] .fm-controls {
+    width: min(100%, calc((100dvh - 64px) * 16 / 9));
+  }
+
+  .fm[data-full] .fm-chips {
+    display: none;
   }
 }

@@ -3,9 +3,9 @@
 import '../scenes/look.css'
 import './film.css'
 
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 
-import { Pause, Play, RotateCcw } from 'lucide-react'
+import { Maximize2, Pause, Play, RotateCcw, X } from 'lucide-react'
 
 import { Stage, useReducedMotion, type Act, type Layout } from '@/components/stageshow/kit'
 
@@ -30,7 +30,9 @@ export type FilmPart<S> = {
 
 export type FilmDef<S> = {
   title: string
-  size: { width: number; height: number; compact?: { below: number; width: number; height: number } }
+
+  /** The stage's design size: landscape, the same on every screen. */
+  size: { width: number; height: number }
   parts: FilmPart<S>[]
   render: (s: S, layout: Layout) => ReactNode
 }
@@ -95,11 +97,26 @@ class Reel<S> {
   }
 }
 
+/** A phone: a touch screen whose short side is a phone's. */
+const isPhone = () =>
+  typeof window !== 'undefined' &&
+  matchMedia('(pointer: coarse)').matches &&
+  Math.min(window.screen.width, window.screen.height) < 520
+
+/** Screen orientation locking, where a browser has it (Android Chrome, in full screen). */
+type Lockable = ScreenOrientation & { lock?: (o: 'landscape') => Promise<void> }
+
 export function FilmStage<S extends object>({ def }: { def: FilmDef<S> }) {
   const reduced = useReducedMotion()
   const [part, setPart] = useState(0)
   const [paused, setPaused] = useState(false)
   const [ended, setEnded] = useState(false)
+
+  // Full screen: the player over the whole page, landscape. On a phone the
+  // film waits behind a cover until someone asks for it full screen.
+  const [full, setFull] = useState(false)
+  const [cover, setCover] = useState(false)
+  const root = useRef<HTMLDivElement>(null)
 
   // Bumped to restart the stage: a chapter jump or a replay
   const [run, setRun] = useState(0)
@@ -113,11 +130,81 @@ export function FilmStage<S extends object>({ def }: { def: FilmDef<S> }) {
       )
   )
 
+  useEffect(() => {
+    if (!isPhone()) return
+
+    reel.hold(true)
+    setPaused(true)
+    setCover(true)
+  }, [reel])
+
+  const pause = () => {
+    reel.hold(true)
+    setPaused(true)
+  }
+
+  const enterFull = async () => {
+    setFull(true)
+
+    // Native full screen and a landscape lock where allowed; the overlay works without either
+    try {
+      await root.current?.requestFullscreen?.()
+      await (screen.orientation as Lockable).lock?.('landscape')
+    } catch {
+      // Refused (iPhone has neither for a page): the overlay and the rotate hint carry it
+    }
+  }
+
+  const leaveFull = () => {
+    setFull(false)
+    screen.orientation?.unlock?.()
+
+    if (document.fullscreenElement) void document.exitFullscreen().catch(() => {})
+  }
+
+  // Escape, or leaving native full screen another way, closes it; the film holds where it was
+  useEffect(() => {
+    if (!full) return
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+
+      // Only the film's full screen closes, not the dialog under it
+      e.stopPropagation()
+      e.preventDefault()
+      leaveFull()
+      pause()
+    }
+
+    const onChange = () => {
+      if (!document.fullscreenElement) {
+        setFull(false)
+        pause()
+      }
+    }
+
+    window.addEventListener('keydown', onKey, true)
+    document.addEventListener('fullscreenchange', onChange)
+
+    return () => {
+      window.removeEventListener('keydown', onKey, true)
+      document.removeEventListener('fullscreenchange', onChange)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [full])
+
+  // The film's end leaves full screen
+  useEffect(() => {
+    if (ended && full) leaveFull()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ended])
+
   const playFrom = (i: number) => {
     reel.jump(i)
     setPart(i)
     setPaused(false)
     setEnded(false)
+    setCover(false)
     setRun(r => r + 1)
   }
 
@@ -128,18 +215,24 @@ export function FilmStage<S extends object>({ def }: { def: FilmDef<S> }) {
     setPaused(!paused)
   }
 
+  const start = () => {
+    void enterFull()
+    setCover(false)
+    reel.hold(false)
+    setPaused(false)
+  }
+
   if (reduced) return <FilmStills def={def} />
 
   const { size } = def
 
   return (
-    <div className='fm' data-paused={paused || undefined}>
+    <div ref={root} className='fm' data-paused={paused || undefined} data-full={full || undefined}>
       <div className='fm-screen ps' data-ss-fill=''>
         <Stage<S>
           key={run}
           width={size.width}
           height={size.height}
-          compact={size.compact}
           greys='cool'
           initial={def.parts[part]!.start}
           script={reel.script}
@@ -147,13 +240,24 @@ export function FilmStage<S extends object>({ def }: { def: FilmDef<S> }) {
         >
           {(s, _rect, layout) => def.render(s, layout)}
         </Stage>
+
+        {cover && (
+          <button type='button' className='fm-cover' onClick={start}>
+            <span className='fm-cover__play' aria-hidden='true'>
+              <Play size={20} strokeWidth={1.75} />
+            </span>
+            Play full screen
+          </button>
+        )}
       </div>
+
+      {full && <p className='fm-rotate'>Rotate your phone for full size.</p>}
 
       <div className='fm-controls'>
         <button
           type='button'
           className='fm-play'
-          onClick={togglePlay}
+          onClick={cover ? start : togglePlay}
           aria-label={ended ? 'Play the film again' : paused ? 'Play the film' : 'Pause the film'}
         >
           {ended ? (
@@ -190,6 +294,26 @@ export function FilmStage<S extends object>({ def }: { def: FilmDef<S> }) {
             )
           })}
         </ol>
+
+        <button
+          type='button'
+          className='fm-play fm-full'
+          onClick={() => {
+            if (full) {
+              leaveFull()
+              pause()
+            } else {
+              void enterFull()
+            }
+          }}
+          aria-label={full ? 'Close full screen' : 'Watch full screen'}
+        >
+          {full ? (
+            <X size={14} strokeWidth={1.75} aria-hidden='true' />
+          ) : (
+            <Maximize2 size={14} strokeWidth={1.75} aria-hidden='true' />
+          )}
+        </button>
       </div>
     </div>
   )
@@ -204,7 +328,7 @@ function FilmStills<S extends object>({ def }: { def: FilmDef<S> }) {
       {def.parts.map(p => (
         <li key={p.chip} className='fm-still'>
           <div className='fm-screen ps' data-ss-fill=''>
-            <Stage<S> width={size.width} height={size.height} compact={size.compact} greys='cool' poster={p.still}>
+            <Stage<S> width={size.width} height={size.height} greys='cool' poster={p.still}>
               {(s, _rect, layout) => def.render(s, layout)}
             </Stage>
           </div>
