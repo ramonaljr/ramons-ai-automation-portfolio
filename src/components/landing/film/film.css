@@ -2223,3 +2223,10 @@
   font-weight: 700;
   line-height: 1;
 }
+
+/* ── Film 8: HR Evaluation & Job Posting Assistant ──────────────────────── */
+
+/* Groq has no mark either: the same letter disc, in Groq's orange */
+.fm-screen .fc-pd--groq {
+  background: #f55036;
+}

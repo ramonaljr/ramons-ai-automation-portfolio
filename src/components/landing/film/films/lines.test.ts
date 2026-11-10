@@ -11,6 +11,7 @@ import * as stock from './order-stock-check-lines'
 import * as leads from './solar-lead-scoring-follow-up-lines'
 import * as prospects from './ai-prospecting-apollo-lines'
 import * as pipeline from './airtable-crm-lead-engagement-lines'
+import * as hiring from './hr-evaluation-assistant-lines'
 
 /** Every film's talk, by its case study's slug. */
 const FILMS: Record<string, { IMPACT: string; LINES: readonly Line[] }> = {
@@ -20,7 +21,8 @@ const FILMS: Record<string, { IMPACT: string; LINES: readonly Line[] }> = {
   'order-stock-check': stock,
   'solar-lead-scoring-follow-up': leads,
   'ai-prospecting-apollo': prospects,
-  'airtable-crm-lead-engagement': pipeline
+  'airtable-crm-lead-engagement': pipeline,
+  'hr-evaluation-assistant': hiring
 }
 
 /** The case study's own impactHighlight, read from its .mdx. */
