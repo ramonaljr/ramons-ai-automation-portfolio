@@ -6,11 +6,13 @@ import { test } from 'node:test'
 import { MAX_LINES, MAX_WORDS, holdFor, wordCount, type Line } from '../talk'
 import * as appointments from './ai-appointment-setter-lines'
 import * as invoices from './ai-invoice-processing-approval-lines'
+import * as reminders from './ai-unpaid-invoice-reminders-lines'
 
 /** Every film's talk, by its case study's slug. */
 const FILMS: Record<string, { IMPACT: string; LINES: readonly Line[] }> = {
   'ai-appointment-setter': appointments,
-  'ai-invoice-processing-approval': invoices
+  'ai-invoice-processing-approval': invoices,
+  'ai-unpaid-invoice-reminders': reminders
 }
 
 /** The case study's own impactHighlight, read from its .mdx. */

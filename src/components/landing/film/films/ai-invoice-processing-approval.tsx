@@ -10,8 +10,9 @@ import { Ink } from '@/components/landing/film/ink'
 import { LaneMap } from '@/components/landing/film/lane-map'
 import { laneNamed, lanesOf, stepNamed } from '@/components/landing/film/lanes'
 import { Marker } from '@/components/landing/film/marker'
-import { ln, rr } from '@/components/landing/film/sketch'
+import { rr } from '@/components/landing/film/sketch'
 import { LINES } from '@/components/landing/film/films/ai-invoice-processing-approval-lines'
+import { DeskBack, DeskFront, type DeskWords } from '@/components/landing/film/films/ink-desk'
 import { MOVE, each, scriptFor } from '@/components/landing/film/films/script'
 import { BAND_SPOTS, FLOOR, STAGE, TalkBand, type Actor, type Spot } from '@/components/landing/film/talk-band'
 import { ToolMark } from '@/components/landing/scenes/tool-mark'
@@ -305,87 +306,13 @@ const result: FilmPart<S> = {
 
 /* ── The drawn accounts payable desk ────────────────────────────────────── */
 
-const WOOD = rr(64, 358, 472, 22, 5)
-const DESK = rr(84, 376, 432, 100, 4)
-const BOARD = rr(66, 46, 210, 140, 8)
-const CLOCK = rr(306, 64, 176, 36, 10)
-
-// The week's invoices sit high, clear of Karan's "?" when he walks in below
-const CARD = rr(556, 50, 364, 238, 12)
-const TAG = rr(206, 410, 188, 30, 6)
-
-/** The pinboard, the clock and the week's invoices, behind the robots. */
-function DeskBack({ s }: { s: S }) {
-  return (
-    <svg className='fd' viewBox={`0 0 ${STAGE.w} ${STAGE.h}`} data-ink={s.settle ? 'still' : undefined}>
-      <Ink className='fb-board' pts={BOARD} seed={11} />
-      {[
-        [86, 62, 70, 52, -4],
-        [168, 70, 84, 60, 3],
-        [110, 122, 76, 50, 2]
-      ].map(([x, y, w, h, r], i) => (
-        <g key={i} transform={`rotate(${r} ${x! + w! / 2} ${y! + h! / 2})`}>
-          <Ink className='fb-sheet' pts={rr(x!, y!, w!, h!, 2)} seed={12 + i} amp={0.6} />
-          <Ink className='fd-rule' pts={ln(x! + 8, y! + 16, x! + w! - 12, y! + 16)} seed={15 + i} closed={false} passes={1} />
-          <Ink className='fd-rule' pts={ln(x! + 8, y! + 28, x! + w! - 20, y! + 28)} seed={18 + i} closed={false} passes={1} />
-        </g>
-      ))}
-
-      <Ink className='fd-tag' pts={CLOCK} seed={16} amp={0.7} />
-      <text className='fd-clock' x='394' y='88'>
-        Friday · 4:40 PM
-      </text>
-
-      <g className='fd-missed' data-on={s.pile > 0 || undefined}>
-        <Ink className='fd-card' pts={CARD} seed={17} />
-        <text className='fd-missed__title' x='584' y='90'>
-          To match by hand
-        </text>
-        <text className='fd-missed__sub' x='892' y='90'>
-          This week
-        </text>
-        {PILE.map((p, i) => {
-          const y = 136 + i * 44
-
-          return (
-            <g key={i} className='fd-row' data-on={s.pile > i || undefined}>
-              <Ink className='fd-rule' pts={ln(578, y - 26, 898, y - 26)} seed={20 + i} closed={false} passes={1} />
-              <text className='fd-row__from' x='584' y={y - 4}>
-                {p.no} · {p.from}
-              </text>
-              <text className={p.twice ? 'fd-row__note fb-twice' : 'fd-row__note'} x='584' y={y + 13}>
-                {p.note}
-              </text>
-              <text className='fd-row__at' x='892' y={y - 4}>
-                {p.sum}
-              </text>
-            </g>
-          )
-        })}
-      </g>
-    </svg>
-  )
-}
-
-/** The desk front, with a stack of paper invoices and the PO folder on it. */
-function DeskFront({ s }: { s: S }) {
-  return (
-    <svg className='fd' viewBox={`0 0 ${STAGE.w} ${STAGE.h}`} data-ink={s.settle ? 'still' : undefined}>
-      <Ink className='fd-desk' pts={DESK} seed={41} />
-      <Ink className='fd-wood' pts={WOOD} seed={42} amp={0.8} />
-      <Ink className='fd-tag' pts={TAG} seed={43} amp={0.6} />
-      <text className='fd-label' x='300' y='430'>
-        ACCOUNTS PAYABLE
-      </text>
-      {[0, 1, 2, 3, 4].map(i => (
-        <Ink key={i} className='fb-sheet' pts={rr(396 + (i % 2) * 6, 344 - i * 8, 92, 14, 2)} seed={50 + i} amp={0.5} />
-      ))}
-      <Ink className='fb-folder' pts={rr(110, 336, 96, 24, 3)} seed={56} amp={0.6} />
-      <text className='fb-folder__label' x='158' y='353'>
-        PO
-      </text>
-    </svg>
-  )
+const DESK: DeskWords = {
+  clock: 'Friday · 4:40 PM',
+  card: 'To match by hand',
+  sub: 'This week',
+  rows: PILE.map(p => ({ title: `${p.no} · ${p.from}`, note: p.note, at: p.sum, wrong: p.twice })),
+  label: 'ACCOUNTS PAYABLE',
+  folder: 'PO'
 }
 
 /** The case, drawn small: the invoice PDF, riding the lit lane. */
@@ -418,7 +345,7 @@ function render(s: S) {
   } as const
 
   return (
-    <div className='fa fb' data-view={s.view} data-world={s.world}>
+    <div className='fa fa-four fb' data-view={s.view} data-world={s.world}>
       <div className='fa-world'>
         <div className='fa-fit'>
           <Camera focus={s.focus} max={2.2} pad={20} duration={MOVE}>
@@ -506,12 +433,12 @@ function render(s: S) {
         at={s.at}
         back={
           <div className='fa-desk' data-on={s.place === 'desk' || undefined}>
-            <DeskBack s={s} />
+            <DeskBack words={DESK} rows={s.pile} still={s.settle} />
           </div>
         }
         front={
           <div className='fa-desk' data-on={s.place === 'desk' || undefined}>
-            <DeskFront s={s} />
+            <DeskFront words={DESK} still={s.settle} />
           </div>
         }
       />

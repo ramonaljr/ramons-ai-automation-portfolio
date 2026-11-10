@@ -3,7 +3,7 @@
  * from the films themselves so the dialog can ask without loading them;
  * live-film.tsx maps each to its scene.
  */
-export const LIVE_FILMS = ['ai-appointment-setter', 'ai-invoice-processing-approval'] as const
+export const LIVE_FILMS = ['ai-appointment-setter', 'ai-invoice-processing-approval', 'ai-unpaid-invoice-reminders'] as const
 
 export type LiveFilmSlug = (typeof LIVE_FILMS)[number]
 

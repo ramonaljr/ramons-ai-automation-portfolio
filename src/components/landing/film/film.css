@@ -2146,30 +2146,31 @@
   }
 }
 
-/* ── Film 2: AI Invoice Processing & Approval ───────────────────────────── */
+/* ── Four cards across the 1120 px build, films 2 onwards ───────────────── */
 
-/* Four cards across the 1120 px build: mail, the AI's read, Slack, the bill */
-.fm-screen .fb .fc-card {
+.fm-screen .fa-four .fc-card {
   top: 22px;
   width: 248px;
   height: 242px;
 }
 
-.fm-screen .fb .fc-mail {
+.fm-screen .fa-four .fa-apps > .fc-card:nth-child(2) {
   left: 40px;
 }
 
-.fm-screen .fb [data-target='invoice'] {
+.fm-screen .fa-four .fa-apps > .fc-card:nth-child(3) {
   left: 304px;
 }
 
-.fm-screen .fb .fc-slack {
+.fm-screen .fa-four .fa-apps > .fc-card:nth-child(4) {
   left: 568px;
 }
 
-.fm-screen .fb [data-target='quickbooks'] {
+.fm-screen .fa-four .fa-apps > .fc-card:nth-child(5) {
   left: 832px;
 }
+
+/* ── Film 2: AI Invoice Processing & Approval ───────────────────────────── */
 
 .fm-screen .fb-board path:first-child {
   fill: #d9b98c;
