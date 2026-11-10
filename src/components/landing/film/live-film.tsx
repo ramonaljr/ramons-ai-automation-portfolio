@@ -7,6 +7,7 @@ import { InvoiceApprovalFilm } from '@/components/landing/film/films/ai-invoice-
 import { UnpaidRemindersFilm } from '@/components/landing/film/films/ai-unpaid-invoice-reminders'
 import { OrderStockFilm } from '@/components/landing/film/films/order-stock-check'
 import { LeadScoringFilm } from '@/components/landing/film/films/solar-lead-scoring-follow-up'
+import { ProspectingFilm } from '@/components/landing/film/films/ai-prospecting-apollo'
 import type { LiveFilmSlug } from '@/components/landing/film/live-films'
 
 const FILMS: Record<LiveFilmSlug, ComponentType> = {
@@ -14,7 +15,8 @@ const FILMS: Record<LiveFilmSlug, ComponentType> = {
   'ai-invoice-processing-approval': InvoiceApprovalFilm,
   'ai-unpaid-invoice-reminders': UnpaidRemindersFilm,
   'order-stock-check': OrderStockFilm,
-  'solar-lead-scoring-follow-up': LeadScoringFilm
+  'solar-lead-scoring-follow-up': LeadScoringFilm,
+  'ai-prospecting-apollo': ProspectingFilm
 }
 
 /**

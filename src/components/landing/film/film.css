@@ -2206,3 +2206,20 @@
 .fm-screen .fa-token__tape path {
   fill: none;
 }
+
+/* ── Film 3: AI Prospecting with Apollo ─────────────────────────────────── */
+
+/* Pipedrive has no mark in /images/tools: a dark disc with a "p", as the map draws it */
+.fm-screen .fc-pd {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1;
+}

@@ -417,7 +417,14 @@ export function SlackCard({ channel, posts, bot = 'n8n' }: { channel: string; po
 
 /* ── A record a run fills in: fields, then the checks made on them ──────── */
 
-export type Field = { label: string; value: string; shown: boolean }
+export type Field = {
+  label: string
+  value: string
+  shown: boolean
+
+  /** A marker target on the row, for the films' pen. */
+  target?: string
+}
 
 export type CheckState = 'wait' | 'ok' | 'flag'
 
@@ -453,7 +460,7 @@ export function RecordCard({
       </div>
       <dl className='fc-rec__fields'>
         {fields.map(f => (
-          <div key={f.label} className='fc-rec__field'>
+          <div key={f.label} className='fc-rec__field' data-target={f.target}>
             <dt>{f.label}</dt>
             <dd className='fc-in' data-in={f.shown || undefined}>
               {f.value}
