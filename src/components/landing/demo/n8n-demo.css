@@ -814,6 +814,32 @@ button.demo-guide-step:focus-visible {
   animation: demo-invite 2.2s ease-out infinite;
 }
 
+/* Until a sample is chosen, the sample buttons glow one after another, so the eye finds the first step. */
+.n8n-scenarios[data-invite] .n8n-scenario {
+  animation: demo-invite 2.2s ease-out infinite;
+}
+
+.n8n-scenarios[data-invite] .n8n-scenario:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.n8n-scenarios[data-invite] .n8n-scenario:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+.n8n-scenarios[data-invite] .n8n-scenario:nth-child(4) {
+  animation-delay: 0.75s;
+}
+
+.n8n-scenarios[data-invite] .n8n-scenario:not([aria-checked='true']) {
+  border-color: color-mix(in oklab, var(--invite) 55%, #4a4a4f);
+}
+
+/* Pressing the guide's first step flashes them once more. */
+.n8n-scenarios[data-flash] .n8n-scenario {
+  animation: demo-flash 0.9s ease-out 2;
+}
+
 /* The coach strip: one line on what to do now, bottom centre between the zoom and the note. */
 .n8n-coach {
   position: absolute;
@@ -883,6 +909,20 @@ button.demo-guide-step:focus-visible {
   }
 }
 
+@keyframes demo-flash {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--invite) 80%, transparent);
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.06);
+  }
+  100% {
+    box-shadow: 0 0 0 10px color-mix(in oklab, var(--invite) 0%, transparent);
+    transform: scale(1);
+  }
+}
+
 @keyframes demo-nudge {
   0%,
   100% {
@@ -914,6 +954,8 @@ button.demo-guide-step:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .n8n-execute[data-invite],
+  .n8n-scenarios[data-invite] .n8n-scenario,
+  .n8n-scenarios[data-flash] .n8n-scenario,
   .demo-guide-arrow,
   .n8n-coach-cta,
   .n8n-coach-cta svg {
