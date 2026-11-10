@@ -5,12 +5,14 @@ import { useEffect, useState, type ComponentType } from 'react'
 import { AppointmentSetterFilm } from '@/components/landing/film/films/ai-appointment-setter'
 import { InvoiceApprovalFilm } from '@/components/landing/film/films/ai-invoice-processing-approval'
 import { UnpaidRemindersFilm } from '@/components/landing/film/films/ai-unpaid-invoice-reminders'
+import { OrderStockFilm } from '@/components/landing/film/films/order-stock-check'
 import type { LiveFilmSlug } from '@/components/landing/film/live-films'
 
 const FILMS: Record<LiveFilmSlug, ComponentType> = {
   'ai-appointment-setter': AppointmentSetterFilm,
   'ai-invoice-processing-approval': InvoiceApprovalFilm,
-  'ai-unpaid-invoice-reminders': UnpaidRemindersFilm
+  'ai-unpaid-invoice-reminders': UnpaidRemindersFilm,
+  'order-stock-check': OrderStockFilm
 }
 
 /**

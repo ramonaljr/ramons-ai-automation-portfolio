@@ -2199,3 +2199,10 @@
   fill: var(--ink-mark);
   font-weight: 700;
 }
+
+/* ── Film 9: Order Stock Check ──────────────────────────────────────────── */
+
+/* The parcel's tape is a single stroke, not a shape */
+.fm-screen .fa-token__tape path {
+  fill: none;
+}

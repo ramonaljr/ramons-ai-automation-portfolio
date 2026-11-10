@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 import { FileText, PhoneCall, PhoneMissed, TriangleAlert } from 'lucide-react'
 
 import { Badge, Bar, BrandMark, Check, Collapse, Roll, Spinner, States, Stream } from '@/components/stageshow/kit'
-import { ToolMark } from '@/components/landing/scenes/tool-mark'
+import { ToolMark, type Tool } from '@/components/landing/scenes/tool-mark'
 
 /**
  * App screens the films share, drawn as clean cards in the site's look. Each
@@ -280,7 +280,16 @@ export function AirtableCard({
 
 /* ── A mailbox: the messages a run picks up ─────────────────────────────── */
 
-export type Mail = { from: string; subject: string; attach?: string[]; shown: boolean; read?: boolean }
+export type Mail = {
+  from: string
+  subject: string
+  attach?: string[]
+  shown: boolean
+  read?: boolean
+
+  /** A marker target on the row, for the films' pen. */
+  target?: string
+}
 
 /** `status` sits in the head, as the calendar's does: one short state at a time. */
 export function MailCard({
@@ -307,7 +316,13 @@ export function MailCard({
       </div>
       <ul className='fc-mail__list'>
         {mails.map(m => (
-          <li key={m.subject} className='fc-mail__row fc-in' data-in={m.shown || undefined} data-read={m.read || undefined}>
+          <li
+            key={m.subject}
+            className='fc-mail__row fc-in'
+            data-in={m.shown || undefined}
+            data-read={m.read || undefined}
+            data-target={m.target}
+          >
             <span className='fc-mail__dot' />
             <span className='fc-mail__who'>
               <span className='fc-strong'>{m.from}</span>
@@ -356,7 +371,8 @@ export type Post = {
   target?: string
 }
 
-export function SlackCard({ channel, posts }: { channel: string; posts: Post[] }) {
+/** `bot` is the automation platform posting, shown as each post's avatar. */
+export function SlackCard({ channel, posts, bot = 'n8n' }: { channel: string; posts: Post[]; bot?: Tool }) {
   return (
     <section className='fc-card fc-slack' data-target='slack'>
       <div className='fc-cal__head'>
@@ -368,7 +384,7 @@ export function SlackCard({ channel, posts }: { channel: string; posts: Post[] }
           <Collapse key={p.text} open={p.shown} reveal='drop'>
             <div className='fc-post'>
               <span className='fc-post__avatar'>
-                <ToolMark tool='n8n' size={14} />
+                <ToolMark tool={bot} size={14} />
               </span>
               <div className='fc-post__body'>
                 <span className='fc-post__who'>{p.who}</span>
