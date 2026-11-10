@@ -12,7 +12,6 @@ import { ClientPipelineFilm } from '@/components/landing/film/films/airtable-crm
 import { HrEvaluationFilm } from '@/components/landing/film/films/hr-evaluation-assistant'
 import { OnboardingFilm } from '@/components/landing/film/films/hotel-employee-onboarding'
 import { AttachmentFilingFilm } from '@/components/landing/film/films/gmail-attachment-filing'
-import { FilmWait } from '@/components/landing/film/film-stage'
 import type { LiveFilmSlug } from '@/components/landing/film/live-films'
 
 const FILMS: Record<LiveFilmSlug, ComponentType> = {
@@ -30,10 +29,9 @@ const FILMS: Record<LiveFilmSlug, ComponentType> = {
 
 /**
  * A case study's live film. Shown only once Satoshi has loaded, since the
- * kit's Roll, Badge and Chip measure their words once. `wait` holds it on its
- * first frame until someone presses play.
+ * kit's Roll, Badge and Chip measure their words once.
  */
-export function LiveFilm({ slug, wait = false }: { slug: LiveFilmSlug; wait?: boolean }) {
+export function LiveFilm({ slug }: { slug: LiveFilmSlug }) {
   const [fontsReady, setFontsReady] = useState(false)
 
   useEffect(() => {
@@ -50,11 +48,5 @@ export function LiveFilm({ slug, wait = false }: { slug: LiveFilmSlug; wait?: bo
 
   const Film = FILMS[slug]
 
-  return fontsReady ? (
-    <FilmWait value={wait}>
-      <Film />
-    </FilmWait>
-  ) : (
-    <div className='aspect-video w-full rounded-xl bg-[#f3f4f7]' />
-  )
+  return fontsReady ? <Film /> : <div className='aspect-video w-full rounded-xl bg-[#f3f4f7]' />
 }

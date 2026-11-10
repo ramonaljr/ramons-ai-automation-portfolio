@@ -36,13 +36,10 @@ const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, select, [ta
 
 export function CaseStudyModal({
   study,
-  startOnFilm = false,
   onClose
 }: {
   study: CaseStudyMetadata | null
 
-  /** Opened from a card's Walkthrough: play the film straight away, rather than wait for a click. */
-  startOnFilm?: boolean
   onClose: () => void
 }) {
   const panelRef = useRef<HTMLDivElement>(null)
@@ -50,17 +47,10 @@ export function CaseStudyModal({
 
   /**
    * Film or workflow in the top frame: the film leads wherever there is one,
-   * with the workflow a click away. The parent keys the dialog by project and
-   * entry point, so these start fresh on every open.
+   * and plays as the dialog opens, with the workflow a click away. The parent
+   * keys the dialog by project, so this starts fresh on every open.
    */
   const [showFilm, setShowFilm] = useState(true)
-
-  /**
-   * Whether someone has asked to watch: from a card's Walkthrough, or the Film
-   * toggle. Until then the film waits on its first frame behind a play button,
-   * so it never starts on its own.
-   */
-  const [asked, setAsked] = useState(startOnFilm)
 
   /** The views fitted to the whole window, over this dialog. */
   const [fullscreen, setFullscreen] = useState(false)
@@ -179,7 +169,6 @@ export function CaseStudyModal({
   // layout, and a scroll started before that commit is cancelled by it.
   const watch = () => {
     setShowFilm(true)
-    setAsked(true)
     requestAnimationFrame(() => bodyRef.current?.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }))
   }
 
@@ -320,10 +309,7 @@ export function CaseStudyModal({
                   type='button'
                   aria-pressed={filmOn}
                   className={toggle(filmOn)}
-                  onClick={() => {
-                    setShowFilm(true)
-                    setAsked(true)
-                  }}
+                  onClick={() => setShowFilm(true)}
                 >
                   <VideoIcon size={12} />
                   Film
@@ -339,16 +325,14 @@ export function CaseStudyModal({
               </div>
             )}
 
-            {/* 1a. The film, first. It plays only once someone has asked for
-              it; until then it waits on its first frame, so playing always
-              follows a click and never starts on its own. */}
+            {/* 1a. The film, first: it plays as the dialog opens. */}
             {filmOn && liveSlug && (
               <div className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'>
                 <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-xs tracking-wide uppercase'>
                   <span>Animated explainer</span>
                   <span className='hidden sm:inline'>Words on screen, no sound</span>
                 </div>
-                <LiveFilm slug={liveSlug} wait={!asked} />
+                <LiveFilm slug={liveSlug} />
               </div>
             )}
 
@@ -363,7 +347,7 @@ export function CaseStudyModal({
                   src={film}
                   poster={study.videoPoster}
                   controls
-                  autoPlay={asked}
+                  autoPlay
                   playsInline
                   preload='metadata'
                   aria-label={`Animated explainer film: ${study.title ?? study.slug}`}
