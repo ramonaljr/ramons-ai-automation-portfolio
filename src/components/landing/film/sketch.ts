@@ -15,11 +15,14 @@ export type Pt = readonly [number, number]
 
 export type InkOptions = {
   seed?: number
+
   /** How far a point may stray, in px. */
   amp?: number
   closed?: boolean
+
   /** Which boil frame: each draws the same shape with a different wobble. */
   boil?: number
+
   /** Which pass: the engine draws an outline twice, slightly apart. */
   pass?: number
 }
@@ -58,6 +61,7 @@ function densify(p: readonly Pt[], closed: boolean, step: number): Pt[] {
 export function rr(x: number, y: number, w: number, h: number, r: number): Pt[] {
   const rad = Math.min(r, w / 2, h / 2)
   const p: Pt[] = []
+
   const corners: [number, number, number][] = [
     [x + w - rad, y + rad, -Math.PI / 2],
     [x + w - rad, y + h - rad, 0],

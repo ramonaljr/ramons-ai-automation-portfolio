@@ -1853,3 +1853,77 @@
 .fm-screen .fa--compact .fa-before .fc-missed__row:nth-child(4) {
   display: none;
 }
+
+/* ── Ink (ink.tsx): the hand-drawn films' line, boiling ─────────────────── */
+
+/* The drawn world's colours, from the Storify engine (engine-core.js) */
+.fm,
+.fm-stills {
+  --ink: #2b2621;
+  --paper: #f1e9d8;
+  --paper-w: #fcf9f1;
+  --paper-floor: #ece2ca;
+  --ink-bulb: #f2c14e;
+  --ink-screen: #262439;
+  --ink-blue: #4f74b8;
+  --ink-mark: #c8452f;
+}
+
+.fm-screen .ink path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The second pass: the same line again, fainter, never filled */
+.fm-screen .ink__f path + path {
+  fill: none !important;
+  opacity: 0.4;
+}
+
+/* Three frames, eight a second: each frame shows for 125 ms in turn */
+.fm-screen .ink__f {
+  visibility: hidden;
+  animation: ink-boil 375ms steps(1, end) infinite;
+}
+
+.fm-screen .ink__f[data-f='1'] {
+  animation-delay: -250ms;
+}
+
+.fm-screen .ink__f[data-f='2'] {
+  animation-delay: -125ms;
+}
+
+@keyframes ink-boil {
+  0%,
+  33.32% {
+    visibility: visible;
+  }
+
+  33.33%,
+  100% {
+    visibility: hidden;
+  }
+}
+
+/* Settled, or reduced motion: the line holds on its first frame */
+.fm-screen [data-ink='still'] .ink__f {
+  animation: none;
+}
+
+.fm-screen [data-ink='still'] .ink__f[data-f='0'] {
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fm-screen .ink__f {
+    animation: none;
+  }
+
+  .fm-screen .ink__f[data-f='0'] {
+    visibility: visible;
+  }
+}
