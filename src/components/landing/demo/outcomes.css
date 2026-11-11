@@ -21,8 +21,12 @@
   border-bottom: 1px solid var(--rule);
 }
 
+/* `minmax(0, 1fr)`, not the implicit `auto` track: an auto track grows to
+   its widest unwrapped line (a chat bubble, a table row), so on a phone the
+   cards ran 850px wide inside a 342px section and were clipped. */
 .oc-cards {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-auto-flow: row dense;
   gap: 1rem;
 }

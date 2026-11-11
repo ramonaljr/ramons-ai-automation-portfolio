@@ -303,6 +303,9 @@ function JsonView({ value }: { value: unknown }) {
 
 /** Room the canvas's own controls take: the toolbar above, zoom and the note below. */
 const INSET = { top: 64, bottom: 56, side: 24 }
+
+/** Below this canvas width (px) the controls stack and the canvas opens at a readable zoom. */
+const NARROW = 560
 const ZOOM = { min: 0.12, max: 2.5, step: 1.25 }
 
 type View = { x: number; y: number; k: number }
@@ -491,7 +494,7 @@ function DemoCard({
       {/* `data-tone` turns the site cursor over on n8n's dark canvas: it
           takes its ink from the surface under it (n8n-demo.css). */}
       <div
-        className='relative h-[clamp(480px,74vh,860px)] overflow-hidden rounded-xl'
+        className='relative h-[clamp(440px,68svh,600px)] overflow-hidden rounded-xl sm:h-[clamp(480px,74vh,860px)]'
         data-tone={platformOf(platform) === 'n8n' ? 'dark' : undefined}
         style={{ backgroundColor: chrome.canvas }}
       >
@@ -595,7 +598,10 @@ function Canvas({
     const width = frame.clientWidth - INSET.side * 2
     const height = frame.clientHeight - INSET.top - INSET.bottom
     const k = Math.min(width / (x2 - x), height / (y2 - y))
-    const legible = CHROME[layout.platform].legible
+
+    // On a phone-width canvas a whole workflow fits only at ~0.08, nodes 8px
+    // across and untappable, so open on the trigger at a readable zoom instead.
+    const legible = Math.max(CHROME[layout.platform].legible, frame.clientWidth < NARROW ? 0.4 : 0)
     const trigger = layout.nodes.find(node => node.shape === 'trigger')
 
     // Too big to read whole: open at a readable zoom on the trigger, and let the run lead the way.
@@ -603,7 +609,7 @@ function Canvas({
       ? {
           k: legible,
           x: frame.clientWidth / 2 - (trigger.x + trigger.w / 2) * legible,
-          y: INSET.top + 24 - trigger.y * legible
+          y: (frame.clientWidth < NARROW ? 128 : INSET.top + 24) - trigger.y * legible
         }
       : {
           k,

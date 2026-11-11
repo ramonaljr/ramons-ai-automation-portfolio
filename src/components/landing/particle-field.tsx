@@ -499,7 +499,16 @@ export function ParticleField({ className = '' }: { className?: string }) {
 
     resize()
 
-    const io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()), { threshold: 0 })
+    let onScreen = false
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting
+        if (onScreen && !covered()) start()
+        else stop()
+      },
+      { threshold: 0 }
+    )
 
     const ro = new ResizeObserver(() => {
       resize()
@@ -516,18 +525,26 @@ export function ParticleField({ className = '' }: { className?: string }) {
     io.observe(wrap)
     ro.observe(box)
 
-    const onVisibility = () => (document.hidden ? stop() : start())
+    // A full-window dialog sets `data-covered` on <html> (case-study-modal).
+    // The intersection observer cannot see that the field is hidden under it,
+    // so without this the leaves kept drawing every frame behind the dialog and
+    // the page re-layered each frame: the lag when a case study opened.
+    const covered = () => document.documentElement.hasAttribute('data-covered')
+
+    const onVisibility = () => (document.hidden || covered() || !onScreen ? stop() : start())
 
     const onThemeChange = () => {
       dark = detectDark()
       if (reduced) draw()
+      if (covered()) stop()
+      else if (!document.hidden && onScreen) start()
     }
 
     document.addEventListener('visibilitychange', onVisibility)
 
     const themeObserver = new MutationObserver(onThemeChange)
 
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-covered'] })
 
     return () => {
       stop()

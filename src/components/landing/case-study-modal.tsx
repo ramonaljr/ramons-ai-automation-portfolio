@@ -141,6 +141,11 @@ export function CaseStudyModal({
     const prevOverflow = document.body.style.overflow
 
     document.body.style.overflow = 'hidden'
+
+    // The panel fills the window: tell the page under it to stop animating
+    // (particle-field.tsx, .field-aura in globals.css). It cannot be seen, and
+    // drawing it every frame made the dialog lag as it opened.
+    document.documentElement.setAttribute('data-covered', '')
     window.addEventListener('keydown', handleKeyDown)
 
     // The panel itself takes focus rather than the close button, so a screen
@@ -149,6 +154,7 @@ export function CaseStudyModal({
 
     return () => {
       document.body.style.overflow = prevOverflow
+      document.documentElement.removeAttribute('data-covered')
       window.removeEventListener('keydown', handleKeyDown)
       opener?.focus?.()
     }
@@ -545,18 +551,21 @@ export function CaseStudyModal({
             <WorkLink href={linkOf(study.repoUrl)} label='Source' icon={<GitHubIcon size={13} />} />
           </div>
 
-          <div className='flex items-center gap-3'>
+          {/* On a phone this row takes the full width, one line each: the
+              link's long label wrapped to two lines beside a two-line button. */}
+          <div className='flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-start'>
             <a
               href={`/case-study/${study.slug}`}
-              className='text-fine text-ink-3 hover:text-ink inline-flex items-center gap-1.5 font-mono transition-colors'
+              className='text-fine text-ink-3 hover:text-ink inline-flex items-center gap-1.5 font-mono whitespace-nowrap transition-colors'
             >
-              Read full case study
+              <span className='sm:hidden'>Full case study</span>
+              <span className='hidden sm:inline'>Read full case study</span>
               <Ico d={P.external} size={12} />
             </a>
 
             <a
               href='/#contact'
-              className='bg-ink text-meta text-ground hover:bg-ink/90 inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono tracking-wide transition-colors'
+              className='bg-ink text-meta text-ground hover:bg-ink/90 inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono tracking-wide whitespace-nowrap transition-colors'
             >
               Book a free call
               <Ico d={P.arrow} size={12} />

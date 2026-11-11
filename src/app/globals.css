@@ -5429,6 +5429,12 @@ div#experience.about-journey {
   animation: aura-light 41s ease-in-out infinite alternate;
 }
 
+/* Paused while a full-window dialog covers the page (case-study-modal.tsx).
+   The :is() lifts it above the calm scene's `running` rule below (0,4,2 > 0,4,1). */
+html[data-covered] :is(.field-aura, .blossom-story-root .field-aura) i:nth-child(n) {
+  animation-play-state: paused;
+}
+
 @keyframes aura-warm {
   0% { transform: translate(0, 0) scale(1); }
   50% { transform: translate(38vw, 26vh) scale(1.18); }
