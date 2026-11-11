@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Clock } from 'lucide-react'
 
+import { DURATION, EASE_CSS } from '@/components/landing/tokens'
 import { PROFILE } from '@/lib/portfolio'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { CalendlyEmbed } from '@/components/contact/calendly-embed'
@@ -108,7 +109,7 @@ export function ContactSection() {
               opacity: inView ? 1 : 0,
               transform: inView ? 'translateY(0)' : 'translateY(20px)',
               transition:
-                'opacity 0.7s cubic-bezier(0.16,1,0.3,1) 120ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) 120ms'
+                `opacity ${DURATION.base}s ${EASE_CSS.entrance} 120ms, transform ${DURATION.base}s ${EASE_CSS.entrance} 120ms`
             }}
           >
             {/* Who the call is with, like a booking page: the face, the

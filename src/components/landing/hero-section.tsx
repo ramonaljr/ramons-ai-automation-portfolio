@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState, type PointerEvent } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
+import { EASE_ENTRANCE } from '@/components/landing/tokens'
 import { PROFILE } from '@/lib/portfolio'
 import { Cta, usePrefersReducedMotion } from '@/components/landing/motion'
 import { gsap, LINE_DROP, MOTION_OK, SplitText, useGSAP } from '@/components/landing/gsap'
@@ -26,6 +27,19 @@ const ROTATING_WORK = ['data entry.', 'chasing leads.', 'follow-ups.', 'reportin
  * to a fixed `min-height` that cannot know how the text actually wrapped.
  */
 const LONGEST_WORK = ROTATING_WORK.reduce((a, b) => (b.length > a.length ? b : a))
+
+/**
+ * After the intro, the hero is released a beat before the tagline leaves for
+ * it (the release costs a long frame, so the intro spends it while nothing is
+ * moving). The entrance waits this long so the headline still rises as the
+ * tagline travels and the glass comes into focus, not unseen behind it.
+ * Tracks `RELEASE_LEAD` and the "done" beat in intro-animation.tsx.
+ */
+const HANDOVER_LEAD = 0.38
+
+/** How long each word holds. The underline's draw runs on the same beat
+ *  (`--beat` on `.hero-word-underline`), so the two cannot drift apart. */
+const ROTATE_MS = 3200
 
 /**
  * The desktop entrance, as one GSAP timeline rather than five CSS transitions
@@ -64,11 +78,19 @@ function trackReveal(event: PointerEvent<HTMLElement>) {
 export function HeroSection({ ready = true }: { ready?: boolean }) {
   const rootRef = useRef<HTMLElement>(null)
   const [wordIndex, setWordIndex] = useState(0)
+
+  // The headline has arrived. Until then the first word holds and its
+  // underline waits, so a first visit always lands on "data entry."
+  const [landed, setLanded] = useState(false)
   const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
       if (!ready) return
+
+      // No timeline to wait for (phones and reduced motion): the CSS reveal
+      // is already under way, so the headline counts as landed.
+      if (!window.matchMedia(HERO_MOTION).matches) setLanded(true)
 
       const mm = gsap.matchMedia()
 
@@ -76,6 +98,11 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
         const q = gsap.utils.selector(rootRef)
         const title = q('[data-hero="title"]')
         const copy = q('[data-hero="copy"]')
+
+        // The intro carries its tagline here and draws the rule itself, so
+        // on that path the eyebrow is not the entrance's to animate: fading
+        // it in as well would put the tagline on screen twice.
+        const carried = q('[data-hero="eyebrow"][data-carried]').length > 0
 
         const titleSplit = SplitText.create(q('[data-hero-line]'), {
           type: 'lines',
@@ -103,25 +130,36 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
           }
         })
 
-        tl.addLabel('copy', 0)
-          .fromTo(
-            q('[data-hero="byline"], [data-hero="eyebrow"]'),
-            { opacity: 0.01, y: 14 },
-            { opacity: 1, y: 0, duration: 0.9 },
-            'copy'
-          )
-          .fromTo(q('[data-hero-rule]'), { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut' }, 'copy')
-          .set(title, { opacity: 1 }, 'copy+=0.1')
+        tl.addLabel('copy', carried ? HANDOVER_LEAD : 0).fromTo(
+          q(carried ? '[data-hero="byline"]' : '[data-hero="byline"], [data-hero="eyebrow"]'),
+          { opacity: 0.01, y: 14 },
+          { opacity: 1, y: 0, duration: 0.9 },
+          'copy'
+        )
+
+        if (!carried) {
+          tl.fromTo(q('[data-hero-rule]'), { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut' }, 'copy')
+        }
+
+        tl.set(title, { opacity: 1 }, 'copy+=0.1')
           .fromTo(titleSplit.lines, { yPercent: LINE_DROP }, { yPercent: 0 }, 'copy+=0.1')
           .fromTo(q('[data-hero-word]'), { yPercent: LINE_DROP + 10 }, { yPercent: 0 }, 'copy+=0.22')
-          .set(copy, { opacity: 1 }, 'copy+=0.42')
-          .fromTo(copySplit.lines, { yPercent: LINE_DROP }, { yPercent: 0, duration: 1, stagger: 0.07 }, 'copy+=0.42')
+          .set(copy, { opacity: 1 }, 'copy+=0.34')
+          .fromTo(copySplit.lines, { yPercent: LINE_DROP }, { yPercent: 0, duration: 1, stagger: 0.07 }, 'copy+=0.34')
+
+          // The call to action is the first thing a visitor can act on, so it
+          // does not wait for the copy to finish settling.
           .fromTo(
             q('[data-hero="actions"]'),
             { opacity: 0.01, y: 16 },
-            { opacity: 1, y: 0, duration: 0.9 },
-            'copy+=0.62'
+            { opacity: 1, y: 0, duration: 0.65 },
+            'copy+=0.32'
           )
+
+          // The headline has landed (its lines are home, bar the last few
+          // pixels of the ease). The rotation and the underline start here,
+          // not on mount, so the first word gets its full beat.
+          .call(() => setLanded(true), undefined, 'copy+=1.25')
 
           // The portrait opens from the base a beat after the headline starts,
           // and the photo inside settles from a slight push-in as it does.
@@ -142,15 +180,45 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
     { scope: rootRef, dependencies: [ready] }
   )
 
+  // The rotation runs only while someone can see it: after the headline has
+  // landed, with the hero on screen and the tab in front. Otherwise it would
+  // re-render the hero every few seconds for the whole session.
   useEffect(() => {
-    if (reduced) return
+    const root = rootRef.current
 
-    const interval = window.setInterval(() => {
-      setWordIndex(current => (current + 1) % ROTATING_WORK.length)
-    }, 3200)
+    if (reduced || !landed || !root) return
 
-    return () => window.clearInterval(interval)
-  }, [reduced])
+    let timer: number | undefined
+    let onScreen = true
+
+    const sync = () => {
+      const run = onScreen && !document.hidden
+
+      if (run && timer === undefined) {
+        timer = window.setInterval(() => {
+          setWordIndex(current => (current + 1) % ROTATING_WORK.length)
+        }, ROTATE_MS)
+      } else if (!run && timer !== undefined) {
+        window.clearInterval(timer)
+        timer = undefined
+      }
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting
+      sync()
+    })
+
+    observer.observe(root)
+    document.addEventListener('visibilitychange', sync)
+    sync()
+
+    return () => {
+      observer.disconnect()
+      document.removeEventListener('visibilitychange', sync)
+      window.clearInterval(timer)
+    }
+  }, [reduced, landed])
 
   return (
     <section ref={rootRef} className='hero-autumn relative flex min-h-dvh flex-col justify-center overflow-hidden'>
@@ -223,13 +291,21 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
                     initial={reduced ? false : { opacity: 0, y: '38%' }}
                     animate={{ opacity: 1, y: '0%' }}
                     exit={reduced ? undefined : { opacity: 0, y: '-38%' }}
-                    transition={{ duration: reduced ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: reduced ? 0 : 0.45, ease: EASE_ENTRANCE }}
                     className='hero-outcome absolute inset-x-0 top-0 block'
                   >
                     {ROTATING_WORK[wordIndex]}
                   </motion.span>
                 </AnimatePresence>
               </span>
+              {/* Re-keyed with the word, so its draw restarts on every change
+                  and stays in phase with the rotation. */}
+              <span
+                key={wordIndex}
+                className='hero-word-underline'
+                data-run={landed || undefined}
+                style={{ '--beat': `${ROTATE_MS}ms` } as CSSProperties}
+              />
             </span>
           </h1>
 

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState, type CSSProperties } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
+import { EASE_ENTRANCE } from '@/components/landing/tokens'
 import { CONTAINER, DISPLAY_FONT, SECTION, usePrefersReducedMotion } from '@/components/landing/motion'
 import { PRINCIPLES } from '@/lib/portfolio'
 
@@ -174,7 +175,7 @@ export function PrinciplesSection() {
                   initial='enter'
                   animate='center'
                   exit='exit'
-                  transition={reduced ? { duration: 0 } : { duration: 0.42, ease: [0.23, 1, 0.32, 1] }}
+                  transition={reduced ? { duration: 0 } : { duration: 0.42, ease: EASE_ENTRANCE }}
                   className='build-gallery-panel'
                   onClick={next}
                 >

@@ -77,10 +77,31 @@
   --text-lead: 1.0625rem; /* 17px — section blurbs */
   --text-lead--line-height: 1.65;
 
-  /* One easing vocabulary. `exit` is the fast-out companion `entrance` lacked. */
+  /* One easing vocabulary. `exit` is the fast-out companion `entrance` lacked.
+     The first three carry nearly everything. The rest are named for the one
+     job each does, so a literal curve never has to be pasted into a rule.
+     JS mirrors of these live in components/landing/tokens.ts. */
   --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Symmetric draw: the workflow canvas lanes, nodes and comets. */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Deliberate exceptions. Overshoots its end value; only for pins and lifts
+     that are meant to pop. */
+  --ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* GSAP's expo.inOut, as CSS, so a CSS entrance can sit in the same timeline
+     as a GSAP one (the intro's rules). */
+  --ease-emphasis: cubic-bezier(0.87, 0, 0.13, 1);
+
+  /* The footer signature's pen: slow start, long glide. Nothing else uses it. */
+  --ease-signature: cubic-bezier(0.55, 0.1, 0.25, 1);
+
+  /* Tailwind's default ease-out, kept as the site's own token. Two rules used
+     `var(--ease-out)` and so depended on a default the site never chose. */
+  --ease-settle: cubic-bezier(0, 0, 0.2, 1);
 }
 
 :root {
@@ -366,8 +387,13 @@
 /* ── Intro: the landing page behind frosted glass ──────────────────────
    The glass is the nav bar's (ground at ~70% over a backdrop blur), so the
    page's own leaves and fog show through out of focus. The type is the hero's:
-   Satoshi Light at display tracking, the mono eyebrow in the accent. Every
-   element starts hidden here, not in GSAP, so nothing flashes on hydration. */
+   Satoshi Light at display tracking, the mono eyebrow in the accent.
+
+   The entrance is CSS, on the same clock as the monogram's draw: it starts at
+   first paint and never waits for JavaScript. GSAP only takes over for the
+   tool run, the exit and the handover (intro-animation.tsx), and switches
+   these animations off (`animation: none`) before it moves anything they
+   own, because a running CSS animation outranks an inline style. */
 .intro-glass {
   background: color-mix(in oklab, var(--ground) 70%, transparent);
   -webkit-backdrop-filter: blur(22px) saturate(1.05);
@@ -391,7 +417,7 @@
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  margin-bottom: 1.4rem;
+  margin-top: 1.5rem;
   color: var(--accent);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.75rem;
@@ -405,6 +431,7 @@
   height: 1px;
   background: color-mix(in oklab, var(--ink) 25%, transparent);
   transform: scaleX(0);
+  animation: intro-rule-in 0.8s var(--ease-emphasis) 0.04s forwards;
 }
 
 .intro-eyebrow-rule:first-child {
@@ -415,8 +442,28 @@
   transform-origin: 0 50%;
 }
 
+/* Scales from its left edge, since it lands on the hero eyebrow's left. */
 .intro-eyebrow-text {
   opacity: 0;
+  transform-origin: 0 50%;
+  animation: intro-fade-in 0.6s ease-out 0.08s forwards;
+}
+
+@keyframes intro-rule-in {
+  to { transform: scaleX(1); }
+}
+
+@keyframes intro-fade-in {
+  to { opacity: 1; }
+}
+
+@keyframes intro-word-in {
+  to { transform: translateY(0); }
+}
+
+@keyframes intro-flow-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
 }
 
 /* The hero H1's type: Satoshi Light, -0.055em (measured live: -3.64px at
@@ -428,6 +475,7 @@
   letter-spacing: -0.055em;
   line-height: 1;
   white-space: nowrap;
+  transform-origin: 0 50%;
 }
 
 /* Padded so the descender of "j" survives the mask; the negative margin
@@ -443,6 +491,7 @@
 .intro-word {
   display: inline-block;
   transform: translateY(110%);
+  animation: intro-word-in 1s var(--ease-entrance) calc(0.06s + var(--i, 0) * 0.08s) forwards;
 }
 
 .intro-word-accent {
@@ -450,10 +499,56 @@
 }
 
 .intro-flow {
+  position: relative;
   display: flex;
   align-items: center;
-  margin-top: 2.1rem;
+  margin-top: 1.9rem;
   opacity: 0;
+  animation: intro-flow-in 0.6s var(--ease-entrance) 0.2s forwards;
+}
+
+/* The "done" beat: one ring around the whole run once Slack has lit. */
+.intro-flow-done {
+  position: absolute;
+  inset: -0.55rem -0.7rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 70%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The finished work leaving the run. It flies from Slack to the hero
+   eyebrow's rule and draws it, so the run visibly flows into the page.
+   Parked at the overlay's corner; GSAP places it by x/y. */
+.intro-spark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--accent) 16%, transparent),
+    0 0 10px color-mix(in oklab, var(--accent) 45%, transparent);
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* The hero's own eyebrow while the intro carries the tagline to it: the row
+   is live (so its rule can be drawn) but the text stays out of sight until
+   the travelling copy lands on it. There is only ever one tagline on screen.
+   An attribute, not an inline style, because the intro's GSAP context
+   reverts every style it wrote when the overlay unmounts. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .hero-autumn [data-hero='eyebrow'][data-carried] {
+    opacity: 1;
+  }
+
+  .hero-autumn [data-hero='eyebrow'][data-carried='flying'] .eyebrow {
+    visibility: hidden;
+  }
 }
 
 /* A tool on the run: its mark in a small tile, grey until the line reaches
@@ -556,6 +651,29 @@
 @keyframes intro-failsafe {
   to {
     visibility: hidden;
+  }
+}
+
+/* Section headings start hidden and are shown by GSAP once their lines are
+   parked behind their masks (section-intro.tsx). Two ways out if that never
+   happens: no scripting at all shows them at once, and a script that fails
+   or is very slow shows them after 5s, as the intro's own failsafe does.
+   The animation wins over GSAP's inline opacity, which is fine: both say 1. */
+.heading-reveal {
+  opacity: 0;
+  animation: heading-failsafe 0.01s linear 5s forwards;
+}
+
+@keyframes heading-failsafe {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (scripting: none) {
+  .heading-reveal {
+    opacity: 1;
+    animation: none;
   }
 }
 
@@ -869,7 +987,7 @@ body::after {
   letter-spacing: 0.28em;
 }
 
-.hero-word-shell::after {
+.hero-word-underline {
   height: 1px;
   border-radius: 0;
   box-shadow: none;
@@ -1021,8 +1139,11 @@ body::after {
   isolation: isolate;
 }
 
-.hero-word-shell::after {
-  content: '';
+/* One draw per word, not a free-running loop: the element is re-keyed on
+   every word change (hero-section.tsx) and `--beat` is the rotation period,
+   so the line draws in under each new word and fades as it leaves. It waits
+   (`data-run`) until the headline has landed. */
+.hero-word-underline {
   position: absolute;
   z-index: -1;
   right: 0;
@@ -1031,11 +1152,14 @@ body::after {
   height: 0.08em;
   border-radius: 999px;
   background: linear-gradient(90deg, transparent, var(--hero-word-core) 18%, var(--hero-word-edge) 82%, transparent);
-  opacity: 0.72;
+  opacity: 0;
   transform: scaleX(0.94);
   transform-origin: center;
   box-shadow: 0 0 22px var(--hero-word-glow);
-  animation: hero-word-underline 2.5s var(--ease-entrance) infinite;
+}
+
+.hero-word-underline[data-run] {
+  animation: hero-word-underline var(--beat, 3.2s) var(--ease-entrance) both;
 }
 
 @keyframes hero-word-underline {
@@ -1378,7 +1502,8 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
 
-  .hero-word-shell::after {
+  .hero-word-underline,
+  .hero-word-underline[data-run] {
     animation: none;
     opacity: 0.58;
     transform: scaleX(0.94);
@@ -1788,13 +1913,13 @@ body::after {
    its steps are pinned onto it one by one with the connector drawn up to each. */
 .work-canvas[data-run='go'] svg [data-wc='lane'] {
   clip-path: inset(0 100% 0 0);
-  animation: wc-lane 0.7s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation: wc-lane 0.7s var(--ease-in-out) forwards;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
 }
 
 .work-canvas[data-run='go'] svg [data-wc='node'] {
   opacity: 0;
-  animation: wc-node 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: wc-node 0.55s var(--ease-entrance) forwards;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
 }
 
@@ -1802,7 +1927,7 @@ body::after {
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  animation: wc-pin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: wc-pin 0.5s var(--ease-overshoot) forwards;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.3s);
 }
 
@@ -1818,7 +1943,7 @@ body::after {
 .work-canvas[data-run='go'] svg [data-wc='link'] {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: wc-edge 0.45s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation: wc-edge 0.45s var(--ease-in-out) forwards;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
 }
 
@@ -1835,14 +1960,14 @@ body::after {
 .work-canvas[data-run='trace'] svg [data-wc='link'] {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: wc-edge var(--wc-draw) cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation: wc-edge var(--wc-draw) var(--ease-in-out) forwards;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
 }
 
 .work-canvas[data-run='trace'] svg [data-wc='step'][data-wc-stage] {
   transform-box: fill-box;
   transform-origin: center;
-  animation: wc-lift 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: wc-lift 0.8s var(--ease-overshoot);
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.3s);
 }
 
@@ -1898,13 +2023,13 @@ body::after {
 
 .work-canvas[data-run='go'] svg [data-wc='comet'],
 .work-canvas[data-run='trace'] svg [data-wc='comet'] {
-  animation: wc-comet var(--wc-draw, 0.45s) cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation: wc-comet var(--wc-draw, 0.45s) var(--ease-in-out) forwards;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
 }
 
 .work-canvas[data-run='go'] svg [data-wc='comet-halo'],
 .work-canvas[data-run='trace'] svg [data-wc='comet-halo'] {
-  animation: wc-comet-halo var(--wc-draw, 0.45s) cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation: wc-comet-halo var(--wc-draw, 0.45s) var(--ease-in-out) forwards;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span));
 }
 
@@ -1969,7 +2094,7 @@ body::after {
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  animation: wc-check 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: wc-check 0.4s var(--ease-entrance) forwards;
   animation-delay: calc(var(--wc-lead) + var(--t) * var(--wc-span) + 0.5s);
 }
 
@@ -2674,8 +2799,8 @@ a.work-aux-link:hover {
 .blossom-story-tone,
 .blossom-story-foreground {
   transition:
-    filter 1.4s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    filter 1.4s var(--ease-standard),
+    opacity 1.4s var(--ease-standard);
 }
 
 .blossom-story-background[data-mood='golden'] .blossom-story-video {
@@ -2756,7 +2881,7 @@ a.work-aux-link:hover {
     radial-gradient(circle at 72% 28%, oklch(0.45 0.08 52 / 0.28), transparent 30rem),
     oklch(0.2 0.013 255 / 0.96);
   box-shadow: 0 32px 80px -48px oklch(0.18 0.018 255 / 0.72);
-  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+  transition: opacity 0.8s var(--ease-settle), transform 0.8s var(--ease-settle);
 }
 
 .testimonial-accordion-card {
@@ -2770,7 +2895,7 @@ a.work-aux-link:hover {
   color: oklch(0.94 0.015 255);
   text-align: left;
   transition:
-    flex 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    flex 700ms var(--ease-entrance),
     background-color 400ms ease,
     border-color 400ms ease;
 }
@@ -2836,7 +2961,7 @@ a.work-aux-link:hover {
   opacity: 0;
   visibility: hidden;
   transform: translateX(1rem);
-  transition: opacity 300ms ease 80ms, transform 500ms var(--ease-out) 80ms, visibility 0s linear 380ms;
+  transition: opacity 300ms ease 80ms, transform 500ms var(--ease-settle) 80ms, visibility 0s linear 380ms;
 }
 
 .testimonial-accordion-card[data-active='true'] .testimonial-accordion-open {
@@ -2904,7 +3029,7 @@ a.work-aux-link:hover {
   min-height: 0;
   overflow: hidden;
   padding: 0 1.6rem;
-  transition: padding-bottom 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: padding-bottom 420ms var(--ease-entrance);
 }
 
 .faq-reply img {
@@ -3141,7 +3266,7 @@ a.work-aux-link:hover {
   width: clamp(21rem, 33vw, 34rem);
   margin: 0 0 -2.5rem;
   mask-image: linear-gradient(to bottom, #000 80%, transparent 99%);
-  transition: --reveal-r 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: --reveal-r 0.6s var(--ease-entrance);
 }
 
 .hero-portrait-frame {
@@ -3260,7 +3385,7 @@ a.work-aux-link:hover {
    the right, each act's scene (story-scenes.tsx) on the dotted sheet the
    Process scenes use, scaled as one piece to fit. */
 .story-section {
-  --story-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --story-ease: var(--ease-entrance);
 
   position: relative;
 }
@@ -3573,7 +3698,7 @@ div#experience.about-journey {
   scale: 0.6;
   transition:
     opacity 0.2s ease,
-    scale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    scale 0.3s var(--ease-entrance);
   will-change: transform;
 }
 
@@ -3648,7 +3773,7 @@ div#experience.about-journey {
   }
 
   .hero-reveal {
-    animation: hero-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: hero-reveal 0.8s var(--ease-entrance) both;
   }
 
   /* Own classes, not Tailwind's `delay-*`: those set `transition-delay` on
@@ -3791,7 +3916,7 @@ div#experience.about-journey {
   cursor: pointer;
   transition:
     border-color 0.25s ease,
-    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.3s var(--ease-entrance);
 }
 
 .view-tab img {
@@ -4470,7 +4595,7 @@ div#experience.about-journey {
   }
 
   .footer-sig[data-on] .footer-sig-line {
-    animation: footer-sig-draw 1.3s cubic-bezier(0.55, 0.1, 0.25, 1) calc(var(--i) * 140ms) both;
+    animation: footer-sig-draw 1.3s var(--ease-signature) calc(var(--i) * 140ms) both;
   }
 
   .footer-sig[data-on] .footer-sig-fill {
@@ -4645,7 +4770,7 @@ div#experience.about-journey {
 .blossom-story-background > div,
 .blossom-story-root .automation-field::before,
 .blossom-story-root .automation-field canvas {
-  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.2s var(--ease-standard);
 }
 
 .blossom-story-root[data-scene='calm'] .blossom-story-background > div,
@@ -4743,8 +4868,8 @@ div#experience.about-journey {
   opacity: 0;
   transform: translateY(14px);
   transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--strip-delay),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--strip-delay);
+    opacity 0.7s var(--ease-entrance) var(--strip-delay),
+    transform 0.7s var(--ease-entrance) var(--strip-delay);
 }
 
 .work-strip-list[data-visible='true'] > li {
@@ -4807,7 +4932,7 @@ div#experience.about-journey {
   transition:
     border-color 0.35s ease,
     box-shadow 0.35s ease,
-    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.35s var(--ease-entrance);
 }
 
 .work-strip-thumb img {
@@ -4815,7 +4940,7 @@ div#experience.about-journey {
   height: 100%;
   object-fit: cover;
   object-position: 0 0;
-  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.9s var(--ease-entrance);
 }
 
 .work-strip-item:hover .work-strip-thumb,
@@ -5138,7 +5263,7 @@ div#experience.about-journey {
   z-index: 5;
   overflow: hidden;
   mix-blend-mode: screen;
-  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.2s var(--ease-standard);
   -webkit-mask-image:
     radial-gradient(ellipse 38% 34% at 28% 52%, transparent 35%, #000 100%),
     linear-gradient(#000 30%, transparent 88%);
@@ -5239,6 +5364,14 @@ div#experience.about-journey {
   animation-play-state: paused !important;
 }
 
+/* A hint to keep a layer is only worth its memory while something is about
+   to move. Sections far off screen drop theirs (about 30 elements at load),
+   and get them back when the flag clears, 200px before they arrive. */
+[data-offscreen],
+[data-offscreen] * {
+  will-change: auto !important;
+}
+
 @media (max-width: 1023px) {
   /* The copy spans the screen: light the top band only, one set of shafts. */
   .blossom-story-rays {
@@ -5260,7 +5393,7 @@ div#experience.about-journey {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.6s var(--ease-standard);
 }
 
 .field-aura i {
@@ -5465,7 +5598,7 @@ div#experience.about-journey {
 /* Baked images, shown once decoded (hero-journey.tsx sets data-loaded). */
 .journey-scenery img {
   opacity: 0;
-  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.2s var(--ease-standard);
 }
 
 .journey-scenery img[data-loaded] {

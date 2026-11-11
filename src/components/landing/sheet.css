@@ -412,10 +412,10 @@
   transition:
     opacity 0.35s ease,
     visibility 0s linear 0.35s;
-  will-change: transform;
 }
 
 .sheet-pv[data-on] {
+  will-change: transform;
   opacity: 1;
   visibility: visible;
   transition: opacity 0.35s ease;

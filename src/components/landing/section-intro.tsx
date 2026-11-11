@@ -2,6 +2,7 @@
 
 import { useRef, type CSSProperties, type ReactNode } from 'react'
 
+import { EASE_CSS } from '@/components/landing/tokens'
 import { DISPLAY_FONT, READABLE, useInView, usePrefersReducedMotion } from '@/components/landing/motion'
 import { gsap, LINE_DROP, MOTION_OK, SplitText, useGSAP } from '@/components/landing/gsap'
 
@@ -21,8 +22,6 @@ import { gsap, LINE_DROP, MOTION_OK, SplitText, useGSAP } from '@/components/lan
  * own edge (see `useHeadingReveal`). Tag and blurb stay on the CSS steps.
  */
 
-const EASE = 'cubic-bezier(0.16,1,0.3,1)'
-
 export function introStep(
   inView: boolean,
   reduced: boolean,
@@ -39,8 +38,7 @@ export function introStep(
   return {
     opacity: inView ? 1 : 0,
     transform: inView ? 'translateY(0)' : `translateY(${y}px)`,
-    transition: `opacity ${duration}s ${EASE} ${delay}ms, transform ${duration}s ${EASE} ${delay}ms`,
-    willChange: inView ? undefined : 'opacity, transform'
+    transition: `opacity ${duration}s ${EASE_CSS.entrance} ${delay}ms, transform ${duration}s ${EASE_CSS.entrance} ${delay}ms`
   }
 }
 
@@ -48,11 +46,19 @@ export function introStep(
  * Masked line rise for a section heading, on the same beat as `introStep`'s
  * 80ms heading slot.
  *
- * The heading renders at opacity 0 until its lines are split and parked below
- * their masks; only then is it shown, so there is no frame where the whole
- * heading is visible and then snaps out of view. Once the lines land the split
- * is reverted, leaving the markup React rendered — a heading measured at one
- * width must not keep those line breaks after a resize.
+ * The heading is hidden (`.heading-reveal` in globals.css) until its lines are
+ * split and parked below their masks; only then is it shown, so there is no
+ * frame where the whole heading is visible and then snaps out of view. That
+ * class carries its own failsafe, so a script that never runs leaves the
+ * headings readable rather than invisible.
+ *
+ * The split is `autoSplit`: SplitText re-measures when the display face
+ * finishes loading and when the heading's width changes, and replays the
+ * returned tween's progress on the new lines. Splitting once at mount measured
+ * line breaks against the fallback face, so a heading that reflowed once the
+ * real font arrived rose in the wrong lines. Once the lines land the split is
+ * reverted, leaving the markup React rendered, so a heading measured at one
+ * width never keeps those line breaks after a resize.
  *
  * Reduced motion never enters the matchMedia handler, and the caller falls
  * back to the opacity-only `introStep` for those readers.
@@ -68,19 +74,25 @@ function useHeadingReveal() {
     const mm = gsap.matchMedia()
 
     mm.add(MOTION_OK, () => {
-      const split = SplitText.create(heading, { type: 'lines', mask: 'lines', linesClass: 'split-line' })
+      SplitText.create(heading, {
+        type: 'lines',
+        mask: 'lines',
+        linesClass: 'split-line',
+        autoSplit: true,
+        onSplit: self => {
+          gsap.set(self.lines, { yPercent: LINE_DROP })
+          gsap.set(heading, { opacity: 1 })
 
-      gsap.set(split.lines, { yPercent: LINE_DROP })
-      gsap.set(heading, { opacity: 1 })
-
-      gsap.to(split.lines, {
-        yPercent: 0,
-        duration: 1,
-        ease: 'expo.out',
-        stagger: 0.09,
-        delay: 0.08,
-        scrollTrigger: { trigger: heading, start: 'top 92%', once: true },
-        onComplete: () => split.revert()
+          return gsap.to(self.lines, {
+            yPercent: 0,
+            duration: 1,
+            ease: 'expo.out',
+            stagger: 0.09,
+            delay: 0.08,
+            scrollTrigger: { trigger: heading, start: 'top 92%', once: true },
+            onComplete: () => self.revert()
+          })
+        }
       })
     })
 
@@ -148,13 +160,13 @@ export function SectionIntro({
       {title != null && (
         <h2
           ref={headingRef}
-          className={`${tag ? titleClassName : titleClassName.replace(/(^|\s)mt-\S+/g, '')} text-ink leading-[1.05] font-light tracking-tight`}
+          className={`${tag ? titleClassName : titleClassName.replace(/(^|\s)mt-\S+/g, '')} text-ink leading-[1.05] font-light tracking-tight ${reduced ? '' : 'heading-reveal'}`}
           style={{
             fontFamily: DISPLAY_FONT,
 
-            // Hidden until `useHeadingReveal` has parked the lines; reduced
-            // motion keeps the opacity-only step instead.
-            ...(reduced ? introStep(inView, reduced, { delay: 80, y: 16, duration: 0.7 }) : { opacity: 0 })
+            // Hidden by `.heading-reveal` until `useHeadingReveal` has parked
+            // the lines; reduced motion keeps the opacity-only step instead.
+            ...(reduced ? introStep(inView, reduced, { delay: 80, y: 16, duration: 0.7 }) : null)
           }}
         >
           {title}

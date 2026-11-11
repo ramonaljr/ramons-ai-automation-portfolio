@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import { type MotionValue, motion, useScroll, useSpring, useTransform } from 'motion/react'
 
 // Util Imports
+import { scrollSprings } from '@/components/landing/tokens'
 import { cn } from '@/lib/utils'
 
 export type TimelineEntry = {
@@ -31,7 +32,7 @@ const TimelineRow = ({ index, content, isLast, rowRef, indexRef }: TimelineRowPr
     offset: ['start 70%', 'start 45%']
   })
 
-  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 20, mass: 0.5 })
+  const progress = useSpring(scrollYProgress, scrollSprings.timeline)
   const opacity = useTransform(progress, [0, 1], [0, 1])
   const y = useTransform(progress, [0, 1], [64, 0])
   const contentY = useTransform(progress, [0, 1], [64 - CONTENT_LIFT, -CONTENT_LIFT])

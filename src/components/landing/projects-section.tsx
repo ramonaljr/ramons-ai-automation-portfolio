@@ -7,6 +7,7 @@ import { animate, motion, useInView as useMotionInView, useMotionValue, useTrans
 
 import './work-cards.css'
 
+import { EASE_ENTRANCE, EASE_STAGE } from '@/components/landing/tokens'
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { SectionIntro } from '@/components/landing/section-intro'
 import {
@@ -181,7 +182,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, onOpen }: WorkCardProps)
       style={{ '--work-tone': tone } as CSSProperties}
       initial={{ opacity: 0, y: 28 }}
       animate={dealt ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-      transition={reduced ? { duration: 0 } : { duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={reduced ? { duration: 0 } : { duration: 0.7, delay, ease: EASE_ENTRANCE }}
       onPointerMove={trackSpotlight}
       onPointerEnter={event => {
         // Touch has no hover, and a tap is already opening the dialog.
@@ -215,7 +216,7 @@ function WorkCard({ cs, index, dealt, reduced, allLabs, onOpen }: WorkCardProps)
             aria-hidden='true'
             initial={{ clipPath: 'inset(100% 0% 0% 0%)' }}
             animate={dealt ? { clipPath: 'inset(0% 0% 0% 0%)' } : { clipPath: 'inset(100% 0% 0% 0%)' }}
-            transition={reduced ? { duration: 0 } : { duration: 0.5, delay: delay + 0.1, ease: [0.76, 0, 0.24, 1] }}
+            transition={reduced ? { duration: 0 } : { duration: 0.5, delay: delay + 0.1, ease: EASE_STAGE }}
           >
             {view.key === 'canvas' ? (
               <WorkCanvas
