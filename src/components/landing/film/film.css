@@ -903,6 +903,16 @@
   height: 12px;
 }
 
+/* Ticks fade their disc in rather than grow it. A transform transition on the
+   disc, inside the zoomed camera, could make Chrome move it to a layer of its
+   own and redraw that patch of the card, which showed for a frame as the rows
+   around it blanking out. The tick still draws in over it. */
+.fm-screen .ss-check__fill,
+.fm-screen .ss-check[data-on] .ss-check__fill {
+  transform: none;
+  transition: opacity 0.25s ease;
+}
+
 /* ── The lane map ───────────────────────────────────────────────────────── */
 
 .fm-screen .fl--wide {
