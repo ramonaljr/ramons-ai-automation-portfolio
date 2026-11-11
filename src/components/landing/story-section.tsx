@@ -4,6 +4,7 @@ import { useRef, useState, type ReactNode } from 'react'
 
 import { motion, useMotionValueEvent, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react'
 
+import { scrollSprings } from '@/components/landing/tokens'
 import { DISPLAY_FONT } from '@/components/landing/motion'
 import { SceneFrame } from '@/components/landing/scenes/scene-frame'
 import { STORY, STORY_SCENES } from '@/components/landing/scenes/story-scenes'
@@ -132,7 +133,7 @@ function PinnedStory({ systemCount }: { systemCount: number }) {
   // Slow on purpose. The track is long, so each act takes real scrolling, and
   // the copy follows the scroll through a soft spring rather than locking to
   // it: a hard flick of the wheel still plays out as a slow camera move.
-  const story = useSpring(position, { stiffness: 38, damping: 18, mass: 0.9, restDelta: 0.0005 })
+  const story = useSpring(position, scrollSprings.story)
   const progress = useTransform(story, latest => Math.max(0, latest))
 
   const railFill = useTransform(progress, [0, 1], [0, 1])

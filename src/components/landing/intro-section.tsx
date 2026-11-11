@@ -6,6 +6,7 @@ import { animate, motion, useScroll, useTransform } from 'motion/react'
 
 import { Download, Play } from 'lucide-react'
 
+import { DURATION, EASE_CSS, EASE_ENTRANCE } from '@/components/landing/tokens'
 import { GreetingWord } from '@/components/landing/greeting-word'
 import { IntroVideoDialog } from '@/components/landing/intro-video'
 import { ICON_STROKE, READABLE, usePrefersReducedMotion } from '@/components/landing/motion'
@@ -61,7 +62,7 @@ function CountUp({ value, run, reduced, delay }: { value: string; run: boolean; 
     const controls = animate(0, Number(digits), {
       duration: 1.4,
       delay,
-      ease: [0.16, 1, 0.3, 1],
+      ease: EASE_ENTRANCE,
       onUpdate: latest => {
         el.textContent = `${Math.round(latest)}${rest}`
       }
@@ -108,7 +109,7 @@ export function IntroSection({ systemCount }: { systemCount: number }) {
   const reveal = (delay: number) => ({
     opacity: inView ? 1 : 0,
     transform: inView ? 'translateY(0px)' : 'translateY(16px)',
-    transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
+    transition: `opacity ${DURATION.base}s ${EASE_CSS.entrance} ${delay}ms, transform ${DURATION.base}s ${EASE_CSS.entrance} ${delay}ms`
   })
 
   const proof = [

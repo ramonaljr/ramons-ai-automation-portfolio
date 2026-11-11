@@ -6,6 +6,7 @@ import Image from 'next/image'
 
 import { ArrowRight, Clock, User } from 'lucide-react'
 
+import { EASE_CSS } from '@/components/landing/tokens'
 import type { PostMetadata } from '@/lib/posts'
 import { SectionIntro } from '@/components/landing/section-intro'
 
@@ -81,7 +82,7 @@ export function ArticlesSection({ posts }: { posts: PostMetadata[] }) {
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? 'translateY(0)' : 'translateY(22px)',
-                transition: `opacity 0.6s cubic-bezier(0.16,1,0.3,1) ${i * 90}ms, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${i * 90}ms, border-color .3s, background-color .3s`
+                transition: `opacity 0.6s ${EASE_CSS.entrance} ${i * 90}ms, transform 0.6s ${EASE_CSS.entrance} ${i * 90}ms, border-color .3s, background-color .3s`
               }}
             >
               <a href={`/blog/${post.slug}`} className='border-rule bg-surface-raised block border-b'>

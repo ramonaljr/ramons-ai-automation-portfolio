@@ -4,6 +4,7 @@ import { useRef, useState, type MouseEvent, type ReactNode } from 'react'
 
 import { motion } from 'motion/react'
 
+import { EASE_STAGE } from '@/components/landing/tokens'
 import type { WorkView } from '@/lib/work-views'
 
 /**
@@ -85,7 +86,7 @@ export function ViewStage({
             aria-hidden={layer === 0 ? undefined : true}
             initial={previous ? { clipPath: `circle(0% at ${origin})` } : false}
             animate={{ clipPath: `circle(150% at ${origin})` }}
-            transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+            transition={{ duration: 0.9, ease: EASE_STAGE }}
             onAnimationComplete={layer === 0 ? () => setLeaving(null) : undefined}
           >
             {renderView(item)}

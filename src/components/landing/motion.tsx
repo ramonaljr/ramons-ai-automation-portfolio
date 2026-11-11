@@ -6,9 +6,33 @@ import { usePathname } from 'next/navigation'
 import { motion, useScroll, useTransform } from 'motion/react'
 import { ArrowRight as LucideArrowRight, ArrowUpRight } from 'lucide-react'
 
-import { CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE } from '@/components/landing/tokens'
+import {
+  cinematicSpring,
+  CONTAINER,
+  countupSpring,
+  DISPLAY_FONT,
+  DURATION,
+  EASE_CSS,
+  ICON_STROKE,
+  PAGE,
+  pillSpring,
+  scrollSprings,
+  snappySpring
+} from '@/components/landing/tokens'
 
-export { CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE }
+export {
+  cinematicSpring,
+  CONTAINER,
+  countupSpring,
+  DISPLAY_FONT,
+  DURATION,
+  EASE_CSS,
+  ICON_STROKE,
+  PAGE,
+  pillSpring,
+  scrollSprings,
+  snappySpring
+}
 
 /**
  * Design tokens and the reveal primitive shared by every surface that has to
@@ -137,7 +161,7 @@ export function rise(inView: boolean, delay = 0): CSSProperties {
   return {
     opacity: inView ? 1 : 0,
     transform: inView ? 'translateY(0px)' : 'translateY(22px)',
-    transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
+    transition: `opacity ${DURATION.base}s ${EASE_CSS.entrance} ${delay}ms, transform ${DURATION.base}s ${EASE_CSS.entrance} ${delay}ms`
   }
 }
 
@@ -188,7 +212,7 @@ export function sweep(inView: boolean, index = 0, step = SWEEP_STEP, distance = 
   return {
     opacity: inView ? 1 : 0,
     transform: inView ? 'translateX(0px)' : `translateX(-${distance}px)`,
-    transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms`
+    transition: `opacity ${DURATION.sweep}s ${EASE_CSS.entrance} ${delay}ms, transform ${DURATION.sweep}s ${EASE_CSS.entrance} ${delay}ms`
   }
 }
 
@@ -284,15 +308,6 @@ export function ArrowRight({ size = 13 }: { size?: number }) {
    hierarchy and costs frames; these are meant to be used sparingly.
    ─────────────────────────────────────────────────────────────────────────── */
 
-/** Weighty and deliberate. Content entrances and scroll reveals. */
-export const cinematicSpring = { type: 'spring', damping: 30, stiffness: 100, mass: 1.2 } as const
-
-/** Fast and responsive. UI chrome that should feel immediate. */
-export const snappySpring = { type: 'spring', damping: 25, stiffness: 200 } as const
-
-/** Slow settle, no overshoot — numbers should not bounce past their value. */
-export const countupSpring = { damping: 40, stiffness: 80, mass: 1 } as const
-
 /** Easing to pair with an explicit duration, when a spring is wrong. */
 export const CINEMATIC_EASE = [0.25, 0.1, 0.25, 1] as const
 
@@ -352,7 +367,7 @@ export function CountUp({
 
     // Depend on `children`, never on `match`: exec() returns a fresh array
     // each render, so listing it restarted the count on every parent re-render
-    // — and the hero re-renders every 2.5s as its headline word rotates.
+    // — and the hero re-renders every 3.2s as its headline word rotates.
   }, [inView, reduced, duration, children, start])
 
   if (!match) return <span ref={ref as never}>{children}</span>
@@ -391,7 +406,7 @@ export type CtaTone = 'primary' | 'secondary' | 'quiet'
 const CTA_BASE =
   'group inline-flex items-center gap-2.5 rounded-full text-fine tracking-[0.01em] ' +
   'transition-[background-color,border-color,color,transform,box-shadow] duration-300 ' +
-  'ease-[cubic-bezier(0.4,0,0.2,1)] active:translate-y-px active:scale-[0.985] ' +
+  'ease-standard active:translate-y-px active:scale-[0.985] ' +
   'motion-reduce:active:translate-y-0 motion-reduce:active:scale-100'
 
 const CTA_TONE: Record<CtaTone, string> = {
@@ -420,11 +435,11 @@ export function Cta({
           A jump within the page points across (→); only a link that leaves
           the page points out (↗), so the glyph says where the click goes. */}
       {href.startsWith('#') ? (
-        <span className='transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0'>
+        <span className='transition-transform duration-300 ease-standard group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0'>
           <ArrowRight size={14} />
         </span>
       ) : (
-        <span className='transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0'>
+        <span className='transition-transform duration-300 ease-standard group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0'>
           <ArrowIcon />
         </span>
       )}

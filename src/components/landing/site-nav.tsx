@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { motion, useMotionValueEvent, useScroll, useSpring } from 'motion/react'
 
 import { BrandMark } from '@/components/landing/brand-mark'
-import { ArrowRight, CONTAINER, usePrefersReducedMotion } from '@/components/landing/motion'
+import { ArrowRight, CONTAINER, pillSpring, scrollSprings, usePrefersReducedMotion } from '@/components/landing/motion'
 
 import { PROFILE } from '@/lib/portfolio'
 
@@ -132,9 +132,6 @@ const NAV_STYLE = {
  */
 const COMPACT_AFTER = 48
 
-/** The active-link pill glides rather than snaps; tuned to settle without overshoot. */
-const PILL_SPRING = { type: 'spring', stiffness: 520, damping: 42, mass: 0.7 } as const
-
 export function SiteNav() {
   const [open, setOpen] = useState(false)
   const [compact, setCompact] = useState(false)
@@ -143,7 +140,7 @@ export function SiteNav() {
   const pathname = usePathname()
   const reduced = usePrefersReducedMotion()
   const { scrollY, scrollYProgress } = useScroll()
-  const progress = useSpring(scrollYProgress, { stiffness: 130, damping: 28, mass: 0.4 })
+  const progress = useSpring(scrollYProgress, scrollSprings.navProgress)
 
   // React bails out of same-value updates, so this only re-renders on the
   // two crossings, not on every scroll frame.
@@ -241,7 +238,7 @@ export function SiteNav() {
                     <motion.span
                       layoutId='site-nav-active'
                       className='site-nav-pill absolute inset-0 -z-10 rounded-full'
-                      transition={reduced ? { duration: 0 } : PILL_SPRING}
+                      transition={reduced ? { duration: 0 } : pillSpring}
                       aria-hidden='true'
                     />
                   )}
@@ -257,7 +254,7 @@ export function SiteNav() {
               className='group bg-ink text-fine text-ground hover:bg-ink/90 relative z-10 hidden items-center gap-2 rounded-full py-2 pr-4 pl-5 whitespace-nowrap transition-[background-color,transform] duration-300 active:scale-[0.97] motion-reduce:active:scale-100 md:inline-flex'
             >
               Book a free call
-              <span className='transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0'>
+              <span className='transition-transform duration-300 ease-standard group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0'>
                 <ArrowRight size={14} />
               </span>
             </a>

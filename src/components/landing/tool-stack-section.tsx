@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
+import { DURATION, EASE_CSS } from '@/components/landing/tokens'
 import { READABLE } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
 import type { Tool } from '@/lib/portfolio'
@@ -147,7 +148,7 @@ export function ToolStackSection({ embedded = false }: { embedded?: boolean }) {
         style={{
           opacity: inView ? 1 : 0,
           transform: inView ? 'translateY(0)' : 'translateY(20px)',
-          transition: 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)'
+          transition: `opacity ${DURATION.base}s ${EASE_CSS.entrance}, transform ${DURATION.base}s ${EASE_CSS.entrance}`
         }}
       >
         <SectionIntro
