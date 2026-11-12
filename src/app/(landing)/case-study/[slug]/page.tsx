@@ -7,6 +7,7 @@ import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { CtaSection } from '@/components/landing/cta-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
+import { SupportDemoChat } from '@/components/landing/support-demo-chat'
 import { ParticleField } from '@/components/landing/particle-field'
 import { PageScene } from '@/components/landing/page-scene'
 import { ArrowRight, CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE, Reveal } from '@/components/landing/motion'
@@ -318,6 +319,24 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
                     ANIMATED EXPLAINER · WORDS ON SCREEN, MUSIC ONLY
                   </figcaption>
                 </figure>
+              </Reveal>
+            </div>
+          </section>
+        )}
+
+        {/* The real build, live: a visitor talks to the agent itself. */}
+        {metadata.liveChat && (
+          <section id='try-it' className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
+            <div className={CONTAINER}>
+              <p className='text-ink-3 font-mono text-[12px] tracking-[0.28em]'>TRY IT LIVE</p>
+              <p
+                className='text-ink mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
+                style={{ fontFamily: DISPLAY_FONT }}
+              >
+                Ask the support agent a question. It answers from the store policies and the sample orders.
+              </p>
+              <Reveal className='mt-10' threshold={0.05}>
+                <SupportDemoChat />
               </Reveal>
             </div>
           </section>

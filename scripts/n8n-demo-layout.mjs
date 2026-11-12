@@ -32,7 +32,7 @@ const ROOTS = new Set(['agent', 'chainLlm', 'informationExtractor', 'vectorStore
 
 /** Nodes that plug into a root node's base rather than the main flow. */
 const isSub = type =>
-  /^(lmChat|embeddings|outputParser|memory|documentDefaultDataLoader)/.test(type) || /Tool$/.test(type)
+  /^(lmChat|embeddings|outputParser|memory|documentDefaultDataLoader|tool[A-Z])/.test(type) || /Tool$/.test(type)
 
 const isTrigger = type => /Trigger$/.test(type) || type === 'webhook'
 

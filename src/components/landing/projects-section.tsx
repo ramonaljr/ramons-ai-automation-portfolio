@@ -36,7 +36,8 @@ const WORK_LABELS: Record<string, string> = {
   'hotel-employee-onboarding': 'Employee onboarding',
   'ai-unpaid-invoice-reminders': 'Payment reminders',
   'airtable-crm-lead-engagement': 'Client pipeline',
-  'gmail-attachment-filing': 'Document filing'
+  'gmail-attachment-filing': 'Document filing',
+  'ai-customer-support-agent': 'Customer support'
 }
 
 const WORK_USE_CASES: Record<string, string> = {
@@ -59,7 +60,9 @@ const WORK_USE_CASES: Record<string, string> = {
   'airtable-crm-lead-engagement':
     'Move a client card to a new stage, and its folder, follow-ups, nudges and emails happen on their own, exactly once.',
   'gmail-attachment-filing':
-    'Label a client email once, and every attachment is named by AI, filed in Drive, logged, and confirmed to the sender.'
+    'Label a client email once, and every attachment is named by AI, filed in Drive, logged, and confirmed to the sender.',
+  'ai-customer-support-agent':
+    'Customers answered at any hour from your own policies and order records, with every refund left to a person in Slack.'
 }
 
 export const workLabel = (cs: CaseStudyMetadata) => WORK_LABELS[cs.slug] ?? cs.title
