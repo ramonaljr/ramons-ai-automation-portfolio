@@ -3,7 +3,7 @@
   "name": "Fernhill Outdoor Supply - AI Customer Support Agent",
   "bounds": {
     "x": -64,
-    "y": -64,
+    "y": -884,
     "x2": 3020,
     "y2": 2536
   },
@@ -63,6 +63,14 @@
       "h": 900,
       "color": 3,
       "title": "Sample client: Fernhill Outdoor Supply (fictional)"
+    },
+    {
+      "x": -64,
+      "y": -884,
+      "w": 1800,
+      "h": 760,
+      "color": 7,
+      "title": "0 · Customer messages on WhatsApp"
     }
   ],
   "nodes": [
@@ -177,7 +185,7 @@
       "name": "Send Reply",
       "type": "respondToWebhook",
       "shape": "default",
-      "x": 1200,
+      "x": 1220,
       "y": 240,
       "w": 100,
       "h": 100
@@ -258,7 +266,7 @@
       "name": "Check Reply",
       "type": "code",
       "shape": "default",
-      "x": 960,
+      "x": 880,
       "y": 240,
       "w": 100,
       "h": 100
@@ -488,6 +496,119 @@
       "w": 100,
       "h": 100,
       "subtitle": "manual"
+    },
+    {
+      "name": "WhatsApp Message In",
+      "type": "whatsAppTrigger",
+      "shape": "trigger",
+      "x": 16,
+      "y": -640,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Read Message",
+      "type": "code",
+      "shape": "default",
+      "x": 236,
+      "y": -640,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Is It Text?",
+      "type": "if",
+      "shape": "default",
+      "x": 456,
+      "y": -640,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Is It A Photo?",
+      "type": "if",
+      "shape": "default",
+      "x": 676,
+      "y": -460,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Get Photo Link",
+      "type": "whatsApp",
+      "shape": "default",
+      "x": 896,
+      "y": -480,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Download Photo",
+      "type": "httpRequest",
+      "shape": "default",
+      "x": 1116,
+      "y": -480,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Save Photo To Drive",
+      "type": "googleDrive",
+      "shape": "default",
+      "x": 1336,
+      "y": -480,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upload: file"
+    },
+    {
+      "name": "Describe Photo For Agent",
+      "type": "set",
+      "shape": "default",
+      "x": 1556,
+      "y": -480,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
+    },
+    {
+      "name": "Ask For Text",
+      "type": "whatsApp",
+      "shape": "default",
+      "x": 896,
+      "y": -300,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Reply On WhatsApp",
+      "type": "whatsApp",
+      "shape": "default",
+      "x": 1220,
+      "y": 80,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "On WhatsApp?",
+      "type": "if",
+      "shape": "default",
+      "x": 1050,
+      "y": 240,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
     }
   ],
   "edges": [
@@ -577,7 +698,7 @@
     },
     {
       "from": "Check Reply",
-      "to": "Send Reply",
+      "to": "On WhatsApp?",
       "kind": "main",
       "output": 0
     },
@@ -712,6 +833,84 @@
       "to": "Alert Team: Handover",
       "kind": "main",
       "output": 2
+    },
+    {
+      "from": "WhatsApp Message In",
+      "to": "Read Message",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Read Message",
+      "to": "Is It Text?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Is It Text?",
+      "to": "Prepare Message",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Is It Text?",
+      "to": "Is It A Photo?",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Is It A Photo?",
+      "to": "Get Photo Link",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Is It A Photo?",
+      "to": "Ask For Text",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Get Photo Link",
+      "to": "Download Photo",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Download Photo",
+      "to": "Save Photo To Drive",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Save Photo To Drive",
+      "to": "Describe Photo For Agent",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Describe Photo For Agent",
+      "to": "Prepare Message",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "On WhatsApp?",
+      "to": "Reply On WhatsApp",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "On WhatsApp?",
+      "to": "Send Reply",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Reply On WhatsApp",
+      "to": "Log Conversation",
+      "kind": "main",
+      "output": 0
     }
   ]
 }

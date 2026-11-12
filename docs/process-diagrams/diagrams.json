@@ -1728,7 +1728,7 @@
    "label": "Customers answered"
   },
   "caption": "One WhatsApp message in, an answer from the store’s own data out, with every refund left to a person.",
-  "nodes": 51,
+  "nodes": 50,
   "stages": [
    {
     "title": "Customer messages on WhatsApp",
