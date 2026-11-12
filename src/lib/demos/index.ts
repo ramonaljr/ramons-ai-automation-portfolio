@@ -21,7 +21,8 @@ const DEMOS: Record<string, () => Promise<DemoBundle>> = {
   'ai-invoice-processing-approval': () =>
     import('@/lib/demos/ai-invoice-processing-approval').then(m => m.aiInvoiceProcessingApproval),
   'ai-appointment-setter': () => import('@/lib/demos/ai-appointment-setter').then(m => m.aiAppointmentSetter),
-  'hr-evaluation-assistant': () => import('@/lib/demos/hr-evaluation-assistant').then(m => m.hrEvaluationAssistant)
+  'hr-evaluation-assistant': () => import('@/lib/demos/hr-evaluation-assistant').then(m => m.hrEvaluationAssistant),
+  'ai-customer-support-agent': () => import('@/lib/demos/ai-customer-support-agent').then(m => m.aiCustomerSupportAgent)
 }
 
 export const hasDemo = (slug: string) => slug in DEMOS

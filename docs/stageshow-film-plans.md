@@ -197,6 +197,52 @@ something, not by being shown seventeen boxes in a row.
 - **The moment to land:** the clock running out and the handover.
 - **Other paths:** the error lane.
 
+## 11. AI Customer Support Agent · `ai-customer-support-agent` · n8n (proposed 2026-11-12)
+
+Added after the first ten, as a Two Worlds film like them. Waiting for Ramon's
+approval of this plan before it is built.
+
+- **The case:** a customer's pot arrives dented and he asks for a refund in
+  the store's chat.
+- **Through the build** (the map's five lanes): 1 Customer writes in → 2
+  Agent answers from store data (order number and email must both match, the
+  policies document searched, nothing else) → 3 Refunds and handovers (the
+  order checked again, fixed rules route a money request to approval) → 4 A
+  person decides (Approve or Reject in a Slack form, the customer emailed the
+  decision) → 5 Logs (every conversation saved in Airtable).
+- **The moment to land:** the agent never promises money; a person approves
+  every refund.
+- **Other paths:** an upset customer handed straight to a person (lane 3's
+  handover route), and the 5 PM daily summary (lane 5).
+- **Cast:** Dennice, the shop owner (owner, explains); Leo, a customer (the
+  case, asks); Karan, the team member who approves in Slack (third).
+- **Token:** the chat message. **The turn:** Leo asks for his money back.
+  **Marker:** Karan's Approve in the Slack form.
+- **Lines (19 of 22, each 9 words or fewer):**
+  1. Leo: Where is my order? I emailed two days ago.
+  2. Dennice: We answer every message by hand, one by one.
+  3. Dennice: Now an agent answers customers in chat, any hour.
+  4. Leo: My pot arrived dented. I’d like a refund.
+  5. Dennice: First it asks for your order number and email.
+  6. Dennice: Both must match before it shares anything.
+  7. Leo: How does it know the store’s rules?
+  8. Dennice: It searches our policies document, and nothing else.
+  9. Leo: So it refunds me straight away?
+  10. Dennice: No. The agent never promises money.
+  11. Dennice: It checks the order, then asks the team.
+  12. Karan: I approve or reject it in a Slack form.
+  13. Dennice: You’re emailed the decision either way.
+  14. Dennice: Every conversation is saved in Airtable.
+  15. Leo: What if a customer is really upset?
+  16. Dennice: Upset customers go straight to a person.
+  17. Dennice: At 5 PM, the team gets the day’s summary.
+  18. Dennice: *(the impactHighlight)* Customers get an answer at any hour,
+      taken from the store’s own records rather than guessed.
+  19. Leo: Run it yourself below.
+- **Ships as:** the live film in the dialog (added to `LIVE_FILMS`), plus a
+  rendered MP4 and poster in `public/films/` for the case-study page's film
+  section and the Walkthrough link.
+
 ---
 
 ## Order of work

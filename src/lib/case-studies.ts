@@ -37,6 +37,9 @@ export type CaseStudyMetadata = {
    */
   sampleClient?: boolean
 
+  /** The page offers a live chat with the real build (Fernhill support agent). */
+  liveChat?: boolean
+
   /**
    * Loom (or any) walkthrough video. Button is hidden until this is set. A
    * self-hosted `.mp4` also plays in place on the case study page.

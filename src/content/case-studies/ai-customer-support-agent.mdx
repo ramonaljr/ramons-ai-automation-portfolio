@@ -1,0 +1,84 @@
+---
+slug: 'ai-customer-support-agent'
+title: 'AI Customer Support Agent'
+description: 'A support chatbot for an online outdoor gear store that answers from the store policies, looks up orders and stock, and passes refunds and upset customers to a person in Slack. Built with n8n, OpenAI and Airtable.'
+organisation: 'Online Outdoor Store'
+role: 'AI Automation Specialist'
+tools: ['n8n', 'OpenAI', 'Airtable', 'Slack', 'Gmail', 'Google Drive']
+publishedAt: '2026-11-12'
+image: '/images/workflows/ai-customer-support-agent-build.webp'
+heroImage: '/images/workflows/ai-customer-support-agent-build.webp'
+heroLabel: 'n8n build'
+videoUrl: '/films/ai-customer-support-agent.mp4'
+videoPoster: '/films/ai-customer-support-agent.jpg'
+sample: false
+sampleClient: true
+liveChat: true
+
+# ── Selected Work grid + detail modal ──
+platform: 'n8n'
+categories: ['Customer Service', 'AI Agents']
+workflowImage: '/images/workflows/ai-customer-support-agent-map.svg'
+canvasLabel: 'Process map'
+canvasTheme: 'light'
+logicSummary: 'Customer writes in → agent searches the store policies and looks up the order or stock → answers in a few sentences → refunds and upset customers go to a person in Slack → the decision is emailed to the customer → every conversation is logged.'
+keyOutcome:
+  value: '24/7'
+  label: 'Customers answered'
+integrations: ['n8n', 'OpenAI', 'Airtable', 'Slack', 'Gmail', 'Google Drive']
+problem: 'A small online store answered every support message by hand: where is my order, can I return this, does this boot run small. The same few questions took most of the day, replies slowed down when the team was busy, and nothing came back at night or at weekends.'
+solution: 'Built an n8n chatbot on OpenAI that answers only from the store policies document and the real order and stock records in Airtable. It asks for the order number and email before sharing anything about an order. Anything involving money, and any upset or unusual case, goes to a person in Slack instead of being promised in the chat.'
+stepCount: 5
+impactHighlight: 'Customers get an answer at any hour, taken from the store''s own records rather than guessed.'
+impactHighlightDesc: 'Refunds, replacements and discounts are never promised by the bot: a person approves each one in Slack, and the customer is emailed the decision.'
+roi:
+  - value: '24/7'
+    label: 'Customers answered'
+    desc: 'Order status, returns, shipping and product questions are answered straight away, nights and weekends included.'
+  - value: '30'
+    label: 'Test questions'
+    desc: 'A fixed set of 30 customer messages is re-run after every change. After the first fixes, all 30 passed in four of five runs and 29 in the other.'
+  - value: '0'
+    label: 'Refunds promised by the bot'
+    desc: 'Every refund, replacement or discount is sent to a person in Slack, who approves or rejects it before the customer hears back.'
+failsafeHeadline: 'Answers only what it can check'
+failsafeDesc: 'The agent answers from the policies document and the store records, asks for proof before sharing order details, and hands anything it cannot settle to a person.'
+failsafes:
+  - title: 'Order number and email'
+    desc: 'Order details are only shared when the order number and email match. If they do not, it says so without hinting which one was wrong.'
+  - title: 'Money goes to a person'
+    desc: 'Refunds, replacements, exchanges, cancellations and discounts are checked against the order and sent to Slack for a yes or no.'
+  - title: 'Hands over when it should'
+    desc: 'Upset customers, safety problems, legal threats and questions the policies do not cover go to the team with the full conversation.'
+---
+
+## The problem
+
+Fernhill Outdoor Supply is a small online store selling tents, packs, boots and camp gear. Support was one inbox, answered by hand.
+
+- **The same questions all day.** Where is my order, can I still return this, does this boot run small.
+- **Slow replies.** Answers waited until someone was free, and nothing came back at night or at weekends.
+- **Refunds handled loosely.** Whoever answered decided, and there was no single record of what had been promised.
+
+## What I built
+
+A chatbot that customers can message on the website, built in n8n with an OpenAI model, reading the store's own data.
+
+1. **Customer writes in.** The message arrives with a conversation ID, so the bot remembers the last few messages.
+2. **The agent answers from store data.** It searches the store policies document for anything about shipping, returns or products, and looks up orders and stock in Airtable. Replies are kept to a few sentences.
+3. **Refunds and handovers.** When a customer asks for money back, a replacement or a discount, the agent starts a team request instead of promising it. The workflow checks the order is real, then routes it: money requests go to Slack for approval, and upset customers or unusual questions go to the team as a handover.
+4. **A person decides.** The team picks Approve or Reject in a Slack form, can add a note, and the customer is emailed the decision.
+5. **Logs and a daily summary.** Every conversation is saved in Airtable, errors alert the team in Slack, and a summary of the day's cases is posted at 5 PM.
+
+## Safeguards
+
+- **Order number and email together.** The bot shares nothing about an order until both match the records.
+- **No promises about money.** The agent is told never to say a refund is approved. A person decides, in Slack.
+- **Only what the policies say.** Questions the policies document does not cover are handed to a person rather than answered from general knowledge.
+- **Tested before every change.** A set of 30 customer messages, from simple order checks to messages in French and Spanish, a prompt injection and an angry customer, is run after each change and scored automatically.
+
+## Outcomes
+
+- Customers get answers on order status, returns, shipping and products at any hour.
+- Refunds and other money decisions stay with the team, with a record of who approved what.
+- The team starts each day knowing what the bot handled and what is waiting for them.
