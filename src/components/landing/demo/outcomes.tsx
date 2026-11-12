@@ -32,7 +32,8 @@ const MARK = {
   QuickBooks: { name: 'QuickBooks', slug: 'quickbooks', color: '#2CA01C' },
   Pipedrive: { name: 'Pipedrive', color: '#26B67C' },
   PostgreSQL: { name: 'PostgreSQL', slug: 'postgresql', color: '#336791' },
-  'Google Drive': { name: 'Google Drive', slug: 'googledrive', color: '#4285F4' }
+  'Google Drive': { name: 'Google Drive', slug: 'googledrive', color: '#4285F4' },
+  WhatsApp: { name: 'WhatsApp', slug: 'whatsapp', color: '#25D366' }
 }
 
 const APP_LABEL: Record<DemoOutcome['kind'], string> = {
@@ -343,6 +344,8 @@ function Chat({ outcome }: { outcome: Extract<DemoOutcome, { kind: 'chat' }> }) 
       <div className='oc-chat-head'>
         {outcome.app === 'VAPI' ? (
           <Phone size={14} aria-hidden='true' />
+        ) : outcome.app === 'WhatsApp' ? (
+          <ToolMark tool={MARK.WhatsApp} size={16} />
         ) : (
           <MessageCircle size={14} aria-hidden='true' />
         )}
@@ -384,7 +387,12 @@ function AppMark({ outcome }: { outcome: DemoOutcome }): ReactNode {
   const { kind } = outcome
 
   if (kind === 'record') return <ToolMark tool={MARK[outcome.app]} size={14} />
-  if (kind === 'chat') return <MessageCircle size={14} color='#5EB0D6' aria-hidden='true' />
+  if (kind === 'chat')
+    return outcome.app === 'WhatsApp' ? (
+      <ToolMark tool={MARK.WhatsApp} size={14} />
+    ) : (
+      <MessageCircle size={14} color='#5EB0D6' aria-hidden='true' />
+    )
   if (kind === 'email') return <ToolMark tool={MARK.gmail} size={14} />
   if (kind === 'slack') return <ToolMark tool={MARK.slack} size={14} />
   if (kind === 'airtable') return <ToolMark tool={MARK.airtable} size={14} />

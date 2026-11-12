@@ -370,6 +370,20 @@
   line-height: 1.45;
 }
 
+/* Fernhill's thread is WhatsApp: a green customer bubble, a round mark. */
+.fm-screen .fk-chat .fc-caller > span {
+  background: #d9fdd3;
+  color: #111b21;
+}
+
+.fm-screen .fk-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  background: #e7fbe9;
+}
+
 .fm-screen .fc-ring {
   position: absolute;
   inset: 0;

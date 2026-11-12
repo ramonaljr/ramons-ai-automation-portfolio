@@ -11,7 +11,8 @@ export const TOOLS = {
   slack: { slug: 'slack', color: '#4A154B', name: 'Slack' },
   quickbooks: { slug: 'quickbooks', color: '#2CA01C', name: 'QuickBooks' },
   make: { slug: 'make', color: '#6D00CC', name: 'Make' },
-  zapier: { slug: 'zapier', color: '#FF4F00', name: 'Zapier' }
+  zapier: { slug: 'zapier', color: '#FF4F00', name: 'Zapier' },
+  whatsapp: { slug: 'whatsapp', color: '#25D366', name: 'WhatsApp' }
 } as const
 
 export type Tool = keyof typeof TOOLS

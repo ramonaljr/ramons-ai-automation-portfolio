@@ -3,7 +3,7 @@ import { clock, dayFrom, usd } from '@/lib/demos/sample'
 import type { DemoBundle, DemoLayout, DemoOutcome, DemoScenario } from '@/lib/demos/types'
 
 /**
- * Fernhill Outdoor Supply's support chatbot: a web chat message in, the
+ * Fernhill Outdoor Supply's WhatsApp support agent: a WhatsApp message in, the
  * agent's reply out, and the team request it raises when money or an upset
  * customer is involved.
  *
@@ -19,16 +19,16 @@ const BASE = 'Fernhill Outdoor Supply'
 const inWords = (date: string) =>
   new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', timeZone: 'UTC' })
 
-/** A chat message as it arrives on the webhook from the site. */
+/** A WhatsApp message as the WhatsApp channel workflow passes it to the agent. */
 const incoming = (sessionId: string, message: string) => ({
-  body: { sessionId, message, channel: 'web' }
+  body: { sessionId, message, channel: 'whatsapp' }
 })
 
 const prepared = (sessionId: string, message: string) => ({
   message,
-  channel: 'web',
+  channel: 'whatsapp',
   test: false,
-  sessionId: `web:${sessionId}`,
+  sessionId: `whatsapp:${sessionId}`,
   hasMessage: true
 })
 
@@ -47,8 +47,8 @@ function scenarios(now: Date): DemoScenario[] {
 
   // Earlier cases in the Support Cases table, so each run's row sits among others.
   const earlierCases = [
-    ['web:7d1c40', 'Web Chat', 'Product Question', 'Does the Drift pad fit in the 45L pack?', 'Answered'],
-    ['web:2b9e13', 'Web Chat', 'Shipping', 'How long does shipping to Canada take?', 'Answered']
+    ['whatsapp:15550105582', 'WhatsApp', 'Product Question', 'Does the Drift pad fit in the 45L pack?', 'Answered'],
+    ['whatsapp:15550109064', 'WhatsApp', 'Shipping', 'How long does shipping to Canada take?', 'Answered']
   ]
 
   const casesTable = (row: (string | number)[]): DemoOutcome => ({
@@ -66,16 +66,16 @@ function scenarios(now: Date): DemoScenario[] {
     'Chat Message In': incoming(sessionId, message),
     'Prepare Message': prepared(sessionId, message),
     'OpenAI Chat Model': { model: 'gpt-5.4', temperature: 0.2 },
-    'Conversation Memory': { sessionId: `web:${sessionId}`, messages: 2 },
+    'Conversation Memory': { sessionId: `whatsapp:${sessionId}`, messages: 2 },
     'Fernhill Support Agent': { output: reply },
     'Check Reply': { reply, failed: false, error: '', tools, escalation },
-    'Send Reply': { ok: true, sessionId: `web:${sessionId}`, reply, escalation, tools },
+    'Send Reply': { ok: true, sessionId: `whatsapp:${sessionId}`, reply, escalation, tools },
     'Log Conversation': {
-      id: `rec${sessionId.slice(0, 6)}Fh`,
+      id: `rec${sessionId.slice(-6)}Fh`,
       fields: {
-        'Case ID': `web:${sessionId}`,
-        'Session ID': `web:${sessionId}`,
-        Channel: 'Web Chat',
+        'Case ID': `whatsapp:${sessionId}`,
+        'Session ID': `whatsapp:${sessionId}`,
+        Channel: 'WhatsApp',
         'Customer Message': message,
         'Agent Reply': reply,
         'Last Activity': now.toISOString()
@@ -86,7 +86,7 @@ function scenarios(now: Date): DemoScenario[] {
 
   // ── 1. Where is my order ────────────────────────────────────────────────
   const delayed = {
-    session: 'c81f02',
+    session: '15550104471',
     email: 'chloe.bennett@example.com',
     estimate: dayFrom(now, 2)
   }
@@ -120,14 +120,14 @@ function scenarios(now: Date): DemoScenario[] {
       {
         kind: 'chat',
         node: 'Send Reply',
-        app: 'n8n chat',
-        title: 'Fernhill support chat',
+        app: 'WhatsApp',
+        title: 'Fernhill Outdoor Supply',
         lines: [
           { from: 'person', text: whereMessage },
           { from: 'agent', text: whereReply }
         ]
       },
-      casesTable([`web:${delayed.session}`, 'Web Chat', 'Order Status', whereMessage, 'Answered'])
+      casesTable([`whatsapp:${delayed.session}`, 'WhatsApp', 'Order Status', whereMessage, 'Answered'])
     ]
   }
 
@@ -143,7 +143,7 @@ function scenarios(now: Date): DemoScenario[] {
     hint: 'Searches the store policies document and answers only from what it finds.',
     branch: { 'Reply Failed?': 1 },
     output: {
-      ...chatPath('a40d9e', sizingMessage, sizingReply, ['Search_Store_Policies'], null),
+      ...chatPath('15550103315', sizingMessage, sizingReply, ['Search_Store_Policies'], null),
       'OpenAI Embeddings (Search)': { model: 'text-embedding-3-small' },
       'Search Store Policies': [
         passage(
@@ -156,20 +156,20 @@ function scenarios(now: Date): DemoScenario[] {
       {
         kind: 'chat',
         node: 'Send Reply',
-        app: 'n8n chat',
-        title: 'Fernhill support chat',
+        app: 'WhatsApp',
+        title: 'Fernhill Outdoor Supply',
         lines: [
           { from: 'person', text: sizingMessage },
           { from: 'agent', text: sizingReply }
         ]
       },
-      casesTable(['web:a40d9e', 'Web Chat', 'Product Question', sizingMessage, 'Answered'])
+      casesTable(['whatsapp:15550103315', 'WhatsApp', 'Product Question', sizingMessage, 'Answered'])
     ]
   }
 
   // ── 3. Damaged item: a refund a person must approve ───────────────────────
   const damaged = {
-    session: 'e5b7a1',
+    session: '15550102938',
     email: 'ethan.brooks@example.com',
     delivered: dayFrom(now, -6),
     total: 147
@@ -178,7 +178,7 @@ function scenarios(now: Date): DemoScenario[] {
   const refundMessage = `The titanium pot in FH-1017 arrived badly dented. I’d like a refund. ${damaged.email}`
 
   const toAgentRefund =
-    `Logged as case web:${damaged.session}. A team member must approve this refund request; ` +
+    `Logged as case whatsapp:${damaged.session}. A team member must approve this refund request; ` +
     'the customer will get an email at the address on the order within one working day. Do not promise the outcome.'
 
   const refundReply =
@@ -193,8 +193,8 @@ function scenarios(now: Date): DemoScenario[] {
     category: 'Wrong or Damaged Item',
     reason: 'Titanium Cook Pot 900ml ($49) arrived badly dented.',
     summary: 'Customer asks for a full refund for a damaged Titanium Cook Pot 900ml.',
-    session_id: `web:${damaged.session}`,
-    channel: 'Web Chat',
+    session_id: `whatsapp:${damaged.session}`,
+    channel: 'WhatsApp',
     test: false,
     order_total: damaged.total,
     order_status: 'Delivered',
@@ -202,9 +202,9 @@ function scenarios(now: Date): DemoScenario[] {
   }
 
   const refundRules = {
-    caseId: `web:${damaged.session}`,
-    sessionId: `web:${damaged.session}`,
-    channel: 'Web Chat',
+    caseId: `whatsapp:${damaged.session}`,
+    sessionId: `whatsapp:${damaged.session}`,
+    channel: 'WhatsApp',
     requestType: 'refund',
     orderNumber: 'FH-1017',
     customerEmail: damaged.email,
@@ -300,8 +300,8 @@ function scenarios(now: Date): DemoScenario[] {
       {
         kind: 'chat',
         node: 'Send Reply',
-        app: 'n8n chat',
-        title: 'Fernhill support chat',
+        app: 'WhatsApp',
+        title: 'Fernhill Outdoor Supply',
         lines: [
           { from: 'person', text: refundMessage },
           { from: 'agent', text: refundReply }
@@ -316,7 +316,7 @@ function scenarios(now: Date): DemoScenario[] {
         text: [
           ':money_with_wings: *Fernhill: approval needed for a refund*',
           `Order: *FH-1017* (Delivered, ${usd(damaged.total)})`,
-          `Customer: ${damaged.email} via Web Chat`,
+          `Customer: ${damaged.email} via WhatsApp`,
           refundRules.details,
           'Open the form to decide. *Approve* emails the customer that it is approved; *Reject* tells them a person will follow up.'
         ],
@@ -337,16 +337,16 @@ function scenarios(now: Date): DemoScenario[] {
   // ── 4. An upset customer, handed to a person ────────────────────────────
   const angryMessage = `This is the worst service ever!!! FH-1007 is a week late and nobody cares. Absolutely furious. ${delayed.email}`
 
-  const toAgentHandover = `Handed to a team member as case web:9f3e52. Tell the customer a person will reply within one working day.`
+  const toAgentHandover = `Handed to a team member as case whatsapp:15550107316. Tell the customer a person will reply within one working day.`
 
   const angryReply =
     'I’m really sorry this has been so frustrating.\n\n' +
     `I found your order FH-1007. It’s delayed with UPS because of a weather hold at the Charlotte hub; the tracking number is 1Z84F2A10300001007, and the current delivery estimate is ${inWords(delayed.estimate)}. I’ve handed this to a team member now, and a person will reply within one working day.`
 
   const handoverRules = {
-    caseId: 'web:9f3e52',
-    sessionId: 'web:9f3e52',
-    channel: 'Web Chat',
+    caseId: 'whatsapp:15550107316',
+    sessionId: 'whatsapp:15550107316',
+    channel: 'WhatsApp',
     requestType: 'handover',
     orderNumber: 'FH-1007',
     customerEmail: delayed.email,
@@ -369,7 +369,7 @@ function scenarios(now: Date): DemoScenario[] {
     start: ['Chat Message In', 'Team Request In'],
     branch: { 'Reply Failed?': 1, 'Waiting On Approval?': 1, 'Route The Request': 2 },
     output: {
-      ...chatPath('9f3e52', angryMessage, angryReply, ['Look_Up_Order', 'Request_Team_Action'], 'handover'),
+      ...chatPath('15550107316', angryMessage, angryReply, ['Look_Up_Order', 'Request_Team_Action'], 'handover'),
       'Look Up Order': [
         orderRecord('recFH1007', {
           'Order Number': 'FH-1007',
@@ -387,8 +387,8 @@ function scenarios(now: Date): DemoScenario[] {
         customer_email: delayed.email,
         category: 'Complaint',
         reason: 'Customer is upset about a late order.',
-        session_id: 'web:9f3e52',
-        channel: 'Web Chat',
+        session_id: 'whatsapp:15550107316',
+        channel: 'WhatsApp',
         test: false
       },
       'Waiting On Approval?': { action: 'request' },
@@ -397,8 +397,8 @@ function scenarios(now: Date): DemoScenario[] {
       'Route The Request': handoverRules,
       'Alert Team: Handover': { ok: true, channel: 'support', ts: '1762990412.000300' },
       'Log Case': {
-        id: 'recCase9f3e52',
-        fields: { 'Case ID': 'web:9f3e52', Category: 'Complaint', Decision: 'Handed Over', Status: 'Open' }
+        id: 'recCase15550107316',
+        fields: { 'Case ID': 'whatsapp:15550107316', Category: 'Complaint', Decision: 'Handed Over', Status: 'Open' }
       },
       'Tell The Agent': { response: toAgentHandover, decision: 'handover' }
     },
@@ -406,8 +406,8 @@ function scenarios(now: Date): DemoScenario[] {
       {
         kind: 'chat',
         node: 'Send Reply',
-        app: 'n8n chat',
-        title: 'Fernhill support chat',
+        app: 'WhatsApp',
+        title: 'Fernhill Outdoor Supply',
         lines: [
           { from: 'person', text: angryMessage },
           { from: 'agent', text: angryReply }
@@ -420,8 +420,8 @@ function scenarios(now: Date): DemoScenario[] {
         app: 'n8n',
         time,
         text: [
-          ':raising_hand: *Fernhill customer handed to a person* (Web Chat)',
-          'Case: web:9f3e52',
+          ':raising_hand: *Fernhill customer handed to a person* (WhatsApp)',
+          'Case: whatsapp:15550107316',
           'Order: FH-1007',
           ...handoverRules.details.split('\n'),
           'Please reply to the customer within one working day.'

@@ -1,22 +1,24 @@
-/* AI Customer Support Agent — how it works, lane by lane. Cast: Dennice (the store owner), Leo (a customer). */
+/* AI WhatsApp Customer Support Agent — how it works, lane by lane. Cast: Dennice (the store owner), Leo (a customer). */
 FILM={type:'how-it-works',protag:'dennice',
-  title:'AI Customer Support Agent',
-  sub:'A hand-drawn explainer of the AI Customer Support Agent case study. Dennice plays the store owner and Leo plays a customer.',
-  aria:'Animated film: an online outdoor store answered every support message by hand, and nothing came back at night or at weekends. The n8n build is shown lane by lane as on its process map: a customer writes in, an OpenAI agent answers from the store policies document and the order and stock records in Airtable after the order number and email match, refunds start a team request that is checked and routed, upset customers are handed to the team, a person approves or rejects each refund in a Slack form and the customer is emailed the decision, and every conversation is logged with a daily summary at 5 PM.',
-  cardTitle:'How every message is answered from store data',
+  title:'AI WhatsApp Customer Support Agent',
+  sub:'A hand-drawn explainer of the AI WhatsApp Customer Support Agent case study. Dennice plays the store owner and Leo plays a customer.',
+  aria:'Animated film: an online outdoor store answered every support message by hand, and nothing came back at night or at weekends. The n8n build is shown lane by lane as on its process map: a customer messages on WhatsApp, photos are saved to Google Drive, an OpenAI agent answers from the store policies document and the order and stock records in Airtable after the order number and email match, refunds start a team request that is checked and routed, upset customers are handed to the team, a person approves or rejects each refund in a Slack form and the customer is emailed the decision, and every conversation is logged with a daily summary at 5 PM.',
+  cardTitle:'How every WhatsApp message is answered',
   intro:['A small outdoor store answers its customers’ questions.',
          'Every message was answered by hand, and nothing came back at night.',
-         'The agent answers from store data, and money goes to a person.']};
+         'The agent answers on WhatsApp from store data, and money goes to a person.']};
 
 const WF=workflow({token:'msg',maxX:1000,
-  overview:'The whole build: five lanes, one chat.',
+  overview:'The whole build: five lanes, one WhatsApp chat.',
   ovChapter:{ring:'the build',chip:'The build',title:'the whole build',mood:'setup'},
   running:'Every message runs these lanes, at any hour.',
   runChapter:{ring:'running',chip:'Running',title:'the whole line, running',mood:'finale'},
   lanes:[
-    {name:'Customer writes in',color:'yellow',chapter:'lane 1 · customer writes in',intro:'Lane one: a customer writes in.',nodes:[
-      {n:1,name:'Chat Message In',icon:'chat',who:'leo',z:1.1,say:'I wrote in on the website chat.',
-        desc:'The message arrives with a conversation ID, so the bot remembers the last few messages.'},
+    {name:'Customer messages on WhatsApp',color:'yellow',chapter:'lane 1 · on WhatsApp',intro:'Lane one: a customer messages on WhatsApp.',nodes:[
+      {n:1,name:'WhatsApp Message In',icon:'chat',who:'leo',z:1.1,say:'I messaged the store on WhatsApp.',
+        desc:'Each phone number gets its own conversation, so the bot remembers the last few messages.'},
+      {name:'Read Message',icon:'set'},
+      {name:'Save Photo To Drive',icon:'drive',say:'A photo of a damaged item is saved to Google Drive.',desc:'Photos are saved to Google Drive, and the link goes into the case.'},
       {name:'Prepare Message',icon:'set'}]},
     {name:'Agent answers from store data',color:'blue',chapter:'lane 2 · agent answers',intro:'Lane two: the agent answers.',nodes:[
       {n:2,name:'Support Agent (OpenAI)',icon:'robot',say:'An OpenAI agent reads the message and picks its tools.',
@@ -27,7 +29,7 @@ const WF=workflow({token:'msg',maxX:1000,
       {n:5,name:'Search Store Policies',icon:'search',say:'Shipping, returns, products: only what the policies say.',d:2.4,
         desc:'Searches the store policies document for anything about shipping, returns or products.'},
       {name:'Check Reply',icon:'check'},
-      {n:6,name:'Send Reply',icon:'chat',who:'leo',z:1.1,say:'I got my answer in a few sentences.',desc:'Replies are kept to a few sentences.'}]},
+      {n:6,name:'Reply On WhatsApp',icon:'chat',who:'leo',z:1.1,say:'The answer came back on WhatsApp.',desc:'Replies are kept to a few sentences.'}]},
     {name:'Refunds and handovers',color:'purple',chapter:'lane 3 · refunds, handovers',intro:'Lane three: money and upset customers.',nodes:[
       {n:7,name:'Team Request In',icon:'hook',who:'leo',z:1.1,say:'My pot arrived dented. I asked for a refund.',
         desc:'The agent starts a team request instead of promising it.'},
