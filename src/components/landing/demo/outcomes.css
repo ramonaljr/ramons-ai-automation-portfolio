@@ -657,7 +657,7 @@
   overflow-wrap: anywhere;
 }
 
-/* ── A conversation: VAPI call transcript, n8n chat ───────────────────── */
+/* ── A conversation: VAPI call transcript, n8n chat, WhatsApp ───────────────────── */
 
 .oc-chat {
   background: #f7f8fa;
@@ -703,6 +703,33 @@
   border-bottom-right-radius: 4px;
   background: #3b6fd8;
   color: #fff;
+}
+
+/* WhatsApp: the app's own beige wall, green outgoing bubbles. */
+.oc-chat[data-app='WhatsApp'] {
+  background: #efeae2;
+}
+
+.oc-chat[data-app='WhatsApp'] .oc-chat-head {
+  border-bottom-color: #e2ddd5;
+  background: #f0f2f5;
+}
+
+.oc-chat[data-app='WhatsApp'] .oc-chat-lines li {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 1px 0.5px rgb(11 20 26 / 13%);
+  color: #111b21;
+}
+
+.oc-chat[data-app='WhatsApp'] .oc-chat-lines li[data-from='agent'] {
+  border-top-left-radius: 0;
+  background: #fff;
+}
+
+.oc-chat[data-app='WhatsApp'] .oc-chat-lines li[data-from='person'] {
+  border-top-right-radius: 0;
+  background: #d9fdd3;
 }
 
 .oc-calendar-meet {

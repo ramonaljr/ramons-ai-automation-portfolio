@@ -7,9 +7,10 @@ import { ArrowUp, RotateCcw, UserRound } from 'lucide-react'
 import { ICON_STROKE } from '@/components/landing/motion'
 
 /**
- * A live chat with the Fernhill support agent: the real n8n workflow, reached
- * through /api/support-demo, which runs every visitor in the build's test
- * mode (nothing reaches Slack or anyone's inbox).
+ * A live chat with the Fernhill support agent, drawn as the WhatsApp thread a
+ * customer sees: the real n8n workflow, reached through /api/support-demo with
+ * channel "whatsapp", in the build's test mode (nothing reaches Slack, anyone's
+ * inbox or anyone's phone).
  */
 
 type Escalation = 'approval' | 'handover' | null
@@ -151,22 +152,29 @@ export function SupportDemoChat() {
           ))}
         </ul>
         <p className='text-ink-4 mt-5 text-[12px] leading-relaxed'>
-          Demo mode: refunds and handovers are logged, but nothing is posted to Slack or emailed. Fernhill is a
-          fictional store.
+          Sandbox: this is the same agent that answers on WhatsApp. Refunds and handovers are logged, but nothing is
+          posted to Slack, emailed or sent to a phone. Fernhill is a fictional store.
         </p>
       </aside>
 
-      {/* The chat */}
-      <div className='border-rule flex min-h-[460px] flex-col rounded-2xl border bg-white'>
-        <div className='border-rule flex items-center gap-3 border-b px-5 py-3.5'>
-          <span className='bg-accent h-2 w-2 rounded-full' aria-hidden='true' />
-          <p className='text-ink text-[14px] font-medium'>Fernhill support</p>
-          <p className='text-ink-4 text-[12px]'>Live, on n8n</p>
+      {/* The chat, drawn as a WhatsApp thread: the build's main channel. */}
+      <div className='flex min-h-[460px] flex-col overflow-hidden rounded-2xl border border-[#e2ddd5] bg-[#efeae2]'>
+        <div className='flex items-center gap-3 bg-[#008069] px-4 py-3 text-white'>
+          <span
+            className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/90 text-[13px] font-semibold text-[#008069]'
+            aria-hidden='true'
+          >
+            FO
+          </span>
+          <div className='min-w-0'>
+            <p className='text-[14.5px] leading-tight font-medium'>Fernhill Outdoor Supply</p>
+            <p className='text-[12px] leading-tight text-white/80'>WhatsApp sandbox · live agent on n8n</p>
+          </div>
           {!fresh && (
             <button
               type='button'
               onClick={reset}
-              className='text-ink-3 hover:text-ink ml-auto inline-flex items-center gap-1.5 text-[12px] transition-colors'
+              className='ml-auto inline-flex items-center gap-1.5 text-[12px] text-white/85 transition-colors hover:text-white'
             >
               <RotateCcw size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
               Start over
@@ -176,7 +184,7 @@ export function SupportDemoChat() {
 
         {fresh ? (
           <div className='flex-1 px-3 pt-4 pb-2'>
-            <p className='text-ink-3 px-3 pb-2 text-[14px] leading-relaxed'>
+            <p className='mx-auto mb-3 w-fit rounded-lg bg-[#fff5c4] px-3 py-1.5 text-center text-[12.5px] leading-snug text-[#54656f]'>
               Ask anything a customer might, or start with one of these:
             </p>
             {SUGGESTIONS.map(suggestion => (
@@ -184,9 +192,8 @@ export function SupportDemoChat() {
                 key={suggestion}
                 type='button'
                 onClick={() => submit(suggestion)}
-                className='chat-row group text-left'
+                className='mb-2 ml-auto block max-w-[88%] rounded-lg rounded-tr-none bg-[#d9fdd3] px-3 py-2 text-left text-[14px] leading-snug text-[#111b21] shadow-[0_1px_0.5px_rgb(11_20_26/13%)] transition-[filter] hover:brightness-95'
               >
-                <span className='bg-accent h-1.5 w-1.5 shrink-0 rounded-full' />
                 {suggestion}
               </button>
             ))}
@@ -197,26 +204,31 @@ export function SupportDemoChat() {
             role='log'
             aria-label='Conversation with the Fernhill support agent'
             aria-live='polite'
-            className='chat-scroll max-h-[520px] flex-1 space-y-5 overflow-y-auto px-5 pt-4 pb-5'
+            className='chat-scroll flex max-h-[520px] flex-1 flex-col gap-2 overflow-y-auto px-3 pt-4 pb-4'
           >
             {messages.map(m => (
-              <li key={m.id} className='chat-turn'>
-                <p className='text-ink-4 mb-1 text-[12px]'>{m.role === 'user' ? 'You' : 'Fernhill support'}</p>
+              <li
+                key={m.id}
+                className={`chat-turn max-w-[88%] rounded-lg px-3 py-2 shadow-[0_1px_0.5px_rgb(11_20_26/13%)] ${
+                  m.role === 'user' ? 'self-end rounded-tr-none bg-[#d9fdd3]' : 'self-start rounded-tl-none bg-white'
+                }`}
+              >
+                <span className='sr-only'>{m.role === 'user' ? 'You: ' : 'Fernhill support: '}</span>
                 <p
-                  className={`text-[14.5px] leading-[1.6] whitespace-pre-line ${
-                    m.role === 'user' ? 'text-ink font-medium' : m.kind === 'error' ? 'text-ink-3' : 'text-ink-2'
+                  className={`text-[14.5px] leading-[1.5] whitespace-pre-line ${
+                    m.kind === 'error' ? 'text-[#667781]' : 'text-[#111b21]'
                   }`}
                 >
                   {m.text}
                 </p>
                 {m.escalation && (
-                  <p className='text-accent mt-2.5 inline-flex items-center gap-1.5 text-[12.5px]'>
+                  <p className='mt-2 inline-flex items-center gap-1.5 text-[12.5px] text-[#008069]'>
                     <UserRound size={13} strokeWidth={ICON_STROKE} aria-hidden='true' />
                     {ESCALATION_NOTE[m.escalation]}
                   </p>
                 )}
                 {m.tools && m.tools.length > 0 && (
-                  <p className='text-ink-4 mt-2 font-mono text-[11px] tracking-wide'>
+                  <p className='mt-1.5 font-mono text-[10.5px] tracking-wide text-[#667781]'>
                     USED: {m.tools.map(toolLabel).join(' · ').toUpperCase()}
                   </p>
                 )}
@@ -224,18 +236,15 @@ export function SupportDemoChat() {
             ))}
 
             {pending && (
-              <li className='chat-turn'>
-                <p className='text-ink-4 mb-2 text-[12px]'>Fernhill support</p>
-                <div className='flex items-center gap-3'>
-                  <span className='chat-run' aria-hidden='true'>
-                    <i />
-                    <b />
-                    <i />
-                    <b />
-                    <i />
-                  </span>
-                  <span className='text-ink-3 text-[12.5px]'>Checking the store records</span>
-                </div>
+              <li className='chat-turn flex items-center gap-3 self-start rounded-lg rounded-tl-none bg-white px-3 py-2.5 shadow-[0_1px_0.5px_rgb(11_20_26/13%)]'>
+                <span className='chat-run' aria-hidden='true'>
+                  <i />
+                  <b />
+                  <i />
+                  <b />
+                  <i />
+                </span>
+                <span className='text-[12.5px] text-[#667781]'>Checking the store records</span>
               </li>
             )}
           </ol>
@@ -246,30 +255,28 @@ export function SupportDemoChat() {
             e.preventDefault()
             submit(draft)
           }}
-          className='px-3 pt-1.5 pb-3'
+          className='flex items-center gap-2 bg-[#f0f2f5] px-3 py-2.5'
         >
-          <div className='chat-composer flex items-center gap-2 rounded-2xl bg-white py-[7px] pr-[7px] pl-4'>
-            <label htmlFor='support-demo-input' className='sr-only'>
-              Message to Fernhill support
-            </label>
-            <input
-              id='support-demo-input'
-              value={draft}
-              onChange={e => setDraft(e.target.value)}
-              placeholder='Ask about an order, a return or a product…'
-              autoComplete='off'
-              maxLength={500}
-              className='text-ink placeholder:text-ink-4 min-w-0 flex-1 bg-transparent text-base focus:outline-none sm:text-[14px]'
-            />
-            <button
-              type='submit'
-              disabled={!draft.trim() || pending}
-              aria-label='Send message'
-              className='bg-ink text-ground hover:bg-ink/90 flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] transition-opacity disabled:opacity-25'
-            >
-              <ArrowUp size={17} strokeWidth={ICON_STROKE} aria-hidden='true' />
-            </button>
-          </div>
+          <label htmlFor='support-demo-input' className='sr-only'>
+            Message to Fernhill support
+          </label>
+          <input
+            id='support-demo-input'
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            placeholder='Type a message'
+            autoComplete='off'
+            maxLength={500}
+            className='min-w-0 flex-1 rounded-full bg-white px-4 py-2.5 text-base text-[#111b21] placeholder:text-[#667781] focus:outline-none sm:text-[14px]'
+          />
+          <button
+            type='submit'
+            disabled={!draft.trim() || pending}
+            aria-label='Send message'
+            className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#00a884] text-white transition-opacity disabled:opacity-40'
+          >
+            <ArrowUp size={18} strokeWidth={ICON_STROKE} aria-hidden='true' />
+          </button>
         </form>
       </div>
     </div>

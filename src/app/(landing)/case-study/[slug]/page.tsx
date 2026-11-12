@@ -333,7 +333,8 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
                 className='text-ink mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
                 style={{ fontFamily: DISPLAY_FONT }}
               >
-                Ask the support agent a question. It answers from the store policies and the sample orders.
+                Message the support agent as a customer would on WhatsApp. It answers from the store policies and the
+                sample orders.
               </p>
               <Reveal className='mt-10' threshold={0.05}>
                 <SupportDemoChat />

@@ -190,7 +190,7 @@ export type DemoOutcome =
       /** A conversation: a voice call's transcript or a chat with an assistant. */
       kind: 'chat'
       node: string
-      app: 'VAPI' | 'n8n chat'
+      app: 'VAPI' | 'n8n chat' | 'WhatsApp'
       title: string
       lines: { from: 'agent' | 'person'; text: string }[]
     }

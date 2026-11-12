@@ -17,7 +17,7 @@ export const LINES: readonly Line[] = [
   { who: 'dennice', text: 'We answer every message by hand, one by one.', mood: 'puzzled', hears: 'puzzled' },
 
   // The message
-  { who: 'dennice', text: 'Now an agent answers customers in chat, any hour.', mood: 'happy' },
+  { who: 'dennice', text: 'Now an agent answers customers on WhatsApp, any hour.', mood: 'happy' },
 
   // Through the build
   { who: 'leo', text: 'My pot arrived dented. I’d like a refund.', mood: 'puzzled' },

@@ -54,7 +54,7 @@ export async function POST(req: Request) {
   try {
     const { status, body } = await callN8n('fernhill-support-chat', {
       method: 'POST',
-      body: { sessionId: `site-${sessionId}`, message, channel: 'web', test: true },
+      body: { sessionId: `site-${sessionId}`, message, channel: 'whatsapp', test: true },
       timeoutMs: CHAT_TIMEOUT_MS
     })
 

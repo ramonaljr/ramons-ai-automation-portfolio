@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowDown, MessageCircle } from 'lucide-react'
+import { ArrowDown } from 'lucide-react'
 
 import { Badge, Camera, Collapse, Roll, type Rect } from '@/components/stageshow/kit'
 import { MailCard, RecordCard, SlackCard, type CheckState } from '@/components/landing/film/app-cards'
@@ -18,14 +18,14 @@ import { BAND_SPOTS, FLOOR, STAGE, TalkBand, type Actor, type Spot } from '@/com
 import { ToolMark } from '@/components/landing/scenes/tool-mark'
 
 /**
- * Film 11, AI Customer Support Agent, in two worlds
+ * Film 11, AI WhatsApp Customer Support Agent, in two worlds
  * (docs/plans/2026-11-10-two-worlds-films.md). Dennice runs the shop and
  * explains; Leo, a customer, asks what a visitor would ask, and his dented pot
  * is the refund the tour follows; Karan, on the team, steps in to decide it.
  *
  * Before, in ink: Dennice at a desk of support messages answered by hand, the
- * oldest two days unanswered. Then the paper drops to the band and Leo's chat
- * drives the tour: the agent asks for his order number and email, both must
+ * oldest two days unanswered. Then the paper drops to the band and Leo's
+ * WhatsApp chat drives the tour: the agent asks for his order number and email, both must
  * match, it searches the policies document and nothing else, and it never
  * promises money. The order is checked again and the refund goes to Slack,
  * where Karan decides; Leo is emailed the decision and the conversation is
@@ -39,7 +39,7 @@ import { ToolMark } from '@/components/landing/scenes/tool-mark'
  */
 
 const LANES = lanesOf('ai-customer-support-agent')
-const WRITES = laneNamed(LANES, 'Customer writes in')
+const WRITES = laneNamed(LANES, 'Customer messages on WhatsApp')
 const ANSWERS = laneNamed(LANES, 'Agent answers from store data')
 const ROUTES = laneNamed(LANES, 'Refunds and handovers')
 const DECIDES = laneNamed(LANES, 'A person decides')
@@ -62,7 +62,7 @@ const DESK: DeskWords = {
   folder: 'MESSAGES'
 }
 
-/** Leo's chat with the store's agent, as the website shows it. */
+/** Leo's WhatsApp chat with the store's agent. */
 const CHAT: { who: 'customer' | 'agent'; text: string; target?: string }[] = [
   { who: 'customer', text: 'My pot from FH-1042 arrived dented. Refund please?' },
   { who: 'agent', text: 'Sorry about that. What email is on the order?' },
@@ -185,7 +185,7 @@ const before: FilmPart<S> = {
 }
 
 const arrives: FilmPart<S> = {
-  chip: 'The chat',
+  chip: 'WhatsApp',
   start: P2,
   still: P3,
   words: wordsOf(2, 2),
@@ -242,7 +242,7 @@ const build: FilmPart<S> = {
     // It never promises money
     await say(a, cue, 8, { lMood: 'puzzled' })
     a.mark('promise')
-    a.put({ at: 9, lMood: 'normal', step: stepNamed(ANSWERS, 'Send Reply') })
+    a.put({ at: 9, lMood: 'normal', step: stepNamed(ANSWERS, 'Reply On WhatsApp') })
     await toApps(a, cue, { chat: CHAT.length }, 'chat')
     await cue.wait(300)
     a.put({ mark: 'under', markAt: a.rect('promise') })
@@ -352,13 +352,15 @@ const TOKEN = (
 
 const tick = (on: boolean): CheckState => (on ? 'ok' : 'wait')
 
-/** The store's website chat: Leo on the right, the agent on the left. */
+/** The store's WhatsApp thread: Leo on the right, the agent on the left. */
 function ChatCard({ shown }: { shown: number }) {
   return (
     <section className='fc-card fc-call fk-chat' data-target='chat'>
       <div className='fc-call__head'>
-        <MessageCircle size={32} absoluteStrokeWidth strokeWidth={1.75} className='fc-call__disc' />
-        <span className='fc-strong fc-call__who'>Store chat</span>
+        <span className='fc-call__disc fk-wa'>
+          <ToolMark tool='whatsapp' size={22} />
+        </span>
+        <span className='fc-strong fc-call__who'>WhatsApp</span>
         <div className='fc-call__status'>
           <Badge tone={shown > 0 ? 'success' : 'neutral'} dot className='fc-call__badge'>
             <Roll variant='fade'>{shown > 0 ? 'Live' : 'Open'}</Roll>
