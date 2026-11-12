@@ -7,6 +7,11 @@ import type { DemoBundle, DemoLayout, DemoOutcome, DemoScenario } from '@/lib/de
  * agent's reply out, and the team request it raises when money or an upset
  * customer is involved.
  *
+ * One workflow, two ways in: WhatsApp (the top row, which saves any photo to
+ * Google Drive first) and the website chat's webhook. Every sample here
+ * arrives on WhatsApp, so "On WhatsApp?" sends the answer back with "Reply On
+ * WhatsApp" and the webhook's "Send Reply" stays idle.
+ *
  * The replies are the agent's own, taken from the build's test set and
  * re-dated so they always read as current. Field names are the build's: the
  * Code nodes' returns and the Airtable columns. Customers, emails and
@@ -19,11 +24,6 @@ const BASE = 'Fernhill Outdoor Supply'
 const inWords = (date: string) =>
   new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', timeZone: 'UTC' })
 
-/** A WhatsApp message as the WhatsApp channel workflow passes it to the agent. */
-const incoming = (sessionId: string, message: string) => ({
-  body: { sessionId, message, channel: 'whatsapp' }
-})
-
 const prepared = (sessionId: string, message: string) => ({
   message,
   channel: 'whatsapp',
@@ -31,6 +31,27 @@ const prepared = (sessionId: string, message: string) => ({
   sessionId: `whatsapp:${sessionId}`,
   hasMessage: true
 })
+
+/** What Meta's webhook posts to "WhatsApp Message In" for one customer message. */
+const whatsappIn = (from: string, message: Record<string, unknown>) => ({
+  messaging_product: 'whatsapp',
+  metadata: { display_phone_number: '15556772775' },
+  contacts: [{ wa_id: from }],
+  messages: [{ from, id: `wamid.HBgL${from}FERNHILL`, timestamp: '1763045000', ...message }],
+  field: 'messages'
+})
+
+/** What the WhatsApp node returns once the reply is sent. */
+const whatsappSent = (from: string) => ({
+  messaging_product: 'whatsapp',
+  contacts: [{ input: from, wa_id: from }],
+  messages: [{ id: `wamid.HBgL${from}REPLY` }]
+})
+
+/** A photo the customer sent, saved to the team's Drive folder. */
+type Photo = { caption: string; file: string; fileId: string }
+
+const PHOTO_FOLDER = 'Fernhill - Customer Photos (WhatsApp)'
 
 /** One retrieved passage from the store policies document. */
 const passage = (text: string) => ({ pageContent: text, metadata: { source: 'Fernhill Store Policies' } })
@@ -61,15 +82,68 @@ function scenarios(now: Date): DemoScenario[] {
     highlight: 0
   })
 
-  // The shared chat path: message in, agent, reply out, logged.
-  const chatPath = (sessionId: string, message: string, reply: string, tools: string[], escalation: string | null) => ({
-    'Chat Message In': incoming(sessionId, message),
+  // The shared path: a WhatsApp message is read (a photo saved to Drive first),
+  // the agent answers, the reply goes back on WhatsApp, and it is all logged.
+  const chatPath = (
+    sessionId: string,
+    text: string,
+    reply: string,
+    tools: string[],
+    escalation: string | null,
+    photo?: Photo
+  ) => {
+    const link = photo && `https://drive.google.com/file/d/${photo.fileId}/view`
+
+    // What the agent is asked: the text, or "Describe Photo For Agent"'s note.
+    const message = photo
+      ? `[The customer sent a photo on WhatsApp. It is saved for the team here: ${link} ] Caption: ${photo.caption}`
+      : text
+
+    const read = photo
+      ? { from: sessionId, type: 'image', text: '', mediaId: '1187462093310524', caption: photo.caption }
+      : { from: sessionId, type: 'text', text, mediaId: '', caption: '' }
+
+    const channel = {
+      'WhatsApp Message In': whatsappIn(
+        sessionId,
+        photo
+          ? { type: 'image', image: { id: read.mediaId, mime_type: 'image/jpeg', caption: photo.caption } }
+          : { type: 'text', text: { body: text } }
+      ),
+      'Read Message': read,
+      'Is It Text?': read,
+      ...(photo && {
+        'Is It A Photo?': read,
+        'Get Photo Link': {
+          messaging_product: 'whatsapp',
+          url: `https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=${read.mediaId}`,
+          mime_type: 'image/jpeg',
+          file_size: 421_806,
+          id: read.mediaId
+        },
+        'Download Photo': { binary: { data: { mimeType: 'image/jpeg', fileExtension: 'jpg', fileSize: '412 kB' } } },
+        'Save Photo To Drive': { id: photo.fileId, name: photo.file, webViewLink: link },
+        'Describe Photo For Agent': { from: sessionId, text: message }
+      }),
+      'Reply On WhatsApp': whatsappSent(sessionId)
+    }
+
+    const checked = { reply, failed: false, error: '', tools, escalation }
+
+    return {
+      ...channel,
+      ...agentPath(sessionId, message, reply, checked)
+    }
+  }
+
+  // The agent's part of the run, from Prepare Message to the logged conversation.
+  const agentPath = (sessionId: string, message: string, reply: string, checked: Record<string, unknown>) => ({
     'Prepare Message': prepared(sessionId, message),
     'OpenAI Chat Model': { model: 'gpt-5.4', temperature: 0.2 },
     'Conversation Memory': { sessionId: `whatsapp:${sessionId}`, messages: 2 },
     'Fernhill Support Agent': { output: reply },
-    'Check Reply': { reply, failed: false, error: '', tools, escalation },
-    'Send Reply': { ok: true, sessionId: `whatsapp:${sessionId}`, reply, escalation, tools },
+    'Check Reply': checked,
+    'On WhatsApp?': checked,
     'Log Conversation': {
       id: `rec${sessionId.slice(-6)}Fh`,
       fields: {
@@ -119,7 +193,7 @@ function scenarios(now: Date): DemoScenario[] {
     outcomes: [
       {
         kind: 'chat',
-        node: 'Send Reply',
+        node: 'Reply On WhatsApp',
         app: 'WhatsApp',
         title: 'Fernhill Outdoor Supply',
         lines: [
@@ -155,7 +229,7 @@ function scenarios(now: Date): DemoScenario[] {
     outcomes: [
       {
         kind: 'chat',
-        node: 'Send Reply',
+        node: 'Reply On WhatsApp',
         app: 'WhatsApp',
         title: 'Fernhill Outdoor Supply',
         lines: [
@@ -176,6 +250,19 @@ function scenarios(now: Date): DemoScenario[] {
   }
 
   const refundMessage = `The titanium pot in FH-1017 arrived badly dented. I’d like a refund. ${damaged.email}`
+
+  // Sent as a photo, with the message as its caption: the policy asks for one.
+  // Named as "Save Photo To Drive" names it: in the workflow's own timezone (Pacific).
+  const stamp = new Date(now.getTime() - 3 * 60_000)
+    .toLocaleString('sv-SE', { timeZone: 'America/Los_Angeles', hour12: false })
+    .replace(/[-:]/g, '')
+    .replace(' ', '-')
+
+  const dentedPhoto: Photo = {
+    caption: refundMessage,
+    file: `whatsapp-${damaged.session.slice(-4)}-${stamp}.jpg`,
+    fileId: '1Fh7qK2dentedPotFH1017'
+  }
 
   const toAgentRefund =
     `Logged as case whatsapp:${damaged.session}. A team member must approve this refund request; ` +
@@ -233,10 +320,16 @@ function scenarios(now: Date): DemoScenario[] {
 
   const refund: DemoScenario = {
     id: 'refund',
-    label: 'Ethan · damaged, wants refund',
-    hint: 'The agent never promises money: the refund waits for a yes in Slack, then the customer is emailed.',
-    start: ['Chat Message In', 'Team Request In'],
-    branch: { 'Reply Failed?': 1, 'Waiting On Approval?': [1, 0], 'Route The Request': 1, 'Test Address Only?': 0 },
+    label: 'Ethan · photo of a damaged pot',
+    hint: 'The photo is saved to Google Drive; the refund waits for a yes in Slack, then the customer is emailed.',
+    start: ['WhatsApp Message In', 'Team Request In'],
+    branch: {
+      'Is It Text?': 1,
+      'Reply Failed?': 1,
+      'Waiting On Approval?': [1, 0],
+      'Route The Request': 1,
+      'Test Address Only?': 0
+    },
     waits: { 'Ask Team To Approve': 'Waiting for someone in Slack to approve or reject' },
     output: {
       ...chatPath(
@@ -244,7 +337,8 @@ function scenarios(now: Date): DemoScenario[] {
         refundMessage,
         refundReply,
         ['Look_Up_Order', 'Search_Store_Policies', 'Request_Team_Action'],
-        'approval'
+        'approval',
+        dentedPhoto
       ),
       'Look Up Order': [
         orderRecord('recFH1017', {
@@ -299,13 +393,23 @@ function scenarios(now: Date): DemoScenario[] {
     outcomes: [
       {
         kind: 'chat',
-        node: 'Send Reply',
+        node: 'Reply On WhatsApp',
         app: 'WhatsApp',
         title: 'Fernhill Outdoor Supply',
         lines: [
-          { from: 'person', text: refundMessage },
+          { from: 'person', text: `📷 Photo · ${refundMessage}` },
           { from: 'agent', text: refundReply }
         ]
+      },
+      {
+        kind: 'drive',
+        node: 'Save Photo To Drive',
+        path: ['My Drive', PHOTO_FOLDER],
+        files: [
+          { name: dentedPhoto.file, type: 'image', modified: `${time} me`, size: '412 KB' },
+          { name: 'whatsapp-5582-20261110-161204.jpg', type: 'image', modified: 'Nov 10 me', size: '388 KB' }
+        ],
+        added: [0]
       },
       {
         kind: 'slack',
@@ -366,7 +470,7 @@ function scenarios(now: Date): DemoScenario[] {
     id: 'handover',
     label: 'Upset customer · handover',
     hint: 'Answers what it can, apologises once, and hands the conversation to a person in Slack.',
-    start: ['Chat Message In', 'Team Request In'],
+    start: ['WhatsApp Message In', 'Team Request In'],
     branch: { 'Reply Failed?': 1, 'Waiting On Approval?': 1, 'Route The Request': 2 },
     output: {
       ...chatPath('15550107316', angryMessage, angryReply, ['Look_Up_Order', 'Request_Team_Action'], 'handover'),
@@ -405,7 +509,7 @@ function scenarios(now: Date): DemoScenario[] {
     outcomes: [
       {
         kind: 'chat',
-        node: 'Send Reply',
+        node: 'Reply On WhatsApp',
         app: 'WhatsApp',
         title: 'Fernhill Outdoor Supply',
         lines: [
