@@ -212,56 +212,53 @@ const build: FilmPart<S> = {
   words: wordsOf(3, 13),
   ms: 41000,
   run: async (a, cue) => {
-    // Customer writes in: Leo's message reaches the workflow
+    // The view changes only between stretches of the story, never inside a
+    // line: the map for a new lane, the apps while the case plays out there.
+    // The map's lit step keeps up while it is out of view.
+
+    // Customer writes in: Leo's message reaches the workflow (map)
     a.mark('writes')
     a.put({ at: 3, lMood: 'puzzled' })
     await toLane(a, cue, WRITES.n)
     await each(cue, WRITES.steps.length, 400, i => a.put({ step: i }))
-    await toApps(a, cue, { chat: 1, lMood: 'normal' }, 'chat')
-    await cue.wait(rest(3, MOVE * 2 + 400))
+    await cue.wait(rest(3, MOVE + 400))
 
-    // The agent asks for the order number and email; both must match
+    // The agent answers in the chat (apps from here to the promise)
     a.mark('asks')
-    a.put({ at: 4 })
-    await toLane(a, cue, ANSWERS.n, { step: stepNamed(ANSWERS, 'Support Agent (OpenAI)') })
+    a.put({ at: 4, lMood: 'normal', lane: ANSWERS.n, step: stepNamed(ANSWERS, 'Support Agent (OpenAI)') })
     await toApps(a, cue, { chat: 3 }, 'chat')
-    await cue.wait(rest(4, MOVE * 2))
+    await cue.wait(rest(4, MOVE))
     a.mark('match')
-    a.put({ at: 5 })
-    await toLane(a, cue, ANSWERS.n, { step: stepNamed(ANSWERS, 'Look Up Order') })
+    a.put({ at: 5, step: stepNamed(ANSWERS, 'Look Up Order') })
     await toApps(a, cue, { looked: true }, 'order')
-    await cue.wait(rest(5, MOVE * 2))
+    await cue.wait(rest(5, MOVE))
 
     // Only the policies document
     await say(a, cue, 6, { lMood: 'puzzled' })
     a.mark('policies')
-    a.put({ at: 7, lMood: 'normal' })
-    await toLane(a, cue, ANSWERS.n, { step: stepNamed(ANSWERS, 'Search Store Policies') })
-    await toApps(a, cue, { policy: true }, 'order')
-    await cue.wait(rest(7, MOVE * 2))
+    a.put({ at: 7, lMood: 'normal', policy: true, step: stepNamed(ANSWERS, 'Search Store Policies') })
+    await cue.wait(rest(7, 0))
 
     // It never promises money
     await say(a, cue, 8, { lMood: 'puzzled' })
     a.mark('promise')
-    a.put({ at: 9, lMood: 'normal' })
+    a.put({ at: 9, lMood: 'normal', step: stepNamed(ANSWERS, 'Send Reply') })
     await toApps(a, cue, { chat: CHAT.length }, 'chat')
     await cue.wait(300)
     a.put({ mark: 'under', markAt: a.rect('promise') })
     await cue.wait(rest(9, MOVE + 300))
 
-    // The order checked again, the rules route it, and the team is asked
+    // The order checked again and routed (map)
     a.mark('route')
     a.put({ at: 10, mark: 'none' })
     await toLane(a, cue, ROUTES.n, { step: stepNamed(ROUTES, 'Verify Order') })
     await each(cue, 2, 450, i => a.put({ step: stepNamed(ROUTES, i === 0 ? 'Apply Rules' : 'Route The Request') }))
-    await toLane(a, cue, DECIDES.n, { step: stepNamed(DECIDES, 'Ask Team To Approve') })
-    await toApps(a, cue, { asked: true }, 'slack')
-    await cue.wait(rest(10, MOVE * 3 + 450))
+    await cue.wait(rest(10, MOVE + 450))
 
-    // Karan steps in and decides in Slack
+    // Karan steps in and decides in Slack (apps to the end of the part)
     a.mark('decide')
-    a.put({ at: -1, leo: false })
-    await cue.wait(700)
+    a.put({ at: -1, leo: false, lane: DECIDES.n, step: stepNamed(DECIDES, 'Ask Team To Approve') })
+    await toApps(a, cue, { asked: true }, 'slack')
     a.put({ karan: true })
     await cue.wait(900)
     await say(a, cue, 11, { approved: true, kMood: 'happy' }, 500)
@@ -274,18 +271,15 @@ const build: FilmPart<S> = {
     await cue.wait(700)
     a.put({ leo: true })
     await cue.wait(600)
-    a.put({ at: 12, dMood: 'happy' })
-    await toLane(a, cue, DECIDES.n, { step: stepNamed(DECIDES, 'Record Decision') })
-    a.put({ step: stepNamed(DECIDES, 'Email Customer') })
+    a.put({ at: 12, dMood: 'happy', step: stepNamed(DECIDES, 'Email Customer') })
     await toApps(a, cue, { mailed: true }, 'mail')
-    await cue.wait(rest(12, MOVE * 2))
+    await cue.wait(rest(12, MOVE))
 
     // Every conversation saved
     a.mark('saved')
-    a.put({ at: 13, dMood: 'normal' })
-    await toLane(a, cue, LOGS.n, { step: stepNamed(LOGS, 'Log Conversation') })
+    a.put({ at: 13, dMood: 'normal', lane: LOGS.n, step: stepNamed(LOGS, 'Log Conversation') })
     await toApps(a, cue, { saved: true }, 'order')
-    await cue.wait(rest(13, MOVE * 2))
+    await cue.wait(rest(13, MOVE))
     await toApps(a, cue, { at: -1 })
   }
 }
@@ -313,10 +307,8 @@ const others: FilmPart<S> = {
     await toApps(a, cue, { handover: true }, 'slack')
     await cue.wait(rest(15, MOVE))
     a.mark('summary')
-    a.put({ at: 16 })
-    await toLane(a, cue, LOGS.n, { step: stepNamed(LOGS, 'Post Daily Summary') })
-    await toApps(a, cue, { summary: true }, 'slack')
-    await cue.wait(rest(16, MOVE * 2))
+    a.put({ at: 16, summary: true, lane: LOGS.n, step: stepNamed(LOGS, 'Post Daily Summary') })
+    await cue.wait(rest(16, 0))
     await toApps(a, cue, { at: -1 })
   }
 }
@@ -457,6 +449,7 @@ function render(s: S) {
               />
               <MailCard
                 mark={<ToolMark tool='gmail' size={18} />}
+                target='mail'
                 title='Customer emails'
                 status={s.mailed ? '1 sent' : 'Waiting'}
                 mails={[
