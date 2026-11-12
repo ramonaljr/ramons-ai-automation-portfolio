@@ -1,13 +1,20 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 
 import dynamic from 'next/dynamic'
 import { createPortal } from 'react-dom'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { GitHubIcon, Ico, linkOf, P, VideoIcon, WorkLink } from '@/components/landing/work-icons'
-import { DISPLAY_FONT, usePrefersReducedMotion } from '@/components/landing/motion'
+import {
+  DISPLAY_FONT,
+  rise,
+  sweep,
+  SWEEP_STEP_DENSE,
+  useInView,
+  usePrefersReducedMotion
+} from '@/components/landing/motion'
 import { filmOf, WORK_TONES, workViews, type WorkView } from '@/lib/work-views'
 import { WorkCanvas } from '@/components/landing/work-canvas'
 import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
@@ -30,6 +37,25 @@ const LiveFilm = dynamic(() => import('@/components/landing/film/live-film').the
 
 /** A block that folds to nothing: grid rows animate where height cannot. */
 const FOLD = 'grid transition-[grid-template-rows,opacity] duration-300 motion-reduce:transition-none'
+
+/**
+ * The landing page's scroll entrance, for the dialog body.
+ *
+ * `useInView` observes against the viewport, and an IntersectionObserver
+ * clips its target by every scrolling ancestor on the way up, so a block
+ * below the fold of the dialog's own scroller still waits until it is
+ * scrolled into view there. Render-prop so a block can stagger its children
+ * off one observer instead of giving each card its own.
+ */
+function InView({ className, children }: { className?: string; children: (inView: boolean) => ReactNode }) {
+  const { ref, inView } = useInView()
+
+  return (
+    <div ref={ref} className={className}>
+      {children(inView)}
+    </div>
+  )
+}
 
 /** Everything inside the dialog a keyboard can land on, in document order. */
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
@@ -165,6 +191,11 @@ export function CaseStudyModal({
   const views = workViews(study)
   const view = views[Math.min(viewIndex, views.length - 1)]
   const film = filmOf(study)
+
+  // Read once here: the blocks below render inside an <InView> callback, where
+  // TypeScript no longer carries the `study.roi &&` check into the closure.
+  const roi = study.roi ?? []
+  const failsafes = study.failsafes ?? []
 
   // A live film replaces the MP4 in the dialog; the MP4 stays for the page and the Walkthrough link
   const liveSlug = hasLiveFilm(study.slug) ? study.slug : null
@@ -429,93 +460,128 @@ export function CaseStudyModal({
           {/* 2. ROI & Key Metrics. The outcome is said in words first, and
               each figure carries a line on what it means for the business:
               a bare "3" or "15 min" tells a reader nothing on its own. */}
-          {study.roi && study.roi.length > 0 && (
-            <div>
-              <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase'>KEY OUTCOMES &amp; IMPACT</p>
-              {study.impactHighlight && (
-                <div className='mb-5 max-w-3xl'>
-                  <p
-                    className='text-ink text-xl leading-snug font-light tracking-tight sm:text-2xl'
-                    style={{ fontFamily: DISPLAY_FONT }}
-                  >
-                    {study.impactHighlight}
+          {roi.length > 0 && (
+            <InView>
+              {inView => (
+                <>
+                  <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase' style={rise(inView)}>
+                    KEY OUTCOMES &amp; IMPACT
                   </p>
-                  {study.impactHighlightDesc && (
-                    <p className='text-ink-2 mt-2 text-[14.5px] leading-relaxed'>{study.impactHighlightDesc}</p>
-                  )}
-                </div>
-              )}
-              <div className='grid gap-3 sm:grid-cols-3'>
-                {study.roi.map((r, idx) => (
-                  <div key={idx} className='border-rule bg-surface-raised rounded-xl border p-5 shadow-sm'>
-                    <div className='text-ink text-2xl font-light sm:text-3xl' style={{ fontFamily: DISPLAY_FONT }}>
-                      {r.value}
-                    </div>
-                    <div className='text-ink-3 mt-1 font-mono text-[11px] tracking-[0.12em] uppercase'>{r.label}</div>
-                    {r.desc && (
-                      <p className='text-ink-2 border-rule mt-3 border-t pt-3 text-[13.5px] leading-relaxed'>
-                        {r.desc}
+                  {study.impactHighlight && (
+                    <div className='mb-5 max-w-3xl' style={rise(inView, 90)}>
+                      <p
+                        className='text-ink text-xl leading-snug font-light tracking-tight sm:text-2xl'
+                        style={{ fontFamily: DISPLAY_FONT }}
+                      >
+                        {study.impactHighlight}
                       </p>
-                    )}
+                      {study.impactHighlightDesc && (
+                        <p className='text-ink-2 mt-2 text-[14.5px] leading-relaxed'>{study.impactHighlightDesc}</p>
+                      )}
+                    </div>
+                  )}
+                  <div className='grid gap-3 sm:grid-cols-3'>
+                    {roi.map((r, idx) => (
+                      <div
+                        key={idx}
+                        className='border-rule bg-surface-raised rounded-xl border p-5 shadow-sm'
+                        style={sweep(inView, idx + 1)}
+                      >
+                        <div className='text-ink text-2xl font-light sm:text-3xl' style={{ fontFamily: DISPLAY_FONT }}>
+                          {r.value}
+                        </div>
+                        <div className='text-ink-3 mt-1 font-mono text-[11px] tracking-[0.12em] uppercase'>
+                          {r.label}
+                        </div>
+                        {r.desc && (
+                          <p className='text-ink-2 border-rule mt-3 border-t pt-3 text-[13.5px] leading-relaxed'>
+                            {r.desc}
+                          </p>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                </>
+              )}
+            </InView>
           )}
 
           {/* 3. The Problem & What I Built */}
           {(study.problem || study.solution) && (
-            <div className='grid gap-4 sm:grid-cols-2'>
-              {study.problem && (
-                <div className='border-rule bg-ink/3 rounded-2xl border p-5 sm:p-6'>
-                  <p className='text-ink-2 font-mono text-xs font-medium tracking-[0.2em] uppercase'>THE PROBLEM</p>
-                  <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{study.problem}</p>
-                </div>
-              )}
+            <InView className='grid gap-4 sm:grid-cols-2'>
+              {inView => (
+                <>
+                  {study.problem && (
+                    <div className='border-rule bg-ink/3 rounded-2xl border p-5 sm:p-6' style={sweep(inView, 0)}>
+                      <p className='text-ink-2 font-mono text-xs font-medium tracking-[0.2em] uppercase'>THE PROBLEM</p>
+                      <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{study.problem}</p>
+                    </div>
+                  )}
 
-              {study.solution && (
-                <div className='bg-surface rounded-2xl border border-[color-mix(in_oklab,var(--accent)_22%,transparent)] p-5 sm:p-6'>
-                  <p className='text-accent font-mono text-xs font-medium tracking-[0.2em] uppercase'>WHAT I BUILT</p>
-                  <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{study.solution}</p>
-                </div>
+                  {study.solution && (
+                    <div
+                      className='bg-surface rounded-2xl border border-[color-mix(in_oklab,var(--accent)_22%,transparent)] p-5 sm:p-6'
+                      style={sweep(inView, study.problem ? 1 : 0)}
+                    >
+                      <p className='text-accent font-mono text-xs font-medium tracking-[0.2em] uppercase'>
+                        WHAT I BUILT
+                      </p>
+                      <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{study.solution}</p>
+                    </div>
+                  )}
+                </>
               )}
-            </div>
+            </InView>
           )}
 
           {/* 4. Active Integrations & Tech Stack */}
           {(study.integrations || study.tools) && (
-            <div>
-              <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase'>TOOLS USED</p>
-              <div className='flex flex-wrap gap-2'>
-                {(study.integrations || study.tools)?.map(tool => (
-                  <span
-                    key={tool}
-                    className='work-tool-chip border-rule bg-surface-raised text-ink-2 inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5 font-mono text-[12px] shadow-xs'
-                  >
-                    <ToolMark tool={toolNamed(tool)} size={13} />
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </div>
+            <InView>
+              {inView => (
+                <>
+                  <p className='text-ink-3 mb-3 font-mono text-xs tracking-[0.2em] uppercase' style={rise(inView)}>
+                    TOOLS USED
+                  </p>
+                  <div className='flex flex-wrap gap-2'>
+                    {(study.integrations || study.tools)?.map((tool, i) => (
+                      <span
+                        key={tool}
+                        style={sweep(inView, i, SWEEP_STEP_DENSE, 18)}
+                        className='work-tool-chip border-rule bg-surface-raised text-ink-2 inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5 font-mono text-[12px] shadow-xs'
+                      >
+                        <ToolMark tool={toolNamed(tool)} size={13} />
+                        {tool}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
+            </InView>
           )}
 
           {/* 5. Fail-safes & Resilience */}
-          {study.failsafes && study.failsafes.length > 0 && (
-            <div className='border-rule bg-surface-raised rounded-2xl border p-5 shadow-sm sm:p-6'>
-              <p className='text-accent mb-2 font-mono text-xs font-medium tracking-[0.2em] uppercase'>
-                WHEN SOMETHING GOES WRONG
-              </p>
-              {study.failsafeDesc && <p className='text-ink-2 mb-4 text-[13.5px]'>{study.failsafeDesc}</p>}
-              <div className='border-rule grid gap-3 border-t pt-2 sm:grid-cols-2'>
-                {study.failsafes.map((f, i) => (
-                  <div key={i} className='text-[13px]'>
-                    <span className='text-ink mb-1 block font-mono font-medium'>{f.title}</span>
-                    <span className='text-ink-3 block leading-relaxed'>{f.desc}</span>
+          {failsafes.length > 0 && (
+            <InView>
+              {inView => (
+                <div
+                  className='border-rule bg-surface-raised rounded-2xl border p-5 shadow-sm sm:p-6'
+                  style={rise(inView)}
+                >
+                  <p className='text-accent mb-2 font-mono text-xs font-medium tracking-[0.2em] uppercase'>
+                    WHEN SOMETHING GOES WRONG
+                  </p>
+                  {study.failsafeDesc && <p className='text-ink-2 mb-4 text-[13.5px]'>{study.failsafeDesc}</p>}
+                  <div className='border-rule grid gap-3 border-t pt-2 sm:grid-cols-2'>
+                    {failsafes.map((f, i) => (
+                      <div key={i} className='text-[13px]'>
+                        <span className='text-ink mb-1 block font-mono font-medium'>{f.title}</span>
+                        <span className='text-ink-3 block leading-relaxed'>{f.desc}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+              )}
+            </InView>
           )}
 
           {/* 6. The build itself, runnable. Its own section rather than a view
