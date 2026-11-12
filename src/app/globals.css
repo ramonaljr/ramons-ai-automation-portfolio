@@ -5435,6 +5435,24 @@ html[data-covered] :is(.field-aura, .blossom-story-root .field-aura) i:nth-child
   animation-play-state: paused;
 }
 
+/* The page under a full-window dialog is never seen, but Chrome kept every one
+   of its compositor layers: the hero videos, scenery, rays, glow, the leaves
+   canvas, two page-tall layers. At 1800px wide on a 2x display that was 126
+   drawing layers, 33 of them window-sized, beside a live film repainting
+   several times a second. On a Mac the GPU tile budget ran out and tiles were
+   dropped and re-rastered, flashing the film and the panel around it.
+   Hidden, it leaves 46. Hidden only once the dialog has finished its 200ms
+   entrance, so the page still shows at the edges while it zooms in, and shown
+   again at once on close. The dialog is portalled to <body>, outside <main>. */
+body > main {
+  transition: visibility 0s;
+}
+
+html[data-covered] body > main {
+  visibility: hidden;
+  transition: visibility 0s linear 0.25s;
+}
+
 @keyframes aura-warm {
   0% { transform: translate(0, 0) scale(1); }
   50% { transform: translate(38vw, 26vh) scale(1.18); }
