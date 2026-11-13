@@ -3819,6 +3819,13 @@ div#experience.about-journey {
   background: var(--ground);
 }
 
+/* The same frame on the full case study page (work-showcase.tsx): no dialog
+   chrome to leave room for, so it fills the column up to what fits one window
+   below the sticky nav, the toggle and the frame's own header (12rem). */
+.work-dialog-frame.work-page-frame {
+  width: min(100%, max(calc(400px * 14 / 9), calc((100svh - 12rem) * 14 / 9)));
+}
+
 /* The status chip and view thumbnails float over the bottom edge, and the
    process diagrams fill their drawing to that edge. So the diagram, on the
    card and in the dialog, and every dialog view sit above a strip that holds
@@ -3902,6 +3909,17 @@ div#experience.about-journey {
   background: oklch(0.18 0.012 255 / 0.35);
   backdrop-filter: blur(6px);
   transform: translateX(-50%);
+}
+
+/* On a phone the dialog and case study frames are ~330px wide, and the
+   centred thumbnails sat on top of the canvas's status chip at bottom left.
+   Pinned to the right edge they share the strip with it instead. */
+@media (max-width: 640px) {
+  :is(.work-dialog-frame, .work-fullscreen-frame) .view-tabs {
+    right: 0.8rem;
+    left: auto;
+    transform: none;
+  }
 }
 
 .view-tab {

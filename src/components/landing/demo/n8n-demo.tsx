@@ -304,6 +304,19 @@ function JsonView({ value }: { value: unknown }) {
 /** Room the canvas's own controls take: the toolbar above, zoom and the note below. */
 const INSET = { top: 64, bottom: 56, side: 24 }
 
+/**
+ * The room above the drawing: `INSET.top`, or more when the toolbar is taller.
+ * Its sample inputs wrap to a second row in a narrower frame (four Zapier
+ * stages at ~900px), and with a fixed inset the scenario hint then sat on the
+ * first step. The rows only change with the frame's width, which the
+ * ResizeObserver already re-fits on.
+ */
+const topInset = (frame: HTMLElement) => {
+  const toolbar = frame.querySelector<HTMLElement>('.n8n-toolbar')
+
+  return toolbar ? Math.max(INSET.top, toolbar.offsetTop + toolbar.offsetHeight + 8) : INSET.top
+}
+
 /** Below this canvas width (px) the controls stack and the canvas opens at a readable zoom. */
 const NARROW = 560
 const ZOOM = { min: 0.12, max: 2.5, step: 1.25 }
@@ -595,8 +608,9 @@ function Canvas({
     if (!frame) return null
 
     const { x, y, x2, y2 } = layout.bounds
+    const top = topInset(frame)
     const width = frame.clientWidth - INSET.side * 2
-    const height = frame.clientHeight - INSET.top - INSET.bottom
+    const height = frame.clientHeight - top - INSET.bottom
     const k = Math.min(width / (x2 - x), height / (y2 - y))
 
     // On a phone-width canvas a whole workflow fits only at ~0.08, nodes 8px
@@ -609,12 +623,12 @@ function Canvas({
       ? {
           k: legible,
           x: frame.clientWidth / 2 - (trigger.x + trigger.w / 2) * legible,
-          y: (frame.clientWidth < NARROW ? 128 : INSET.top + 24) - trigger.y * legible
+          y: (frame.clientWidth < NARROW ? Math.max(128, top + 24) : top + 24) - trigger.y * legible
         }
       : {
           k,
           x: INSET.side + (width - (x2 - x) * k) / 2 - x * k,
-          y: INSET.top + (height - (y2 - y) * k) / 2 - y * k
+          y: top + (height - (y2 - y) * k) / 2 - y * k
         }
   }
 
@@ -657,12 +671,13 @@ function Canvas({
 
     // The middle of the frame, inside the toolbar, the zoom buttons and a margin.
     const marginX = frame.clientWidth * 0.18
-    const marginY = (frame.clientHeight - INSET.top - INSET.bottom) * 0.18
+    const inset = topInset(frame)
+    const marginY = (frame.clientHeight - inset - INSET.bottom) * 0.18
 
     const calm =
       k === was &&
       left >= INSET.side + marginX &&
-      top >= INSET.top + marginY &&
+      top >= inset + marginY &&
       left + node.w * k <= frame.clientWidth - INSET.side - marginX &&
       top + node.h * k <= frame.clientHeight - INSET.bottom - marginY
 
@@ -672,7 +687,7 @@ function Canvas({
       {
         k,
         x: frame.clientWidth * 0.42 - (node.x + node.w / 2) * k,
-        y: (INSET.top + frame.clientHeight - INSET.bottom) / 2 - (node.y + node.h / 2) * k
+        y: (inset + frame.clientHeight - INSET.bottom) / 2 - (node.y + node.h / 2) * k
       },
       k === was ? 650 : 900
     )

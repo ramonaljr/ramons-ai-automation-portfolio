@@ -7,7 +7,7 @@ import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { CtaSection } from '@/components/landing/cta-section'
 import { ChatWidget } from '@/components/landing/chat-widget'
-import { SupportDemoChat } from '@/components/landing/support-demo-chat'
+import { CaseStudyBody } from '@/components/landing/case-study-body'
 import { ParticleField } from '@/components/landing/particle-field'
 import { PageScene } from '@/components/landing/page-scene'
 import { ArrowRight, CONTAINER, DISPLAY_FONT, ICON_STROKE, PAGE, Reveal } from '@/components/landing/motion'
@@ -19,7 +19,6 @@ import { getCaseStudyBySlug, getCaseStudies, type CaseStudyMetadata } from '@/li
 import { extractHeadings } from '@/lib/extract-headings'
 import { metaDescription, pageMetadata } from '@/lib/seo'
 import { abs } from '@/lib/site'
-import { filmOf } from '@/lib/work-views'
 
 export async function generateStaticParams() {
   const caseStudies = await getCaseStudies()
@@ -159,14 +158,6 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
   const otherCaseStudies = caseStudies.filter(item => item.slug !== slug).slice(0, 2)
   const headings = extractHeadings(content)
 
-  // Outcome first, mechanism second: the hero mock-up shows what the client
-  // ends up looking at, and the workflow canvas below it shows how that gets
-  // produced. `image` is the fallback for entries with no mock-up drawn yet.
-  const leadImage = metadata.heroImage ?? metadata.image
-
-  // A film hosted here plays on the page; a Loom or other link stays a button.
-  const film = filmOf(metadata)
-
   const facts = [
     { label: 'Organisation', value: metadata.organisation },
     { label: 'Role', value: metadata.role },
@@ -201,7 +192,7 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
       <SiteNav />
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
-      <header className='relative isolate px-6 pt-36 pb-20 md:px-12 lg:px-20 lg:pt-44'>
+      <header className='relative isolate px-6 pt-36 pb-14 md:px-12 lg:px-20 lg:pt-44'>
         <PageScene leaves />
         <div className={CONTAINER}>
           <a
@@ -246,42 +237,6 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
             </dl>
           )}
 
-          {metadata.tools && metadata.tools.length > 0 && (
-            <div className='mt-10'>
-              <p className='text-ink-3 font-mono text-[11px] tracking-[0.2em]'>STACK</p>
-              <div className='mt-3 flex flex-wrap gap-1.5'>
-                {metadata.tools.map(tool => (
-                  <span
-                    key={tool}
-                    className='border-rule bg-ink/2 text-ink-3 rounded-md border px-2.5 py-1 font-mono text-[11px]'
-                  >
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {leadImage && (
-            <Reveal className='mt-14' threshold={0.05}>
-              <figure>
-                <div className='border-rule bg-surface-raised rounded-2xl border p-3'>
-                  <img
-                    src={leadImage}
-                    alt={
-                      metadata.heroLabel
-                        ? `${metadata.heroLabel} of ${metadata.title}`
-                        : `What the team sees when ${metadata.title} runs`
-                    }
-                    className='w-full rounded-xl'
-                  />
-                </div>
-                <figcaption className='text-ink-3 mt-3 font-mono text-[11px] tracking-[0.18em]'>
-                  {metadata.heroLabel?.toUpperCase() ?? 'WHAT THE TEAM SEES'}
-                </figcaption>
-              </figure>
-            </Reveal>
-          )}
         </div>
       </header>
 
@@ -289,183 +244,17 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
           field only ever sits behind white cards; behind body copy it competes
           with the text, so it picks up again below the article. */}
       <>
-        {/* The whole build as a short animated explainer, before the detail.
-            It has no narration: every line is on screen, so it needs no
-            caption track. Nothing downloads until the reader presses play. */}
-        {film && (
-          <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
-            <div className={CONTAINER}>
-              <p
-                className='text-ink max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
-                style={{ fontFamily: DISPLAY_FONT }}
-              >
-                How this build works, in a short animated explainer.
-              </p>
+        {/* Film and workflow, outcome, problem and build, tools, fail-safes
+            and the runnable demo: the landing dialog's order, so a project
+            reads the same however it was opened. */}
+        <CaseStudyBody study={metadata} />
 
-              <Reveal className='mt-10' threshold={0.05}>
-                <figure>
-                  <div className='border-rule bg-surface-raised rounded-2xl border p-3'>
-                    <video
-                      src={film}
-                      poster={metadata.videoPoster}
-                      controls
-                      playsInline
-                      preload='none'
-                      aria-label={`Animated explainer film: ${metadata.title}`}
-                      className='aspect-video w-full rounded-xl bg-[#F1E9D8]'
-                    />
-                  </div>
-                  <figcaption className='text-ink-3 mt-3 font-mono text-[11px] tracking-[0.18em]'>
-                    ANIMATED EXPLAINER · WORDS ON SCREEN, MUSIC ONLY
-                  </figcaption>
-                </figure>
-              </Reveal>
-            </div>
-          </section>
-        )}
-
-        {/* The real build, live: a visitor talks to the agent itself. */}
-        {metadata.liveChat && (
-          <section id='try-it' className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
-            <div className={CONTAINER}>
-              <p className='text-ink-3 font-mono text-[12px] tracking-[0.28em]'>TRY IT LIVE</p>
-              <p
-                className='text-ink mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
-                style={{ fontFamily: DISPLAY_FONT }}
-              >
-                Message the support agent as a customer would on WhatsApp. It answers from the store policies and the
-                sample orders.
-              </p>
-              <Reveal className='mt-10' threshold={0.05}>
-                <SupportDemoChat />
-              </Reveal>
-            </div>
-          </section>
-        )}
-
-        {/* The mechanism behind the mock-up above */}
-        {metadata.workflowImage && (
-          <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
-            <div className={CONTAINER}>
-              <p className='text-ink-3 font-mono text-[12px] tracking-[0.28em]'>THE WORKFLOW</p>
-              {metadata.logicSummary && (
-                <p
-                  className='text-ink mt-4 max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
-                  style={{ fontFamily: DISPLAY_FONT }}
-                >
-                  {metadata.logicSummary}
-                </p>
-              )}
-
-              <Reveal className='mt-10' threshold={0.05}>
-                <figure>
-                  <div className='border-rule bg-surface-raised rounded-2xl border p-3'>
-                    <img
-                      src={metadata.workflowImage}
-                      alt={`${metadata.canvasLabel ?? 'Workflow canvas'} for ${metadata.title}`}
-                      loading='lazy'
-                      className='w-full rounded-xl'
-                    />
-                  </div>
-                  <figcaption className='text-ink-3 mt-3 font-mono text-[11px] tracking-[0.18em]'>
-                    {metadata.canvasLabel?.toUpperCase() ??
-                      (metadata.platform ? `${metadata.platform.toUpperCase()} CANVAS` : 'WORKFLOW CANVAS')}
-                    {metadata.stepCount ? ` · ${metadata.stepCount} STAGES` : ''}
-                  </figcaption>
-                </figure>
-              </Reveal>
-            </div>
-          </section>
-        )}
-
-        {/* ── Outcome ─────────────────────────────────────────────────────
-            Figures first: these are the fields a reader scans for, and prose
-            is the wrong shape for them. The article below tells the story. */}
-        {(metadata.impactHighlight || metadata.roi) && (
-          <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
-            <div className={CONTAINER}>
-              <p className='text-ink-3 font-mono text-[12px] tracking-[0.28em]'>OUTCOME</p>
-
-              {metadata.impactHighlight && (
-                <p
-                  className='text-ink mt-4 max-w-3xl text-[clamp(1.35rem,2.4vw,2rem)] leading-snug font-light tracking-tight'
-                  style={{ fontFamily: DISPLAY_FONT }}
-                >
-                  {metadata.impactHighlight}
-                </p>
-              )}
-              {metadata.impactHighlightDesc && (
-                <p className='text-ink-2 mt-4 max-w-2xl text-[15px] leading-relaxed'>{metadata.impactHighlightDesc}</p>
-              )}
-
-              {metadata.roi && metadata.roi.length > 0 && (
-                <div className='mt-12 grid gap-4 sm:grid-cols-3'>
-                  {metadata.roi.map((r, i) => (
-                    <Reveal key={r.label} delay={i * 90}>
-                      <div className='border-rule bg-surface rounded-2xl border p-8 text-center'>
-                        <p
-                          className='text-ink text-[clamp(2rem,4vw,2.75rem)] leading-none font-light'
-                          style={{ fontFamily: DISPLAY_FONT }}
-                        >
-                          {r.value}
-                        </p>
-                        <p className='text-ink-3 mt-3 text-[13px]'>{r.label}</p>
-                        {r.desc && (
-                          <p className='text-ink-2 border-rule mt-5 border-t pt-4 text-left text-[14px] leading-relaxed'>
-                            {r.desc}
-                          </p>
-                        )}
-                      </div>
-                    </Reveal>
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* ── Problem / Solution ──────────────────────────────────────────
-            A scannable summary ahead of the long read, so someone deciding
-            whether to read at all can get the shape of it in two paragraphs. */}
-        {(metadata.problem || metadata.solution) && (
-          <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
-            <div className={CONTAINER}>
-              <div className='grid gap-5 md:grid-cols-2'>
-                {metadata.problem && (
-                  <div className='border-rule bg-ink/2.5 rounded-2xl border p-8'>
-                    <p className='eyebrow'>THE PROBLEM</p>
-                    <p className='text-ink-2 mt-4 text-[15px] leading-relaxed'>{metadata.problem}</p>
-                  </div>
-                )}
-                {metadata.solution && (
-                  <div className='bg-surface rounded-2xl border border-[color-mix(in_oklab,var(--accent)_22%,transparent)] p-8'>
-                    <p className='eyebrow text-accent'>WHAT I BUILT</p>
-                    <p className='text-ink-2 mt-4 text-[15px] leading-relaxed'>{metadata.solution}</p>
-                  </div>
-                )}
-              </div>
-
-              {metadata.integrations && metadata.integrations.length > 0 && (
-                <>
-                  <p className='text-ink-3 mt-14 font-mono text-[12px] tracking-[0.18em]'>ACTIVE INTEGRATIONS</p>
-                  <div className='mt-4 flex flex-wrap gap-2'>
-                    {metadata.integrations.map(i => (
-                      <span
-                        key={i}
-                        className='border-rule bg-surface-raised text-ink-2 rounded-lg border px-4 py-2.5 font-mono text-[13px]'
-                      >
-                        {i}
-                      </span>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </section>
-        )}
-
+        {/* The long read, for whoever wants the detail behind the summary. */}
         <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
           <div className='mx-auto max-w-270'>
+            <p className='text-ink-3 mb-12 font-mono text-xs font-medium tracking-[0.2em] uppercase lg:pl-[280px]'>
+              The full story
+            </p>
             <div className='grid gap-12 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20'>
               <ReadingRail headings={headings} contentId='case-study-content' />
               <div id='case-study-content' className='max-w-[70ch] min-w-0'>
@@ -474,41 +263,6 @@ const CaseStudyDetailsPage = async ({ params }: { params: Promise<{ slug: string
             </div>
           </div>
         </section>
-
-        {/* ── Fail-safes ──────────────────────────────────────────────────
-            After the article rather than before it: this is the answer to
-            "what happens when it breaks", which only lands once the reader
-            knows what "it" is. */}
-        {(metadata.failsafeHeadline || metadata.failsafes) && (
-          <section className='border-rule border-t px-6 py-24 md:px-12 lg:px-20'>
-            <div className={CONTAINER}>
-              {metadata.failsafeHeadline && (
-                <p
-                  className='text-ink max-w-3xl text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug font-light tracking-tight'
-                  style={{ fontFamily: DISPLAY_FONT }}
-                >
-                  {metadata.failsafeHeadline}
-                </p>
-              )}
-              {metadata.failsafeDesc && (
-                <p className='text-ink-2 mt-4 max-w-2xl text-[15px] leading-relaxed'>{metadata.failsafeDesc}</p>
-              )}
-
-              {metadata.failsafes && metadata.failsafes.length > 0 && (
-                <div className='mt-10 grid gap-5 md:grid-cols-2'>
-                  {metadata.failsafes.map((f, i) => (
-                    <Reveal key={f.title} delay={i * 90}>
-                      <div className='border-rule bg-surface rounded-2xl border p-8'>
-                        <p className='text-fine text-accent font-mono'>{f.title}</p>
-                        <p className='text-ink-2 mt-3 text-[14px] leading-relaxed'>{f.desc}</p>
-                      </div>
-                    </Reveal>
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
-        )}
 
         {/* Browsing zone — card-based, so the field reads as texture here */}
         <div className='relative'>
