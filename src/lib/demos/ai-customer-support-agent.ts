@@ -511,20 +511,57 @@ function scenarios(now: Date): DemoScenario[] {
     test: false
   }
 
+  // Chloe's case, once handed over: a Slack thread a person answers from.
+  const chloe = { session: '15550107316', thread: HANDOVER_TS }
+
+  const chloeCase = {
+    id: 'recCase15550107316',
+    fields: {
+      'Case ID': `whatsapp:${chloe.session}`,
+      Channel: 'WhatsApp',
+      'Order Number': 'FH-1007',
+      'Customer Email': delayed.email,
+      Decision: 'Handed Over',
+      Status: 'Open',
+      'Slack Thread': chloe.thread
+    }
+  }
+
+  /** A person's message in the case thread, as "Team Reply In Thread" and "Read Team Reply" see it. */
+  const DEFAULT_CLOSING =
+    'Thanks for your patience. Our team has marked this as resolved. If you need anything else, just message us here.'
+
+  const personInThread = (text: string, ts: string) => {
+    const closing = text.match(/^close\s*:\s*([\s\S]*)$/i)?.[1]?.trim()
+    const close = /^close\.?$|^close\s*:/i.test(text)
+
+    return {
+      'Team Reply In Thread': { type: 'message', channel: 'support', user: 'U0TEAM01', text, ts, thread_ts: chloe.thread },
+      'Read Team Reply': { ts, threadTs: chloe.thread, text, close, closing: closing || DEFAULT_CLOSING, user: 'U0TEAM01' },
+      'Find Case For Thread': chloeCase,
+      'What Did They Do?': chloeCase
+    }
+  }
+
+  const teamReply =
+    'Hi Chloe, Sam from Fernhill here. I’m sorry about the wait. I’ve asked UPS to prioritise FH-1007, and if it hasn’t arrived by Friday we’ll send a replacement by express at no cost.'
+
   const angry: DemoScenario = {
     id: 'handover',
     label: 'Chloe · upset, handed to a person',
-    hint: 'Answers what it can, apologises once, and hands the chat to a person: the case opens as a Slack thread for the team.',
-    start: ['WhatsApp Message In', 'Team Request In'],
+    hint: 'Answers what it can, apologises once, and hands the chat to a person: the case opens as a Slack thread, and the reply typed there reaches Chloe on WhatsApp.',
+    start: ['WhatsApp Message In', 'Team Request In', 'Team Reply In Thread'],
     branch: {
       'Is It A Photo?': 1,
       'Person Has This Case?': 1,
       'Reply Failed?': 1,
       'Waiting On Approval?': 1,
-      'Route The Request': 2
+      'Route The Request': 2,
+      'What Did They Do?': 2,
+      'Send Team Reply': 0
     },
     output: {
-      ...chatPath('15550107316', angryMessage, angryReply, ['Look_Up_Order', 'Request_Team_Action'], 'handover'),
+      ...chatPath(chloe.session, angryMessage, angryReply, ['Look_Up_Order', 'Request_Team_Action'], 'handover'),
       'Look Up Order': [
         orderRecord('recFH1007', {
           'Order Number': 'FH-1007',
@@ -542,37 +579,34 @@ function scenarios(now: Date): DemoScenario[] {
         customer_email: delayed.email,
         category: 'Complaint',
         reason: 'Customer is upset about a late order.',
-        session_id: 'whatsapp:15550107316',
+        session_id: `whatsapp:${chloe.session}`,
         channel: 'WhatsApp',
         test: false,
-        customer_name: NAMES['15550107316']
+        customer_name: NAMES[chloe.session]
       },
       'Waiting On Approval?': { action: 'request' },
       'Verify Order': orderRecord('recFH1007', { 'Order Number': 'FH-1007', Status: 'Delayed', 'Order Total': 148 }),
       'Apply Rules': handoverRules,
       'Route The Request': handoverRules,
       'Post Handover To Slack': { ok: true, channel: 'support', ts: HANDOVER_TS },
-      'Log Case': {
-        id: 'recCase15550107316',
-        fields: {
-          'Case ID': 'whatsapp:15550107316',
-          Category: 'Complaint',
-          Decision: 'Handed Over',
-          Status: 'Open',
-          'Slack Thread': HANDOVER_TS
-        }
-      },
-      'Tell The Agent': { response: toAgentHandover, decision: 'handover' }
+      'Log Case': chloeCase,
+      'Tell The Agent': { response: toAgentHandover, decision: 'handover' },
+
+      // A person picks up the thread and replies.
+      ...personInThread(teamReply, '1762990705.000500'),
+      'Send Team Reply': whatsappSent(chloe.session),
+      'Tick Sent Reply': { ok: true }
     },
     outcomes: [
       {
         kind: 'chat',
-        node: 'Reply On WhatsApp',
+        node: 'Send Team Reply',
         app: 'WhatsApp',
         title: 'Fernhill Outdoor Supply',
         lines: [
           { from: 'person', text: angryMessage },
-          { from: 'agent', text: angryReply }
+          { from: 'agent', text: angryReply },
+          { from: 'agent', text: teamReply }
         ]
       },
       {
@@ -583,50 +617,37 @@ function scenarios(now: Date): DemoScenario[] {
         time,
         text: [
           ':raising_hand: *Fernhill customer handed to a person* (WhatsApp)',
-          `Customer: ${NAMES['15550107316']}`,
-          'Case: whatsapp:15550107316',
+          `Customer: ${NAMES[chloe.session]}`,
+          `Case: whatsapp:${chloe.session}`,
           'Order: FH-1007',
           `Email: ${delayed.email}`,
           ...handoverRules.details.split('\n'),
           '',
-          LIVE_CHAT_FOOTER
+          LIVE_CHAT_FOOTER,
+          '',
+          `*Sam (in the thread):* ${teamReply} :white_check_mark:`
         ]
       }
     ]
   }
 
-  // ── 5. A person takes over Chloe's chat ─────────────────────────────────
-  // Chloe, handed over in sample 4, writes again. The bot stays silent and her
-  // message appears in the case's Slack thread; her email is already on the
-  // case, so "Email In Message?" passes nothing on. A person replies in the
-  // thread, and the reply goes to Chloe on WhatsApp.
-  const chloe = { session: '15550107316', thread: HANDOVER_TS }
-  const chloeMessage = 'Thank you. Will it get here before Saturday? I’m leaving for a camping trip.'
-
-  const teamReply =
-    'Hi Chloe, I’m sorry about the wait. I’ve asked UPS to prioritise FH-1007, and if it hasn’t arrived by Friday we’ll send a replacement by express at no cost.'
-
-  const chloeCase = {
-    id: 'recCase15550107316',
-    fields: {
-      'Case ID': `whatsapp:${chloe.session}`,
-      Channel: 'WhatsApp',
-      'Order Number': 'FH-1007',
-      'Customer Email': delayed.email,
-      Decision: 'Handed Over',
-      Status: 'Open',
-      'Slack Thread': chloe.thread
-    }
-  }
+  // ── 5. Chloe chats with the person, who then closes the case ────────────
+  // Chloe writes back. The bot stays silent and her message appears in the
+  // case's Slack thread; her email is already on the case, so "Email In
+  // Message?" passes nothing on. The person types `close: …`: the case is
+  // closed, Chloe gets the closing message, and the bot answers her again.
+  const chloeMessage = 'Thank you, that really helps. Friday works for me.'
+  const closeCommand = 'close: Glad we could help, Chloe. Enjoy your camping trip!'
+  const closingMessage = 'Glad we could help, Chloe. Enjoy your camping trip!'
 
   const { channel: chloeIn } = incoming(chloe.session, chloeMessage)
 
   const liveChat: DemoScenario = {
     id: 'live-chat',
-    label: 'Chloe · a person takes over the chat',
-    hint: 'Chloe writes again: the bot stays quiet, a person replies from the Slack thread, and the reply reaches Chloe on WhatsApp with a ✅ once delivered.',
+    label: 'Chloe · chats with the person, then close',
+    hint: 'Chloe writes back: the bot stays quiet and her message lands in the Slack thread. The person types close: the case closes, Chloe is told, and the bot answers her again.',
     start: ['WhatsApp Message In', 'Team Reply In Thread'],
-    branch: { 'Is It A Photo?': 1, 'Person Has This Case?': 0, 'What Did They Do?': 2, 'Send Team Reply': 0 },
+    branch: { 'Is It A Photo?': 1, 'Person Has This Case?': 0, 'What Did They Do?': 1 },
     output: {
       ...chloeIn,
       'Prepare Message': prepared(chloe.session, chloeMessage),
@@ -634,51 +655,33 @@ function scenarios(now: Date): DemoScenario[] {
       'Person Has This Case?': chloeCase,
       'Pass Message To Team': { ok: true, channel: 'support', ts: '1762992310.005200', thread_ts: chloe.thread },
       'Email In Message?': [],
-      'Team Reply In Thread': {
-        type: 'message',
-        channel: 'support',
-        user: 'U0TEAM01',
-        text: teamReply,
-        ts: '1762992480.006100',
-        thread_ts: chloe.thread
-      },
-      'Read Team Reply': {
-        ts: '1762992480.006100',
-        threadTs: chloe.thread,
-        text: teamReply,
-        close: false,
-        closing:
-          'Thanks for your patience. Our team has marked this as resolved. If you need anything else, just message us here.',
-        user: 'U0TEAM01'
-      },
-      'Find Case For Thread': chloeCase,
-      'What Did They Do?': chloeCase,
-      'Send Team Reply': whatsappSent(chloe.session),
-      'Tick Sent Reply': { ok: true }
+      ...personInThread(closeCommand, '1762992480.006100'),
+      'Close Case': { ...chloeCase, fields: { ...chloeCase.fields, Status: 'Closed' } },
+      'Tell Customer Resolved': whatsappSent(chloe.session),
+      'Confirm Case Closed': { ok: true, channel: 'support', ts: '1762992482.006200', thread_ts: chloe.thread }
     },
     outcomes: [
       {
         kind: 'slack',
-        node: 'Tick Sent Reply',
+        node: 'Confirm Case Closed',
         channel: 'support',
         app: 'n8n',
         time,
         text: [
           ':raising_hand: *Fernhill customer handed to a person* (WhatsApp) · thread',
           `:speech_balloon: *${NAMES[chloe.session]}:* ${chloeMessage}`,
-          `*Team:* ${teamReply} :white_check_mark:`,
-          '',
-          'Type `close` (or `close: your closing message`) to end the chat: the customer is told on WhatsApp and the bot answers again.'
+          `*Sam:* ${closeCommand}`,
+          ':white_check_mark: Case closed and the customer was told on WhatsApp. The bot answers this customer again.'
         ]
       },
       {
         kind: 'chat',
-        node: 'Send Team Reply',
+        node: 'Tell Customer Resolved',
         app: 'WhatsApp',
         title: 'Fernhill Outdoor Supply',
         lines: [
           { from: 'person', text: chloeMessage },
-          { from: 'agent', text: teamReply }
+          { from: 'agent', text: closingMessage }
         ]
       }
     ]
