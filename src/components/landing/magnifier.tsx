@@ -62,7 +62,10 @@ export function useMagnifier() {
 
       // Always the finished drawing, whatever point the live run is at.
       if (canvas) copy.dataset.run = 'static'
-      lens.dataset.dark = String(canvas)
+
+      // A dark n8n build screenshot gets the dark backing too, so its letterbox
+      // inside the lens is not cream.
+      lens.dataset.dark = String(canvas || copy.dataset.tone === 'dark')
       art.replaceChildren(copy)
       sourceRef.current = source
     }

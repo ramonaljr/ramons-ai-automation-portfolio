@@ -15,23 +15,14 @@ import {
   useInView,
   usePrefersReducedMotion
 } from '@/components/landing/motion'
-import { filmOf, WORK_TONES, workViews, type WorkView } from '@/lib/work-views'
-import { WorkCanvas } from '@/components/landing/work-canvas'
-import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
-import { ViewStage } from '@/components/landing/view-stage'
-import { WorkFullscreen } from '@/components/landing/work-fullscreen'
+import { WORK_TONES } from '@/lib/work-views'
+import { hasShowcaseFilm, WorkShowcase } from '@/components/landing/work-showcase'
 import { ToolMark } from '@/components/landing/tool-stack-section'
 import { toolNamed } from '@/lib/portfolio'
 import { hasDemo } from '@/lib/demos'
-import { hasLiveFilm } from '@/components/landing/film/live-films'
 
 /** The live build: client-only, and only fetched when a project with one is opened. */
 const WorkflowDemo = dynamic(() => import('@/components/landing/demo/n8n-demo').then(m => m.WorkflowDemo), {
-  ssr: false
-})
-
-/** A case study's live film (a Stageshow scene): client-only, fetched when the Film toggle is first pressed. */
-const LiveFilm = dynamic(() => import('@/components/landing/film/live-film').then(m => m.LiveFilm), {
   ssr: false
 })
 
@@ -78,23 +69,7 @@ export function CaseStudyModal({
    */
   const [showFilm, setShowFilm] = useState(true)
 
-  /** The views fitted to the whole window, over this dialog. */
-  const [fullscreen, setFullscreen] = useState(false)
   const reduced = usePrefersReducedMotion()
-  const { frameRef, lensRef, artRef, move: moveLens, hide: hideLens } = useMagnifier()
-
-  /**
-   * Which of the project's views the dialog is showing. The cards carry the
-   * same strip, so opening one and finding a single fixed image would read as
-   * the dialog having less to show than the card that opened it.
-   *
-   * The selection is stored with the project it belongs to and compared during
-   * render, rather than reset from an effect: a new project then opens on its
-   * canvas without a second render pass, which is also the only form the React
-   * Compiler accepts here.
-   */
-  const [picked, setPicked] = useState<{ slug: string; index: number }>({ slug: '', index: 0 })
-  const viewIndex = picked.slug === study?.slug ? picked.index : 0
 
   /**
    * The header folds down to the title once the body scrolls, so the tags and
@@ -188,19 +163,12 @@ export function CaseStudyModal({
 
   if (!study) return null
 
-  const views = workViews(study)
-  const view = views[Math.min(viewIndex, views.length - 1)]
-  const film = filmOf(study)
+  const hasFilm = hasShowcaseFilm(study)
 
   // Read once here: the blocks below render inside an <InView> callback, where
   // TypeScript no longer carries the `study.roi &&` check into the closure.
   const roi = study.roi ?? []
   const failsafes = study.failsafes ?? []
-
-  // A live film replaces the MP4 in the dialog; the MP4 stays for the page and the Walkthrough link
-  const liveSlug = hasLiveFilm(study.slug) ? study.slug : null
-  const hasFilm = Boolean(film || liveSlug)
-  const filmOn = hasFilm && showFilm
 
   // Scroll on the next frame: the film replacing the canvas changes the
   // layout, and a scroll started before that commit is cancelled by it.
@@ -208,27 +176,6 @@ export function CaseStudyModal({
     setShowFilm(true)
     requestAnimationFrame(() => bodyRef.current?.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }))
   }
-
-  // The dialog and the full-screen layer are mounted together, so each canvas
-  // needs its own id suffix or the two SVGs would share gradient and clip ids.
-  const viewOf = (place: string) => (item: WorkView) =>
-    item.key === 'canvas' ? (
-      <WorkCanvas
-        src={item.src}
-        label={item.alt}
-        idSuffix={`${study.slug}-${place}`}
-        run={1}
-        reduced={reduced}
-        lead={0.2}
-      />
-    ) : (
-      <img src={item.src} alt={item.alt} className='work-card-image' />
-    )
-
-  const toggle = (on: boolean) =>
-    `inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 font-mono text-xs tracking-wide transition-colors ${
-      on ? 'border-ink bg-ink text-ground' : 'border-rule text-ink-2 hover:border-rule-strong hover:text-ink'
-    }`
 
   /**
    * Portalled to `document.body` rather than rendered in place.
@@ -336,126 +283,8 @@ export function CaseStudyModal({
           onScroll={onBodyScroll}
           className='flex-1 space-y-8 overflow-y-auto bg-[#FAF9F6] px-[max(1.5rem,calc((100%-90rem)/2))] py-6 sm:px-[max(2rem,calc((100%-90rem)/2))] sm:py-8'
         >
-          {/* The film and the workflow share the top frame; the toggle only
-              appears when there is a film to switch to. Grouped so the
-              toggle sits close to the frame it controls. */}
-          <div className='space-y-3'>
-            {hasFilm && (
-              <div className='flex flex-wrap gap-2' role='group' aria-label='Show the film or the workflow'>
-                <button
-                  type='button'
-                  aria-pressed={filmOn}
-                  className={toggle(filmOn)}
-                  onClick={() => setShowFilm(true)}
-                >
-                  <VideoIcon size={12} />
-                  Film
-                </button>
-                <button
-                  type='button'
-                  aria-pressed={!filmOn}
-                  className={toggle(!filmOn)}
-                  onClick={() => setShowFilm(false)}
-                >
-                  Workflow
-                </button>
-              </div>
-            )}
-
-            {/* 1a. The film, first: it plays as the dialog opens. */}
-            {filmOn && liveSlug && (
-              <div className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'>
-                <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-xs tracking-wide uppercase'>
-                  <span>Animated explainer</span>
-                  <span className='hidden sm:inline'>Words on screen, no sound</span>
-                </div>
-                <LiveFilm slug={liveSlug} />
-              </div>
-            )}
-
-            {filmOn && !liveSlug && film && (
-              <div className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'>
-                <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-xs tracking-wide uppercase'>
-                  <span>Animated explainer</span>
-                  <span className='hidden sm:inline'>Words on screen, music only</span>
-                </div>
-                <video
-                  key={film}
-                  src={film}
-                  poster={study.videoPoster}
-                  controls
-                  autoPlay
-                  playsInline
-                  preload='metadata'
-                  aria-label={`Animated explainer film: ${study.title ?? study.slug}`}
-                  className='aspect-video w-full rounded-xl bg-[#F1E9D8]'
-                />
-              </div>
-            )}
-
-            {/* 1b. Workflow Canvas Frame */}
-            {!filmOn && view && (
-              <div className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'>
-                <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-xs tracking-wide uppercase'>
-                  <span>{view.label}</span>
-                  <span className='flex items-center gap-4'>
-                    {/* Stage count describes the canvas, so it goes when the canvas does. */}
-                    {view.key === 'canvas' && study.stepCount && <span>{study.stepCount} STAGES</span>}
-                    <button
-                      type='button'
-                      onClick={() => setFullscreen(true)}
-                      aria-haspopup='dialog'
-                      className='border-rule text-ink-2 hover:border-rule-strong hover:text-ink inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1 tracking-wide normal-case transition-colors'
-                    >
-                      <Ico d={P.expand} size={12} />
-                      Full screen
-                    </button>
-                  </span>
-                </div>
-
-                {/* The canvas runs here too, dark like the card that opened it,
-                  so the dialog never shows less than the card did. */}
-                {/* One frame for every view, so the magnifying lens measures
-                  whichever one is showing. */}
-                <div
-                  ref={frameRef}
-                  className='work-magnify work-dialog-frame relative overflow-hidden rounded-xl'
-                  onPointerMove={moveLens}
-                  onPointerLeave={hideLens}
-                >
-                  <ViewStage
-                    views={views}
-                    index={viewIndex}
-                    onSelect={index => setPicked({ slug: study.slug, index })}
-                    reduced={reduced}
-                    label={study.title ?? study.slug}
-                    renderView={viewOf('dialog')}
-                  />
-
-                  <MagnifierLens lensRef={lensRef} artRef={artRef} />
-                </div>
-
-                {study.logicSummary && (
-                  <div className='border-rule text-ink-2 mt-3 flex items-center gap-2 border-t pt-3 font-mono text-[12px]'>
-                    <span className='text-ink-4'>FLOW:</span>
-                    <span className='truncate'>{study.logicSummary}</span>
-                  </div>
-                )}
-
-                {fullscreen && (
-                  <WorkFullscreen
-                    views={views}
-                    index={viewIndex}
-                    onSelect={index => setPicked({ slug: study.slug, index })}
-                    renderView={viewOf('fullscreen')}
-                    reduced={reduced}
-                    label={study.title ?? study.slug}
-                    onClose={() => setFullscreen(false)}
-                  />
-                )}
-              </div>
-            )}
-          </div>
+          {/* 1. The film and the workflow, sharing the top frame (work-showcase.tsx). */}
+          <WorkShowcase study={study} showFilm={showFilm} onShowFilm={setShowFilm} reduced={reduced} place='dialog' />
 
           {/* 2. ROI & Key Metrics. The outcome is said in words first, and
               each figure carries a line on what it means for the business:
