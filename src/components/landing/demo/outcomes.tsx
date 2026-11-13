@@ -71,7 +71,9 @@ const EMOJI: Record<string, string> = {
   mailbox_with_no_mail: '📭',
   information_source: 'ℹ️',
   package: '📦',
-  tada: '🎉'
+  tada: '🎉',
+  raising_hand: '🙋',
+  speech_balloon: '💬'
 }
 
 /** Slack's own emphasis, `*bold*`, and its `:shortcode:` emoji. */

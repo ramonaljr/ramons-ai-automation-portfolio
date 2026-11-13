@@ -7,10 +7,12 @@ import type { DemoBundle, DemoLayout, DemoOutcome, DemoScenario } from '@/lib/de
  * agent's reply out, and the team request it raises when money or an upset
  * customer is involved.
  *
- * One workflow, two ways in: WhatsApp (the top row, which saves any photo to
- * Google Drive first) and the website chat's webhook. Every sample here
- * arrives on WhatsApp, so "On WhatsApp?" sends the answer back with "Reply On
- * WhatsApp" and the webhook's "Send Reply" stays idle.
+ * One workflow, two ways in: WhatsApp (the top row: it skips repeats, waits
+ * 4 seconds to join a burst of messages, and saves any photo to Google Drive)
+ * and the website chat's webhook. Every sample here arrives on WhatsApp, so
+ * "On WhatsApp?" sends the answer back with "Reply On WhatsApp" and the
+ * webhook's "Send Reply" stays idle. Once a WhatsApp customer is handed to a
+ * person, the case's Slack thread is a live chat (section 3).
  *
  * The replies are the agent's own, taken from the build's test set and
  * re-dated so they always read as current. Field names are the build's: the
@@ -19,6 +21,13 @@ import type { DemoBundle, DemoLayout, DemoOutcome, DemoScenario } from '@/lib/de
  */
 
 const BASE = 'Fernhill Outdoor Supply'
+
+/** The handover post's Slack timestamp: it becomes the case's thread. */
+const HANDOVER_TS = '1762990412.000300'
+
+/** How "Post Handover To Slack" ends a WhatsApp handover. */
+const LIVE_CHAT_FOOTER =
+  '*Reply in this thread* and your message goes to the customer on WhatsApp. Their new messages appear here. When it is resolved, type `close` (or `close: your closing message`): the customer is told on WhatsApp and the bot takes over again.'
 
 /** "14 November", the way the agent writes dates. */
 const inWords = (date: string) =>
@@ -32,11 +41,20 @@ const prepared = (sessionId: string, message: string) => ({
   hasMessage: true
 })
 
+/** The WhatsApp profile name each sample customer has set. */
+const NAMES: Record<string, string> = {
+  '15550104471': 'Chloe Bennett',
+  '15550103315': 'Priya',
+  '15550102938': 'Ethan Brooks',
+  '15550107316': 'Chloe Bennett',
+  '15550108854': 'Noah Kim'
+}
+
 /** What Meta's webhook posts to "WhatsApp Message In" for one customer message. */
 const whatsappIn = (from: string, message: Record<string, unknown>) => ({
   messaging_product: 'whatsapp',
   metadata: { display_phone_number: '15556772775' },
-  contacts: [{ wa_id: from }],
+  contacts: [{ wa_id: from, profile: { name: NAMES[from] ?? '' } }],
   messages: [{ from, id: `wamid.HBgL${from}FERNHILL`, timestamp: '1763045000', ...message }],
   field: 'messages'
 })
@@ -82,16 +100,10 @@ function scenarios(now: Date): DemoScenario[] {
     highlight: 0
   })
 
-  // The shared path: a WhatsApp message is read (a photo saved to Drive first),
-  // the agent answers, the reply goes back on WhatsApp, and it is all logged.
-  const chatPath = (
-    sessionId: string,
-    text: string,
-    reply: string,
-    tools: string[],
-    escalation: string | null,
-    photo?: Photo
-  ) => {
+  // A WhatsApp message arriving: read, checked against the message IDs seen in
+  // the last 7 days, and remembered. Text waits 4 seconds for more messages
+  // from the same customer and is answered once; a photo is saved to Drive.
+  const incoming = (sessionId: string, text: string, photo?: Photo) => {
     const link = photo && `https://drive.google.com/file/d/${photo.fileId}/view`
 
     // What the agent is asked: the text, or "Describe Photo For Agent"'s note.
@@ -99,9 +111,16 @@ function scenarios(now: Date): DemoScenario[] {
       ? `[The customer sent a photo on WhatsApp. It is saved for the team here: ${link} ] Caption: ${photo.caption}`
       : text
 
+    const messageId = `wamid.HBgL${sessionId}FERNHILL`
+    const name = NAMES[sessionId] ?? ''
+
     const read = photo
-      ? { from: sessionId, type: 'image', text: '', mediaId: '1187462093310524', caption: photo.caption }
-      : { from: sessionId, type: 'text', text, mediaId: '', caption: '' }
+      ? { messageId, from: sessionId, type: 'image', text: '', mediaId: '1187462093310524', caption: photo.caption, name }
+      : { messageId, from: sessionId, type: 'text', text, mediaId: '', caption: '', name }
+
+    // The row "Remember Message" saves: a photo is answered on its own, so it is never part of a burst.
+    const rowId = Number(sessionId.slice(-3))
+    const remembered = { id: rowId, messageId, sender: sessionId, text: read.text, answered: Boolean(photo) }
 
     const channel = {
       'WhatsApp Message In': whatsappIn(
@@ -111,9 +130,12 @@ function scenarios(now: Date): DemoScenario[] {
           : { type: 'text', text: { body: text } }
       ),
       'Read Message': read,
-      'Is It Text?': read,
-      ...(photo && {
-        'Is It A Photo?': read,
+      'New Message?': read,
+      'Remember Message': remembered,
+      'Continue With Message': read,
+      'Is It A Photo?': read,
+      ...(photo
+        ? {
         'Get Photo Link': {
           messaging_product: 'whatsapp',
           url: `https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=${read.mediaId}`,
@@ -124,14 +146,34 @@ function scenarios(now: Date): DemoScenario[] {
         'Download Photo': { binary: { data: { mimeType: 'image/jpeg', fileExtension: 'jpg', fileSize: '412 kB' } } },
         'Save Photo To Drive': { id: photo.fileId, name: photo.file, webViewLink: link },
         'Describe Photo For Agent': { from: sessionId, text: message }
-      }),
-      'Reply On WhatsApp': whatsappSent(sessionId)
+          }
+        : {
+            'Wait For More': read,
+            'Find Unanswered': [remembered],
+            'Merge Burst': { from: sessionId, text, lastId: rowId },
+            'Mark Answered': [{ ...remembered, answered: true }]
+          })
     }
 
+    return { channel, message }
+  }
+
+  // The shared path: the message arrives, the agent answers, the reply goes
+  // back on WhatsApp, and it is all logged.
+  const chatPath = (
+    sessionId: string,
+    text: string,
+    reply: string,
+    tools: string[],
+    escalation: string | null,
+    photo?: Photo
+  ) => {
+    const { channel, message } = incoming(sessionId, text, photo)
     const checked = { reply, failed: false, error: '', tools, escalation }
 
     return {
       ...channel,
+      'Reply On WhatsApp': whatsappSent(sessionId),
       ...agentPath(sessionId, message, reply, checked)
     }
   }
@@ -139,6 +181,10 @@ function scenarios(now: Date): DemoScenario[] {
   // The agent's part of the run, from Prepare Message to the logged conversation.
   const agentPath = (sessionId: string, message: string, reply: string, checked: Record<string, unknown>) => ({
     'Prepare Message': prepared(sessionId, message),
+
+    // No open handover for this customer, so the agent answers.
+    'Find Open Handover': {},
+    'Person Has This Case?': {},
     'OpenAI Chat Model': { model: 'gpt-5.4', temperature: 0.2 },
     'Conversation Memory': { sessionId: `whatsapp:${sessionId}`, messages: 2 },
     'Fernhill Support Agent': { output: reply },
@@ -175,7 +221,7 @@ function scenarios(now: Date): DemoScenario[] {
     id: 'order',
     label: 'Chloe · where is my order',
     hint: 'Checks the order number and email together, then answers from the order record.',
-    branch: { 'Reply Failed?': 1 },
+    branch: { 'Is It A Photo?': 1, 'Person Has This Case?': 1, 'Reply Failed?': 1 },
     output: {
       ...chatPath(delayed.session, whereMessage, whereReply, ['Look_Up_Order'], null),
       'Look Up Order': [
@@ -215,7 +261,7 @@ function scenarios(now: Date): DemoScenario[] {
     id: 'product',
     label: 'Boot sizing question',
     hint: 'Searches the store policies document and answers only from what it finds.',
-    branch: { 'Reply Failed?': 1 },
+    branch: { 'Is It A Photo?': 1, 'Person Has This Case?': 1, 'Reply Failed?': 1 },
     output: {
       ...chatPath('15550103315', sizingMessage, sizingReply, ['Search_Store_Policies'], null),
       'OpenAI Embeddings (Search)': { model: 'text-embedding-3-small' },
@@ -324,7 +370,7 @@ function scenarios(now: Date): DemoScenario[] {
     hint: 'The photo is saved to Google Drive; the refund waits for a yes in Slack, then the customer is emailed.',
     start: ['WhatsApp Message In', 'Team Request In'],
     branch: {
-      'Is It Text?': 1,
+      'Person Has This Case?': 1,
       'Reply Failed?': 1,
       'Waiting On Approval?': [1, 0],
       'Route The Request': 1,
@@ -441,11 +487,11 @@ function scenarios(now: Date): DemoScenario[] {
   // ── 4. An upset customer, handed to a person ────────────────────────────
   const angryMessage = `This is the worst service ever!!! FH-1007 is a week late and nobody cares. Absolutely furious. ${delayed.email}`
 
-  const toAgentHandover = `Handed to a team member as case whatsapp:15550107316. Tell the customer a person will reply within one working day.`
+  const toAgentHandover = `Handed to a team member as case whatsapp:15550107316. Tell the customer a person from the team will reply here on WhatsApp within one working day.`
 
   const angryReply =
     'I’m really sorry this has been so frustrating.\n\n' +
-    `I found your order FH-1007. It’s delayed with UPS because of a weather hold at the Charlotte hub; the tracking number is 1Z84F2A10300001007, and the current delivery estimate is ${inWords(delayed.estimate)}. I’ve handed this to a team member now, and a person will reply within one working day.`
+    `I found your order FH-1007. It’s delayed with UPS because of a weather hold at the Charlotte hub; the tracking number is 1Z84F2A10300001007, and the current delivery estimate is ${inWords(delayed.estimate)}. I’ve handed this to a team member now, and a person from the team will reply here on WhatsApp within one working day.`
 
   const handoverRules = {
     caseId: 'whatsapp:15550107316',
@@ -469,9 +515,15 @@ function scenarios(now: Date): DemoScenario[] {
   const angry: DemoScenario = {
     id: 'handover',
     label: 'Upset customer · handover',
-    hint: 'Answers what it can, apologises once, and hands the conversation to a person in Slack.',
+    hint: 'Answers what it can, apologises once, and opens a case thread in Slack where a person takes over the chat.',
     start: ['WhatsApp Message In', 'Team Request In'],
-    branch: { 'Reply Failed?': 1, 'Waiting On Approval?': 1, 'Route The Request': 2 },
+    branch: {
+      'Is It A Photo?': 1,
+      'Person Has This Case?': 1,
+      'Reply Failed?': 1,
+      'Waiting On Approval?': 1,
+      'Route The Request': 2
+    },
     output: {
       ...chatPath('15550107316', angryMessage, angryReply, ['Look_Up_Order', 'Request_Team_Action'], 'handover'),
       'Look Up Order': [
@@ -493,16 +545,23 @@ function scenarios(now: Date): DemoScenario[] {
         reason: 'Customer is upset about a late order.',
         session_id: 'whatsapp:15550107316',
         channel: 'WhatsApp',
-        test: false
+        test: false,
+        customer_name: NAMES['15550107316']
       },
       'Waiting On Approval?': { action: 'request' },
       'Verify Order': orderRecord('recFH1007', { 'Order Number': 'FH-1007', Status: 'Delayed', 'Order Total': 148 }),
       'Apply Rules': handoverRules,
       'Route The Request': handoverRules,
-      'Alert Team: Handover': { ok: true, channel: 'support', ts: '1762990412.000300' },
+      'Post Handover To Slack': { ok: true, channel: 'support', ts: HANDOVER_TS },
       'Log Case': {
         id: 'recCase15550107316',
-        fields: { 'Case ID': 'whatsapp:15550107316', Category: 'Complaint', Decision: 'Handed Over', Status: 'Open' }
+        fields: {
+          'Case ID': 'whatsapp:15550107316',
+          Category: 'Complaint',
+          Decision: 'Handed Over',
+          Status: 'Open',
+          'Slack Thread': HANDOVER_TS
+        }
       },
       'Tell The Agent': { response: toAgentHandover, decision: 'handover' }
     },
@@ -519,22 +578,125 @@ function scenarios(now: Date): DemoScenario[] {
       },
       {
         kind: 'slack',
-        node: 'Alert Team: Handover',
+        node: 'Post Handover To Slack',
         channel: 'support',
         app: 'n8n',
         time,
         text: [
           ':raising_hand: *Fernhill customer handed to a person* (WhatsApp)',
+          `Customer: ${NAMES['15550107316']}`,
           'Case: whatsapp:15550107316',
           'Order: FH-1007',
+          `Email: ${delayed.email}`,
           ...handoverRules.details.split('\n'),
-          'Please reply to the customer within one working day.'
+          '',
+          LIVE_CHAT_FOOTER
         ]
       }
     ]
   }
 
-  return [where, sizing, refund, angry]
+  // ── 5. The handover as a live chat in Slack ─────────────────────────────
+  // Noah was handed over earlier with an order number but no email. He now
+  // sends the email: the bot stays silent, the message appears in his case's
+  // thread, and the email is checked against the order and saved. Then the
+  // team replies in the thread, and the reply goes to Noah on WhatsApp.
+  const noah = { session: '15550108854', email: 'noah.kim@example.com', thread: '1762991820.004100' }
+  const noahMessage = `It’s ${noah.email}`
+  const teamReply = 'Thanks Noah. A replacement pole section is going out today, and you’ll get the tracking number by email.'
+
+  const noahCase = {
+    id: 'recCase15550108854',
+    fields: {
+      'Case ID': `whatsapp:${noah.session}`,
+      Channel: 'WhatsApp',
+      'Order Number': 'FH-1012',
+      Decision: 'Handed Over',
+      Status: 'Open',
+      'Slack Thread': noah.thread
+    }
+  }
+
+  const { channel: noahIn } = incoming(noah.session, noahMessage)
+  const emailNote = `:white_check_mark: ${noah.email} matches order FH-1012 and is saved on the case.`
+
+  const liveChat: DemoScenario = {
+    id: 'live-chat',
+    label: 'Noah · live chat in Slack',
+    hint: 'A handed-over customer writes again: the bot stays quiet, the team chats with them from the Slack thread, and each delivered reply gets a ✅.',
+    start: ['WhatsApp Message In', 'Team Reply In Thread'],
+    branch: { 'Is It A Photo?': 1, 'Person Has This Case?': 0, 'What Did They Do?': 2, 'Send Team Reply': 0 },
+    output: {
+      ...noahIn,
+      'Prepare Message': prepared(noah.session, noahMessage),
+      'Find Open Handover': noahCase,
+      'Person Has This Case?': noahCase,
+      'Pass Message To Team': { ok: true, channel: 'support', ts: '1762992310.005200', thread_ts: noah.thread },
+      'Email In Message?': {
+        email: noah.email,
+        orderNumber: 'FH-1012',
+        caseId: `whatsapp:${noah.session}`,
+        thread: noah.thread
+      },
+      'Check Email On Order': orderRecord('recFH1012', {
+        'Order Number': 'FH-1012',
+        'Customer Email': noah.email,
+        Status: 'Delivered'
+      }),
+      'Save Email On Case': { ...noahCase, fields: { ...noahCase.fields, 'Customer Email': noah.email } },
+      'Note: Email Checked': { ok: true, channel: 'support', ts: '1762992313.005300', thread_ts: noah.thread },
+      'Team Reply In Thread': {
+        type: 'message',
+        channel: 'support',
+        user: 'U0TEAM01',
+        text: teamReply,
+        ts: '1762992480.006100',
+        thread_ts: noah.thread
+      },
+      'Read Team Reply': {
+        ts: '1762992480.006100',
+        threadTs: noah.thread,
+        text: teamReply,
+        close: false,
+        closing:
+          'Thanks for your patience. Our team has marked this as resolved. If you need anything else, just message us here.',
+        user: 'U0TEAM01'
+      },
+      'Find Case For Thread': noahCase,
+      'What Did They Do?': noahCase,
+      'Send Team Reply': whatsappSent(noah.session),
+      'Tick Sent Reply': { ok: true }
+    },
+    outcomes: [
+      {
+        kind: 'slack',
+        node: 'Tick Sent Reply',
+        channel: 'support',
+        app: 'n8n',
+        time,
+        text: [
+          ':raising_hand: *Fernhill customer handed to a person* (WhatsApp) · thread',
+          `:speech_balloon: *${NAMES[noah.session]}:* ${noahMessage}`,
+          emailNote,
+          `*Team:* ${teamReply} :white_check_mark:`,
+          '',
+          'Type `close` (or `close: your closing message`) to end the chat: the customer is told on WhatsApp and the bot answers again.'
+        ]
+      },
+      {
+        kind: 'chat',
+        node: 'Send Team Reply',
+        app: 'WhatsApp',
+        title: 'Fernhill Outdoor Supply',
+        lines: [
+          { from: 'person', text: noahMessage },
+          { from: 'agent', text: teamReply }
+        ]
+      }
+    ]
+  }
+
+  return [where, sizing, refund, angry, liveChat]
 }
 
 export const aiCustomerSupportAgent: DemoBundle = {

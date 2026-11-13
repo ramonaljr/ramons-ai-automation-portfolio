@@ -42,7 +42,7 @@ const LANES = lanesOf('ai-customer-support-agent')
 const WRITES = laneNamed(LANES, 'Customer messages on WhatsApp')
 const ANSWERS = laneNamed(LANES, 'Agent answers from store data')
 const ROUTES = laneNamed(LANES, 'Refunds and handovers')
-const DECIDES = laneNamed(LANES, 'A person decides')
+const DECIDES = laneNamed(LANES, 'A person decides or takes over')
 const LOGS = laneNamed(LANES, 'Logs and daily summary')
 
 const { say, rest, toLane, toApps, wordsOf } = scriptFor<S>(LINES)
@@ -301,7 +301,7 @@ const others: FilmPart<S> = {
   run: async (a, cue) => {
     a.mark('upset')
     a.put({ at: 14, lMood: 'puzzled' })
-    await toLane(a, cue, ROUTES.n, { step: stepNamed(ROUTES, 'Alert Team: Handover') })
+    await toLane(a, cue, ROUTES.n, { step: stepNamed(ROUTES, 'Post Handover To Slack') })
     await cue.wait(rest(14, MOVE))
     a.put({ at: 15, lMood: 'normal' })
     await toApps(a, cue, { handover: true }, 'slack')
@@ -435,8 +435,10 @@ function render(s: S) {
                   },
                   {
                     who: 'Support agent',
-                    text: 'Upset customer handed to a person, with the full conversation.',
-                    shown: s.handover
+                    text: 'Upset customer handed to a person. Reply in this thread to chat on WhatsApp.',
+                    shown: s.handover,
+                    reply: 'Karan: So sorry about this. I’m on it now ✅',
+                    replied: s.handover
                   },
                   {
                     who: 'Support agent',
