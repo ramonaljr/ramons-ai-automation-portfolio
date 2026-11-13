@@ -49,6 +49,7 @@ import { MakeWorld } from '@/components/landing/demo/make-world'
 import { DemoOutcomes } from '@/components/landing/demo/outcomes'
 import { AppMark, visualOf, type NodeState } from '@/components/landing/demo/world'
 import { ZapierWorld } from '@/components/landing/demo/zapier-world'
+import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 import { loadDemo } from '@/lib/demos'
 import type { DemoBundle, DemoEdge, DemoLayout, DemoNode, DemoScenario } from '@/lib/demos/types'
 
@@ -570,6 +571,10 @@ function Canvas({
   const { layout } = bundle
   const frameRef = useRef<HTMLDivElement>(null)
   const worldRef = useRef<HTMLDivElement>(null)
+
+  // The lens follows the pointer over the canvas, as on the workflow views:
+  // live, since the run lights steps under it, and off the buttons and panels.
+  const lens = useMagnifier({ source: '.n8n-world', skip: '.n8n-chrome', live: true, frame: frameRef })
   const view = useRef<View>({ x: 0, y: 0, k: 0.3 })
   const pan = useRef<{ id: number; x: number; y: number; from: View; moved: boolean } | null>(null)
   const swallowClick = useRef(false)
@@ -930,11 +935,17 @@ function Canvas({
           ref={frameRef}
           className='n8n-demo'
           data-platform={layout.platform}
-          data-no-lens
           data-running={run && !run.done ? '' : undefined}
           data-ran={run?.done ? '' : undefined}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
+          onPointerDown={event => {
+            lens.hide()
+            onPointerDown(event)
+          }}
+          onPointerMove={event => {
+            onPointerMove(event)
+            lens.move(event)
+          }}
+          onPointerLeave={lens.hide}
           onPointerUp={onPointerEnd}
           onPointerCancel={onPointerEnd}
           onClickCapture={event => {
@@ -1078,6 +1089,9 @@ function Canvas({
               </>
             )}
           </div>
+
+          {/* Before the controls, so at the same z-index they draw over it. */}
+          <MagnifierLens lensRef={lens.lensRef} artRef={lens.artRef} />
 
           {/* ── The editor's own controls ─────────────────────────────────────── */}
 
