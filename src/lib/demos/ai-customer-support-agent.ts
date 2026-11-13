@@ -46,8 +46,7 @@ const NAMES: Record<string, string> = {
   '15550104471': 'Chloe Bennett',
   '15550103315': 'Priya',
   '15550102938': 'Ethan Brooks',
-  '15550107316': 'Chloe Bennett',
-  '15550108854': 'Noah Kim'
+  '15550107316': 'Chloe Bennett'
 }
 
 /** What Meta's webhook posts to "WhatsApp Message In" for one customer message. */
@@ -514,8 +513,8 @@ function scenarios(now: Date): DemoScenario[] {
 
   const angry: DemoScenario = {
     id: 'handover',
-    label: 'Upset customer · handover',
-    hint: 'Answers what it can, apologises once, and opens a case thread in Slack where a person takes over the chat.',
+    label: 'Chloe · upset, handed to a person',
+    hint: 'Answers what it can, apologises once, and hands the chat to a person: the case opens as a Slack thread for the team.',
     start: ['WhatsApp Message In', 'Team Request In'],
     branch: {
       'Is It A Photo?': 1,
@@ -596,75 +595,65 @@ function scenarios(now: Date): DemoScenario[] {
     ]
   }
 
-  // ── 5. The handover as a live chat in Slack ─────────────────────────────
-  // Noah was handed over earlier with an order number but no email. He now
-  // sends the email: the bot stays silent, the message appears in his case's
-  // thread, and the email is checked against the order and saved. Then the
-  // team replies in the thread, and the reply goes to Noah on WhatsApp.
-  const noah = { session: '15550108854', email: 'noah.kim@example.com', thread: '1762991820.004100' }
-  const noahMessage = `It’s ${noah.email}`
-  const teamReply = 'Thanks Noah. A replacement pole section is going out today, and you’ll get the tracking number by email.'
+  // ── 5. A person takes over Chloe's chat ─────────────────────────────────
+  // Chloe, handed over in sample 4, writes again. The bot stays silent and her
+  // message appears in the case's Slack thread; her email is already on the
+  // case, so "Email In Message?" passes nothing on. A person replies in the
+  // thread, and the reply goes to Chloe on WhatsApp.
+  const chloe = { session: '15550107316', thread: HANDOVER_TS }
+  const chloeMessage = 'Thank you. Will it get here before Saturday? I’m leaving for a camping trip.'
 
-  const noahCase = {
-    id: 'recCase15550108854',
+  const teamReply =
+    'Hi Chloe, I’m sorry about the wait. I’ve asked UPS to prioritise FH-1007, and if it hasn’t arrived by Friday we’ll send a replacement by express at no cost.'
+
+  const chloeCase = {
+    id: 'recCase15550107316',
     fields: {
-      'Case ID': `whatsapp:${noah.session}`,
+      'Case ID': `whatsapp:${chloe.session}`,
       Channel: 'WhatsApp',
-      'Order Number': 'FH-1012',
+      'Order Number': 'FH-1007',
+      'Customer Email': delayed.email,
       Decision: 'Handed Over',
       Status: 'Open',
-      'Slack Thread': noah.thread
+      'Slack Thread': chloe.thread
     }
   }
 
-  const { channel: noahIn } = incoming(noah.session, noahMessage)
-  const emailNote = `:white_check_mark: ${noah.email} matches order FH-1012 and is saved on the case.`
+  const { channel: chloeIn } = incoming(chloe.session, chloeMessage)
 
   const liveChat: DemoScenario = {
     id: 'live-chat',
-    label: 'Noah · live chat in Slack',
-    hint: 'A handed-over customer writes again: the bot stays quiet, the team chats with them from the Slack thread, and each delivered reply gets a ✅.',
+    label: 'Chloe · a person takes over the chat',
+    hint: 'Chloe writes again: the bot stays quiet, a person replies from the Slack thread, and the reply reaches Chloe on WhatsApp with a ✅ once delivered.',
     start: ['WhatsApp Message In', 'Team Reply In Thread'],
     branch: { 'Is It A Photo?': 1, 'Person Has This Case?': 0, 'What Did They Do?': 2, 'Send Team Reply': 0 },
     output: {
-      ...noahIn,
-      'Prepare Message': prepared(noah.session, noahMessage),
-      'Find Open Handover': noahCase,
-      'Person Has This Case?': noahCase,
-      'Pass Message To Team': { ok: true, channel: 'support', ts: '1762992310.005200', thread_ts: noah.thread },
-      'Email In Message?': {
-        email: noah.email,
-        orderNumber: 'FH-1012',
-        caseId: `whatsapp:${noah.session}`,
-        thread: noah.thread
-      },
-      'Check Email On Order': orderRecord('recFH1012', {
-        'Order Number': 'FH-1012',
-        'Customer Email': noah.email,
-        Status: 'Delivered'
-      }),
-      'Save Email On Case': { ...noahCase, fields: { ...noahCase.fields, 'Customer Email': noah.email } },
-      'Note: Email Checked': { ok: true, channel: 'support', ts: '1762992313.005300', thread_ts: noah.thread },
+      ...chloeIn,
+      'Prepare Message': prepared(chloe.session, chloeMessage),
+      'Find Open Handover': chloeCase,
+      'Person Has This Case?': chloeCase,
+      'Pass Message To Team': { ok: true, channel: 'support', ts: '1762992310.005200', thread_ts: chloe.thread },
+      'Email In Message?': [],
       'Team Reply In Thread': {
         type: 'message',
         channel: 'support',
         user: 'U0TEAM01',
         text: teamReply,
         ts: '1762992480.006100',
-        thread_ts: noah.thread
+        thread_ts: chloe.thread
       },
       'Read Team Reply': {
         ts: '1762992480.006100',
-        threadTs: noah.thread,
+        threadTs: chloe.thread,
         text: teamReply,
         close: false,
         closing:
           'Thanks for your patience. Our team has marked this as resolved. If you need anything else, just message us here.',
         user: 'U0TEAM01'
       },
-      'Find Case For Thread': noahCase,
-      'What Did They Do?': noahCase,
-      'Send Team Reply': whatsappSent(noah.session),
+      'Find Case For Thread': chloeCase,
+      'What Did They Do?': chloeCase,
+      'Send Team Reply': whatsappSent(chloe.session),
       'Tick Sent Reply': { ok: true }
     },
     outcomes: [
@@ -676,8 +665,7 @@ function scenarios(now: Date): DemoScenario[] {
         time,
         text: [
           ':raising_hand: *Fernhill customer handed to a person* (WhatsApp) · thread',
-          `:speech_balloon: *${NAMES[noah.session]}:* ${noahMessage}`,
-          emailNote,
+          `:speech_balloon: *${NAMES[chloe.session]}:* ${chloeMessage}`,
           `*Team:* ${teamReply} :white_check_mark:`,
           '',
           'Type `close` (or `close: your closing message`) to end the chat: the customer is told on WhatsApp and the bot answers again.'
@@ -689,7 +677,7 @@ function scenarios(now: Date): DemoScenario[] {
         app: 'WhatsApp',
         title: 'Fernhill Outdoor Supply',
         lines: [
-          { from: 'person', text: noahMessage },
+          { from: 'person', text: chloeMessage },
           { from: 'agent', text: teamReply }
         ]
       }
