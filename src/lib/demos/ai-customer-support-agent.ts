@@ -623,7 +623,7 @@ function scenarios(now: Date): DemoScenario[] {
   const liveChat: DemoScenario = {
     id: 'live-chat',
     label: 'Noah · live chat in Slack',
-    hint: 'A handed-over customer writes again: the bot stays quiet, the team chats with him from the Slack thread, and each delivered reply gets a ✅.',
+    hint: 'A handed-over customer writes again: the bot stays quiet, the team chats with them from the Slack thread, and each delivered reply gets a ✅.',
     start: ['WhatsApp Message In', 'Team Reply In Thread'],
     branch: { 'Is It A Photo?': 1, 'Person Has This Case?': 0, 'What Did They Do?': 2, 'Send Team Reply': 0 },
     output: {
