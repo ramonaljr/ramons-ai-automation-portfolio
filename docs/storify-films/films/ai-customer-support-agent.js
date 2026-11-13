@@ -2,7 +2,7 @@
 FILM={type:'how-it-works',protag:'dennice',
   title:'AI WhatsApp Customer Support Agent',
   sub:'A hand-drawn explainer of the AI WhatsApp Customer Support Agent case study. Dennice plays the store owner and Leo plays a customer.',
-  aria:'Animated film: an online outdoor store answered every support message by hand, and nothing came back at night or at weekends. The n8n build is shown lane by lane as on its process map: a customer messages on WhatsApp, photos are saved to Google Drive, an OpenAI agent answers from the store policies document and the order and stock records in Airtable after the order number and email match, refunds start a team request that is checked and routed, upset customers are handed to the team, a person approves or rejects each refund in a Slack form and the customer is emailed the decision, and every conversation is logged with a daily summary at 5 PM.',
+  aria:'Animated film: an online outdoor store answered every support message by hand, and nothing came back at night or at weekends. The n8n build is shown lane by lane as on its process map: a customer messages on WhatsApp, photos are saved to Google Drive, an OpenAI agent answers from the store policies document and the order and stock records in Airtable after the order number and email match, refunds start a team request that is checked and routed, upset customers are handed to the team, a person approves or rejects each refund in a Slack form and the customer is emailed the decision, a handover becomes a live chat from a Slack thread, and every conversation is logged with a daily summary at 5 PM.',
   cardTitle:'How every WhatsApp message is answered',
   intro:['A small outdoor store answers its customers’ questions.',
          'Every message was answered by hand, and nothing came back at night.',
@@ -17,7 +17,8 @@ const WF=workflow({token:'msg',maxX:1000,
     {name:'Customer messages on WhatsApp',color:'yellow',chapter:'lane 1 · on WhatsApp',intro:'Lane one: a customer messages on WhatsApp.',nodes:[
       {n:1,name:'WhatsApp Message In',icon:'chat',who:'leo',z:1.1,say:'I messaged the store on WhatsApp.',
         desc:'Each phone number gets its own conversation, so the bot remembers the last few messages.'},
-      {name:'Read Message',icon:'set'},
+      {name:'New Message?',icon:'if'},
+      {name:'Merge Burst',icon:'set',say:'Several quick messages get one reply.',desc:'A message WhatsApp delivers twice is answered once, and several quick messages in a row get one reply.'},
       {name:'Save Photo To Drive',icon:'drive',say:'A photo of a damaged item is saved to Google Drive.',desc:'Photos are saved to Google Drive, and the link goes into the case.'},
       {name:'Prepare Message',icon:'set'}]},
     {name:'Agent answers from store data',color:'blue',chapter:'lane 2 · agent answers',intro:'Lane two: the agent answers.',nodes:[
@@ -37,20 +38,25 @@ const WF=workflow({token:'msg',maxX:1000,
       {name:'Apply Rules',icon:'rules'},
       {n:9,name:'Route The Request',icon:'if',branch:'upset → handover',bc:AMBER,say:'Money goes to Slack for approval. Upset customers go to the team.',d:2.6,
         desc:'Money requests go to Slack for approval, and upset customers or unusual questions go to the team as a handover.'},
-      {n:10,name:'Alert Team: Handover',icon:'chat',say:'A handover carries the full conversation.',
-        desc:'Upset customers, safety problems, legal threats and questions the policies do not cover go to the team with the full conversation.'},
+      {n:10,name:'Post Handover To Slack',icon:'chat',say:'A handover is posted in Slack, with the customer’s WhatsApp name.',d:2.4,
+        desc:'Upset customers, safety problems, legal threats and questions the policies do not cover go to the team, who take over the chat from a Slack thread while the bot stays quiet.'},
       {name:'Log Case',icon:'db'}]},
-    {name:'A person decides',color:'green',chapter:'lane 4 · a person decides',intro:'Lane four: a person decides.',nodes:[
+    {name:'A person decides or takes over',color:'green',chapter:'lane 4 · a person takes over',intro:'Lane four: a person decides, or takes over the chat.',nodes:[
       {n:11,name:'Ask Team To Approve',icon:'check',say:'I pick Approve or Reject in a Slack form, and can add a note.',d:2.6,
         desc:'The team picks Approve or Reject in a Slack form, and can add a note.'},
       {name:'Compose Customer Email',icon:'mail'},
       {name:'Record Decision',icon:'db'},
-      {n:12,name:'Email Customer',icon:'mail',who:'leo',z:1.1,say:'The decision came by email.',desc:'The customer is emailed the decision.'}]},
+      {n:12,name:'Email Customer',icon:'mail',who:'leo',z:1.1,say:'The decision came by email.',desc:'The customer is emailed the decision.'},
+      {n:13,name:'Team Reply In Thread',icon:'chat',say:'For a handover, I chat with the customer from the Slack thread.',d:2.6,
+        desc:'The customer’s WhatsApp messages appear in the case’s Slack thread.'},
+      {name:'Send Team Reply',icon:'chat',say:'Each reply goes back to WhatsApp, and gets a tick once delivered.',d:2.4,
+        desc:'Each reply typed there goes back to WhatsApp and gets a ✅ once delivered.'},
+      {name:'Close Case',icon:'db',say:'Typing close hands the customer back to the bot.',desc:'Typing close hands the customer back to the bot.'}]},
     {name:'Logs and daily summary',color:'pink',chapter:'lane 5 · logs, summary',intro:'Lane five: the record.',nodes:[
-      {n:13,name:'Log Conversation',icon:'db',say:'Every conversation is saved in Airtable.',desc:'Every conversation is saved in Airtable.'},
-      {n:14,name:'Alert Team: Agent Error',icon:'alert',say:'If something errors, the team hears in Slack.',desc:'Errors alert the team in Slack.'},
+      {n:14,name:'Log Conversation',icon:'db',say:'Every conversation is saved in Airtable.',desc:'Every conversation is saved in Airtable.'},
+      {n:15,name:'Alert Team: Agent Error',icon:'alert',say:'If something errors, the team hears in Slack.',desc:'Errors alert the team in Slack.'},
       {name:'Every Day At 17:00',icon:'clock'},
-      {n:15,name:'Post Daily Summary',icon:'chat',say:'At 5 PM, the day’s cases are posted.',desc:'A summary of the day’s cases is posted at 5 PM.'},
+      {n:16,name:'Post Daily Summary',icon:'chat',say:'At 5 PM, the day’s cases are posted.',desc:'A summary of the day’s cases is posted at 5 PM.'},
       {name:'Reload Policy Doc',icon:'drive'}]}]});
 
 const T=beats([
@@ -93,6 +99,6 @@ STATS={t0:T('stats',.05),t1:T('stats',1)+.3,title:'every message',stats:[
 RECAP={opener:"Let's recap how it works.",points:[
   {c:BLUE,h:'Answers from store data',x:'Only the policies document and the Airtable records, and nothing about an order until the number and email match.'},
   {c:AMBER,h:'Money goes to a person',x:'Refunds start a team request: the order is checked, and the team approves or rejects in Slack.'},
-  {c:TEAL,h:'The customer hears back',x:'The decision is emailed, and upset customers are handed to the team with the full conversation.'},
+  {c:TEAL,h:'The customer hears back',x:'The decision is emailed, and an upset customer is handed to a person, who chats with them from a Slack thread.'},
   {c:BLUE,h:'A record of every case',x:'Every conversation saved in Airtable, errors alerted in Slack, and a summary at 5 PM.'}],
   ending:'The bot answers what it can check, and leaves every promise about money to a person.'};

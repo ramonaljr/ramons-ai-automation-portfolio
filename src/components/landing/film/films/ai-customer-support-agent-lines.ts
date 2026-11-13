@@ -34,7 +34,7 @@ export const LINES: readonly Line[] = [
 
   // The other paths
   { who: 'leo', text: 'What if a customer is really upset?', mood: 'puzzled' },
-  { who: 'dennice', text: 'Upset customers go straight to a person.', hears: 'happy' },
+  { who: 'dennice', text: 'A person takes over the chat from Slack.', hears: 'happy' },
   { who: 'dennice', text: 'At 5 PM, the team gets the day’s summary.' },
 
   // The result
