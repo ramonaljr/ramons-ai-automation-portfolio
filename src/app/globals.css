@@ -4279,9 +4279,10 @@ div#experience.about-journey {
   isolation: isolate;
 }
 
-/* A warm light falls on the panel from the top left, where the pitch
-   starts, and a hairline highlight runs along its top edge, so it reads as
-   a lit surface rather than a flat grey card. */
+/* Blurred backlit maple leaves (a still from stock footage) under a veil of
+   the page ground, so the booking section ends the page in the hero's
+   autumn; a hairline highlight runs along the top edge. Calendly cannot be
+   themed on the free plan, so it keeps its own white card on top. */
 .contact-panel {
   display: grid;
   gap: clamp(2.5rem, 5vw, 4.5rem);
@@ -4289,9 +4290,14 @@ div#experience.about-journey {
   border: 1px solid var(--rule);
   border-radius: 2rem;
   background:
-    radial-gradient(42rem 26rem at 0% 0%, color-mix(in oklab, var(--accent) 7%, transparent), transparent 70%),
     linear-gradient(180deg, oklch(1 0 0 / 0.55), transparent 30%),
-    color-mix(in oklab, var(--ground) 92%, white);
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--ground) 88%, transparent),
+      color-mix(in oklab, var(--ground) 72%, transparent)
+    ),
+    url(/images/landing/contact-bg-maple.webp) 60% 35% / cover no-repeat,
+    var(--ground);
   box-shadow:
     inset 0 1px 0 oklch(1 0 0 / 0.8),
     0 50px 120px -70px oklch(0.25 0.018 255 / 0.45);
@@ -4515,8 +4521,20 @@ div#experience.about-journey {
 }
 
 @media (min-width: 1024px) {
+  /* Side by side, the veil runs left to right: heaviest behind the pitch,
+     thinnest behind the booking card, which stays solid white on top. */
   .contact-panel {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    background:
+      linear-gradient(180deg, oklch(1 0 0 / 0.55), transparent 30%),
+      linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--ground) 90%, transparent) 0%,
+        color-mix(in oklab, var(--ground) 74%, transparent) 45%,
+        color-mix(in oklab, var(--ground) 20%, transparent) 100%
+      ),
+      url(/images/landing/contact-bg-maple.webp) 60% 35% / cover no-repeat,
+      var(--ground);
   }
 }
 
