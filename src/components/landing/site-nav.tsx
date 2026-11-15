@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { motion, useMotionValueEvent, useScroll, useSpring } from 'motion/react'
 
 import { BrandMark } from '@/components/landing/brand-mark'
+import { HeroStatus, NavStatus } from '@/components/landing/hero-status'
 import { ArrowRight, CONTAINER, pillSpring, scrollSprings, usePrefersReducedMotion } from '@/components/landing/motion'
 
 import { PROFILE } from '@/lib/portfolio'
@@ -249,6 +250,7 @@ export function SiteNav() {
           </div>
 
           <div className='flex shrink-0 items-center gap-2'>
+            <NavStatus />
             <a
               href={contactHref}
               className='group bg-ink text-fine text-ground hover:bg-ink/90 relative z-10 hidden items-center gap-2 rounded-full py-2 pr-4 pl-5 whitespace-nowrap transition-[background-color,transform] duration-300 active:scale-[0.97] motion-reduce:active:scale-100 md:inline-flex'
@@ -320,6 +322,7 @@ export function SiteNav() {
                 </a>
               ))}
               <div className='mt-1 px-2 pb-1'>
+                <HeroStatus className='mb-3 px-2' />
                 <a
                   href={contactHref}
                   onClick={close}
