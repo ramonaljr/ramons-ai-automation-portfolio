@@ -80,17 +80,37 @@ export function BlossomStoryBackground() {
     const targets = SECTION_MOODS.flatMap(([id, mood]) => {
       const element = document.getElementById(id)
 
-      return element ? [{ element, mood }] : []
+      return element ? [{ element, mood, top: 0 }] : []
     })
 
+    /**
+     * Section tops relative to the document, measured only when the layout can
+     * have moved them. Reading `getBoundingClientRect` in every scroll frame,
+     * after the page's scroll-linked transforms had written their styles,
+     * forced the browser to lay out the whole page each frame — the largest
+     * single cost of scrolling it.
+     */
+    const measure = () => {
+      const scroll = window.scrollY
+
+      for (const target of targets) target.top = target.element.getBoundingClientRect().top + scroll
+    }
+
+    let current: Mood | null = null
+
     const update = () => {
-      const line = window.innerHeight * LINE
+      const line = window.scrollY + window.innerHeight * LINE
       let mood: Mood = 'golden'
 
       for (const target of targets) {
-        if (target.element.getBoundingClientRect().top <= line) mood = target.mood
+        if (target.top <= line) mood = target.mood
       }
 
+      // Unchanged attributes are not rewritten: each write invalidates the
+      // `[data-scene]` / `[data-mood]` rules for the whole scene.
+      if (mood === current) return
+
+      current = mood
       root.dataset.mood = mood
 
       // The falling leaves are a sibling layer, so the scene state is also
@@ -112,29 +132,32 @@ export function BlossomStoryBackground() {
       }
     }
 
+    measure()
     update()
 
-    // Checked on scroll, once a frame, rather than by an IntersectionObserver
-    // on the mid-screen line: a jump that skips a section entirely (an anchor
+    // Checked on every scroll event rather than by an IntersectionObserver on
+    // the mid-screen line: a jump that skips a section entirely (an anchor
     // link, or the browser restoring the scroll on reload) never crosses the
     // line, so the observer never fired and the autumn scene stayed up behind
-    // the work and About.
-    let frame = 0
+    // the work and About. The check is a comparison against cached numbers,
+    // so it runs straight in the event, before the frame's own writes.
+    const onScroll = () => update()
 
-    const onScroll = () => {
-      if (frame) return
-
-      frame = requestAnimationFrame(() => {
-        frame = 0
-        update()
-      })
+    // Anything that changes the page's height (images arriving, an FAQ
+    // opening, fonts swapping) can move the sections, so re-measure then.
+    const onLayout = () => {
+      measure()
+      update()
     }
 
+    const resize = new ResizeObserver(onLayout)
+
+    resize.observe(document.body)
     window.addEventListener('scroll', onScroll, { passive: true })
 
     return () => {
+      resize.disconnect()
       window.removeEventListener('scroll', onScroll)
-      cancelAnimationFrame(frame)
     }
   }, [])
 

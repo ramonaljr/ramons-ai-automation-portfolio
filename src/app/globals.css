@@ -2162,6 +2162,15 @@ body::after {
   animation: wc-pulse 0.9s ease-in-out infinite;
 }
 
+/* Only while a run is live. The label is hidden before a run and after it
+   lands (wc-hide), but a hidden infinite animation still restyles the page
+   every frame: eight cards' dots kept the page busy while the reader sat
+   still. `data-settled` is set when wc-hide ends (work-canvas.tsx). */
+.work-canvas:not([data-run='go'], [data-run='trace']) .wc-running i,
+.work-canvas[data-settled] .wc-running i {
+  animation: none;
+}
+
 .wc-done b {
   color: oklch(0.78 0.16 150);
   font-weight: 400;

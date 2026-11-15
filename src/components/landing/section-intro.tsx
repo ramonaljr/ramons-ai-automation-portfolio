@@ -74,6 +74,31 @@ function useHeadingReveal() {
     const mm = gsap.matchMedia()
 
     mm.add(MOTION_OK, () => {
+      // Started by an IntersectionObserver rather than ScrollTrigger. This is
+      // all ScrollTrigger did on the page, and it read the scroll position
+      // in every scrolled frame after the scroll-linked transforms had
+      // written their styles, which made the browser lay out the whole page
+      // each frame. The observer is computed off that path.
+      let seen = false
+      let tween: gsap.core.Tween | null = null
+
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          // The same line as ScrollTrigger's 'top 92%'. A heading already
+          // above the screen (a reload partway down, an anchor jump past it)
+          // never intersects, so it plays at once rather than staying parked
+          // below its mask.
+          if (!entry || (!entry.isIntersecting && entry.boundingClientRect.bottom > 0)) return
+
+          seen = true
+          tween?.play()
+          io.disconnect()
+        },
+        { rootMargin: '0px 0px -8% 0px' }
+      )
+
+      io.observe(heading)
+
       SplitText.create(heading, {
         type: 'lines',
         mask: 'lines',
@@ -83,17 +108,21 @@ function useHeadingReveal() {
           gsap.set(self.lines, { yPercent: LINE_DROP })
           gsap.set(heading, { opacity: 1 })
 
-          return gsap.to(self.lines, {
+          tween = gsap.to(self.lines, {
             yPercent: 0,
             duration: 1,
             ease: 'expo.out',
             stagger: 0.09,
             delay: 0.08,
-            scrollTrigger: { trigger: heading, start: 'top 92%', once: true },
+            paused: !seen,
             onComplete: () => self.revert()
           })
+
+          return tween
         }
       })
+
+      return () => io.disconnect()
     })
 
     return () => mm.revert()

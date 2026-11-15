@@ -293,6 +293,9 @@ export function WorkCanvas({
 
     if (!host || !markup) return
 
+    // A new run pulses its status dot again until its own wc-hide ends.
+    delete host.dataset.settled
+
     if (reduced) {
       host.dataset.run = 'static'
 
@@ -313,6 +316,22 @@ export function WorkCanvas({
     void host.offsetWidth
     host.dataset.run = 'go'
   }, [run, markup, reduced, lead, rest, trace])
+
+  // The status label hides itself when a run lands (wc-hide in globals.css);
+  // flag that, so the pulsing dot inside it stops instead of animating unseen.
+  useEffect(() => {
+    const host = hostRef.current
+
+    if (!host) return
+
+    const onEnd = (event: AnimationEvent) => {
+      if (event.animationName === 'wc-hide') host.dataset.settled = ''
+    }
+
+    host.addEventListener('animationend', onEnd)
+
+    return () => host.removeEventListener('animationend', onEnd)
+  }, [])
 
   // A summary drawing shows fewer tiles than the build has nodes, so it can
   // carry the real count on its root as `data-nodes`.

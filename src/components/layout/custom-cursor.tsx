@@ -36,6 +36,9 @@ const CURSOR_INTERACTIVE_SELECTOR =
 /** How much of the remaining distance the ring closes each frame. */
 const RING_EASE = 0.18
 
+/** Below this distance (px) the ring counts as arrived and the loop sleeps. */
+const SETTLE = 0.1
+
 const CustomCursor = () => {
   const ringRef = useRef<HTMLDivElement>(null)
   const dotRef = useRef<HTMLDivElement>(null)
@@ -77,22 +80,39 @@ const CustomCursor = () => {
       // `calc(-50%)` in the transform keeps both elements centred on the
       // hotspot regardless of their rendered size, so the ring can grow on
       // hover without drifting off the point.
+      // Settled: snap the last fraction of a pixel and sleep until the pointer
+      // moves. Running every frame regardless rewrote both transforms ~60–120
+      // times a second while the mouse sat still, restyling the page each
+      // frame for no visible change, which scrolling then paid for.
+      const settled = Math.abs(t.x - r.x) < SETTLE && Math.abs(t.y - r.y) < SETTLE
+
+      if (settled) {
+        r.x = t.x
+        r.y = t.y
+      }
+
       ringEl.style.transform = `translate3d(${r.x}px, ${r.y}px, 0) translate(-50%, -50%)`
       dotEl.style.transform = `translate3d(${t.x}px, ${t.y}px, 0) translate(-50%, -50%)`
 
-      frame.current = requestAnimationFrame(render)
+      frame.current = settled ? null : requestAnimationFrame(render)
+    }
+
+    const wake = () => {
+      if (frame.current === null) frame.current = requestAnimationFrame(render)
     }
 
     const onMove = (event: PointerEvent) => {
       target.current = { x: event.clientX, y: event.clientY }
-      root.dataset.visible = 'true'
+      wake()
+      if (root.dataset.visible !== 'true') root.dataset.visible = 'true'
 
       // `closest` only exists on Elements — a pointermove whose target is the
       // document (or a synthetic event) would otherwise throw here.
       const el = event.target instanceof Element ? event.target : null
       const interactive = Boolean(el?.closest(CURSOR_INTERACTIVE_SELECTOR)) || isIdCardHover()
+      const state = interactive ? 'true' : 'false'
 
-      root.dataset.interactive = interactive ? 'true' : 'false'
+      if (root.dataset.interactive !== state) root.dataset.interactive = state
 
       // The cursor is mounted at the root, so it inherits the page's tokens,
       // not those of the surface it is over: on the dark footer or the

@@ -5,13 +5,13 @@ import { useEffect } from 'react'
 import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
 
-import { gsap, MOTION_OK, ScrollTrigger } from '@/components/landing/gsap'
+import { gsap, MOTION_OK } from '@/components/landing/gsap'
 
 /**
  * Smooths wheel scrolling on the landing page.
  *
  * Lenis eases the real window scroll position rather than translating a
- * wrapper, so `position: sticky`, motion's `useScroll` and ScrollTrigger keep
+ * wrapper, so `position: sticky` and motion's `useScroll` keep
  * reading native scroll and need no changes. What it fixes is a notched mouse
  * wheel: each ~100px jump used to move the pinned story and the process mark
  * in visible steps; Lenis spreads it over several frames. Trackpads already
@@ -52,10 +52,7 @@ export function SmoothScroll() {
 
     instance = lenis
 
-    // One clock: GSAP's ticker drives Lenis, and ScrollTrigger re-measures on
-    // every smoothed frame so the heading reveals fire where they used to.
-    lenis.on('scroll', ScrollTrigger.update)
-
+    // One clock: GSAP's ticker drives Lenis.
     const tick = (time: number) => lenis.raf(time * 1000)
 
     gsap.ticker.add(tick)

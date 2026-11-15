@@ -35,6 +35,12 @@
     opacity: 1;
   }
 
+  /* Held still while hidden: an SVG transform animation is not composited,
+     so an invisible arc spinning forever re-laid the page out every frame. */
+  .ss-check:not([data-pending]) .ss-check__arc {
+    animation-play-state: paused;
+  }
+
   /* Done: a solid disc grows from the center over the ring, then the tick
      draws on it. No frame is a half-faded fill under a fading spinner. */
   .ss-check__fill {
