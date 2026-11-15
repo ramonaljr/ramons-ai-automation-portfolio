@@ -98,7 +98,7 @@ export function ContactSection() {
                   </li>
                 ))}
               </ul>
-              <p className='contact-response'>Replies usually within one business day.</p>
+              <p className='contact-response'>Replies within 24 hours.</p>
             </div>
           </div>
 
