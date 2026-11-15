@@ -50,6 +50,30 @@ function useManilaTime() {
   return time
 }
 
+/**
+ * The same status, folded into the floating nav pill once the hero (and its
+ * full line) has scrolled away: the dot and the time, with the promise kept
+ * for screen readers and the hover title. globals.css (`.nav-status`) shows
+ * it only in the compact pill from lg up; below that the links and the CTA
+ * fill the bar, and the mobile menu carries the full HeroStatus instead.
+ */
+export function NavStatus() {
+  const time = useManilaTime()
+
+  return (
+    <span className='nav-status text-fine text-ink-2 items-center gap-2' title={`${PROMISE}. Local time ${ZONE_LABEL}.`}>
+      <span className='hero-status-dot' aria-hidden='true' />
+      <span className='sr-only'>{PROMISE}. Local time {ZONE_LABEL}:</span>
+      {time && (
+        <span className='whitespace-nowrap'>
+          <time className='tabular-nums'>{time}</time>
+          <span aria-hidden='true'> GMT+8</span>
+        </span>
+      )}
+    </span>
+  )
+}
+
 export function HeroStatus({ className = '' }: { className?: string }) {
   const time = useManilaTime()
 

@@ -939,6 +939,36 @@ body::after {
   }
 }
 
+/* The hero's status line, folded into the pill (NavStatus in hero-status.tsx).
+   It opens as the name closes, so the pill trades one for the other instead
+   of growing; at the top of the page the hero shows the full line, so the
+   wide bar leaves it shut. Below lg the six links and the CTA leave no room.
+   The left padding keeps the dot's breathing halo clear of the clip. */
+.nav-status {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .nav-status {
+    display: inline-flex;
+    max-width: 0;
+    padding-left: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    transition:
+      max-width 0.6s var(--ease-entrance),
+      padding-left 0.6s var(--ease-entrance),
+      opacity 0.3s var(--ease-standard);
+  }
+
+  .site-nav[data-compact] .nav-status {
+    max-width: 10rem;
+    padding-left: 0.5rem;
+    opacity: 1;
+  }
+}
+
 /**
  * Scroll-spy state.
  *
