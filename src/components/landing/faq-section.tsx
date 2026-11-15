@@ -97,8 +97,7 @@ export function FaqSection({ essentialOnly = false }: { essentialOnly?: boolean 
               {chatAvailable === false ? (
                 <>
                   <p>
-                    <strong>Still have a question?</strong> Email me and I&apos;ll answer it directly, usually within
-                    one business day.
+                    <strong>Still have a question?</strong> Email me and I&apos;ll answer it directly, within 24 hours.
                   </p>
                   <a href={`mailto:${PROFILE.email}`}>Email me</a>
                 </>
