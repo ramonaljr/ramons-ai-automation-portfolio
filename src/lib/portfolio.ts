@@ -168,11 +168,56 @@ export const SERVICES: Service[] = [
     ]
   },
   {
+    slug: 'finance-automation',
+    title: 'Finance & Accounting Automation',
+    short: 'Finance & Accounting Automation',
+    duration: '2 to 4 weeks',
+    tools: ['QuickBooks or Xero', 'Bill.com', 'Stripe', 'Google Sheets', 'Slack approvals'],
+    description:
+      'Supplier invoices captured and entered for you, customers reminded before they pay late, and the month-end reconciliation and reports ready without the copy-and-paste.',
+    detail:
+      'Finance work is full of steps that are the same every time and dangerous to get wrong. I build the system that reads each supplier invoice from the inbox, checks it against the purchase order and the supplier record, and enters it in QuickBooks or Xero with the right account, copied from how you coded that supplier before. Anything over your approval limit, or anything that does not match, goes to the right person in Slack before it is posted. Customer invoices get polite reminders before and after the due date, payments are matched to the invoices they settle, and the month-end figures land in a report your accountant can check. Ten years in finance operations means approval limits, separated duties and a record of every step are designed in from the first day. Nothing is ever paid automatically: a person always releases the money.',
+    includes: [
+      'Supplier invoices read from the inbox and entered',
+      'Checks against purchase orders and supplier records',
+      'Approvals in Slack for anything over your limit',
+      'Payment reminders to customers, before and after the due date',
+      'Bank and payment matching for reconciliation',
+      'Month-end reports built from the books'
+    ],
+    deliverables: [
+      {
+        title: 'Invoice pipeline',
+        desc: 'From the inbox to your accounting software: read, checked, coded and posted, with exceptions held back.'
+      },
+      {
+        title: 'Approval rules',
+        desc: 'Who approves what, and up to which amount, written down and enforced on every invoice.'
+      },
+      {
+        title: 'Collections sequence',
+        desc: 'Reminders on a schedule you choose, stopping as soon as the payment arrives.'
+      },
+      {
+        title: 'Month-end pack',
+        desc: 'Reconciliation results and the reports your accountant needs, ready on the first working day.'
+      }
+    ],
+    qualities: [
+      'Nothing is paid without a person releasing it',
+      'Amounts checked by fixed rules, not AI guesses',
+      'Duplicate invoices caught before they are entered',
+      'Every entry traceable to its source document',
+      'Approval limits enforced, never bypassed',
+      'Your accountant can review every step'
+    ]
+  },
+  {
     slug: 'business-process-automation',
     title: 'Business Process Automation',
     short: 'Business Process Automation',
     duration: '2 to 4 weeks',
-    tools: ['CRMs', 'Onboarding', 'Invoices & payments', 'Approvals'],
+    tools: ['CRMs', 'Onboarding', 'Approvals', 'Reports'],
     description:
       'The repetitive bottlenecks come out of your business from start to finish: lead management, client onboarding, automatic reports, data checks and approvals across departments.',
     detail:
