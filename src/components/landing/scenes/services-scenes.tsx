@@ -8,7 +8,7 @@ import { ToolMark, type Tool } from '@/components/landing/scenes/tool-mark'
 
 /**
  * The scene beside each service: the work that service does, playing out.
- * A day's run log, an onboarding approval, an answer with its sources, a
+ * A day's run log, the morning's new leads, an onboarding approval, an answer with its sources, a
  * nightly sync and an after-hours call. Each marks, in the accent, the one
  * place a person comes in. They illustrate the kind of work; none is a
  * record of a client's system.
@@ -381,6 +381,92 @@ const sync: SceneDef<SyncState> = {
   )
 }
 
+/* ---------- Leads & CRM: the morning's new leads ---------- */
+
+type LeadsState = { done: number; running: number; out: boolean }
+
+const LEADS: { time: string; text: string; person?: boolean }[] = [
+  { time: '08:12', text: 'Website form · score 34 · added to nurture' },
+  { time: '08:47', text: 'Facebook ad · score 58 · follow-up emailed' },
+  { time: '09:05', text: 'Returning lead · CRM updated, no duplicate' },
+  { time: '09:31', text: 'Demo request · replied in 1 second' },
+  { time: '09:44', text: 'Quote request · score 91 · rep alerted', person: true }
+]
+
+const LEADS_START: LeadsState = { done: 0, running: -1, out: false }
+
+const leads: SceneDef<LeadsState> = {
+  size: CARD,
+  start: LEADS_START,
+  poster: { done: LEADS.length, running: -1, out: false },
+
+  play: async a => {
+    a.mark('open')
+    await a.wait(500)
+
+    for (let i = 0; i < LEADS.length; i++) {
+      a.put({ running: i })
+      await a.wait(420)
+      a.put({ done: i + 1, running: -1 })
+      await a.wait(160)
+    }
+
+    a.mark('person')
+    a.mark('done')
+  },
+
+  exit: async a => {
+    a.mark('exit')
+    await a.set({ out: true })
+    await a.wait(320)
+    await a.snap({ ...LEADS_START, out: true })
+    await a.wait(350)
+    await a.set({ out: false })
+    await a.wait(300)
+  },
+
+  render: s => (
+    <Window title='New leads' className='ps-hero'>
+      <div className='ps-body psv' data-out={s.out || undefined}>
+        <div className='psv-head'>
+          <span className='ps-strong'>This morning</span>
+          <span className='psv-count'>
+            <Count value={s.done} duration={300} />
+            <span className='ps-muted'>scored</span>
+          </span>
+        </div>
+        <div className='psv-trail'>
+          {LEADS.map((lead, i) => (
+            <div
+              key={lead.time}
+              className='psv-row ps-in'
+              data-in={i <= Math.max(s.done - 1, s.running) || undefined}
+              data-person={lead.person || undefined}
+            >
+              <time className='ps-faint'>{lead.time}</time>
+              <span>{lead.text}</span>
+              {lead.person ? (
+                <span className='psv-status' data-on={i < s.done || undefined}>
+                  <Check size={14} on={false} pending={s.running === i} />
+                  <Badge tone='accent' dot>
+                    Call now
+                  </Badge>
+                </span>
+              ) : (
+                <Check size={14} on={i < s.done} pending={s.running === i} />
+              )}
+            </div>
+          ))}
+        </div>
+        {filler([
+          [140, 40],
+          [96, 52]
+        ])}
+      </div>
+    </Window>
+  )
+}
+
 /* ---------- Voice agents: an after-hours call ---------- */
 
 type CallState = { fields: number; people: number; out: boolean }
@@ -478,6 +564,10 @@ function Routine(props: SceneProps) {
   return <SceneStage def={routine} {...props} />
 }
 
+function Leads(props: SceneProps) {
+  return <SceneStage def={leads} {...props} />
+}
+
 function Approval(props: SceneProps) {
   return <SceneStage def={approval} {...props} />
 }
@@ -497,6 +587,7 @@ function Call(props: SceneProps) {
 /** By service slug, in the catalogue's order (lib/portfolio SERVICES). */
 export const SERVICE_SCENES: Record<string, ComponentType<SceneProps>> = {
   'n8n-ai-agents': Routine,
+  'lead-crm-automation': Leads,
   'business-process-automation': Approval,
   'llm-rag-integrations': Answer,
   'saas-api-integrations': Sync,
