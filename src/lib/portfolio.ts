@@ -79,7 +79,7 @@ export type Service = {
 export const SERVICES: Service[] = [
   {
     slug: 'n8n-ai-agents',
-    title: 'n8n AI Agents & Workflow Automation',
+    title: 'Workflow Automation',
     short: 'Workflow Automation',
     duration: '1 to 3 weeks',
     tools: ['n8n (cloud or your own server)', 'Instant triggers', 'Scheduled runs', 'Error alerts'],
@@ -123,9 +123,54 @@ export const SERVICES: Service[] = [
     ]
   },
   {
+    slug: 'lead-crm-automation',
+    title: 'Lead & CRM Automation',
+    short: 'Lead & CRM Automation',
+    duration: '1 to 3 weeks',
+    tools: ['Website forms & ads', 'HubSpot or Airtable', 'Apollo', 'Gmail', 'Slack alerts'],
+    description:
+      'Every new lead gets a reply in seconds, a fair score and the right salesperson on it, and your CRM stays up to date without anyone typing it in.',
+    detail:
+      'Leads go cold in minutes, not days. I build the system that catches each new enquiry from your forms, ads and inbox, replies straight away, checks whether the person is already in your CRM, and scores them with rules your sales team agrees on. The best leads go straight to the right salesperson with an alert; the rest get a follow-up sequence that stops the moment they reply. If nobody picks up a hot lead in time, it moves to a manager instead of sitting unread. AI reads the enquiry and drafts the personal reply, while the scoring and routing stay in fixed rules you can check.',
+    includes: [
+      'Leads collected from forms, ads and email',
+      'A first reply in seconds, day or night',
+      'A duplicate check before any record is created',
+      'Scoring rules agreed with your sales team',
+      'The right salesperson assigned and alerted',
+      'Follow-ups that stop when the lead replies'
+    ],
+    deliverables: [
+      {
+        title: 'Lead pipeline',
+        desc: 'Running from start to finish in your own accounts: collect, reply, score, assign and follow up.'
+      },
+      {
+        title: 'Scoring rules',
+        desc: 'The rules written down in plain language, so anyone can see why a lead scored what it did.'
+      },
+      {
+        title: 'CRM clean-up rules',
+        desc: 'How the same person is recognised across forms and tools, so each one stays a single record.'
+      },
+      {
+        title: 'Handover walkthrough',
+        desc: 'A recorded session showing how to change the rules, the messages and who gets which leads.'
+      }
+    ],
+    qualities: [
+      'A reply in seconds, not hours',
+      'Scores from fixed rules, not AI guesses',
+      'One record per person, never duplicates',
+      'No hot lead left without an owner',
+      'Follow-ups stop when someone replies',
+      'Every step written back to the CRM'
+    ]
+  },
+  {
     slug: 'business-process-automation',
-    title: 'End-to-End Business Process Automation',
-    short: 'Process Automation',
+    title: 'Business Process Automation',
+    short: 'Business Process Automation',
     duration: '2 to 4 weeks',
     tools: ['CRMs', 'Onboarding', 'Invoices & payments', 'Approvals'],
     description:
@@ -166,8 +211,8 @@ export const SERVICES: Service[] = [
   },
   {
     slug: 'llm-rag-integrations',
-    title: 'Claude & OpenAI for Documents and Company Knowledge',
-    short: 'AI Document Answers',
+    title: 'AI Document Assistants',
+    short: 'AI Document Assistants',
     duration: '1 to 3 weeks',
     tools: ['Claude', 'OpenAI', 'Prompt writing', 'Document search'],
     description:
@@ -208,8 +253,8 @@ export const SERVICES: Service[] = [
   },
   {
     slug: 'saas-api-integrations',
-    title: 'App Integrations: Your Tools Kept in Sync',
-    short: 'App Integrations',
+    title: 'App & API Integrations',
+    short: 'App & API Integrations',
     duration: '1 to 2 weeks',
     tools: ['Google Workspace', 'Airtable', 'Notion', 'Slack & Telegram', 'Custom app connections'],
     description:
@@ -250,8 +295,8 @@ export const SERVICES: Service[] = [
   },
   {
     slug: 'ai-voice-agents',
-    title: 'AI Phone Receptionists & Customer Chat',
-    short: 'AI Phone Receptionist',
+    title: 'AI Voice & Chat Agents',
+    short: 'AI Voice & Chat Agents',
     duration: '2 to 3 weeks',
     tools: ['VAPI', 'Retell AI', 'ElevenLabs', 'Cal.com', 'WhatsApp & Twilio'],
     description:

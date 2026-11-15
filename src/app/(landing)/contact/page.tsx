@@ -242,7 +242,7 @@ const ContactUsPage = async () => {
             <div className={CONTAINER}>
               <SectionHead
                 tag='WHAT I DO'
-                title='Five ways I can help'
+                title='Six ways I can help'
                 blurb='Name the closest fit when you book, or describe the problem and I will place it.'
               />
 

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, typ
 
 import { createPortal } from 'react-dom'
 
-import { CalendarCheck, FileText, MessageCircle, Phone, ClipboardCheck, Mic } from 'lucide-react'
+import { CalendarCheck, FileText, MessageCircle, Phone, ClipboardCheck, Mic, UserPlus } from 'lucide-react'
 
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ServiceScene } from '@/components/landing/scenes/service-scene'
@@ -36,6 +36,12 @@ const SERVICE_PRESENTATION: Record<string, { title: string; description: string;
     description:
       'Move information, prepare recurring reports and carry multi-step office work forward without someone checking every screen.',
     outcomes: ['Data entry', 'Follow-ups', 'Recurring reports']
+  },
+  'lead-crm-automation': {
+    title: 'Lead & CRM Automation',
+    description:
+      'Reply to every new lead in seconds, score it with rules your sales team agrees on, put the right person on it and keep the CRM up to date without retyping.',
+    outcomes: ['Lead scoring', 'Follow-ups', 'CRM updates']
   },
   'business-process-automation': {
     title: 'Business Process Automation',
@@ -91,6 +97,11 @@ const SERVICE_FLOWS: Record<string, Step[]> = {
     { label: 'New data arrives', example: 'An order email lands in the inbox', icon: logo('gmail', '#EA4335') },
     { label: 'Checked and entered', example: 'Details checked, then added to the sheet', icon: logo('n8n', '#EA4B71') },
     { label: 'Report sent to the team', example: 'The weekly summary posts itself', icon: logo('slack', '#4A154B') }
+  ],
+  'lead-crm-automation': [
+    { label: 'A new lead comes in', example: 'A quote request from the website', icon: icon(UserPlus, '#2F6FD6') },
+    { label: 'Scored and assigned', example: 'Fixed rules score it, a rep gets it', icon: logo('hubspot', '#FF7A59') },
+    { label: 'Followed up until they reply', example: 'A personal reply, then reminders', icon: logo('gmail', '#EA4335') }
   ],
   'business-process-automation': [
     { label: 'A form is submitted', example: 'A new hire’s details come in', icon: icon(ClipboardCheck, '#2F6FD6') },
@@ -206,13 +217,13 @@ function usePointerFollow(on: boolean) {
 
 /**
  * Services as an index, in the drafting-sheet language About and Process
- * share: five ruled rows, each with its number, what comes off the desk, the
+ * share: six ruled rows, each with its number, what comes off the desk, the
  * work it covers and the tools it runs on.
  *
  * With a mouse, the row under the pointer steps forward, the rest step back,
  * and a card trails the pointer showing that service's three steps. A click
  * (or tap, or Enter) opens the row in place with the description, the full
- * flow and the link to the service's page. All five services' copy stays in
+ * flow and the link to the service's page. All six services' copy stays in
  * the DOM, open or not, for search engines and screen readers.
  *
  * `sheet` adds the sheet header the homepage numbers its sections with;
@@ -299,7 +310,7 @@ export function ServicesSection({ sheet = false }: { sheet?: boolean }) {
               your team&rsquo;s desk.
             </>
           }
-          blurb='Five practical ways to remove repetitive work: from intake and follow-up to approvals, reporting and customer response. Every build is documented so your team can run it without me.'
+          blurb='Six practical ways to remove repetitive work: from new leads and follow-up to approvals, reporting and customer response. Every build is documented so your team can run it without me.'
         />
 
         <div
