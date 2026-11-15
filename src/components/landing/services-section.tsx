@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, typ
 
 import { createPortal } from 'react-dom'
 
-import { CalendarCheck, FileText, MessageCircle, Phone, ClipboardCheck, Mic, UserPlus } from 'lucide-react'
+import { CalendarCheck, FileText, MessageCircle, Phone, ClipboardCheck, Mic, Receipt, UserPlus } from 'lucide-react'
 
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ServiceScene } from '@/components/landing/scenes/service-scene'
@@ -43,11 +43,17 @@ const SERVICE_PRESENTATION: Record<string, { title: string; description: string;
       'Reply to every new lead in seconds, score it with rules your sales team agrees on, put the right person on it and keep the CRM up to date without retyping.',
     outcomes: ['Lead scoring', 'Follow-ups', 'CRM updates']
   },
+  'finance-automation': {
+    title: 'Finance & Accounting Automation',
+    description:
+      'Capture supplier invoices, chase late payments and prepare the month-end figures, with a person approving anything that moves money.',
+    outcomes: ['Invoices', 'Payment reminders', 'Month-end']
+  },
   'business-process-automation': {
     title: 'Business Process Automation',
     description:
       'Turn forms, checks, approvals, folders and handoffs into one reliable process that keeps everyone informed.',
-    outcomes: ['Onboarding', 'Approvals', 'Invoices']
+    outcomes: ['Onboarding', 'Approvals', 'Handoffs']
   },
   'llm-rag-integrations': {
     title: 'AI Document Assistants',
@@ -101,7 +107,24 @@ const SERVICE_FLOWS: Record<string, Step[]> = {
   'lead-crm-automation': [
     { label: 'A new lead comes in', example: 'A quote request from the website', icon: icon(UserPlus, '#2F6FD6') },
     { label: 'Scored and assigned', example: 'Fixed rules score it, a rep gets it', icon: logo('hubspot', '#FF7A59') },
-    { label: 'Followed up until they reply', example: 'A personal reply, then reminders', icon: logo('gmail', '#EA4335') }
+    {
+      label: 'Followed up until they reply',
+      example: 'A personal reply, then reminders',
+      icon: logo('gmail', '#EA4335')
+    }
+  ],
+  'finance-automation': [
+    { label: 'An invoice arrives', example: 'A supplier PDF lands in the inbox', icon: icon(Receipt, '#2F6FD6') },
+    {
+      label: 'Checked and approved',
+      example: 'Matched to the order, over-limit to Slack',
+      icon: logo('slack', '#4A154B')
+    },
+    {
+      label: 'Posted to the books',
+      example: 'Entered in QuickBooks, coded as before',
+      icon: logo('quickbooks', '#2CA01C')
+    }
   ],
   'business-process-automation': [
     { label: 'A form is submitted', example: 'A new hire’s details come in', icon: icon(ClipboardCheck, '#2F6FD6') },
@@ -217,13 +240,13 @@ function usePointerFollow(on: boolean) {
 
 /**
  * Services as an index, in the drafting-sheet language About and Process
- * share: six ruled rows, each with its number, what comes off the desk, the
+ * share: seven ruled rows, each with its number, what comes off the desk, the
  * work it covers and the tools it runs on.
  *
  * With a mouse, the row under the pointer steps forward, the rest step back,
  * and a card trails the pointer showing that service's three steps. A click
  * (or tap, or Enter) opens the row in place with the description, the full
- * flow and the link to the service's page. All six services' copy stays in
+ * flow and the link to the service's page. All seven services' copy stays in
  * the DOM, open or not, for search engines and screen readers.
  *
  * `sheet` adds the sheet header the homepage numbers its sections with;
@@ -310,7 +333,7 @@ export function ServicesSection({ sheet = false }: { sheet?: boolean }) {
               your team&rsquo;s desk.
             </>
           }
-          blurb='Six practical ways to remove repetitive work: from new leads and follow-up to approvals, reporting and customer response. Every build is documented so your team can run it without me.'
+          blurb='Seven practical ways to remove repetitive work: from new leads and follow-up to invoices, approvals, reporting and customer response. Every build is documented so your team can run it without me.'
         />
 
         <div

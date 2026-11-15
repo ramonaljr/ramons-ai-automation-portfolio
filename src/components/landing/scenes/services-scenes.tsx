@@ -467,6 +467,92 @@ const leads: SceneDef<LeadsState> = {
   )
 }
 
+/* ---------- Finance: this week's supplier invoices ---------- */
+
+type InvoicesState = { done: number; running: number; out: boolean }
+
+const INVOICES: { day: string; text: string; person?: boolean }[] = [
+  { day: 'Mon', text: 'Office supplies · $214 · posted to QuickBooks' },
+  { day: 'Mon', text: 'Software licence · $89 · matched to PO' },
+  { day: 'Tue', text: 'Courier · $46 · duplicate caught, not entered' },
+  { day: 'Wed', text: 'Cleaning · $380 · coded as last month' },
+  { day: 'Thu', text: 'Equipment · $6,250 · over limit, sent for approval', person: true }
+]
+
+const INVOICES_START: InvoicesState = { done: 0, running: -1, out: false }
+
+const invoices: SceneDef<InvoicesState> = {
+  size: CARD,
+  start: INVOICES_START,
+  poster: { done: INVOICES.length, running: -1, out: false },
+
+  play: async a => {
+    a.mark('open')
+    await a.wait(500)
+
+    for (let i = 0; i < INVOICES.length; i++) {
+      a.put({ running: i })
+      await a.wait(420)
+      a.put({ done: i + 1, running: -1 })
+      await a.wait(160)
+    }
+
+    a.mark('person')
+    a.mark('done')
+  },
+
+  exit: async a => {
+    a.mark('exit')
+    await a.set({ out: true })
+    await a.wait(320)
+    await a.snap({ ...INVOICES_START, out: true })
+    await a.wait(350)
+    await a.set({ out: false })
+    await a.wait(300)
+  },
+
+  render: s => (
+    <Window title='Supplier invoices' className='ps-hero'>
+      <div className='ps-body psv' data-out={s.out || undefined}>
+        <div className='psv-head'>
+          <span className='ps-strong'>This week</span>
+          <span className='psv-count'>
+            <Count value={s.done} duration={300} />
+            <span className='ps-muted'>checked</span>
+          </span>
+        </div>
+        <div className='psv-trail'>
+          {INVOICES.map((inv, i) => (
+            <div
+              key={inv.text}
+              className='psv-row ps-in'
+              data-in={i <= Math.max(s.done - 1, s.running) || undefined}
+              data-person={inv.person || undefined}
+            >
+              <time className='ps-faint'>{inv.day}</time>
+              <span>{inv.text}</span>
+              {inv.person ? (
+                <span className='psv-status' data-on={i < s.done || undefined}>
+                  <Check size={14} on={false} pending={s.running === i} />
+                  <Badge tone='accent' dot>
+                    Approve
+                  </Badge>
+                </span>
+              ) : (
+                <Check size={14} on={i < s.done} pending={s.running === i} />
+              )}
+            </div>
+          ))}
+        </div>
+        {filler([
+          [140, 40],
+          [96, 52]
+        ])}
+      </div>
+    </Window>
+  )
+}
+
 /* ---------- Voice agents: an after-hours call ---------- */
 
 type CallState = { fields: number; people: number; out: boolean }
@@ -568,6 +654,10 @@ function Leads(props: SceneProps) {
   return <SceneStage def={leads} {...props} />
 }
 
+function Invoices(props: SceneProps) {
+  return <SceneStage def={invoices} {...props} />
+}
+
 function Approval(props: SceneProps) {
   return <SceneStage def={approval} {...props} />
 }
@@ -588,6 +678,7 @@ function Call(props: SceneProps) {
 export const SERVICE_SCENES: Record<string, ComponentType<SceneProps>> = {
   'n8n-ai-agents': Routine,
   'lead-crm-automation': Leads,
+  'finance-automation': Invoices,
   'business-process-automation': Approval,
   'llm-rag-integrations': Answer,
   'saas-api-integrations': Sync,
