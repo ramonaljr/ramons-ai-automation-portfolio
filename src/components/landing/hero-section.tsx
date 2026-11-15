@@ -4,9 +4,10 @@ import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } fr
 
 import { AnimatePresence, motion } from 'motion/react'
 
-import { EASE_ENTRANCE } from '@/components/landing/tokens'
+import { EASE_ENTRANCE, HERO_HEADLINE_SIZE } from '@/components/landing/tokens'
 import { PROFILE } from '@/lib/portfolio'
 import { Cta, usePrefersReducedMotion } from '@/components/landing/motion'
+import { HeroStatus } from '@/components/landing/hero-status'
 import { gsap, LINE_DROP, MOTION_OK, SplitText, useGSAP } from '@/components/landing/gsap'
 
 const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
@@ -104,12 +105,18 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
         // it in as well would put the tagline on screen twice.
         const carried = q('[data-hero="eyebrow"][data-carried]').length > 0
 
-        const titleSplit = SplitText.create(q('[data-hero-line]'), {
-          type: 'lines',
-          mask: 'lines',
-          linesClass: 'split-line',
-          aria: 'none'
-        })
+        // Likewise the headline: the intro shows it from the first frame and
+        // flies it onto this one, so rising it in here would show it twice.
+        const titleCarried = q('[data-hero="title"][data-carried]').length > 0
+
+        const titleSplit = titleCarried
+          ? null
+          : SplitText.create(q('[data-hero-line]'), {
+              type: 'lines',
+              mask: 'lines',
+              linesClass: 'split-line',
+              aria: 'none'
+            })
 
         const copySplit = SplitText.create(copy, { type: 'lines', mask: 'lines', linesClass: 'split-line' })
 
@@ -124,7 +131,7 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
         const tl = gsap.timeline({
           defaults: { ease: 'expo.out', duration: 1.15 },
           onComplete: () => {
-            titleSplit.revert()
+            titleSplit?.revert()
             copySplit.revert()
             portrait?.setAttribute('data-reveal', 'ready')
           }
@@ -142,9 +149,17 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
         }
 
         tl.set(title, { opacity: 1 }, 'copy+=0.1')
-          .fromTo(titleSplit.lines, { yPercent: LINE_DROP }, { yPercent: 0 }, 'copy+=0.1')
-          .fromTo(q('[data-hero-word]'), { yPercent: LINE_DROP + 10 }, { yPercent: 0 }, 'copy+=0.22')
-          .set(copy, { opacity: 1 }, 'copy+=0.34')
+
+        if (titleSplit) {
+          tl.fromTo(titleSplit.lines, { yPercent: LINE_DROP }, { yPercent: 0 }, 'copy+=0.1').fromTo(
+            q('[data-hero-word]'),
+            { yPercent: LINE_DROP + 10 },
+            { yPercent: 0 },
+            'copy+=0.22'
+          )
+        }
+
+        tl.set(copy, { opacity: 1 }, 'copy+=0.34')
           .fromTo(copySplit.lines, { yPercent: LINE_DROP }, { yPercent: 0, duration: 1, stagger: 0.07 }, 'copy+=0.34')
 
           // The call to action is the first thing a visitor can act on, so it
@@ -154,6 +169,12 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
             { opacity: 0.01, y: 16 },
             { opacity: 1, y: 0, duration: 0.65 },
             'copy+=0.32'
+          )
+          .fromTo(
+            q('[data-hero="status"]'),
+            { opacity: 0.01, y: 10 },
+            { opacity: 1, y: 0, duration: 0.65 },
+            'copy+=0.5'
           )
 
           // The headline has landed (its lines are home, bar the last few
@@ -256,7 +277,7 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
             data-hero='title'
             data-leaf-clear
             aria-label='Stop losing hours to data entry, chasing leads, follow-ups, and reporting.'
-            className='hero-reveal display-xl text-ink text-left text-[clamp(2.6rem,4.6vw,5rem)] leading-[0.92] font-light'
+            className={`hero-reveal display-xl text-ink text-left ${HERO_HEADLINE_SIZE} leading-[0.92] font-light`}
             style={{ fontFamily: DISPLAY_FONT }}
           >
             {/* The outcome first, the work it costs second: the line names
@@ -329,6 +350,12 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
             <Cta href='#portfolio' tone='secondary'>
               See examples
             </Cta>
+          </div>
+
+          {/* Who answers and when, for visitors in other time zones. It
+              settles last: it supports the actions above, never leads them. */}
+          <div data-hero='status' className='hero-reveal hero-delay-3 mt-6'>
+            <HeroStatus />
           </div>
         </div>
 
