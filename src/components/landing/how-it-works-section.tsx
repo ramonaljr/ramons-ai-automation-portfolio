@@ -8,6 +8,7 @@ import { CONTAINER, SECTION } from '@/components/landing/motion'
 import { SectionIntro } from '@/components/landing/section-intro'
 import { ProcessScene } from '@/components/landing/scenes/process-scene'
 import { pad, SheetHeader } from '@/components/landing/sheet'
+import { scrollPageTo } from '@/components/landing/smooth-scroll'
 import { ENGAGEMENTS, PROCESS } from '@/lib/portfolio'
 
 /**
@@ -101,7 +102,7 @@ export function HowItWorksSection({ sheet = false }: { sheet?: boolean }) {
     const top = track.getBoundingClientRect().top + window.scrollY
     const run = track.offsetHeight - window.innerHeight
 
-    window.scrollTo({ top: top + (run * (index + 0.5)) / STEPS, behavior: 'smooth' })
+    scrollPageTo(top + (run * (index + 0.5)) / STEPS)
   }
 
   const step = PROCESS[active]
