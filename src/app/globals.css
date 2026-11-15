@@ -4282,7 +4282,10 @@ div#experience.about-journey {
 /* Blurred backlit maple leaves (a still from stock footage) under a veil of
    the page ground, so the booking section ends the page in the hero's
    autumn; a hairline highlight runs along the top edge. Calendly cannot be
-   themed on the free plan, so it keeps its own white card on top. */
+   themed on the free plan, so it keeps its own white card on top.
+   The photo is sized by width, never `cover`: Calendly loads late and
+   grows the panel, and a cover image rescaled with it, a sudden zoom out
+   mid-scroll. At 2200px wide it is 1238px tall, taller than the panel. */
 .contact-panel {
   display: grid;
   gap: clamp(2.5rem, 5vw, 4.5rem);
@@ -4296,7 +4299,7 @@ div#experience.about-journey {
       color-mix(in oklab, var(--ground) 88%, transparent),
       color-mix(in oklab, var(--ground) 72%, transparent)
     ),
-    url(/images/landing/contact-bg-maple.webp) 60% 35% / cover no-repeat,
+    url(/images/landing/contact-bg-maple.webp) 60% 0 / max(100%, 2200px) auto no-repeat,
     var(--ground);
   box-shadow:
     inset 0 1px 0 oklch(1 0 0 / 0.8),
@@ -4533,7 +4536,7 @@ div#experience.about-journey {
         color-mix(in oklab, var(--ground) 74%, transparent) 45%,
         color-mix(in oklab, var(--ground) 20%, transparent) 100%
       ),
-      url(/images/landing/contact-bg-maple.webp) 60% 35% / cover no-repeat,
+      url(/images/landing/contact-bg-maple.webp) 60% 0 / max(100%, 2200px) auto no-repeat,
       var(--ground);
   }
 }
