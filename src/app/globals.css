@@ -417,7 +417,6 @@
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  margin-top: 1.5rem;
   color: var(--accent);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.75rem;
@@ -457,45 +456,30 @@
   to { opacity: 1; }
 }
 
-@keyframes intro-word-in {
-  to { transform: translateY(0); }
-}
-
 @keyframes intro-flow-in {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
 
-/* The hero H1's type: Satoshi Light, -0.055em (measured live: -3.64px at
-   66.24px), set a size up because it stands alone here. */
-.intro-name {
+/* The hero's headline, on screen from the first paint. The same type as
+   `.koisei-hero-copy h1` and `.hero-outcome`, at the same size (the class
+   list in intro-animation.tsx), so it lands on the hero's without scaling.
+   Left-aligned inside a centred box: the flight pins left edges, and a
+   centred second line would land offset from the hero's. */
+.intro-headline {
+  margin-top: 1.75rem;
   color: var(--ink);
-  font-size: clamp(3.25rem, 5.15vw, 4.75rem);
-  font-weight: 300;
+  font-family: var(--font-editorial), Georgia, serif;
   letter-spacing: -0.055em;
-  line-height: 1;
+  text-align: left;
   white-space: nowrap;
+  text-shadow: 0 1px 0 oklch(1 0 0 / 0.5);
   transform-origin: 0 50%;
 }
 
-/* Padded so the descender of "j" survives the mask; the negative margin
-   keeps the line box the size of the type. */
-.intro-word-mask {
-  display: inline-block;
-  overflow: hidden;
-  padding-bottom: 0.18em;
-  margin-bottom: -0.18em;
-  vertical-align: top;
-}
-
-.intro-word {
-  display: inline-block;
-  transform: translateY(110%);
-  animation: intro-word-in 1s var(--ease-entrance) calc(0.06s + var(--i, 0) * 0.08s) forwards;
-}
-
-.intro-word-accent {
-  color: var(--accent);
+.intro-headline-outcome {
+  color: var(--hero-word-settled);
+  font-weight: 400;
 }
 
 .intro-flow {
@@ -547,6 +531,16 @@
   }
 
   .hero-autumn [data-hero='eyebrow'][data-carried='flying'] .eyebrow {
+    visibility: hidden;
+  }
+
+  /* The headline is carried the same way, whole: it waits hidden while the
+     intro's copy flies onto it, then shows as that copy disappears. */
+  .hero-autumn [data-hero='title'][data-carried] {
+    opacity: 1;
+  }
+
+  .hero-autumn [data-hero='title'][data-carried='flying'] {
     visibility: hidden;
   }
 }
@@ -3790,6 +3784,47 @@ div#experience.about-journey {
      until the writes stopped, so the copy snapped in at the end. */
   .hero-reveal.hero-delay-1 { animation-delay: 0.15s; }
   .hero-reveal.hero-delay-2 { animation-delay: 0.25s; }
+  .hero-reveal.hero-delay-3 { animation-delay: 0.35s; }
+}
+
+/* The hero's status line (hero-status.tsx). The dot is the one green on the
+   page: it reads as "online" everywhere, which terracotta would not. The halo
+   breathes slowly so it registers as live without pulling the eye from the
+   headline, and holds still for reduced motion. */
+.hero-status-dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  border-radius: 9999px;
+  background: oklch(0.68 0.15 150);
+}
+
+.hero-status-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: hero-status-breathe 2.8s ease-out infinite;
+}
+
+@keyframes hero-status-breathe {
+  from {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-status-dot::after {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 @media (max-width: 767px) and (prefers-reduced-motion: reduce) {

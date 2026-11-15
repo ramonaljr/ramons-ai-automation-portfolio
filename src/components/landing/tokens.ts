@@ -11,6 +11,17 @@
 /** One stroke weight for every icon on the landing page (all from lucide-react). */
 export const ICON_STROKE = 1.75
 
+/**
+ * The hero headline's size, shared with the intro, which shows the same
+ * headline from the first frame and hands it over at this exact size, so the
+ * handover is a pure move with no scaling. The rate is set by the longest
+ * line ("Stop losing hours to", 7.63em) fitting the copy column beside the
+ * portrait, tightest where the portrait first appears: 462px at 1024, where
+ * 5.75vw sets it at 449px (6vw wrapped it). At 1440 that is 83px. The floor
+ * keeps phones where they were.
+ */
+export const HERO_HEADLINE_SIZE = 'text-[clamp(2.6rem,5.75vw,7rem)]'
+
 /** Display face for headlines and figures. Always paired with `font-light`. */
 export const DISPLAY_FONT = 'var(--font-editorial), Georgia, serif'
 

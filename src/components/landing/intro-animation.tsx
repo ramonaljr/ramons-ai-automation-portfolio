@@ -5,9 +5,8 @@ import { Fragment, useRef, useState, useSyncExternalStore, type CSSProperties } 
 import { gsap, useGSAP } from '@/components/landing/gsap'
 import { usePrefersReducedMotion } from '@/components/landing/motion'
 import { BrandMark } from '@/components/landing/brand-mark'
+import { HERO_HEADLINE_SIZE } from '@/components/landing/tokens'
 import { TOOLS, type Tool } from '@/components/landing/scenes/tool-mark'
-
-import { PROFILE } from '@/lib/portfolio'
 
 /** Below this the intro never plays. Match `.intro-overlay` in globals.css. */
 const PHONE = '(max-width: 767px)'
@@ -29,7 +28,7 @@ const SEEN_SCRIPT = `try{if(sessionStorage.getItem('${SEEN_KEY}')==='1')document
 /** Input that hurries the intro along rather than making anyone sit through it. */
 const SKIP_EVENTS = ['pointerdown', 'keydown', 'wheel', 'touchstart'] as const
 
-/** The workflow under the name: an email in, n8n, a message out. */
+/** The workflow under the headline: an email in, n8n, a message out. */
 const FLOW: Tool[] = ['gmail', 'n8n', 'slack']
 
 /**
@@ -51,9 +50,9 @@ const RELEASE_LEAD = 0.12
 const FLIGHT = 0.85
 
 /**
- * The name and the monogram climb to the nav on a curve that leaves early,
- * so the name is out of the centre before the hero's headline rises there.
- * The tagline, which has only a short way to go, keeps the slower settle.
+ * The monogram climbs to the nav on a curve that leaves early, so it is out
+ * of the centre before the headline settles under it. The tagline and the
+ * headline, which have only a short way to go, keep the slower settle.
  */
 const BRAND_EASE = 'power3.inOut'
 
@@ -62,9 +61,12 @@ const BRAND_EASE = 'power3.inOut'
 const GLASS_BLURRED = 'blur(22px) saturate(1.05)'
 const GLASS_CLEAR = 'blur(0px) saturate(1)'
 
-/** The name with its suffix split off, so the suffix can take the accent. */
-const NAME_WORDS = PROFILE.name.split(' ')
-const SUFFIX = NAME_WORDS[NAME_WORDS.length - 1]
+/**
+ * The hero's headline, shown from the first frame. The first rotating word
+ * is the one the hero holds until the headline lands (`ROTATING_WORK[0]` in
+ * hero-section.tsx), so the handover swaps nothing the reader can see.
+ */
+const HEADLINE = ['Stop losing hours to', 'data entry.'] as const
 
 const readSeen = () => {
   try {
@@ -98,7 +100,7 @@ const NO_LEG: Leg = { x: 0, y: -16, scale: 1 }
  * `fit` says what the scale matches. `type` is the ratio of the type sizes,
  * for two settings of the same face and tracking (the tagline), where it
  * makes every glyph coincide. `width` is the ratio of the boxes, for two that
- * differ in weight and tracking (the name and the nav's wordmark): the glyphs
+ * differ in weight and tracking (two different wordmarks): the glyphs
  * cannot all coincide, so the words at least start and end together.
  */
 const legBetween = (from: Element, to: Element | null | undefined, fit: 'type' | 'width' = 'type'): Leg => {
@@ -122,15 +124,16 @@ const legBetween = (from: Element, to: Element | null | undefined, fit: 'type' |
 /**
  * The opening is the landing page itself, out of focus. The page sits behind
  * frosted glass like the nav bar's; over it the monogram draws, the brand line
- * and the name rise in the hero's own display type, and a small workflow runs
- * under them (a pulse carries the work from Gmail through n8n to Slack, each
- * lighting in its own colour as it arrives).
+ * fades in over the hero's headline (sharp and readable from the first frame,
+ * in its own type and size), and a small workflow runs under them (a pulse
+ * carries the work from Gmail through n8n to Slack, each lighting in its own
+ * colour as it arrives).
  *
  * Then it hands itself to the page in one move, and nothing fades out to fade
- * back in: the brand line travels to the hero and becomes its eyebrow, the
- * finished run sends a spark that draws the eyebrow's rule, the name and the
- * monogram glide into the nav's own, and the glass comes into focus over the
- * hero as it rises.
+ * back in: the brand line and the headline travel to the hero and become its
+ * own, the finished run sends a spark that draws the eyebrow's rule, the
+ * monogram glides into the nav's, and the glass comes into focus over the hero
+ * as it rises.
  *
  * The entrance is CSS (globals.css) and starts at first paint, so it never
  * waits for JavaScript; GSAP owns the run, the exit and the handover. Nothing
@@ -287,16 +290,12 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
       // a skip the entrance may be cut short here; that is what a skip is.)
       const rules = q('.intro-eyebrow-rule')
       const tagline = q('.intro-eyebrow-text')[0]
-      const name = q('.intro-name')[0]
+      const headline = q('.intro-headline')[0]
       const flow = q('.intro-flow')[0]
 
-      tl.set([rules, tagline, q('.intro-word'), flow], { animation: 'none' }, 'clear')
+      tl.set([rules, tagline, flow], { animation: 'none' }, 'clear')
         .set(rules, { scaleX: 1 }, 'clear')
         .set(tagline, { opacity: 1 }, 'clear')
-
-        // `y: 0` because GSAP reads the CSS starting offset (translateY(110%))
-        // as pixels into `y`, and would otherwise keep it.
-        .set(q('.intro-word'), { y: 0, yPercent: 0 }, 'clear')
         .set(flow, { opacity: 1, y: 0 }, 'clear')
 
         // The rules draw back into the tagline they framed, and the run steps
@@ -390,30 +389,32 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
         tl.to(tagline, { autoAlpha: 0, y: -16, duration: 0.4, ease: 'power2.in' }, 'clear')
       }
 
-      // The name glides into the nav's wordmark, which waits out of sight so
-      // the name is never on screen twice. Hidden by `visibility`, not
-      // opacity: the wordmark has a CSS opacity transition that would smear
-      // anything GSAP wrote to it. Where the nav has no wordmark (tablets, or
-      // the tightened pill), the name simply leaves.
-      const navName = document.querySelector<HTMLElement>('.site-nav .nav-brand-name')
+      // The headline glides onto the hero's, which waits out of sight
+      // (`data-carried`, see globals.css) so it is never on screen twice. Both
+      // are set at `HERO_HEADLINE_SIZE`, so the flight is a pure move.
+      const heroTitle = document.querySelector<HTMLElement>('.hero-autumn [data-hero="title"]')
 
-      if (navName && navName.offsetWidth > 4) {
+      if (heroTitle && heroTitle.offsetWidth > 4) {
         let leg: Leg | undefined
-        const fly = () => (leg ??= legBetween(name, navName, 'width'))
 
-        tl.set(navName, { visibility: 'hidden' }, 0)
-          .to(
-            name,
-            { x: () => fly().x, y: () => fly().y, scale: () => fly().scale, duration: FLIGHT, ease: BRAND_EASE },
-            'clear'
-          )
 
-          // The suffix gives up its accent on the way: the wordmark is all ink.
-          .to(q('.intro-word-accent'), { color: 'var(--ink)', duration: FLIGHT, ease: 'power2.inOut' }, 'clear')
-          .set(navName, { visibility: 'visible' }, `clear+=${FLIGHT - 0.06}`)
-          .to(name, { autoAlpha: 0, duration: 0.12, ease: 'none' }, `clear+=${FLIGHT - 0.06}`)
+        // Lined up by their first lines, not the whole boxes: the hero's
+        // second line is a clipped, padded shell for the rotating word, so
+        // the two boxes differ in height and centring them landed 10px off.
+        const fly = () =>
+          (leg ??= legBetween(headline.firstElementChild ?? headline, heroTitle.querySelector('[data-hero-line]')))
+
+        heroTitle.setAttribute('data-carried', 'flying')
+
+        tl.to(
+          headline,
+          { x: () => fly().x, y: () => fly().y, scale: () => fly().scale, duration: FLIGHT, ease: 'expo.inOut' },
+          'clear'
+        )
+          .call(() => heroTitle.setAttribute('data-carried', 'landed'), undefined, `clear+=${FLIGHT}`)
+          .set(headline, { visibility: 'hidden' }, `clear+=${FLIGHT}`)
       } else {
-        tl.to(name, { autoAlpha: 0, y: -16, duration: 0.4, ease: 'power2.in' }, 'clear')
+        tl.to(headline, { autoAlpha: 0, y: -16, duration: 0.4, ease: 'power2.in' }, 'clear')
       }
 
       // The monogram glides into the nav's own mark and settles there, so the
@@ -475,6 +476,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
         // Torn down part way (or finished): either way the hero's eyebrow
         // must end up visible, whatever the timeline reached.
         heroEyebrow?.setAttribute('data-carried', 'landed')
+        heroTitle?.setAttribute('data-carried', 'landed')
       }
     },
     { scope: rootRef, dependencies: [reducedMotion, seen], revertOnUpdate: true }
@@ -494,31 +496,20 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
             <BrandMark />
           </span>
 
-          {/* A <p>, not a heading: it is an opening, and the page's real H1
-              is the hero headline. */}
-          <p className='intro-name'>
-            {NAME_WORDS.map((word, i) => (
-              <Fragment key={word}>
-                {i > 0 && ' '}
-                <span className='intro-word-mask'>
-                  <span
-                    className={word === SUFFIX ? 'intro-word intro-word-accent' : 'intro-word'}
-                    style={{ '--i': i } as CSSProperties}
-                  >
-                    {word}
-                  </span>
-                </span>
-              </Fragment>
-            ))}
-          </p>
-
-          {/* Under the name, not over it: both rise at the handover, the name
-              to the nav and the tagline to the hero, and in this order their
-              paths never cross. */}
+          {/* Tagline over headline, the order the hero has them in, so each
+              flies to its own place without crossing the other. */}
           <p className='intro-eyebrow'>
             <span className='intro-eyebrow-rule' />
             <span className='intro-eyebrow-text'>Better systems. More human work.</span>
             <span className='intro-eyebrow-rule' />
+          </p>
+
+          {/* Readable from the first frame: no entrance, nothing to wait for.
+              A <p>, not a heading: the page's real H1 is the hero's, which the
+              overlay is aria-hidden over. */}
+          <p className={`intro-headline display-xl ${HERO_HEADLINE_SIZE} leading-[0.92] font-light`}>
+            <span className='block'>{HEADLINE[0]}</span>
+            <span className='intro-headline-outcome block'>{HEADLINE[1]}</span>
           </p>
 
           <div className='intro-flow'>
