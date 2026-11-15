@@ -32,31 +32,31 @@ import { PLATFORMS, SERVICES } from '@/lib/portfolio'
  */
 const SERVICE_PRESENTATION: Record<string, { title: string; description: string; outcomes: string[] }> = {
   'n8n-ai-agents': {
-    title: 'Routine work handled automatically',
+    title: 'Workflow Automation',
     description:
       'Move information, prepare recurring reports and carry multi-step office work forward without someone checking every screen.',
     outcomes: ['Data entry', 'Follow-ups', 'Recurring reports']
   },
   'business-process-automation': {
-    title: 'Smoother onboarding and approvals',
+    title: 'Business Process Automation',
     description:
       'Turn forms, checks, approvals, folders and handoffs into one reliable process that keeps everyone informed.',
     outcomes: ['Onboarding', 'Approvals', 'Invoices']
   },
   'llm-rag-integrations': {
-    title: 'Answers from your company documents',
+    title: 'AI Document Assistants',
     description:
       'Find information across policies, contracts and internal files, with links back to the source so every answer can be checked.',
     outcomes: ['Document reading', 'Knowledge search', 'Source links']
   },
   'saas-api-integrations': {
-    title: 'Your everyday tools kept in sync',
+    title: 'App & API Integrations',
     description:
       'Keep customer details, orders and updates consistent across spreadsheets, databases, inboxes and team channels.',
     outcomes: ['Spreadsheets', 'Customer records', 'Team alerts']
   },
   'ai-voice-agents': {
-    title: 'Calls and customer questions answered 24/7',
+    title: 'AI Voice & Chat Agents',
     description:
       'Respond to common questions, collect the right details and book confirmed appointments even when your team is unavailable.',
     outcomes: ['Phone calls', 'Lead capture', 'Bookings']
