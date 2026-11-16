@@ -28,10 +28,11 @@ const short = type => type.split('.').pop()
 const SIZE = { default: [100, 100], trigger: [100, 100], root: [240, 100], sub: [80, 80], tool: [240, 80] }
 
 /** Nodes with sub-node inputs along their base (agents, chains, extractors). */
-const ROOTS = new Set(['agent', 'chainLlm', 'informationExtractor', 'vectorStoreInMemory'])
+const ROOTS = new Set(['agent', 'chainLlm', 'informationExtractor', 'vectorStoreInMemory', 'memoryManager'])
 
 /** Nodes that plug into a root node's base rather than the main flow. */
 const isSub = type =>
+  !ROOTS.has(type) &&
   /^(lmChat|embeddings|outputParser|memory|documentDefaultDataLoader|tool[A-Z])/.test(type) || /Tool$/.test(type)
 
 const isTrigger = type => /Trigger$/.test(type) || type === 'webhook'
@@ -167,7 +168,7 @@ for (const node of workflow.nodes) {
     const wired = incoming.get(node.name) ?? new Set()
 
     // Agents always offer a model, memory and tools; an output parser only
-    // when the agent is set to use one.
+    // when the agent is set to use one. A Chat Memory Manager offers memory only.
     const offered =
       type === 'agent'
         ? [
@@ -176,7 +177,9 @@ for (const node of workflow.nodes) {
             'ai_tool',
             ...(params.hasOutputParser || wired.has('ai_outputParser') ? ['ai_outputParser'] : [])
           ]
-        : PORT_ORDER.filter(port => wired.has(port) || port === 'ai_languageModel')
+        : type === 'memoryManager'
+          ? ['ai_memory']
+          : PORT_ORDER.filter(port => wired.has(port) || port === 'ai_languageModel')
 
     entry.ports = offered.map(port => ({
       kind: port,

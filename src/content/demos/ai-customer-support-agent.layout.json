@@ -104,7 +104,7 @@
       "name": "Fernhill Support Agent",
       "type": "agent",
       "shape": "root",
-      "x": 2384,
+      "x": 2560,
       "y": -624,
       "w": 240,
       "h": 100,
@@ -130,7 +130,7 @@
       "name": "OpenAI Chat Model",
       "type": "lmChatOpenAi",
       "shape": "sub",
-      "x": 2368,
+      "x": 2464,
       "y": -432,
       "w": 80,
       "h": 80
@@ -139,7 +139,7 @@
       "name": "Conversation Memory",
       "type": "memoryBufferWindow",
       "shape": "sub",
-      "x": 2528,
+      "x": 2624,
       "y": -432,
       "w": 80,
       "h": 80
@@ -148,7 +148,7 @@
       "name": "Look Up Order",
       "type": "airtableTool",
       "shape": "sub",
-      "x": 2848,
+      "x": 2944,
       "y": -432,
       "w": 80,
       "h": 80,
@@ -158,7 +158,7 @@
       "name": "Check Product Stock",
       "type": "airtableTool",
       "shape": "sub",
-      "x": 3008,
+      "x": 3104,
       "y": -432,
       "w": 80,
       "h": 80,
@@ -168,7 +168,7 @@
       "name": "Search Store Policies",
       "type": "vectorStoreInMemory",
       "shape": "tool",
-      "x": 3168,
+      "x": 3264,
       "y": -432,
       "w": 240,
       "h": 80,
@@ -184,7 +184,7 @@
       "name": "OpenAI Embeddings (Search)",
       "type": "embeddingsOpenAi",
       "shape": "sub",
-      "x": 3232,
+      "x": 3328,
       "y": -304,
       "w": 80,
       "h": 80
@@ -193,7 +193,7 @@
       "name": "Send Reply",
       "type": "respondToWebhook",
       "shape": "default",
-      "x": 3200,
+      "x": 3296,
       "y": -560,
       "w": 100,
       "h": 100
@@ -274,7 +274,7 @@
       "name": "Check Reply",
       "type": "code",
       "shape": "default",
-      "x": 2752,
+      "x": 2848,
       "y": -624,
       "w": 100,
       "h": 100
@@ -316,7 +316,7 @@
       "name": "Request Team Action",
       "type": "toolWorkflow",
       "shape": "sub",
-      "x": 2688,
+      "x": 2784,
       "y": -432,
       "w": 80,
       "h": 80
@@ -568,7 +568,7 @@
       "name": "Reply On WhatsApp",
       "type": "whatsApp",
       "shape": "default",
-      "x": 3200,
+      "x": 3296,
       "y": -720,
       "w": 100,
       "h": 100
@@ -577,7 +577,7 @@
       "name": "On WhatsApp?",
       "type": "if",
       "shape": "default",
-      "x": 2976,
+      "x": 3072,
       "y": -624,
       "w": 100,
       "h": 100,
@@ -590,7 +590,7 @@
       "name": "Find Open Handover",
       "type": "airtable",
       "shape": "default",
-      "x": 1984,
+      "x": 1920,
       "y": -640,
       "w": 100,
       "h": 100,
@@ -600,7 +600,7 @@
       "name": "Person Has This Case?",
       "type": "if",
       "shape": "default",
-      "x": 2192,
+      "x": 2096,
       "y": -640,
       "w": 100,
       "h": 100,
@@ -613,7 +613,7 @@
       "name": "Pass Message To Team",
       "type": "slack",
       "shape": "default",
-      "x": 2192,
+      "x": 2096,
       "y": -448,
       "w": 100,
       "h": 100,
@@ -858,7 +858,7 @@
       "name": "Save Customer Details",
       "type": "toolWorkflow",
       "shape": "sub",
-      "x": 2688,
+      "x": 2784,
       "y": -288,
       "w": 80,
       "h": 80
@@ -895,6 +895,22 @@
       "w": 100,
       "h": 100,
       "subtitle": "manual"
+    },
+    {
+      "name": "Forget Old Chat",
+      "type": "memoryManager",
+      "shape": "root",
+      "x": 2256,
+      "y": -640,
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_memory",
+          "label": "Memory",
+          "wired": true
+        }
+      ]
     }
   ],
   "edges": [
@@ -925,6 +941,12 @@
     {
       "from": "Conversation Memory",
       "to": "Fernhill Support Agent",
+      "kind": "ai_memory",
+      "output": 0
+    },
+    {
+      "from": "Conversation Memory",
+      "to": "Forget Old Chat",
       "kind": "ai_memory",
       "output": 0
     },
@@ -1194,7 +1216,7 @@
     },
     {
       "from": "Person Has This Case?",
-      "to": "Fernhill Support Agent",
+      "to": "Forget Old Chat",
       "kind": "main",
       "output": 1
     },
@@ -1357,6 +1379,12 @@
     {
       "from": "Save Details On Case",
       "to": "Details Saved",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Forget Old Chat",
+      "to": "Fernhill Support Agent",
       "kind": "main",
       "output": 0
     }

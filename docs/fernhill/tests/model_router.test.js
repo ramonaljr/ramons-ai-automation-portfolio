@@ -1,13 +1,13 @@
 // Offline test for the chat-model router (layer M): routine messages go to
-// gpt-5.4-mini, anything that may need a refund, approval or a person goes to
-// gpt-5.4. Runs the expression in model_router.txt (and checks it matches the
+// gpt-6-luna, anything that may need a refund, approval or a person goes to
+// gpt-6.1-terra. Runs the expression in model_router.txt (and checks it matches the
 // live one in intake_nodes.json when that has been exported). No OpenAI calls.
 const fs = require('fs');
 const expr = fs.readFileSync(__dirname + '/model_router.txt', 'utf8').trim();
 const pick = (message) => new Function('$', `return (${expr.replace(/^=\{\{\s*/, '').replace(/\s*\}\}$/, '')});`)(
   () => ({ first: () => ({ json: { message } }) }),
 );
-const BIG = 'gpt-5.4', MINI = 'gpt-5.4-mini';
+const BIG = 'gpt-6.1-terra', MINI = 'gpt-6-luna';
 
 // L1 messages (the 30-case set) plus held-out phrasings the keyword list was not tuned on.
 const cases = [

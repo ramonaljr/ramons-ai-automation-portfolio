@@ -158,13 +158,15 @@ function scenarios(now: Date): DemoScenario[] {
   }
 
   // The shared path: the message arrives, the agent answers, the reply goes
-  // back on WhatsApp, and it is all logged.
+  // back on WhatsApp, and it is all logged. `model` is the chat model the
+  // build's keyword check picks for the message.
   const chatPath = (
     sessionId: string,
     text: string,
     reply: string,
     tools: string[],
     escalation: string | null,
+    model: 'gpt-6-luna' | 'gpt-6.1-terra',
     photo?: Photo
   ) => {
     const { channel, message } = incoming(sessionId, text, photo)
@@ -173,18 +175,25 @@ function scenarios(now: Date): DemoScenario[] {
     return {
       ...channel,
       'Reply On WhatsApp': whatsappSent(sessionId),
-      ...agentPath(sessionId, message, reply, checked)
+      ...agentPath(sessionId, message, reply, checked, model)
     }
   }
 
   // The agent's part of the run, from Prepare Message to the logged conversation.
-  const agentPath = (sessionId: string, message: string, reply: string, checked: Record<string, unknown>) => ({
+  const agentPath = (
+    sessionId: string,
+    message: string,
+    reply: string,
+    checked: Record<string, unknown>,
+    model: string
+  ) => ({
     'Prepare Message': prepared(sessionId, message),
 
     // No open handover for this customer, so the agent answers.
     'Find Open Handover': {},
     'Person Has This Case?': {},
-    'OpenAI Chat Model': { model: 'gpt-5.4', temperature: 0.2 },
+    'Forget Old Chat': { success: true },
+    'OpenAI Chat Model': { model },
     'Conversation Memory': { sessionId: `whatsapp:${sessionId}`, messages: 2 },
     'Fernhill Support Agent': { output: reply },
     'Check Reply': checked,
@@ -222,7 +231,7 @@ function scenarios(now: Date): DemoScenario[] {
     hint: 'Checks the order number and email together, then answers from the order record.',
     branch: { 'Is It A Photo?': 1, 'Person Has This Case?': 1, 'Reply Failed?': 1 },
     output: {
-      ...chatPath(delayed.session, whereMessage, whereReply, ['Look_Up_Order'], null),
+      ...chatPath(delayed.session, whereMessage, whereReply, ['Look_Up_Order'], null, 'gpt-6.1-terra'),
       'Look Up Order': [
         orderRecord('recFH1007', {
           'Order Number': 'FH-1007',
@@ -262,7 +271,7 @@ function scenarios(now: Date): DemoScenario[] {
     hint: 'Searches the store policies document and answers only from what it finds.',
     branch: { 'Is It A Photo?': 1, 'Person Has This Case?': 1, 'Reply Failed?': 1 },
     output: {
-      ...chatPath('15550103315', sizingMessage, sizingReply, ['Search_Store_Policies'], null),
+      ...chatPath('15550103315', sizingMessage, sizingReply, ['Search_Store_Policies'], null, 'gpt-6-luna'),
       'OpenAI Embeddings (Search)': { model: 'text-embedding-3-small' },
       'Search Store Policies': [
         passage(
@@ -383,6 +392,7 @@ function scenarios(now: Date): DemoScenario[] {
         refundReply,
         ['Look_Up_Order', 'Search_Store_Policies', 'Request_Team_Action'],
         'approval',
+        'gpt-6.1-terra',
         dentedPhoto
       ),
       'Look Up Order': [
@@ -561,7 +571,7 @@ function scenarios(now: Date): DemoScenario[] {
       'Send Team Reply': 0
     },
     output: {
-      ...chatPath(chloe.session, angryMessage, angryReply, ['Look_Up_Order', 'Request_Team_Action'], 'handover'),
+      ...chatPath(chloe.session, angryMessage, angryReply, ['Look_Up_Order', 'Request_Team_Action'], 'handover', 'gpt-6.1-terra'),
       'Look Up Order': [
         orderRecord('recFH1007', {
           'Order Number': 'FH-1007',
