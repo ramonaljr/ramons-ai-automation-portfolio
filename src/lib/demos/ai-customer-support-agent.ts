@@ -529,7 +529,7 @@ function scenarios(now: Date): DemoScenario[] {
 
   /** A person's message in the case thread, as "Team Reply In Thread" and "Read Team Reply" see it. */
   const DEFAULT_CLOSING =
-    'Thanks for your patience. Our team has marked this as resolved. If you need anything else, just message us here.'
+    "Your case is now closed. Thanks for your patience. If you need anything else, just message us here and we'll help."
 
   const personInThread = (text: string, ts: string) => {
     const closing = text.match(/^close\s*:\s*([\s\S]*)$/i)?.[1]?.trim()
