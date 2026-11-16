@@ -20,7 +20,7 @@ for (const item of $input.all()) {
   // Only `close` on its own or `close:` counts, so a sentence that starts with "Close" is still sent.
   const m = text.match(/^close\.?$|^close\s*:\s*([\s\S]*)$/i);
   const closing = m && (m[1] ?? '').trim() ? m[1].trim()
-    : 'Thanks for your patience. Our team has marked this as resolved. If you need anything else, just message us here.';
+    : "Your case is now closed. Thanks for your patience. If you need anything else, just message us here and we'll help.";
   out.push({ json: { ts: e.ts, threadTs: e.thread_ts, text, close: Boolean(m), closing, user: e.user } });
 }
 return out;
