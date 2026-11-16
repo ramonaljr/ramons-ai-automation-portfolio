@@ -1,6 +1,6 @@
 # Fernhill AI WhatsApp Support Agent: standard test procedure
 
-Workflow: **Fernhill Outdoor Supply - AI Customer Support Agent** (`WkHI3pEDcVumGg6o`, 78 working nodes in 8 numbered sections) on n8n.ramonvallejera.com.
+Workflow: **Fernhill Outdoor Supply - AI Customer Support Agent** (`WkHI3pEDcVumGg6o`, 79 working nodes in 8 numbered sections) on n8n.ramonvallejera.com.
 Test kit: `docs/fernhill/tests/`. Every case below has a fixed input and a pass rule. A run passes only when every case passes.
 
 ## When to run
@@ -82,7 +82,7 @@ It runs the live workflow's own expressions (prompt section, **Save Details On C
 | A3 | Log Case with no email | Leaves the saved email alone |
 
 ### M · Offline: model router (1 second, no OpenAI credits)
-`python3 export_intake.py && node model_router.test.js`. The chat model's name is the expression in `tests/model_router.txt`: risky messages (refunds, returns, approvals, damage, legal, safety, anger, repeat contacts, asking for a person, "!!", SHOUTING) go to **gpt-5.4**, everything else to **gpt-5.4-mini**. The test runs that file against the 30 L1 messages and two held-out sets, and fails if the live workflow's expression differs from the file. When you add words, write new held-out cases **before** you change the list, and record the first score. Edit the file, then copy it into the workflow (OpenAI Chat Model → Model → By ID).
+`python3 export_intake.py && node model_router.test.js`. The chat model's name is the expression in `tests/model_router.txt`: risky messages (refunds, returns, approvals, damage, legal, safety, anger, repeat contacts, asking for a person, "!!", SHOUTING) go to **gpt-6.1-terra**, everything else to **gpt-6-luna** (gpt-5.4 and gpt-5.4-mini until 2026-11-16). The test runs that file against the 30 L1 messages and two held-out sets, and fails if the live workflow's expression differs from the file. When you add words, write new held-out cases **before** you change the list, and record the first score. Edit the file, then copy it into the workflow (OpenAI Chat Model → Model → By ID).
 
 ### L1 · Agent behaviour: 30-case test set (about 2 minutes)
 Activate workflow `y2lMdeP2NzlTU7nT`, then run `python3 webhook.py fernhill-test-run '{}'`, then deactivate it again.
@@ -131,6 +131,15 @@ WhatsApp only allows free-form replies within 24 hours of the customer's last me
 |---|---|---|
 | U | **13 / 13** | `read_team_reply.test.js`; U6 now checks for "case is now closed". The local `read_team_reply.js` matches the live node exactly. |
 | P1 | **Not run** | Published 2026-11-16 09:58 UTC ("Reload Policies On Start" ran, 163604). Ramon skipped the phone test, so the WhatsApp webhook was not re-confirmed after this publish. |
+
+### Run 6: 2026-11-16, new-chat question in code, Forget Old Chat, GPT-6 models (87 → 88 nodes)
+
+Phone tests while following the Loom script showed three problems, fixed live:
+- **F13 (build):** the new-chat question was still left to the AI, and mini sometimes copied an older answer from its memory and asked for an order number the customer had just given. **Check Reply** now adds the greeting and the question in code, skipping details already on the case or in the message (an email address, or an order number like FH-1001). Offline check of 6 cases, then phone test 163668.
+- **F14 (build):** on a new chat the bot still remembered the previous chat and handed a calm customer to a person (163694). A new node, **Forget Old Chat** (memory manager on the same Conversation Memory), clears that customer's memory at the start of a new chat.
+- **F15 (build):** the Slack handover showed the WhatsApp profile name, not the name the customer gave. `customer_name` and **Pass Message To Team** now prefer the case's Customer Name.
+
+**Models:** Ramon switched the router to **gpt-6-luna** (routine) and **gpt-6.1-terra** (risky). GPT-6 models reject `temperature`, so that option was removed (163690 answered after). Layer M 43/43 and layer I 23/23 on the new expression. **L1 was not re-run on the GPT-6 models** (Ramon chose to save the OpenAI budget), so the 30/30 scores above are for gpt-5.4 / gpt-5.4-mini.
 
 ### Run 5: 2026-11-15, after adding the new-chat greeting and customer details (83 → 87 nodes)
 

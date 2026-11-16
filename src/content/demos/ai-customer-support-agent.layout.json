@@ -104,7 +104,7 @@
       "name": "Fernhill Support Agent",
       "type": "agent",
       "shape": "root",
-      "x": 2384,
+      "x": 2464,
       "y": -624,
       "w": 240,
       "h": 100,
@@ -590,7 +590,7 @@
       "name": "Find Open Handover",
       "type": "airtable",
       "shape": "default",
-      "x": 1984,
+      "x": 1952,
       "y": -640,
       "w": 100,
       "h": 100,
@@ -600,7 +600,7 @@
       "name": "Person Has This Case?",
       "type": "if",
       "shape": "default",
-      "x": 2192,
+      "x": 2128,
       "y": -640,
       "w": 100,
       "h": 100,
@@ -613,7 +613,7 @@
       "name": "Pass Message To Team",
       "type": "slack",
       "shape": "default",
-      "x": 2192,
+      "x": 2128,
       "y": -448,
       "w": 100,
       "h": 100,
@@ -895,6 +895,15 @@
       "w": 100,
       "h": 100,
       "subtitle": "manual"
+    },
+    {
+      "name": "Forget Old Chat",
+      "type": "memoryManager",
+      "shape": "sub",
+      "x": 2288,
+      "y": -640,
+      "w": 80,
+      "h": 80
     }
   ],
   "edges": [
@@ -925,6 +934,12 @@
     {
       "from": "Conversation Memory",
       "to": "Fernhill Support Agent",
+      "kind": "ai_memory",
+      "output": 0
+    },
+    {
+      "from": "Conversation Memory",
+      "to": "Forget Old Chat",
       "kind": "ai_memory",
       "output": 0
     },
@@ -1194,7 +1209,7 @@
     },
     {
       "from": "Person Has This Case?",
-      "to": "Fernhill Support Agent",
+      "to": "Forget Old Chat",
       "kind": "main",
       "output": 1
     },
@@ -1357,6 +1372,12 @@
     {
       "from": "Save Details On Case",
       "to": "Details Saved",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Forget Old Chat",
+      "to": "Fernhill Support Agent",
       "kind": "main",
       "output": 0
     }
