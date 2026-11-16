@@ -21,8 +21,8 @@ export const LINES: readonly Line[] = [
 
   // Through the build
   { who: 'leo', text: 'My pot arrived dented. I’d like a refund.', mood: 'puzzled' },
-  { who: 'dennice', text: 'First it asks for your order number and email.' },
-  { who: 'dennice', text: 'Both must match before it shares anything.' },
+  { who: 'dennice', text: 'First it asks your name, email and order number.' },
+  { who: 'dennice', text: 'Email and order must match before it shares anything.' },
   { who: 'leo', text: 'How does it know the store’s rules?', mood: 'puzzled' },
   { who: 'dennice', text: 'It searches our policies document, and nothing else.', hears: 'happy' },
   { who: 'leo', text: 'So it refunds me straight away?', mood: 'puzzled' },

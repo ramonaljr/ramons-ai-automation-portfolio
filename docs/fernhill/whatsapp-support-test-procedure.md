@@ -1,6 +1,6 @@
 # Fernhill AI WhatsApp Support Agent: standard test procedure
 
-Workflow: **Fernhill Outdoor Supply - AI Customer Support Agent** (`WkHI3pEDcVumGg6o`, 74 working nodes in 8 numbered sections) on n8n.ramonvallejera.com.
+Workflow: **Fernhill Outdoor Supply - AI Customer Support Agent** (`WkHI3pEDcVumGg6o`, 78 working nodes in 8 numbered sections) on n8n.ramonvallejera.com.
 Test kit: `docs/fernhill/tests/`. Every case below has a fixed input and a pass rule. A run passes only when every case passes.
 
 ## When to run
@@ -8,7 +8,9 @@ Test kit: `docs/fernhill/tests/`. Every case below has a fixed input and a pass 
 | Change | Run |
 |---|---|
 | Any publish of the workflow | **P1** (always: publishing re-registers the WhatsApp webhook with Meta) |
-| Agent prompt, tools, policy document, Apply Rules | P1, L1 (30-case set) |
+| Agent prompt, tools, policy document, Apply Rules | P1, I, L1 (30-case set) |
+| Chat model or the keyword router (`tests/model_router.txt`) | M, then L1 |
+| New-chat greeting or customer details (prompt section, Save Customer Details, Find Open Handover) | P1, I, then L1 and L2 when OpenAI credits allow |
 | Anything in sections 1, 3 or 4 (live chat, Slack thread, close, handover rules) | P1, U, L2 |
 | Anything in section 0 (duplicates, bursts, photos, voice notes) | P1, D, L3 |
 | Before showing the build to a client or updating the case study | Everything, including L3 |
@@ -52,6 +54,36 @@ Test kit: `docs/fernhill/tests/`. Every case below has a fixed input and a pass 
 | U12 | Blank text | Ignored |
 | U13 | `close *Sent using* Claude` and other app footers | Footer stripped; the close still works |
 
+### I · Offline: new-chat intake (1 second, no OpenAI credits)
+`python3 export_intake.py && NODE_PATH=<folder holding luxon> node intake.test.js`. Install luxon once outside the repo, for example `npm install --prefix /tmp/fh-luxon luxon@3`, then use `NODE_PATH=/tmp/fh-luxon/node_modules`.
+It runs the live workflow's own expressions (prompt section, **Save Details On Case**, **Details Saved**, **Person Has This Case?**, **Apply Rules**, **Log Case** email) against fake Support Cases rows. It checks the logic, not the model's wording, so L1 is still needed for that.
+
+| ID | Input | Pass rule |
+|---|---|---|
+| I1 | No case row (first message ever) | New chat; asks for name, email and order number (if you have one) |
+| I2 | Last message 2 hours ago | Same chat; no question |
+| I3 | Last message 13 hours ago | New chat |
+| I4 | First message after a close, email and order on file | New chat; asks only "Could you share your name?" |
+| I5 | Second message after a close | Same chat |
+| I6 | New chat, all three on file | Greets by name, asks nothing |
+| I7 | Name on file only | Asks for "your email address and your order number (if you have one)" |
+| I8 | Website chat | No intake section in the prompt |
+| I9 | Any new chat | The prompt says a handover reply comes first |
+| S1 | Matching order | Name (trimmed), FH-1001 and lower-case email saved |
+| S2 | Email that doesn't match the order | Email not saved; the agent is told |
+| S3 | Email, no order (pre-sale) | Email saved |
+| S4 | Order given as `1001` | Saved as FH-1001 |
+| S5 | Name only | Email and order left as they are |
+| S6 | `maya@` | Not saved |
+| S7 | Website chat | Nothing saved |
+| R1–R4 | Open handover / closed / test mode / no row | Only R1 goes to the team |
+| A1 | Handover with an email on file | No email question; the email is kept |
+| A2 | Handover, no email | Asks once for the order email |
+| A3 | Log Case with no email | Leaves the saved email alone |
+
+### M · Offline: model router (1 second, no OpenAI credits)
+`python3 export_intake.py && node model_router.test.js`. The chat model's name is the expression in `tests/model_router.txt`: risky messages (refunds, returns, approvals, damage, legal, safety, anger, repeat contacts, asking for a person, "!!", SHOUTING) go to **gpt-5.4**, everything else to **gpt-5.4-mini**. The test runs that file against the 30 L1 messages and two held-out sets, and fails if the live workflow's expression differs from the file. When you add words, write new held-out cases **before** you change the list, and record the first score. Edit the file, then copy it into the workflow (OpenAI Chat Model → Model → By ID).
+
 ### L1 · Agent behaviour: 30-case test set (about 2 minutes)
 Activate workflow `y2lMdeP2NzlTU7nT`, then run `python3 webhook.py fernhill-test-run '{}'`, then deactivate it again.
 Pass rule: **30 of 30**. The score posts to Slack, and each case is saved to Airtable **Test Results**. The cases cover order lookups (with and without matching email), stock, policies, refunds (approval), angry customers and legal threats (handover), and prompt-injection attempts. Test conversations are deleted after scoring.
@@ -90,6 +122,28 @@ These need Meta's signed webhook, so they can't be simulated.
 WhatsApp only allows free-form replies within 24 hours of the customer's last message. Replying later needs a message template that Meta approves for the client's own WhatsApp Business account. Until a client has one, the workflow tells the team in the thread and gives them the case email to use instead (H3, H4).
 
 ## Results
+
+### Run 5: 2026-11-15, after adding the new-chat greeting and customer details (83 → 87 nodes)
+
+**Change.** At the start of every WhatsApp chat (the first message from a number, a message after 12 hours of quiet, or the first message after a case was closed) the bot greets the customer, answers their question, and asks for their name, email and order number "if you have one". It asks only for details not already on file, and never again in the same chat. A handover still comes first (only its one email question is asked). The new agent tool **Save Customer Details** records what the customer gives on their Support Cases row (new column **Customer Name**, plus **Customer Email** and **Order Number**). It reuses **Verify Order**: an email is saved only when it matches the order given, or when no order was given. The website chat is unchanged. **Find Open Handover** now reads the customer's case row every time, and **Person Has This Case?** checks Handed Over + Open itself. **Log Case** no longer blanks a saved email or order number. Airtable view **Open cases**: Status = Open, sorted by Last Activity (oldest first, so the longest-waiting case is on top).
+
+**Test setup change:** before L2, delete the `whatsapp:15550001001` row in Support Cases. Escalations no longer clear the saved email, so an old row would skip H1's email question and break E1.
+
+| Layer | Result | Evidence |
+|---|---|---|
+| U | **13 / 13** | `read_team_reply.test.js` |
+| I (new) | **23 / 23** on the final build | `intake.test.js` against the live workflow, run while OpenAI had no credits. A broken copy (20-hour gap, website guard removed) failed I3, I7 and S7, so the test does catch regressions. |
+| L1 | **30 / 30** on the first build (162903, 162957); **not yet re-run cleanly on the final prompt** | Final-prompt runs 163051 (29/30: #8 printed a raw two-order tool call instead of running it) and 163094 / 163194 (3/30: every failure was `OpenAI: Rate limit reached`, not the change) |
+| L2 | **H1, E1, E2, E3, H4, H6 pass** | H1 163025/163026 (email asked once, no extra intake question, "Email: not given yet"), E1 163028, E2 163031, E3 163034, H4 163039, H6 163041 and 163048 (after the close it asks only for the missing name), 163050 (next message: no re-ask) |
+| Intake (new) | Pass | Test mode: new number "Hi there" → greeting asks for all three; details saved with a matching email (162896); wrong email for FH-1001 not saved, agent told (162899); a later name-only save kept the order number (162901); pre-sale "Do you ship to Canada?" answered, then asked (162902); website chat never asks (after F7) |
+| P1 | **Webhook pass, greeting not yet seen** | Live "Hi" from Ramon's phone started run 162949 within seconds. It went to Slack because his number still had an open handover; his `close` was posted top-level (ignored by design, U4), so the case is still open. |
+
+**Found and fixed in run 5:**
+- **F7 (prompt):** the intake rules sat in the prompt as plain text, so the website agent greeted and asked for details too (seen in L1 162903 replies). The whole section is now rendered only for WhatsApp, and **Save Details On Case** writes nothing for non-WhatsApp channels.
+- **F8 (prompt):** after a closed case the bot answered without asking for missing details (H6, 163041). The new-chat instruction now says "THIS MESSAGE STARTS A NEW CHAT" and spells out the exact question from the missing fields.
+- **F9 (build):** a closed case kept counting as a new chat on every message. "Closed" now counts only while nothing has been logged since the close (Last Activity within 5 s of Resolved).
+
+**Open:** the OpenAI account ran out of credits on 2026-11-15 at about 16:02 UTC ("You have no credits remaining", which n8n shows as "Rate limit reached"). Every message fails, the live bot included: each customer gets the holding reply and #operations gets a "failed to answer" alert. Ramon decided not to add credits for now, so the intake was verified offline instead (layer I, 23/23), plus the earlier live smoke tests (162894–162902, 163038) from before the credits ran out. To keep costs down, the chat model was switched from **gpt-5.4** to **gpt-5.4-nano** (OpenAI's cheapest) on 2026-11-15. Embeddings stay on text-embedding-3-small. Ramon topped up the account the same day. The policy store (in memory) had emptied while there were no credits, so "Reload Policies On Start" had to run again. A save with no changes does not fire it, but any real edit does (a trailing space on the Phase 6 sticky note was enough, run 163297). Afterwards "Do you have free shipping?" answered with the $100 threshold. An OpenAI **hard monthly spend limit of $10** (organization-wide, enforced) was set on 2026-11-15; $5.55 had already been spent that month, so the $3 Ramon first asked for would have stopped every call straight away. Lower it to $3 once the month resets. **L1 on gpt-5.4-nano: 27/30** (run 20261115-0821, execution 163299). All three misses are escalation errors, not wording: #22 (exchange) promised the swap itself instead of asking the team; #27 (lawyer threat) answered itself; #30 (third message) said "I'll get this pushed to the team" without a real handover. Nano does not follow the escalation rules reliably enough for live customers. Ramon chose **gpt-5.4-mini**. **L1 on mini: 29/30** (163350). #14 (return after 57 days) was told it was inside the window, because the model worked out the days itself and got them wrong. **F10:** a formula field **Days Since Delivery** (`IF({Delivered Date}, DATETIME_DIFF(TODAY(), {Delivered Date}, 'days'))`) was added to Orders and to Look Up Order's field list, and the Returns rule now says to use that number. **29/30** (163396): #14 now got the window right but handed over anyway. **F11:** the refunds rule and the handover rule now both say that a change-of-mind return after 30 days is covered by the policy (answer no, no handover unless the customer then asks for a person or an exception). Smoke tests of #14: 2 of 3 answered without a handover. **29/30** (163453): #14 passed, but #29 (angry customer) was answered instead of handed over, a case mini had passed in 163350. Conclusion: mini scores about 29/30 with a different miss each run. That is model variance, not one rule to fix. Its misses can go either way: an extra handover (#14, safe) or a missed handover (#29, not safe). **F12, model router:** Ramon chose to use different models for different messages. The chat model's name is now an expression (`tests/model_router.txt`): a keyword check on the customer's message (refund, return, cancel, damage, lawyer, chargeback, injury or safety words, anger, "third"/"again", asking for a person, French and Spanish equivalents, "!!", or two or more SHOUTED words) sends it to **gpt-5.4**; everything else goes to **gpt-5.4-mini**. Offline layer M (`model_router.test.js`) has 42 cases plus a check that the live expression matches the file: all 30 L1 messages and two held-out sets. The first held-out set (H-01 to H-10) caught 5 misses that widened the list. The second (HB-01 to HB-12) was written before the list was widened again and scored **10/12** on the first try (missed: frustration without trigger words, and a child's cut knee). That is the honest estimate for wording nobody has thought of yet; a missed route still gets mini plus all the escalation rules. **L1 with the router: 30/30** (run 20261115-1438, execution 163500): 17 cases on mini, 13 on gpt-5.4 (#3, #12–#14, #21–#30). Smoke tests 163497 (free shipping → mini) and 163498 (angry → gpt-5.4, handed over). **P1 on the phone: pass** (2026-11-15). The case was closed inside its thread, and the bot confirmed. Ramon's "hi" (execution 163556, mini, 9.4 s in total: 4.0 s Wait For More, 1.9 s model, 1.1 s WhatsApp send) got: "Hi there! How can I help today? Could you share your name, your email address and your order number (if you have one)?". His answer with name and email was saved on the case (163560 and sub-run 163561: Customer Name, Customer Email; Order Number left empty). Asking for a human then opened a new handover (163565, Slack thread 1794783008.548869), and later messages went to the team as designed. Note for testers: a message to a number with an open handover is only passed to Slack and gets no bot reply; close the case **inside the thread** first. The L1 runs that hit the limit posted about 54 "agent failed to answer" alerts to #operations.
 
 ### Run 4: 2026-11-13, after simplifying the workflow (82 → 74 working nodes)
 
