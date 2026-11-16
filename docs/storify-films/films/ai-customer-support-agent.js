@@ -53,7 +53,7 @@ const WF=workflow({token:'msg',maxX:1000,
         desc:'The customer’s WhatsApp messages appear in the case’s Slack thread.'},
       {name:'Send Team Reply',icon:'chat',say:'Each reply goes back to WhatsApp, and gets a tick once delivered.',d:2.4,
         desc:'Each reply typed there goes back to WhatsApp and gets a ✅ once delivered.'},
-      {name:'Close Case',icon:'db',say:'Typing close hands the customer back to the bot.',desc:'Typing close hands the customer back to the bot.'}]},
+      {name:'Close Case',icon:'db',say:'Typing close tells the customer the case is closed.',desc:'Typing close tells the customer on WhatsApp that their case is closed and hands them back to the bot.'}]},
     {name:'Logs and daily summary',color:'pink',chapter:'lane 5 · logs, summary',intro:'Lane five: the record.',nodes:[
       {n:14,name:'Log Conversation',icon:'db',say:'Every conversation is saved in Airtable.',desc:'Every conversation is saved in Airtable.'},
       {n:15,name:'Alert Team: Agent Error',icon:'alert',say:'If something errors, the team hears in Slack.',desc:'Errors alert the team in Slack.'},
