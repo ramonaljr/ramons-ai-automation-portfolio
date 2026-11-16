@@ -45,7 +45,7 @@ Test kit: `docs/fernhill/tests/`. Every case below has a fixed input and a pass 
 | U3 | Join or edit event | Ignored |
 | U4 | Top-level channel message | Ignored |
 | U5 | The thread's parent post | Ignored |
-| U6 | `close` | Closes with the default message |
+| U6 | `close` | Closes with the default message, which starts "Your case is now closed." |
 | U7 | `Close.` | Closes |
 | U8 | `close: Sorted, thanks!` | Closes with "Sorted, thanks!" |
 | U9 | `Closing in on it, one sec` | **Not** a close |
@@ -122,6 +122,15 @@ These need Meta's signed webhook, so they can't be simulated.
 WhatsApp only allows free-form replies within 24 hours of the customer's last message. Replying later needs a message template that Meta approves for the client's own WhatsApp Business account. Until a client has one, the workflow tells the team in the thread and gives them the case email to use instead (H3, H4).
 
 ## Results
+
+### Run 6: 2026-11-16, closing message says the case is closed
+
+**Change.** The default closing message (plain `close` in the case thread) was "Thanks for your patience. Our team has marked this as resolved…", which never said the case was closed. **Read Team Reply** now sends: "Your case is now closed. Thanks for your patience. If you need anything else, just message us here and we'll help." `close: your own words` still replaces it. Before the change, both live closes on 2026-11-15 (163551, 163583) were sent, delivered and read on Ramon's phone, so the WhatsApp step itself was working.
+
+| Layer | Result | Notes |
+|---|---|---|
+| U | **13 / 13** | `read_team_reply.test.js`; U6 now checks for "case is now closed". The local `read_team_reply.js` matches the live node exactly. |
+| P1 | **Not run** | Published 2026-11-16 09:58 UTC ("Reload Policies On Start" ran, 163604). Ramon skipped the phone test, so the WhatsApp webhook was not re-confirmed after this publish. |
 
 ### Run 5: 2026-11-15, after adding the new-chat greeting and customer details (83 → 87 nodes)
 
