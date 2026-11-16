@@ -899,11 +899,18 @@
     {
       "name": "Forget Old Chat",
       "type": "memoryManager",
-      "shape": "sub",
+      "shape": "root",
       "x": 2288,
       "y": -640,
-      "w": 80,
-      "h": 80
+      "w": 240,
+      "h": 100,
+      "ports": [
+        {
+          "kind": "ai_memory",
+          "label": "Memory",
+          "wired": true
+        }
+      ]
     }
   ],
   "edges": [
