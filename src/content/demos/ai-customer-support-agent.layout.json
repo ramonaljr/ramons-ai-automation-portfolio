@@ -347,7 +347,7 @@
       "name": "Verify Order",
       "type": "airtable",
       "shape": "default",
-      "x": 448,
+      "x": 368,
       "y": 1104,
       "w": 100,
       "h": 100,
@@ -357,7 +357,7 @@
       "name": "Apply Rules",
       "type": "code",
       "shape": "default",
-      "x": 624,
+      "x": 656,
       "y": 1104,
       "w": 100,
       "h": 100
@@ -853,6 +853,48 @@
         "Close the case",
         "Reply to customer"
       ]
+    },
+    {
+      "name": "Save Customer Details",
+      "type": "toolWorkflow",
+      "shape": "sub",
+      "x": 2688,
+      "y": -288,
+      "w": 80,
+      "h": 80
+    },
+    {
+      "name": "Saving Details?",
+      "type": "if",
+      "shape": "default",
+      "x": 512,
+      "y": 1104,
+      "w": 100,
+      "h": 100,
+      "outputs": [
+        "true",
+        "false"
+      ]
+    },
+    {
+      "name": "Save Details On Case",
+      "type": "airtable",
+      "shape": "default",
+      "x": 656,
+      "y": 1280,
+      "w": 100,
+      "h": 100,
+      "subtitle": "upsert: record"
+    },
+    {
+      "name": "Details Saved",
+      "type": "set",
+      "shape": "default",
+      "x": 864,
+      "y": 1280,
+      "w": 100,
+      "h": 100,
+      "subtitle": "manual"
     }
   ],
   "edges": [
@@ -987,12 +1029,6 @@
       "to": "Verify Order",
       "kind": "main",
       "output": 1
-    },
-    {
-      "from": "Verify Order",
-      "to": "Apply Rules",
-      "kind": "main",
-      "output": 0
     },
     {
       "from": "Apply Rules",
@@ -1293,6 +1329,36 @@
       "to": "Send Team Reply",
       "kind": "main",
       "output": 2
+    },
+    {
+      "from": "Save Customer Details",
+      "to": "Fernhill Support Agent",
+      "kind": "ai_tool",
+      "output": 0
+    },
+    {
+      "from": "Verify Order",
+      "to": "Saving Details?",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Saving Details?",
+      "to": "Save Details On Case",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Saving Details?",
+      "to": "Apply Rules",
+      "kind": "main",
+      "output": 1
+    },
+    {
+      "from": "Save Details On Case",
+      "to": "Details Saved",
+      "kind": "main",
+      "output": 0
     }
   ]
 }

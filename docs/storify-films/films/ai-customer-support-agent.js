@@ -22,13 +22,15 @@ const WF=workflow({token:'msg',maxX:1000,
       {name:'Save Photo To Drive',icon:'drive',say:'A photo of a damaged item is saved to Google Drive.',desc:'Photos are saved to Google Drive, and the link goes into the case.'},
       {name:'Prepare Message',icon:'set'}]},
     {name:'Agent answers from store data',color:'blue',chapter:'lane 2 · agent answers',intro:'Lane two: the agent answers.',nodes:[
-      {n:2,name:'Support Agent (OpenAI)',icon:'robot',say:'An OpenAI agent reads the message and picks its tools.',
-        desc:'An OpenAI model reads the store’s own data.'},
+      {n:2,name:'Support Agent (OpenAI)',icon:'robot',say:'Routine questions get the small model. Refunds and complaints get the full one.',d:2.8,
+        desc:'A fixed word check picks the model: GPT-5.4 mini for routine questions, the full GPT-5.4 for refunds, damage, safety, legal threats or an angry customer.'},
       {n:3,name:'Look Up Order',icon:'db',say:'It shares nothing about an order until the number and email match.',d:2.4,
         desc:'Order details are only shared when the order number and email match.'},
       {n:4,name:'Check Product Stock',icon:'db',say:'Stock is looked up in Airtable too.',desc:'Looks up orders and stock in Airtable.'},
       {n:5,name:'Search Store Policies',icon:'search',say:'Shipping, returns, products: only what the policies say.',d:2.4,
         desc:'Searches the store policies document for anything about shipping, returns or products.'},
+      {name:'Save Customer Details',icon:'db',who:'leo',z:1.1,say:'A new chat greeted me and asked for my name, email and order number.',d:2.8,
+        desc:'A new chat gets a greeting that asks for the customer’s name, email and order number. What they give is saved on their case, and the email only if it matches the order.'},
       {name:'Check Reply',icon:'check'},
       {n:6,name:'Reply On WhatsApp',icon:'chat',who:'leo',z:1.1,say:'The answer came back on WhatsApp.',desc:'Replies are kept to a few sentences.'}]},
     {name:'Refunds and handovers',color:'purple',chapter:'lane 3 · refunds, handovers',intro:'Lane three: money and upset customers.',nodes:[
@@ -86,7 +88,7 @@ ACTORS={
     moods:[[T('same',.4),T('night',1),'tired'],[T('wf-run'),T('stats',1)+9,'happy']]},
   leo:{x:[[0,1060]],face:[[-99,-1]],vis:[[T('night'),T('wf-ov',.4)],[T('L0'),T('stats',1)+9]],
     poses:[[T('N3_3',.4),T('N3_3',1),'cheer'],[T('stats',.4),T('stats',1),'celebrate']],
-    moods:[[T('night',.3),T('night',1)+.5,'puzzled'],[T('N1_5',.5),T('N1_5',1)+.5,'happy'],
+    moods:[[T('night',.3),T('night',1)+.5,'puzzled'],[T('N1_6',.5),T('N1_6',1)+.5,'happy'],
       [T('N2_0',.3),T('N2_0',1)+.5,'puzzled'],[T('N3_3',.3),T('stats',1)+9,'happy']]}};
 
 WF.build(T);
