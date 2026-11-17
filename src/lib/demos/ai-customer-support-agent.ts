@@ -8,7 +8,7 @@ import type { DemoBundle, DemoLayout, DemoOutcome, DemoScenario } from '@/lib/de
  * customer is involved.
  *
  * One workflow, two ways in: WhatsApp (the top row: it skips repeats, waits
- * 4 seconds to join a burst of messages, and saves any photo to Google Drive)
+ * 2 seconds to join a burst of messages, and saves any photo to Google Drive)
  * and the website chat's webhook. Every sample here arrives on WhatsApp, so
  * "On WhatsApp?" sends the answer back with "Reply On WhatsApp" and the
  * webhook's "Send Reply" stays idle. Once a WhatsApp customer is handed to a
@@ -100,7 +100,7 @@ function scenarios(now: Date): DemoScenario[] {
   })
 
   // A WhatsApp message arriving: read, checked against the message IDs seen in
-  // the last 7 days, and remembered. Text waits 4 seconds for more messages
+  // the last 7 days, and remembered. Text waits 2 seconds for more messages
   // from the same customer and is answered once; a photo is saved to Drive.
   const incoming = (sessionId: string, text: string, photo?: Photo) => {
     const link = photo && `https://drive.google.com/file/d/${photo.fileId}/view`
