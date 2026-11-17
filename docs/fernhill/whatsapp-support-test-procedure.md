@@ -17,7 +17,7 @@ Test kit: `docs/fernhill/tests/`. Every case below has a fixed input and a pass 
 
 ## The process being tested
 
-1. **Customer writes on WhatsApp** (section 0). A message id WhatsApp has already delivered is skipped (n8n data table "Fernhill - WhatsApp Messages", cleared of ids older than 7 days at 17:00). Text waits 4 seconds: if the customer sent several messages in a row, they are joined and answered once. A photo is saved to Drive and the agent gets the link. A voice note, sticker or file becomes a short note, so the bot asks the customer to type (or, during a handover, the team sees it).
+1. **Customer writes on WhatsApp** (section 0). A message id WhatsApp has already delivered is skipped (n8n data table "Fernhill - WhatsApp Messages", cleared of ids older than 7 days at 17:00). Text waits 2 seconds: if the customer sent several messages in a row, they are joined and answered once. A photo is saved to Drive and the agent gets the link. A voice note, sticker or file becomes a short note, so the bot asks the customer to type (or, during a handover, the team sees it).
 2. **The agent answers** (section 1) from the policy document, order records (only when order number and email match) and stock. The reply goes back on WhatsApp, then the conversation is logged (section 2).
 3. **Money requests or upset customers go to a person** (section 4). Fixed rules decide. Refunds on a verified order go to Slack for approval (section 5). Everything else is handed over, and one Slack post tells the team (with the customer's WhatsApp name).
 4. **WhatsApp handover = live chat in a Slack thread** (section 3). The bot goes silent. Customer messages appear in the case thread, thread replies go to the customer, and `close` ends it and hands back to the bot. If the order wasn't verified, the bot asks once for the order email, and the workflow checks the customer's answer against the order and saves it on the case.
@@ -114,7 +114,7 @@ These need Meta's signed webhook, so they can't be simulated.
 | R1 | Send a text question | Answer on WhatsApp within about 10 s |
 | R2 | Send a photo of a "damaged item" | Saved to Drive folder "Fernhill - Customer Photos (WhatsApp)". The reply mentions it. |
 | R3 | Send a voice note | The reply asks the customer to type instead |
-| R6 | Send three short messages within 4 seconds of each other | **One** reply that answers all of them |
+| R6 | Send three short messages within 2 seconds of each other | **One** reply that answers all of them |
 | R4 | Trigger a handover, then reply in the Slack thread | Case post shows your **WhatsApp name**. The thread reply arrives on the phone and gets a ✅ reaction in Slack. |
 | R5 | `close: …` in the thread | Closing message arrives on the phone. The bot answers the next message. |
 
@@ -122,6 +122,10 @@ These need Meta's signed webhook, so they can't be simulated.
 WhatsApp only allows free-form replies within 24 hours of the customer's last message. Replying later needs a message template that Meta approves for the client's own WhatsApp Business account. Until a client has one, the workflow tells the team in the thread and gives them the case email to use instead (H3, H4).
 
 ## Results
+
+### Run 8: 2026-11-17, faster replies
+
+Ramon found replies slow: a "hi" took 15.7 s to answer (163744: 4.0 s Wait For More, 3.6 s Find Open Handover, 5.7 s model for a one-line reply, 1.6 s WhatsApp send). Two changes: **Wait For More** 4 → 2 seconds, and the chat model's **Reasoning Effort** set to **low** (n8n lists the option only for GPT-5 and o-series models, but gpt-6-luna accepts it). Phone test right after: a thank-you got its reply in 6.7 s (163757, model 2.5 s), and "Do you have free shipping?" in 11.7 s with a policy search (163753, two model calls of 2.5 s and 3.8 s), with the right $100 threshold. Messages more than 2 seconds apart now get separate replies. L1 not re-run.
 
 ### Run 6: 2026-11-16, closing message says the case is closed
 
@@ -132,7 +136,7 @@ WhatsApp only allows free-form replies within 24 hours of the customer's last me
 | U | **13 / 13** | `read_team_reply.test.js`; U6 now checks for "case is now closed". The local `read_team_reply.js` matches the live node exactly. |
 | P1 | **Not run** | Published 2026-11-16 09:58 UTC ("Reload Policies On Start" ran, 163604). Ramon skipped the phone test, so the WhatsApp webhook was not re-confirmed after this publish. |
 
-### Run 6: 2026-11-16, new-chat question in code, Forget Old Chat, GPT-6 models (87 → 88 nodes)
+### Run 7: 2026-11-16, new-chat question in code, Forget Old Chat, GPT-6 models (87 → 88 nodes)
 
 Phone tests while following the Loom script showed three problems, fixed live:
 - **F13 (build):** the new-chat question was still left to the AI, and mini sometimes copied an older answer from its memory and asked for an order number the customer had just given. **Check Reply** now adds the greeting and the question in code, skipping details already on the case or in the message (an email address, or an order number like FH-1001). Offline check of 6 cases, then phone test 163668.
