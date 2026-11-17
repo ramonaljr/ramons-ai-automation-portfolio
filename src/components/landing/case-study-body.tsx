@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { CONTAINER, DISPLAY_FONT, Reveal, usePrefersReducedMotion } from '@/components/landing/motion'
-import { WorkShowcase } from '@/components/landing/work-showcase'
+import { hasWalkthroughVideo, WorkShowcase, WorkWalkthrough } from '@/components/landing/work-showcase'
 import { SupportDemoChat } from '@/components/landing/support-demo-chat'
 import { ToolMark } from '@/components/landing/tool-stack-section'
 import { toolNamed } from '@/lib/portfolio'
@@ -45,20 +45,25 @@ export function CaseStudyBody({ study }: { study: CaseStudyMetadata }) {
   const roi = study.roi ?? []
   const failsafes = study.failsafes ?? []
   const tools = study.integrations ?? study.tools ?? []
+  const hasWalkthrough = hasWalkthroughVideo(study)
 
   return (
     <div style={{ '--work-tone': WORK_TONES[study.slug] ?? 'var(--accent)' } as CSSProperties}>
-      {/* 1. Film and workflow, sharing one frame */}
+      {/* 1. Video Walkthrough leads at the top when present; otherwise Film | Workflow leads */}
       <section className='px-6 pb-20 md:px-12 lg:px-20'>
         <div className={CONTAINER}>
-          <WorkShowcase
-            study={study}
-            showFilm={showFilm}
-            onShowFilm={setShowFilm}
-            reduced={reduced}
-            place='page'
-            frameClassName='work-dialog-frame work-page-frame'
-          />
+          {hasWalkthrough ? (
+            <WorkWalkthrough study={study} />
+          ) : (
+            <WorkShowcase
+              study={study}
+              showFilm={showFilm}
+              onShowFilm={setShowFilm}
+              reduced={reduced}
+              place='page'
+              frameClassName='work-dialog-frame work-page-frame'
+            />
+          )}
         </div>
       </section>
 
@@ -173,7 +178,24 @@ export function CaseStudyBody({ study }: { study: CaseStudyMetadata }) {
         </div>
       </section>
 
-      {/* 6. The build itself, runnable, at the page's full width. */}
+      {/* 6. Film | Workflow sits right above the interactive demo when the
+          recorded YouTube walkthrough leads at the top of the page. */}
+      {hasWalkthrough && (
+        <section className={SECTION}>
+          <div className={CONTAINER}>
+            <WorkShowcase
+              study={study}
+              showFilm={showFilm}
+              onShowFilm={setShowFilm}
+              reduced={reduced}
+              place='page'
+              frameClassName='work-dialog-frame work-page-frame'
+            />
+          </div>
+        </section>
+      )}
+
+      {/* 7. The build itself, runnable, at the page's full width. */}
       {hasDemo(study.slug) && (
         <section id='demo' className={SECTION}>
           <div className={CONTAINER}>

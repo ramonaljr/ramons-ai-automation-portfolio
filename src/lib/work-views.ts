@@ -118,3 +118,28 @@ export const filmOf = (cs: CaseStudyMetadata) => {
 
   return url && url.endsWith('.mp4') ? url : null
 }
+
+const YOUTUBE_ID =
+  /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/
+
+/**
+ * A recorded YouTube walkthrough for the project, parsed into its privacy-enhanced
+ * embed URL and its direct watch URL for the frame header link.
+ */
+export const walkthroughOf = (cs: CaseStudyMetadata) => {
+  const url = cs.videoUrl?.trim()
+
+  if (!url) return null
+
+  const match = YOUTUBE_ID.exec(url)
+
+  if (!match) return null
+
+  const id = match[1]
+
+  return {
+    id,
+    watchUrl: `https://youtu.be/${id}`,
+    embedUrl: `https://www.youtube-nocookie.com/embed/${id}?rel=0`
+  }
+}

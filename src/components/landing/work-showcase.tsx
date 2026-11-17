@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 
 import type { CaseStudyMetadata } from '@/lib/case-studies'
 import { Ico, P, VideoIcon } from '@/components/landing/work-icons'
-import { filmOf, workViews, type WorkView } from '@/lib/work-views'
+import { filmOf, walkthroughOf, workViews, type WorkView } from '@/lib/work-views'
 import { WorkCanvas } from '@/components/landing/work-canvas'
 import { MagnifierLens, useMagnifier } from '@/components/landing/magnifier'
 import { ViewStage } from '@/components/landing/view-stage'
@@ -20,6 +20,59 @@ const LiveFilm = dynamic(() => import('@/components/landing/film/live-film').the
 
 /** Whether a project has a film to show, live or MP4. */
 export const hasShowcaseFilm = (study: CaseStudyMetadata) => Boolean(filmOf(study) || hasLiveFilm(study.slug))
+
+/** Whether a project has a recorded YouTube walkthrough video. */
+export const hasWalkthroughVideo = (study: CaseStudyMetadata) => Boolean(walkthroughOf(study))
+
+/**
+ * The recorded YouTube video walkthrough for a project, shown at the top of
+ * the case-study dialog and page when `videoUrl` is a YouTube link.
+ */
+export function WorkWalkthrough({
+  study,
+  autoplay = false
+}: {
+  study: CaseStudyMetadata
+  autoplay?: boolean
+}) {
+  const walkthrough = walkthroughOf(study)
+
+  if (!walkthrough) return null
+
+  const src = autoplay ? `${walkthrough.embedUrl}&autoplay=1` : walkthrough.embedUrl
+
+  return (
+    <div className='border-rule bg-surface-raised rounded-2xl border p-3 shadow-sm sm:p-4'>
+      <div className='border-rule text-ink-3 mb-3 flex items-center justify-between gap-3 border-b pb-3 font-mono text-xs tracking-wide uppercase'>
+        <span className='inline-flex items-center gap-2'>
+          <VideoIcon size={13} />
+          <span>Video walkthrough</span>
+        </span>
+        <a
+          href={walkthrough.watchUrl}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='text-ink-2 hover:text-ink inline-flex items-center gap-1.5 tracking-wide normal-case transition-colors'
+        >
+          <span>Watch on YouTube</span>
+          <Ico d={P.external} size={11} />
+        </a>
+      </div>
+
+      <div className='aspect-video w-full overflow-hidden rounded-xl bg-black'>
+        <iframe
+          key={autoplay ? 'autoplay' : 'rest'}
+          src={src}
+          title={`Video walkthrough: ${study.title ?? study.slug}`}
+          allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+          allowFullScreen
+          loading='lazy'
+          className='h-full w-full border-0'
+        />
+      </div>
+    </div>
+  )
+}
 
 /**
  * The film and the workflow, sharing one frame: the case study dialog's top

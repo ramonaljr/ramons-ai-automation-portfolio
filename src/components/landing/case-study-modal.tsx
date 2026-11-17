@@ -16,7 +16,7 @@ import {
   usePrefersReducedMotion
 } from '@/components/landing/motion'
 import { WORK_TONES } from '@/lib/work-views'
-import { hasShowcaseFilm, WorkShowcase } from '@/components/landing/work-showcase'
+import { hasShowcaseFilm, hasWalkthroughVideo, WorkShowcase, WorkWalkthrough } from '@/components/landing/work-showcase'
 import { ToolMark } from '@/components/landing/tool-stack-section'
 import { toolNamed } from '@/lib/portfolio'
 import { hasDemo } from '@/lib/demos'
@@ -68,6 +68,7 @@ export function CaseStudyModal({
    * keys the dialog by project, so this starts fresh on every open.
    */
   const [showFilm, setShowFilm] = useState(true)
+  const [playWalkthrough, setPlayWalkthrough] = useState(false)
 
   const reduced = usePrefersReducedMotion()
 
@@ -164,6 +165,7 @@ export function CaseStudyModal({
   if (!study) return null
 
   const hasFilm = hasShowcaseFilm(study)
+  const hasWalkthrough = hasWalkthroughVideo(study)
 
   // Read once here: the blocks below render inside an <InView> callback, where
   // TypeScript no longer carries the `study.roi &&` check into the closure.
@@ -173,7 +175,12 @@ export function CaseStudyModal({
   // Scroll on the next frame: the film replacing the canvas changes the
   // layout, and a scroll started before that commit is cancelled by it.
   const watch = () => {
-    setShowFilm(true)
+    if (hasWalkthrough) {
+      setPlayWalkthrough(true)
+    } else {
+      setShowFilm(true)
+    }
+
     requestAnimationFrame(() => bodyRef.current?.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }))
   }
 
@@ -283,8 +290,12 @@ export function CaseStudyModal({
           onScroll={onBodyScroll}
           className='flex-1 space-y-8 overflow-y-auto bg-[#FAF9F6] px-[max(1.5rem,calc((100%-90rem)/2))] py-6 sm:px-[max(2rem,calc((100%-90rem)/2))] sm:py-8'
         >
-          {/* 1. The film and the workflow, sharing the top frame (work-showcase.tsx). */}
-          <WorkShowcase study={study} showFilm={showFilm} onShowFilm={setShowFilm} reduced={reduced} place='dialog' />
+          {/* 1. Video Walkthrough leads at the top when present; otherwise Film | Workflow leads. */}
+          {hasWalkthrough ? (
+            <WorkWalkthrough study={study} autoplay={playWalkthrough} />
+          ) : (
+            <WorkShowcase study={study} showFilm={showFilm} onShowFilm={setShowFilm} reduced={reduced} place='dialog' />
+          )}
 
           {/* 2. ROI & Key Metrics. The outcome is said in words first, and
               each figure carries a line on what it means for the business:
@@ -413,7 +424,13 @@ export function CaseStudyModal({
             </InView>
           )}
 
-          {/* 6. The build itself, runnable. Its own section rather than a view
+          {/* 6. Film | Workflow sits right above the interactive demo when the
+              recorded YouTube walkthrough leads at the top of the dialog. */}
+          {hasWalkthrough && (
+            <WorkShowcase study={study} showFilm={showFilm} onShowFilm={setShowFilm} reduced={reduced} place='dialog' />
+          )}
+
+          {/* 7. The build itself, runnable. Its own section rather than a view
               in the gallery above: there it shared a 14:9 frame with the
               screenshots and every node name was too small to read. The
               gallery keeps the screenshot; this gets the dialog's full width.
@@ -438,7 +455,7 @@ export function CaseStudyModal({
               now sit inert until the frontmatter carries a real URL. A film
               hosted here plays in the dialog instead of opening a tab. */}
           <div className='flex flex-wrap items-center gap-2'>
-            {hasFilm ? (
+            {hasWalkthrough || hasFilm ? (
               <WorkLink label='Walkthrough' icon={<VideoIcon size={13} />} onClick={watch} />
             ) : (
               <WorkLink href={linkOf(study.videoUrl)} label='Walkthrough' icon={<VideoIcon size={13} />} />
