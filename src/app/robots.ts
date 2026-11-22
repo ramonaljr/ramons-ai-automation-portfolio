@@ -28,15 +28,19 @@ import { SITE_URL } from '@/lib/site'
  */
 const RETRIEVAL = ['ChatGPT-User', 'OAI-SearchBot', 'Claude-User', 'Claude-SearchBot', 'Perplexity-User']
 const INDEXING = ['PerplexityBot', 'Applebot', 'Amazonbot', 'DuckAssistBot']
+const PRIVATE = ['/dashboard', '/login']
 const TRAINING = ['GPTBot', 'ClaudeBot', 'anthropic-ai', 'Google-Extended', 'CCBot', 'Bytespider', 'meta-externalagent']
 
 export default function robots(): MetadataRoute.Robots {
   return {
+    // The private dashboard and its login page are the one exception. Every
+    // group repeats it, because a crawler follows only the most specific group
+    // that names it and ignores `*` once it has one.
     rules: [
-      { userAgent: '*', allow: '/' },
-      { userAgent: RETRIEVAL, allow: '/' },
-      { userAgent: INDEXING, allow: '/' },
-      { userAgent: TRAINING, allow: '/' }
+      { userAgent: '*', allow: '/', disallow: PRIVATE },
+      { userAgent: RETRIEVAL, allow: '/', disallow: PRIVATE },
+      { userAgent: INDEXING, allow: '/', disallow: PRIVATE },
+      { userAgent: TRAINING, allow: '/', disallow: PRIVATE }
     ],
 
     // Only the XML sitemap belongs here: `Sitemap:` is defined for sitemap

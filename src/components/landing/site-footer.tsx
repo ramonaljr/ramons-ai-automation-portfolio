@@ -232,6 +232,11 @@ export function SiteFooter() {
             <a href='/terms' className='tap-area text-ink-2 hover:text-ink transition-colors'>
               Terms
             </a>
+            {/* The private client dashboard. Kept down here with the legal
+                links: it's for Ramon, so it shouldn't compete with the CTAs. */}
+            <a href='/login' className='tap-area text-ink-2 hover:text-ink transition-colors' rel='nofollow'>
+              Login
+            </a>
             <a
               href={onLanding ? '#top' : '/#top'}
               className='tap-area text-ink-2 hover:text-ink group inline-flex items-center gap-2 transition-colors'
