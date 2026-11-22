@@ -2742,6 +2742,57 @@ a.work-aux-link:hover {
   overflow: clip;
 }
 
+/* ── Hero footage (HeroBackdrop) ──────────────────────────────────────────
+   Real Fuji footage behind the hero only, over the painted scene and under
+   the falling leaves. Full strength — no blend, no tone — so it reads as a
+   photograph; the hero's `::before` wash carries the headline's contrast.
+   The bottom fades into the autumn scene so the hero has no hard edge. */
+.hero-backdrop {
+  z-index: 0;
+  height: var(--hero-h, 100dvh);
+  overflow: clip;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 80%, transparent 100%);
+}
+
+.hero-backdrop-media {
+  transform: scale(1.08);
+  transform-origin: 60% 40%;
+  transition: transform 2.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-backdrop-media img,
+.hero-backdrop-video {
+  object-position: 58% 38%;
+}
+
+/* Settles from a slight push-in as the intro hands over to the hero. */
+.hero-backdrop[data-ready] .hero-backdrop-media {
+  transform: scale(1);
+}
+
+/* The still stays underneath until the footage is actually rolling, so a
+   slow first frame never flashes the scene behind it. */
+.hero-backdrop-video {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.hero-backdrop-video[data-playing] {
+  opacity: 1;
+}
+
+/* Dark theme: light ink on a daylight sky needs the scene brought down. */
+.dark .hero-backdrop-media {
+  filter: brightness(0.58) saturate(0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-backdrop-media {
+    transform: none;
+    transition: none;
+  }
+}
+
 .blossom-story-video {
   object-position: 68% 52%;
   mix-blend-mode: screen;
@@ -2820,6 +2871,27 @@ a.work-aux-link:hover {
 @media (max-width: 767px) {
   .hero-autumn::before {
     background: color-mix(in oklab, var(--ground) 48%, transparent);
+  }
+}
+
+/* Over the Fuji footage (HeroBackdrop) the even left wash either fogged the
+   photograph or left the lead and secondary link lost in the foliage. A soft
+   pool of ground sits behind the copy block instead, and the right half —
+   the mountain, the forest, the portrait — stays at full strength. */
+@media (min-width: 768px) {
+  .hero-autumn::before {
+    background:
+      radial-gradient(
+        ellipse 46% 52% at 22% 58%,
+        color-mix(in oklab, var(--ground) 74%, transparent) 0%,
+        color-mix(in oklab, var(--ground) 52%, transparent) 48%,
+        transparent 100%
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--ground) 22%, transparent) 0%,
+        transparent 55%
+      );
   }
 }
 
