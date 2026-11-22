@@ -16,14 +16,14 @@ const WF=workflow({token:'msg',maxX:1000,
   lanes:[
     {name:'Customer messages on WhatsApp',color:'yellow',chapter:'lane 1 · on WhatsApp',intro:'Lane one: a customer messages on WhatsApp.',nodes:[
       {n:1,name:'WhatsApp Message In',icon:'chat',who:'leo',z:1.1,say:'I messaged the store on WhatsApp.',
-        desc:'Each phone number gets its own conversation, so the bot remembers the last few messages.'},
+        desc:'Each phone number gets its own conversation, so the bot remembers the last few messages. A new chat forgets earlier ones, so it can’t repeat an old answer.'},
       {name:'New Message?',icon:'if'},
       {name:'Merge Burst',icon:'set',say:'Several quick messages get one reply.',desc:'A message WhatsApp delivers twice is answered once, and several quick messages in a row get one reply.'},
       {name:'Save Photo To Drive',icon:'drive',say:'A photo of a damaged item is saved to Google Drive.',desc:'Photos are saved to Google Drive, and the link goes into the case.'},
       {name:'Prepare Message',icon:'set'}]},
     {name:'Agent answers from store data',color:'blue',chapter:'lane 2 · agent answers',intro:'Lane two: the agent answers.',nodes:[
-      {n:2,name:'Support Agent (OpenAI)',icon:'robot',say:'Routine questions get the small model. Refunds and complaints get the full one.',d:2.8,
-        desc:'A fixed word check picks the model: GPT-5.4 mini for routine questions, the full GPT-5.4 for refunds, damage, safety, legal threats or an angry customer.'},
+      {n:2,name:'Support Agent (OpenAI)',icon:'robot',say:'Routine questions get a small model. Refunds and complaints get a stronger one.',d:2.8,
+        desc:'A fixed word check picks the model: the low-cost GPT-6 Luna for routine questions, the stronger GPT-6.1 Terra for refunds, damage, safety, legal threats or an angry customer.'},
       {n:3,name:'Look Up Order',icon:'db',say:'It shares nothing about an order until the number and email match.',d:2.4,
         desc:'Order details are only shared when the order number and email match.'},
       {n:4,name:'Check Product Stock',icon:'db',say:'Stock is looked up in Airtable too.',desc:'Looks up orders and stock in Airtable.'},
