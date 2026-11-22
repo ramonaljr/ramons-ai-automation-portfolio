@@ -2742,12 +2742,18 @@ a.work-aux-link:hover {
 }
 
 /* ── Scene tiles (scene-tiles.tsx) ───────────────────────────────────────
-   Over the scene, under the falling leaves and the content. Each tile's
-   opacity is written by scroll; the edges are whole pixels, so no seams. */
+   The curtain between the opening chapter and the story: plain white, as on
+   the reference handover (the dark theme closes on its own dark ground, not a
+   white flash). Each tile's opacity is written by scroll; the edges are whole
+   pixels, so no seams. */
 .scene-tiles i {
   position: absolute;
-  background: var(--scene-ground);
+  background: #fff;
   will-change: opacity;
+}
+
+.dark .scene-tiles i {
+  background: var(--ground);
 }
 
 .blossom-story-background {
@@ -3338,10 +3344,11 @@ a.work-aux-link:hover {
   background: transparent;
 }
 
-/* The stretch of scroll the curtain closes in: nothing new arrives while the
-   tiles turn, and the story's top comes into view just as the last one does. */
+/* Room for the curtain to close: it starts as the work strip reaches the nav
+   and is shut as the story's top comes into view. Nothing new arrives in
+   between, so the close takes about two thirds of a screen of scroll. */
 .scene-handover {
-  height: 80vh;
+  height: 120vh;
 }
 
 .blossom-story-root .story-content .saas-footer {

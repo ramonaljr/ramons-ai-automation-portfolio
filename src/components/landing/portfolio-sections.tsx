@@ -52,15 +52,15 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
           <ProofStrip systemCount={caseStudies.length} />
         </div>
 
-        {/* A curtain between the chapters: in the handover's stretch of
-            scroll, slate tiles close over the scene and the opening chapter
-            as it leaves, and the story rises onto the finished slate. They
-            open again, the same way, at the booking form. */}
+        {/* A curtain between the chapters: from the moment the work strip
+            reaches the nav, slate tiles close over the scene and the opening
+            chapter, and the story rises onto the finished slate. They open
+            again as the projects come up, and the scene is back. */}
         <SceneTiles className='z-20' />
         <ParticleField className='z-[25]' />
 
         <div className='relative z-30'>
-          <div id='handover' className='scene-handover' aria-hidden='true' />
+          <div className='scene-handover' aria-hidden='true' />
 
           <div className='story-content relative'>
             <div className='relative z-10'>
