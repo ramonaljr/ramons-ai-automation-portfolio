@@ -3,14 +3,13 @@
 import { type SyntheticEvent, useEffect, useRef, useState } from 'react'
 
 /**
- * The hero's journey: mountain ranges drifting past behind the tree, under a
- * snow-capped volcano.
+ * The hero's journey: mountain ranges drifting past behind the tree. The
+ * volcano above them is real footage now (hero-backdrop.tsx).
  *
  * The view travels as in a side-scrolling game: each range pans at a fraction
- * of a walking pace by depth. The volcano is far enough away that it holds
- * still. The scene drifts calmly on its own, and scrolling makes it move
- * faster, settling again when the page stops. It fades out as the hero
- * scrolls away.
+ * of a walking pace by depth. The scene drifts calmly on its own, and
+ * scrolling makes it move faster, settling again when the page stops. It
+ * fades out as the hero scrolls away.
  */
 
 /** Width of one seamless range tile, in px; each layer repeats it twice. */
@@ -24,9 +23,9 @@ const CADENCE_MAX = 2.1
 const PACE = 80
 
 /**
- * How fast each range moves relative to the pace. The tiles and the volcano
- * are rendered offline (lit ridged noise, seamless across a tile) and baked to
- * WebP, about 200 KB together, so they load after the page rather than with it.
+ * How fast each range moves relative to the pace. The tiles are rendered
+ * offline (lit ridged noise, seamless across a tile) and baked to WebP,
+ * about 200 KB together, so they load after the page rather than with it.
  */
 const RANGES = [
   { depth: 0.04, src: '/images/landing/hero-range-far.webp', className: 'journey-range-far' },
@@ -150,7 +149,7 @@ const reveal = (event: SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.dataset.loaded = ''
 }
 
-/** The volcano and the mountain ranges, over the tree footage. */
+/** The mountain ranges, over the tree footage. */
 export function JourneyRanges() {
   const rootRef = useRef<HTMLDivElement>(null)
   const offset = useRef(0)
@@ -199,16 +198,6 @@ export function JourneyRanges() {
     <div ref={rootRef} aria-hidden='true' className='journey-scenery'>
       {withScenery && (
         <>
-          <img
-            src='/images/landing/hero-fuji.webp'
-            alt=''
-            width={1800}
-            height={400}
-            decoding='async'
-            onLoad={reveal}
-            className='journey-fuji'
-          />
-
           <div className='journey-ranges'>
             {RANGES.map(range => (
               <div key={range.className} data-depth={range.depth} className={`journey-range ${range.className}`}>

@@ -4,10 +4,10 @@ import { useCallback, useState } from 'react'
 
 import { IntroAnimation } from '@/components/landing/intro-animation'
 import { BlossomStoryBackground } from '@/components/landing/blossom-story-background'
+import { SceneTiles } from '@/components/landing/scene-tiles'
 import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { HeroSection } from '@/components/landing/hero-section'
-import { HeroBackdrop } from '@/components/landing/hero-backdrop'
 import { WorkStrip } from '@/components/landing/work-strip'
 import { ProofStrip } from '@/components/landing/proof-strip'
 import { IntroSection } from '@/components/landing/intro-section'
@@ -43,9 +43,10 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
           wrapper is the positioning context; the video and canvases are sticky
           inside it so one viewport of pixels covers the whole scroll range. */}
       <div className='blossom-story-root relative isolate'>
-        <BlossomStoryBackground />
-        {/* Real Fuji footage behind the hero only, under the falling leaves. */}
-        <HeroBackdrop ready={heroReady} />
+        <BlossomStoryBackground heroReady={heroReady} />
+        {/* The scene dissolves into slate, tile by tile, as the story comes
+            up, and comes back the same way at the booking form. */}
+        <SceneTiles />
         <ParticleField />
 
         <div className='relative z-10'>

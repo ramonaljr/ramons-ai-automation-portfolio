@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform } from 'motion/react'
 
 import { usePrefersReducedMotion } from '@/components/landing/motion'
 import { JourneyRanges } from '@/components/landing/hero-journey'
+import { HeroBackdrop } from '@/components/landing/hero-backdrop'
 
 type Mood = 'golden' | 'calm' | 'close'
 
@@ -29,7 +30,7 @@ const SECTION_MOODS: readonly (readonly [id: string, mood: Mood])[] = [
 const LINE = 0.5
 
 /** One continuous autumn environment for the lower-page story. */
-export function BlossomStoryBackground() {
+export function BlossomStoryBackground({ heroReady = true }: { heroReady?: boolean }) {
   const rootRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const reduced = usePrefersReducedMotion()
@@ -215,6 +216,9 @@ export function BlossomStoryBackground() {
         <div className='blossom-story-tone absolute inset-0' />
         <motion.div className='blossom-story-glow absolute inset-0' style={reduced ? undefined : { x: glowX }} />
         <div className='blossom-story-veil absolute inset-0' />
+        {/* The real mountain, hero only: over the haze so it stays crisp,
+            under the branches and leaves. */}
+        <HeroBackdrop ready={heroReady} />
         <motion.img
           src='/images/landing/autumn-environment-overlay.webp'
           alt=''

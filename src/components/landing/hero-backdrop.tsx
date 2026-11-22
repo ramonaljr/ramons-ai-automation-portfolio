@@ -2,46 +2,50 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+import { motion, useMotionValueEvent, useScroll, useTransform } from 'motion/react'
+
 import { usePrefersReducedMotion } from '@/components/landing/motion'
 
 /**
- * Real footage behind the hero: a drone drift over the autumn Aokigahara
- * forest toward Mount Fuji (Pixabay #246269, Pixabay Content License — free
+ * Real Mount Fuji behind the hero: the sky and the peak from a drone drift
+ * over the Aokigahara forest (Pixabay #246269, Pixabay Content License — free
  * for commercial use, no attribution required).
  *
- * It sits in the page scene, under the falling leaves and above the painted
- * autumn backdrop, so the leaves still fall over the photograph. Unlike the
- * page video it is shown at full strength: no screen blend, no tone layer.
- * The hero's own `.hero-autumn::before` wash keeps the headline readable.
+ * Only the mountain is kept. The footage's own forest is masked away below
+ * the mountain's foot, and the layer sits at the very back of the autumn
+ * scene (BlossomStoryBackground), so the page's own trees, branches and
+ * falling leaves all stay in front of it. It drifts up and fades as the hero
+ * scrolls away, and stops decoding once it has gone.
  *
  * Loading follows the page video's rules: the still is on screen from first
- * paint (it is the hero's largest image), and the footage mounts only after
- * load, from 768px up, when the reader has not asked to save data and does
- * not prefer reduced motion. Phones keep the still.
+ * paint, and the footage mounts only after load, from 768px up, when the
+ * reader has not asked to save data and does not prefer reduced motion.
  */
 export function HeroBackdrop({ ready = true }: { ready?: boolean }) {
-  const rootRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const reduced = usePrefersReducedMotion()
   const [withVideo, setWithVideo] = useState(false)
   const [playing, setPlaying] = useState(false)
+  const [visible, setVisible] = useState(true)
 
-  // Matches the hero's height, which grows past one screen when its copy
-  // wraps on a short window, so the footage never ends above the hero's edge.
+  // Window scroll in pixels: the hero is the first screen, so a screen's worth
+  // of scroll is the whole of its life.
+  const { scrollY } = useScroll()
+  const [screen, setScreen] = useState(900)
+
   useEffect(() => {
-    const root = rootRef.current
-    const hero = document.querySelector<HTMLElement>('[data-hero-root]')
+    const sync = () => setScreen(window.innerHeight)
 
-    if (!root || !hero) return
-
-    const sync = () => root.style.setProperty('--hero-h', `${hero.offsetHeight}px`)
-    const observer = new ResizeObserver(sync)
-
-    observer.observe(hero)
     sync()
+    window.addEventListener('resize', sync)
 
-    return () => observer.disconnect()
+    return () => window.removeEventListener('resize', sync)
   }, [])
+
+  const opacity = useTransform(scrollY, [0, screen * 0.85], [1, 0])
+  const y = useTransform(scrollY, [0, screen], ['0%', '-12%'])
+
+  useMotionValueEvent(scrollY, 'change', value => setVisible(value < screen))
 
   useEffect(() => {
     if (reduced) return
@@ -65,38 +69,26 @@ export function HeroBackdrop({ ready = true }: { ready?: boolean }) {
 
   // Plays only while the hero is on screen and the tab is in front.
   useEffect(() => {
-    const root = rootRef.current
     const video = videoRef.current
 
-    if (!withVideo || !root || !video) return
-
-    let onScreen = true
+    if (!withVideo || !video) return
 
     const sync = () => {
-      if (onScreen && !document.hidden) void video.play().catch(() => undefined)
+      if (visible && !document.hidden) void video.play().catch(() => undefined)
       else video.pause()
     }
 
-    const observer = new IntersectionObserver(([entry]) => {
-      onScreen = entry.isIntersecting
-      sync()
-    })
-
-    observer.observe(root)
+    sync()
     document.addEventListener('visibilitychange', sync)
 
-    return () => {
-      observer.disconnect()
-      document.removeEventListener('visibilitychange', sync)
-    }
-  }, [withVideo])
+    return () => document.removeEventListener('visibilitychange', sync)
+  }, [withVideo, visible])
 
   return (
-    <div
-      ref={rootRef}
-      className='hero-backdrop pointer-events-none absolute inset-x-0 top-0'
+    <motion.div
+      className='hero-backdrop absolute inset-0'
       data-ready={ready || undefined}
-      aria-hidden='true'
+      style={reduced ? undefined : { opacity, y }}
     >
       <div className='hero-backdrop-media absolute inset-0'>
         <picture>
@@ -128,6 +120,6 @@ export function HeroBackdrop({ ready = true }: { ready?: boolean }) {
           </video>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }

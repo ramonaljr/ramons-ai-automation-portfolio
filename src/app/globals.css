@@ -2731,10 +2731,23 @@ a.work-aux-link:hover {
 /* Slate ground since the Taste-skill pass; a faint terracotta glow is all
    that is left of the old orange grade, so the autumn leaves still belong. */
 .blossom-story-root {
+  /* The slate the page settles on; the scene tiles (scene-tiles.tsx) turn
+     to exactly this, so the dissolve lands on what comes next. */
+  --scene-ground: oklch(0.81 0.018 255);
+
   background:
     radial-gradient(circle at 72% 34%, oklch(0.8 0.05 42 / 0.22), transparent 38rem),
     radial-gradient(circle at 18% 68%, oklch(0.91 0.016 255 / 0.82), transparent 46rem),
-    oklch(0.81 0.018 255);
+    var(--scene-ground);
+}
+
+/* ── Scene tiles (scene-tiles.tsx) ───────────────────────────────────────
+   Over the scene, under the falling leaves and the content. Each tile's
+   opacity is written by scroll; the edges are whole pixels, so no seams. */
+.scene-tiles i {
+  position: absolute;
+  background: var(--scene-ground);
+  will-change: opacity;
 }
 
 .blossom-story-background {
@@ -2742,27 +2755,28 @@ a.work-aux-link:hover {
   overflow: clip;
 }
 
-/* ── Hero footage (HeroBackdrop) ──────────────────────────────────────────
-   Real Fuji footage behind the hero only, over the painted scene and under
-   the falling leaves. Full strength — no blend, no tone — so it reads as a
-   photograph; the hero's `::before` wash carries the headline's contrast.
-   The bottom fades into the autumn scene so the hero has no hard edge. */
+/* ── Hero mountain (HeroBackdrop) ────────────────────────────────────────
+   Real Fuji footage in the autumn scene, hero only, between the headline and
+   the white tree. It sits over the tone and veil, so the haze does not fade
+   it, and under the branches and leaves. */
 .hero-backdrop {
-  z-index: 0;
-  height: var(--hero-h, 100dvh);
-  overflow: clip;
-  mask-image: linear-gradient(to bottom, #000 0%, #000 80%, transparent 100%);
+  pointer-events: none;
+  /* A soft oval around the summit: the peak and its snowfield stay sharp,
+     the footage's sky and forest melt into the haze, and the white tree to
+     the right keeps its own space. */
+  -webkit-mask-image: radial-gradient(ellipse 33% 26% at 50% 22%, #000 38%, transparent 100%);
+  mask-image: radial-gradient(ellipse 33% 26% at 50% 22%, #000 38%, transparent 100%);
 }
 
 .hero-backdrop-media {
   transform: scale(1.08);
-  transform-origin: 60% 40%;
+  transform-origin: 54% 20%;
   transition: transform 2.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-backdrop-media img,
 .hero-backdrop-video {
-  object-position: 58% 38%;
+  object-position: 56% 30%;
 }
 
 /* Settles from a slight push-in as the intro hands over to the hero. */
@@ -2781,9 +2795,9 @@ a.work-aux-link:hover {
   opacity: 1;
 }
 
-/* Dark theme: light ink on a daylight sky needs the scene brought down. */
+/* Dark theme: a dusk peak, dimmed enough to sit in the dark scene. */
 .dark .hero-backdrop-media {
-  filter: brightness(0.58) saturate(0.9);
+  filter: brightness(0.8) saturate(0.85);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2871,27 +2885,6 @@ a.work-aux-link:hover {
 @media (max-width: 767px) {
   .hero-autumn::before {
     background: color-mix(in oklab, var(--ground) 48%, transparent);
-  }
-}
-
-/* Over the Fuji footage (HeroBackdrop) the even left wash either fogged the
-   photograph or left the lead and secondary link lost in the foliage. A soft
-   pool of ground sits behind the copy block instead, and the right half —
-   the mountain, the forest, the portrait — stays at full strength. */
-@media (min-width: 768px) {
-  .hero-autumn::before {
-    background:
-      radial-gradient(
-        ellipse 46% 52% at 22% 58%,
-        color-mix(in oklab, var(--ground) 74%, transparent) 0%,
-        color-mix(in oklab, var(--ground) 52%, transparent) 48%,
-        transparent 100%
-      ),
-      linear-gradient(
-        90deg,
-        color-mix(in oklab, var(--ground) 22%, transparent) 0%,
-        transparent 55%
-      );
   }
 }
 
@@ -5814,23 +5807,6 @@ html[data-covered] body > main {
   opacity: 1;
 }
 
-/* The volcano's summit stands between the copy and the portrait, clear of
-   the headline; its long flanks run off both edges, as Fuji's do, and fade
-   out towards the copy. The ranges stay low, as foothills, so the dark cone
-   under the snow still shows. */
-.journey-fuji {
-  position: absolute;
-  left: -9%;
-  bottom: 12%;
-  width: 130%;
-  max-width: none;
-  height: 50%;
-  object-fit: contain;
-  object-position: 50% 100%;
-  -webkit-mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.3) 22%, #000 42%);
-  mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.3) 22%, #000 42%);
-}
-
 .journey-ranges {
   position: absolute;
   inset: auto 0 6%;
@@ -5868,18 +5844,6 @@ html[data-covered] body > main {
 }
 
 @media (max-width: 767px) {
-  /* Phones: the copy spans the screen, so the volcano rises on the right, beside the
-     buttons rather than behind the lead, and the ridges stay quiet under the
-     text. */
-  .journey-fuji {
-    left: -31%;
-    bottom: 14%;
-    width: 200%;
-    height: 30%;
-    -webkit-mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.2) 20%, #000 42%);
-    mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.2) 20%, #000 42%);
-  }
-
   .journey-ranges {
     height: 22%;
     opacity: 0.6;

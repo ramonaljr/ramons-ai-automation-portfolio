@@ -242,7 +242,7 @@ export function HeroSection({ ready = true }: { ready?: boolean }) {
   }, [reduced, landed])
 
   return (
-    <section ref={rootRef} data-hero-root className='hero-autumn relative flex min-h-dvh flex-col justify-center overflow-hidden'>
+    <section ref={rootRef} className='hero-autumn relative flex min-h-dvh flex-col justify-center overflow-hidden'>
       {/* No backdrop of its own: the autumn video and falling leaves behind
           the whole page show through, so the hero and the sections below share
           one scene. `.hero-autumn` only adds a wash behind the copy. */}
