@@ -3,22 +3,23 @@
 import { useEffect, useRef } from 'react'
 
 /**
- * The autumn scene dissolves into the page's slate ground, tile by tile, as
- * the story scrolls up; the hero, the work strip and the proof strip keep the
- * whole picture as one opening chapter. At the booking form the tiles leave
- * again in reverse, so the page closes on the scene it opened with.
+ * A curtain of slate tiles between the opening chapter (hero, work strip,
+ * proof strip) and the story. The layer sits over the scene and the opening
+ * chapter but under the story, so as the handover's stretch of scroll passes,
+ * tiles close one by one over the picture and the copy as it leaves, and the
+ * story rises onto finished slate. At the booking form they open again in
+ * reverse, and the page closes on the scene it opened with.
  *
- * Scrubbed by scroll, not played: scrolling back rebuilds the picture. The
- * tiles sit over the scene and under the falling leaves and the content, so
- * the leaves keep drifting over the slate and nothing in the layout moves.
+ * Scrubbed by scroll, not played: scrolling back reopens the curtain.
  */
 
-/** Where in the section's approach each tile starts to turn, and how long it
- *  takes. `q` runs 0 (the section's top at the bottom of the screen) to 1
- *  (at the top). Tiles start between 0.2 and 0.75 and each turns over 0.15. */
-const FIRST = 0.2
-const SPREAD = 0.55
-const TURN = 0.15
+/** Where in an element's approach each tile starts to turn, and how long it
+ *  takes. `q` runs 0 (the element's top at the bottom of the screen) to 1
+ *  (at the top). Tiles start between 0.05 and 0.7 and each turns over 0.2,
+ *  so the curtain is shut a little before the story's top comes into view. */
+const FIRST = 0.05
+const SPREAD = 0.65
+const TURN = 0.2
 
 /** Tile size in design px: 8 × 5 tiles at 1440 × 900, smaller on phones. */
 const TILE_DESKTOP = 180
@@ -53,7 +54,15 @@ function approach(element: HTMLElement | null) {
   return element ? clamp(1 - element.getBoundingClientRect().top / window.innerHeight) : 0
 }
 
-export function SceneTiles({ from = 'story', until = 'contact' }: { from?: string; until?: string }) {
+export function SceneTiles({
+  from = 'handover',
+  until = 'contact',
+  className = ''
+}: {
+  from?: string
+  until?: string
+  className?: string
+}) {
   const gridRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -151,7 +160,7 @@ export function SceneTiles({ from = 'story', until = 'contact' }: { from?: strin
   }, [from, until])
 
   return (
-    <div className='scene-tiles pointer-events-none absolute inset-0' aria-hidden='true'>
+    <div className={`scene-tiles pointer-events-none absolute inset-0 ${className}`} aria-hidden='true'>
       <div ref={gridRef} className='sticky top-0 h-screen overflow-hidden' />
     </div>
   )

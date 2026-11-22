@@ -44,15 +44,23 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
           inside it so one viewport of pixels covers the whole scroll range. */}
       <div className='blossom-story-root relative isolate'>
         <BlossomStoryBackground heroReady={heroReady} />
-        {/* The scene dissolves into slate, tile by tile, as the story comes
-            up, and comes back the same way at the booking form. */}
-        <SceneTiles />
-        <ParticleField />
 
+        {/* The opening chapter: hero, work and proof, on the autumn scene. */}
         <div className='relative z-10'>
           <HeroSection ready={heroReady} />
           <WorkStrip caseStudies={caseStudies} />
           <ProofStrip systemCount={caseStudies.length} />
+        </div>
+
+        {/* A curtain between the chapters: in the handover's stretch of
+            scroll, slate tiles close over the scene and the opening chapter
+            as it leaves, and the story rises onto the finished slate. They
+            open again, the same way, at the booking form. */}
+        <SceneTiles className='z-20' />
+        <ParticleField className='z-[25]' />
+
+        <div className='relative z-30'>
+          <div id='handover' className='scene-handover' aria-hidden='true' />
 
           <div className='story-content relative'>
             <div className='relative z-10'>

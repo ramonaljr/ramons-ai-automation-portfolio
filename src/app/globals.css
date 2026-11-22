@@ -3331,11 +3331,17 @@ a.work-aux-link:hover {
   border-top-color: transparent !important;
 }
 
-/* On the landing page the scene tiles (scene-tiles.tsx) turn the screen to
-   flat slate as the story rises, so the story needs no paper of its own: a
-   sheet here sat over the tiles and hid most of the handover. */
+/* On the landing page the scene tiles (scene-tiles.tsx) close over the scene
+   before the story arrives, so the story needs no paper of its own: a sheet
+   here sat over the tiles and hid most of the handover. */
 .blossom-story-root .story-screen {
   background: transparent;
+}
+
+/* The stretch of scroll the curtain closes in: nothing new arrives while the
+   tiles turn, and the story's top comes into view just as the last one does. */
+.scene-handover {
+  height: 80vh;
 }
 
 .blossom-story-root .story-content .saas-footer {
