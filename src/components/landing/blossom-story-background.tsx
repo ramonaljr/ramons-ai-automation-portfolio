@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 
 import { usePrefersReducedMotion } from '@/components/landing/motion'
-import { JourneyRanges } from '@/components/landing/hero-journey'
 import { HeroBackdrop } from '@/components/landing/hero-backdrop'
 
 type Mood = 'golden' | 'calm' | 'close'
@@ -207,11 +206,6 @@ export function BlossomStoryBackground({ heroReady = true }: { heroReady?: boole
             <source src='/video/hero-compute.mp4' type='video/mp4' />
           </motion.video>
         )}
-
-        {/* Over the tree footage rather than under it: the screen-blended
-            footage and the washes above bleached anything beneath to a pale
-            blur. The tone, veil and horizon still haze it into the distance. */}
-        <JourneyRanges />
 
         <div className='blossom-story-tone absolute inset-0' />
         <motion.div className='blossom-story-glow absolute inset-0' style={reduced ? undefined : { x: glowX }} />
