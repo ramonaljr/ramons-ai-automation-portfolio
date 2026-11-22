@@ -51,7 +51,7 @@ The same rules as `docs/storify-film-plans.md` apply. Facts come only from the b
 ## 9. Gmail Attachment Filing on Make · `gmail-attachment-filing`
 
 - **Platform:** Make.com (scenario "Integration Gmail", runs every 15 minutes).
-- **Sample client (page only):** Fernhill Bookkeeping, which gets receipts and statements from clients by email.
+- **Sample client (page only):** Ashgrove Bookkeeping, which gets receipts and statements from clients by email.
 - **Type:** Before and after. From attachments saved by hand under names like `scan001.pdf`, to files named by what they are, logged, with a receipt sent back.
 - **Cast (2):** **Karan**, the bookkeeper (protagonist). **Leo**, a client sending documents.
 - **Intro:**

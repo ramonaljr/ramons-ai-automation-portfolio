@@ -3,7 +3,7 @@ import { clock, dayFrom, shortDay } from '@/lib/demos/sample'
 import type { DemoBundle, DemoLayout, DemoScenario } from '@/lib/demos/types'
 
 /**
- * Client emails for Fernhill Bookkeeping, the fictional firm the build was
+ * Client emails for Ashgrove Bookkeeping, the fictional firm the build was
  * made for. Every 15 minutes the scenario watches for `label:to-file
  * has:attachment`, lists each attachment as its own bundle, and the filter
  * keeps only real files: no Office documents, nothing empty, nothing 20 KB
@@ -97,8 +97,8 @@ function scenarios(now: Date): DemoScenario[] {
       'Gmail 3': email,
       'Gmail 4': [...files, LOGO].map(listed),
       'Google Gemini AI 5': files.map((file, index) => ({
-        name: `files/fernhill${index + 1}x7`,
-        uri: `https://generativelanguage.googleapis.com/v1beta/files/fernhill${index + 1}x7`,
+        name: `files/ashgrove${index + 1}x7`,
+        uri: `https://generativelanguage.googleapis.com/v1beta/files/ashgrove${index + 1}x7`,
         mimeType: file.mimeType,
         sizeBytes: String(file.size),
         state: 'ACTIVE'
