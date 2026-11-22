@@ -49,8 +49,9 @@ create policy "Owner deletes own engagements" on public.engagements
   for delete to authenticated using (owner = auth.uid());
 
 -- Keep updated_at honest without trusting the browser's clock.
+-- Empty search_path, per Supabase's security advisor for functions.
 create or replace function public.touch_updated_at() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = '' as $$
 begin
   new.updated_at = now();
   return new;
