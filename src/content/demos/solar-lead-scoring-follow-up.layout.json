@@ -4,29 +4,29 @@
   "bounds": {
     "x": -64,
     "y": 0,
-    "x2": 5672,
-    "y2": 1668
+    "x2": 5080,
+    "y2": 1832
   },
   "stickies": [
     {
-      "x": 5152,
-      "y": 0,
+      "x": 2896,
+      "y": 1072,
       "w": 520,
       "h": 760,
       "color": 3,
       "title": "Setup needed"
     },
     {
-      "x": 5152,
-      "y": 800,
+      "x": 3440,
+      "y": 1072,
       "w": 520,
       "h": 320,
       "color": 4,
       "title": "Why the form gets a reply first"
     },
     {
-      "x": 5152,
-      "y": 1168,
+      "x": 3984,
+      "y": 1072,
       "w": 520,
       "h": 420,
       "color": 5,
@@ -111,7 +111,7 @@
       "type": "webhook",
       "shape": "trigger",
       "x": 0,
-      "y": 640,
+      "y": 432,
       "w": 100,
       "h": 100
     },
@@ -120,7 +120,7 @@
       "type": "set",
       "shape": "default",
       "x": 224,
-      "y": 640,
+      "y": 432,
       "w": 100,
       "h": 100,
       "subtitle": "manual"
@@ -130,7 +130,7 @@
       "type": "if",
       "shape": "default",
       "x": 448,
-      "y": 640,
+      "y": 432,
       "w": 100,
       "h": 100,
       "outputs": [
@@ -143,7 +143,7 @@
       "type": "respondToWebhook",
       "shape": "default",
       "x": 688,
-      "y": 624,
+      "y": 416,
       "w": 100,
       "h": 100
     },
@@ -152,7 +152,7 @@
       "type": "respondToWebhook",
       "shape": "default",
       "x": 672,
-      "y": 848,
+      "y": 640,
       "w": 100,
       "h": 100
     },
@@ -160,8 +160,8 @@
       "name": "Find Existing Lead Record",
       "type": "airtable",
       "shape": "default",
-      "x": 1168,
-      "y": 624,
+      "x": 1184,
+      "y": 416,
       "w": 100,
       "h": 100,
       "subtitle": "search: record"
@@ -171,7 +171,7 @@
       "type": "informationExtractor",
       "shape": "root",
       "x": 1664,
-      "y": 624,
+      "y": 416,
       "w": 240,
       "h": 100,
       "ports": [
@@ -297,8 +297,8 @@
       "name": "Save To Lead Log",
       "type": "googleSheets",
       "shape": "default",
-      "x": 4768,
-      "y": 560,
+      "x": 4784,
+      "y": 656,
       "w": 100,
       "h": 100,
       "subtitle": "append: sheet"
@@ -331,7 +331,7 @@
       "type": "googleSheets",
       "shape": "default",
       "x": 880,
-      "y": 848,
+      "y": 640,
       "w": 100,
       "h": 100,
       "subtitle": "append: sheet"
@@ -439,7 +439,7 @@
       "type": "slack",
       "shape": "default",
       "x": 3408,
-      "y": 784,
+      "y": 768,
       "w": 100,
       "h": 100,
       "subtitle": "post: message"
@@ -449,7 +449,7 @@
       "type": "code",
       "shape": "default",
       "x": 1360,
-      "y": 624,
+      "y": 416,
       "w": 100,
       "h": 100
     },
@@ -477,6 +477,15 @@
       "shape": "default",
       "x": 912,
       "y": 1408,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "name": "Demo Enquiry Form",
+      "type": "formTrigger",
+      "shape": "trigger",
+      "x": 0,
+      "y": 640,
       "w": 100,
       "h": 100
     }
@@ -695,6 +704,12 @@
     {
       "from": "Find Overdue Leads",
       "to": "Reassign To Manager",
+      "kind": "main",
+      "output": 0
+    },
+    {
+      "from": "Demo Enquiry Form",
+      "to": "Clean Up Form Data",
       "kind": "main",
       "output": 0
     }

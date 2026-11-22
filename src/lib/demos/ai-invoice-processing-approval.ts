@@ -203,16 +203,16 @@ function scenarios(now: Date): DemoScenario[] {
       'Invoice Number Already Posted?': 1,
       'Any Issues Found?': 1
     },
-    waits: { 'Approve Clean Invoice': 'Waiting for someone in Slack to approve' },
+    waits: { 'Approve Clean Invoice': 'Waiting for a decision on the Slack form' },
     output: {
       ...kelsoIn.trigger,
       ...kelsoIn.read,
       'Check Invoice & Flag Issues': kelsoChecked,
       'Any Issues Found?': kelsoChecked,
-      'Approve Clean Invoice': { data: { approved: true } },
-      'Answered In Time?': { data: { approved: true } },
-      'Approved?': { data: { approved: true } },
-      'Expense Account Known?': { data: { approved: true } },
+      'Approve Clean Invoice': { data: { Decision: 'Approve' } },
+      'Answered In Time?': { data: { Decision: 'Approve' } },
+      'Approved?': { data: { Decision: 'Approve' } },
+      'Expense Account Known?': { data: { Decision: 'Approve' } },
       'Find QuickBooks Vendor': { Id: '58', DisplayName: kelso.vendorName, Active: true },
       'Vendor In QuickBooks?': { Id: '58' },
       'Add Bill To QuickBooks': {
@@ -242,7 +242,13 @@ function scenarios(now: Date): DemoScenario[] {
         app: 'n8n',
         time: 'just now',
         text: approvalMessage(kelso),
-        buttons: ['Approve', 'Reject']
+        buttons: ['Review and decide']
+      },
+      {
+        kind: 'form',
+        node: 'Approve Clean Invoice',
+        title: 'Braewick invoice decision',
+        fields: [{ label: 'Decision', value: 'Approve' }]
       },
       {
         kind: 'record',
@@ -311,15 +317,15 @@ function scenarios(now: Date): DemoScenario[] {
       'Any Issues Found?': 0,
       'Approved?': 1
     },
-    waits: { 'Review Invoice With Issues': 'Waiting for someone in Slack to approve or reject' },
+    waits: { 'Review Invoice With Issues': 'Waiting for a decision on the Slack form' },
     output: {
       ...ridgeIn.trigger,
       ...ridgeIn.read,
       'Check Invoice & Flag Issues': ridgeChecked,
       'Any Issues Found?': ridgeChecked,
-      'Review Invoice With Issues': { data: { approved: false } },
-      'Answered In Time?': { data: { approved: false } },
-      'Approved?': { data: { approved: false } },
+      'Review Invoice With Issues': { data: { Decision: 'Reject' } },
+      'Answered In Time?': { data: { Decision: 'Reject' } },
+      'Approved?': { data: { Decision: 'Reject' } },
       'Alert - Invoice Rejected': { ok: true, channel: CHANNEL, ts: '1762650321.004100' },
       'Save To Invoice Log': {
         processedAt: now.toISOString(),
@@ -358,7 +364,13 @@ function scenarios(now: Date): DemoScenario[] {
           '',
           'Approve to add this bill to QuickBooks anyway, or reject it.'
         ],
-        buttons: ['Approve', 'Reject']
+        buttons: ['Review and decide']
+      },
+      {
+        kind: 'form',
+        node: 'Review Invoice With Issues',
+        title: 'Braewick invoice decision',
+        fields: [{ label: 'Decision', value: 'Reject' }]
       },
       {
         kind: 'slack',
