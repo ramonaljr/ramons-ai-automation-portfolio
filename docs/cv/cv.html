@@ -31,8 +31,8 @@
   .bar { height: 5px; background: var(--accent); margin: 10px 0 0; }
 
   /* One column: each heading sits above its section. */
-  section { padding: 10px 0 4px; }
-  section > h2 { margin-bottom: 6px; padding-bottom: 3px; border-bottom: 1.5px solid var(--rule); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); }
+  section { padding: 9px 0 3px; }
+  section > h2 { margin-bottom: 6px; padding-bottom: 3px; border-bottom: 1.5px solid var(--rule); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); break-after: avoid; }
   h3 { font-size: 12.4px; font-weight: 700; color: var(--ink); line-height: 1.4; }
   .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
   .date { font-size: 11px; font-weight: 500; color: var(--muted); white-space: nowrap; }
@@ -69,8 +69,8 @@
 <section class="skills">
   <h2>Skills</h2>
   <p><strong>Automation:</strong> n8n (cloud and self-hosted), Zapier, Make; workflow design, triggers, webhooks, error handling</p>
-  <p><strong>AI and LLM:</strong> OpenAI, Claude, Gemini and Groq APIs; prompt engineering; AI agents; RAG (Pinecone); voice agents (VAPI)</p>
-  <p><strong>Integration:</strong> REST APIs, JSON, Google Workspace, Airtable, Slack, Gmail, QuickBooks, Pipedrive, Apollo, PostgreSQL</p>
+  <p><strong>AI and LLM:</strong> OpenAI, Claude, Gemini and Groq APIs; prompt engineering; AI agents (Hermes Agent, Nod); RAG (Pinecone); voice agents (VAPI, ElevenLabs)</p>
+  <p><strong>Integration:</strong> REST APIs, JSON, WhatsApp Business Cloud API, Google Workspace, Airtable, Slack, Gmail, QuickBooks, Pipedrive, Apollo, PostgreSQL</p>
   <p><strong>Accounting and finance:</strong> financial statements, month-end close, accounts payable and receivable, account reconciliation, audit, cost and variance analysis, tax compliance, DCF valuation and forecasting; QuickBooks, SAP, Sage, Excel (advanced)</p>
 </section>
 
@@ -79,17 +79,10 @@
   <p class="note">End-to-end automations in n8n, Zapier and Make, with write-ups at ramonvallejera.com and workflows at github.com/ramonaljr.</p>
 
   <div class="item">
-    <div class="row"><h3>Client Pipeline Emails</h3><span class="date">Nov 2026</span></div>
-    <p class="sub">Zapier, Airtable, Gmail, Google Drive, AI by Zapier</p>
-    <p>Runs when a lead changes stage in Airtable, handles each stage only once, then splits into Paths: a Drive folder and a content task when work is ready to start, a follow-up and a two-day nudge for quiet leads and open quotes, and AI-written welcome and thank-you emails. Every action is logged, and a failed step is retried before anyone is alerted.</p>
-    <p class="links"><a href="https://ramonvallejera.com/case-study/airtable-crm-lead-engagement">ramonvallejera.com/case-study/airtable-crm-lead-engagement</a> | <a href="https://github.com/ramonaljr/zapier-client-pipeline-emails">github.com/ramonaljr/zapier-client-pipeline-emails</a></p>
-  </div>
-
-  <div class="item">
-    <div class="row"><h3>Order Stock Check</h3><span class="date">Nov 2026</span></div>
-    <p class="sub">Make, Google Sheets, Gmail, Slack</p>
-    <p>Checks the order sheet every 15 minutes and looks up each product in the inventory sheet. A Router confirms the order, reserves the stock and emails the customer; alerts operations in Slack when stock falls below its reorder level; or puts the order on hold and tells the customer about the delay.</p>
-    <p class="links"><a href="https://ramonvallejera.com/case-study/order-stock-check">ramonvallejera.com/case-study/order-stock-check</a> | <a href="https://github.com/ramonaljr/make-order-stock-check">github.com/ramonaljr/make-order-stock-check</a></p>
+    <div class="row"><h3>AI WhatsApp Customer Support Agent</h3><span class="date">Nov 2026</span></div>
+    <p class="sub">Sample client build | n8n, WhatsApp, OpenAI, Airtable, Slack, Gmail, Google Drive</p>
+    <p>Answers customer messages on WhatsApp and web chat from the store policies and live order and stock records, checks that the order number and email match before sharing order details, sends refund requests to Slack for approval, and turns handovers into a live chat between WhatsApp and a Slack thread.</p>
+    <p class="links"><a href="https://ramonvallejera.com/case-study/ai-customer-support-agent">ramonvallejera.com/case-study/ai-customer-support-agent</a> | <a href="https://github.com/ramonaljr/n8n-ai-customer-support-agent">github.com/ramonaljr/n8n-ai-customer-support-agent</a></p>
   </div>
 
   <div class="item">
@@ -101,9 +94,16 @@
 
   <div class="item">
     <div class="row"><h3>AI Appointment Setter</h3><span class="date">Aug 2026</span></div>
-    <p class="sub">n8n, VAPI, Google Calendar, Airtable</p>
+    <p class="sub">Sample client build | n8n, VAPI, Google Calendar, Airtable</p>
     <p>VAPI voice agent backed by n8n webhooks that checks Google Calendar availability and books, reschedules and cancels appointments in real time, logging bookings and call results to Airtable.</p>
     <p class="links"><a href="https://ramonvallejera.com/case-study/ai-appointment-setter">ramonvallejera.com/case-study/ai-appointment-setter</a> | <a href="https://github.com/ramonaljr/n8n-ai-appointment-setter">github.com/ramonaljr/n8n-ai-appointment-setter</a></p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>Client Pipeline Emails</h3><span class="date">Nov 2026</span></div>
+    <p class="sub">Sample client build | Zapier, Airtable, Gmail, Google Drive, AI by Zapier</p>
+    <p>Runs when a lead changes stage in Airtable, handles each stage only once, then splits into Paths: a Drive folder and a content task when work is ready to start, a follow-up and a two-day nudge for quiet leads and open quotes, and AI-written welcome and thank-you emails. Every action is logged, and a failed step is retried before anyone is alerted.</p>
+    <p class="links"><a href="https://ramonvallejera.com/case-study/airtable-crm-lead-engagement">ramonvallejera.com/case-study/airtable-crm-lead-engagement</a> | <a href="https://github.com/ramonaljr/zapier-client-pipeline-emails">github.com/ramonaljr/zapier-client-pipeline-emails</a></p>
   </div>
 </section>
 
