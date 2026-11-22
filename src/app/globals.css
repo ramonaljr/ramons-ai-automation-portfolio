@@ -3331,6 +3331,13 @@ a.work-aux-link:hover {
   border-top-color: transparent !important;
 }
 
+/* On the landing page the scene tiles (scene-tiles.tsx) turn the screen to
+   flat slate as the story rises, so the story needs no paper of its own: a
+   sheet here sat over the tiles and hid most of the handover. */
+.blossom-story-root .story-screen {
+  background: transparent;
+}
+
 .blossom-story-root .story-content .saas-footer {
   border-top-color: transparent;
   background: linear-gradient(
