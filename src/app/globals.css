@@ -5804,9 +5804,102 @@ html[data-covered] body > main {
    with dots, a transcript once the visitor writes, and the wait for n8n drawn
    as a three-node workflow running. The R mark is the assistant's face. */
 .chat-launcher {
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 0.1),
-    0 16px 36px -12px rgb(20 28 45 / 0.5);
+  box-shadow: 0 16px 36px -12px rgb(20 28 45 / 0.5);
+  animation: chat-light-turn 5s linear infinite;
+}
+
+/* ── Chat launcher light ─────────────────────────────────────────────────
+   Colour light runs round the launcher's border, one turn every 5 s: a white
+   flare at the head breaking into blue, cyan, yellow, orange and magenta
+   sparks behind it, over a faint full ring so the rim never goes dark.
+
+   One sharp ring (each layer's <i>, masked to the border) is shown four
+   times, blurred by its parent: the wide and mid layers sit under the black
+   fill and glow onto the page, the near and core layers sit over it and draw
+   the rim. The blur is on the parent because a filter runs before a mask: on
+   the same element the mask would cut the blur back off. */
+@property --chat-light {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 40deg;
+}
+
+@keyframes chat-light-turn {
+  to {
+    --chat-light: 400deg;
+  }
+}
+
+.chat-fill,
+.chat-light,
+.chat-light i {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.chat-fill {
+  background: var(--ink);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+
+.chat-light i {
+  padding: 2px;
+  background:
+    conic-gradient(
+      from var(--chat-light),
+      transparent 0deg,
+      #ff3d9a 40deg,
+      #ff8a3d 72deg,
+      #ffd84a 98deg,
+      #3de3ff 124deg,
+      #4f7bff 146deg,
+      #fff 166deg,
+      #fff 178deg,
+      transparent 205deg
+    ),
+    conic-gradient(
+      from calc(var(--chat-light) + 180deg),
+      rgb(167 141 226 / 0.45),
+      rgb(61 227 255 / 0.35),
+      rgb(255 138 61 / 0.4),
+      rgb(167 141 226 / 0.45)
+    );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+}
+
+/* Blur, strength and lift per layer, scaled from the reference's 24 / 9 / 2 / 0
+   px for a button half its height. */
+.chat-light[data-layer='wide'] {
+  inset: -2px;
+  filter: blur(14px);
+  translate: 0 -3px;
+}
+
+.chat-light[data-layer='mid'] {
+  filter: blur(5px);
+}
+
+.chat-light[data-layer='near'] {
+  filter: blur(1px);
+}
+
+.chat-light[data-layer='core'] {
+  opacity: 0.45;
+}
+
+/* One still: the flare on the top right, no turning. */
+@media (prefers-reduced-motion: reduce) {
+  .chat-launcher {
+    animation: none;
+  }
 }
 
 /* The label folds away past the hero (data-compact) and opens again on

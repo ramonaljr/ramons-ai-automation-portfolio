@@ -279,7 +279,7 @@ export function ChatWidget() {
         aria-controls='chat-panel'
         aria-label={open ? 'Close chat' : 'Ask my assistant'}
         data-compact={(labelled && !atTop) || undefined}
-        className={`chat-launcher bg-ink text-ground fixed right-4 bottom-4 z-[110] flex h-12 items-center rounded-full p-1.5 transition-[transform,opacity] duration-300 hover:-translate-y-0.5 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:p-[7px] ${
+        className={`chat-launcher text-ground fixed right-4 bottom-4 z-[110] flex h-12 items-center rounded-full p-1.5 transition-[transform,opacity] duration-300 hover:-translate-y-0.5 active:scale-95 sm:right-5 sm:bottom-5 sm:h-14 sm:p-[7px] ${
           open ? 'max-sm:hidden' : ''
         } ${
           (scrolling || nearCalendar) && !open
@@ -287,7 +287,24 @@ export function ChatWidget() {
             : ''
         }`}
       >
-        <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.07] sm:h-[42px] sm:w-[42px]'>
+        {/* Light running round the border, in four layers: the two soft ones
+            under the black fill glow onto the page, the two sharp ones over
+            it draw the rim (globals.css, "Chat launcher light"). */}
+        <span className='chat-light' data-layer='wide' aria-hidden='true'>
+          <i />
+        </span>
+        <span className='chat-light' data-layer='mid' aria-hidden='true'>
+          <i />
+        </span>
+        <span className='chat-fill' aria-hidden='true' />
+        <span className='chat-light' data-layer='near' aria-hidden='true'>
+          <i />
+        </span>
+        <span className='chat-light' data-layer='core' aria-hidden='true'>
+          <i />
+        </span>
+
+        <span className='relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.07] sm:h-[42px] sm:w-[42px]'>
           {open ? (
             <X size={20} strokeWidth={ICON_STROKE} aria-hidden='true' />
           ) : (
@@ -295,7 +312,7 @@ export function ChatWidget() {
           )}
         </span>
         {labelled && (
-          <span className='chat-label hidden text-[14.5px] font-medium sm:inline-block'>Ask my assistant</span>
+          <span className='chat-label relative hidden text-[14.5px] font-medium sm:inline-block'>Ask my assistant</span>
         )}
       </button>
 
