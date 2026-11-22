@@ -61,3 +61,76 @@ $$;
 drop trigger if exists engagements_touch on public.engagements;
 create trigger engagements_touch before update on public.engagements
   for each row execute function public.touch_updated_at();
+
+-- ── Redesigned desk (2026-11-22) ─────────────────────────────────────
+-- Safe to re-run. Adds timeline tasks and meetings to each engagement,
+-- per-account desk settings, and a private bucket for uploaded wallpapers.
+
+alter table public.engagements
+  add column if not exists tasks  jsonb not null default '[]'::jsonb,
+  add column if not exists events jsonb not null default '[]'::jsonb;
+
+create table if not exists public.desk_settings (
+  owner       uuid primary key default auth.uid() references auth.users (id) on delete cascade,
+  data        jsonb not null default '{}'::jsonb,
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.desk_settings enable row level security;
+
+drop policy if exists "Owner reads own desk settings" on public.desk_settings;
+drop policy if exists "Owner creates own desk settings" on public.desk_settings;
+drop policy if exists "Owner updates own desk settings" on public.desk_settings;
+
+create policy "Owner reads own desk settings" on public.desk_settings
+  for select to authenticated using (owner = (select auth.uid()));
+create policy "Owner creates own desk settings" on public.desk_settings
+  for insert to authenticated with check (owner = (select auth.uid()));
+create policy "Owner updates own desk settings" on public.desk_settings
+  for update to authenticated using (owner = (select auth.uid())) with check (owner = (select auth.uid()));
+
+drop trigger if exists desk_settings_touch on public.desk_settings;
+create trigger desk_settings_touch before update on public.desk_settings
+  for each row execute function public.touch_updated_at();
+
+-- Private bucket; each account only reads and writes its own folder (<uid>/...).
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('desk-wallpapers', 'desk-wallpapers', false, 10485760, array['image/jpeg','image/png','image/webp'])
+on conflict (id) do nothing;
+
+drop policy if exists "Owner reads own wallpapers" on storage.objects;
+drop policy if exists "Owner uploads own wallpapers" on storage.objects;
+drop policy if exists "Owner deletes own wallpapers" on storage.objects;
+
+create policy "Owner reads own wallpapers" on storage.objects
+  for select to authenticated
+  using (bucket_id = 'desk-wallpapers' and (storage.foldername(name))[1] = (select auth.uid())::text);
+create policy "Owner uploads own wallpapers" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'desk-wallpapers' and (storage.foldername(name))[1] = (select auth.uid())::text);
+create policy "Owner deletes own wallpapers" on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'desk-wallpapers' and (storage.foldername(name))[1] = (select auth.uid())::text);
+
+-- ---------------------------------------------------------------------------
+-- Desk content key (2026-11-23)
+--
+-- The playbook text and app code ship encrypted inside public/dashboard/index.html
+-- (this repo is public). The page fetches this key after sign-in and decrypts in
+-- the browser. Read-only for the owner; set or rotate it from the SQL editor.
+-- The key value itself is never committed here.
+-- ---------------------------------------------------------------------------
+
+create table if not exists public.desk_keys (
+  owner uuid primary key references auth.users (id) on delete cascade,
+  content_key text not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.desk_keys enable row level security;
+
+drop policy if exists "desk_keys: owner reads" on public.desk_keys;
+create policy "desk_keys: owner reads" on public.desk_keys
+  for select to authenticated using (owner = (select auth.uid()));
+
+revoke insert, update, delete on public.desk_keys from anon, authenticated;

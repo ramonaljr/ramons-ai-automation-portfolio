@@ -2,10 +2,12 @@
 
 import { useEffect, useState, type FormEvent } from 'react'
 
-import { useRouter } from 'next/navigation'
-
 import { DashboardMark } from '@/components/dashboard/mark'
 import { getSupabase, supabaseConfigured } from '@/lib/supabase'
+
+// The dashboard is a standalone page (public/dashboard/index.html), not a Next
+// route, so getting there is a full page load rather than router navigation.
+const openDashboard = () => window.location.replace('/dashboard')
 
 /**
  * Email and password sign-in for the dashboard. There is no sign-up form:
@@ -13,7 +15,6 @@ import { getSupabase, supabaseConfigured } from '@/lib/supabase'
  * (see supabase/dashboard.sql).
  */
 export function LoginForm() {
-  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
@@ -26,9 +27,9 @@ export function LoginForm() {
     if (!supabase) return
 
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) router.replace('/dashboard')
+      if (data.session) openDashboard()
     })
-  }, [router])
+  }, [])
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -52,7 +53,7 @@ export function LoginForm() {
       return
     }
 
-    router.replace('/dashboard')
+    openDashboard()
   }
 
   return (

@@ -33,6 +33,15 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
 
+  // The private dashboard is a standalone page in public/dashboard/ (built in the
+  // client-playbook repo), so its own CSS never meets the site's. /login sends you here.
+  rewrites: async () => [{ source: '/dashboard', destination: '/dashboard/index.html' }],
+
+  headers: async () => [
+    { source: '/dashboard/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
+    { source: '/dashboard', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }
+  ],
+
   redirects: async () =>
     Object.entries(RETIRED_CASE_STUDIES).map(([from, to]) => ({
       source: `/case-study/${from}`,
