@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
 
-import { gsap, MOTION_OK } from '@/components/landing/gsap'
+import { gsap, MOTION_OK, ScrollTrigger } from '@/components/landing/gsap'
 
 /**
  * Smooths wheel scrolling on the landing page.
@@ -52,6 +52,10 @@ export function SmoothScroll() {
 
     instance = lenis
 
+    const onLenisScroll = () => ScrollTrigger.update()
+
+    lenis.on('scroll', onLenisScroll)
+
     // One clock: GSAP's ticker drives Lenis.
     const tick = (time: number) => lenis.raf(time * 1000)
 
@@ -59,6 +63,7 @@ export function SmoothScroll() {
     gsap.ticker.lagSmoothing(0)
 
     return () => {
+      lenis.off('scroll', onLenisScroll)
       gsap.ticker.remove(tick)
       gsap.ticker.lagSmoothing(500, 33)
       lenis.destroy()

@@ -1,10 +1,10 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 import { IntroAnimation } from '@/components/landing/intro-animation'
 import { BlossomStoryBackground } from '@/components/landing/blossom-story-background'
-import { SceneTiles } from '@/components/landing/scene-tiles'
+import { FooterReveal } from '@/components/landing/footer-reveal'
 import { SiteNav } from '@/components/landing/site-nav'
 import { SiteFooter } from '@/components/landing/site-footer'
 import { HeroSection } from '@/components/landing/hero-section'
@@ -30,6 +30,8 @@ import type { CaseStudyMetadata } from '@/lib/case-studies'
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetadata[] }) {
+  const coverRef = useRef<HTMLDivElement>(null)
+  const footerRef = useRef<HTMLDivElement>(null)
   const [heroReady, setHeroReady] = useState(false)
   const handleIntroDone = useCallback(() => setHeroReady(true), [])
 
@@ -42,7 +44,7 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
       {/* The whole page, hero included, sits in one autumn environment. The
           wrapper is the positioning context; the video and canvases are sticky
           inside it so one viewport of pixels covers the whole scroll range. */}
-      <div className='blossom-story-root relative isolate'>
+      <div ref={coverRef} className='blossom-story-root relative isolate z-20'>
         <BlossomStoryBackground heroReady={heroReady} />
 
         {/* The opening chapter: hero, work and proof, on the autumn scene. */}
@@ -52,16 +54,9 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
           <ProofStrip systemCount={caseStudies.length} />
         </div>
 
-        {/* A curtain between the chapters: from the moment the work strip
-            reaches the nav, slate tiles close over the scene and the opening
-            chapter, and the story rises onto the finished slate. They open
-            again as the projects come up, and the scene is back. */}
-        <SceneTiles className='z-20' />
         <ParticleField className='z-[25]' />
 
         <div className='relative z-30'>
-          <div className='scene-handover' aria-hidden='true' />
-
           <div className='story-content relative'>
             <div className='relative z-10'>
               {/* The story sits between the promise and the proof: what the
@@ -88,12 +83,19 @@ export function PortfolioSections({ caseStudies }: { caseStudies: CaseStudyMetad
               the form. All of them, with the FAQPage markup, are on /services. */}
               <FaqSection essentialOnly />
               <ContactSection />
-              <SiteFooter />
             </div>
           </div>
         </div>
       </div>
 
+      <div ref={footerRef} className='chapter-footer relative z-10' data-chapter='footer'>
+        <div className='chapter-footer-inner' data-footer-reveal-inner>
+          <SiteFooter />
+        </div>
+        <div className='chapter-scrim-footer' data-footer-reveal-scrim aria-hidden='true' />
+      </div>
+
+      <FooterReveal coverRef={coverRef} footerRef={footerRef} />
       <ChatWidget />
       <OffscreenLoopPause />
     </div>

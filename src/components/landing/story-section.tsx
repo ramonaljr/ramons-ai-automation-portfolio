@@ -138,22 +138,10 @@ function PinnedStory({ systemCount }: { systemCount: number }) {
 
   const railFill = useTransform(progress, [0, 1], [0, 1])
 
-  // As on the reference handover, the story comes into focus on the slate
-  // the tiles leave behind: soft and faint while its top rises, sharp by the
-  // time it is a third of the way up. `none` once settled, so no filter
-  // layer is kept for the rest of the story.
-  const screenOpacity = useTransform(arrival, [0, 0.1, 0.35, 1], [0, 0, 1, 1])
-
-  const screenFilter = useTransform(arrival, latest => {
-    const blur = 14 * (1 - Math.min(1, Math.max(0, (latest - 0.1) / 0.25)))
-
-    return blur > 0.05 ? `blur(${blur.toFixed(1)}px)` : 'none'
-  })
-
   return (
     <div ref={trackRef} className='story-track'>
       <div className='story-stage'>
-        <motion.div className='story-screen' style={{ opacity: screenOpacity, filter: screenFilter }}>
+        <div className='story-screen'>
           {ACTS.map((act, index) => (
             <ActCopy key={act.tag} act={act} index={index} progress={progress} systemCount={systemCount} />
           ))}
@@ -174,7 +162,7 @@ function PinnedStory({ systemCount }: { systemCount: number }) {
               <motion.i style={{ scaleX: railFill }} />
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   )

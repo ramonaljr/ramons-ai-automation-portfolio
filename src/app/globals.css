@@ -2731,29 +2731,12 @@ a.work-aux-link:hover {
 /* Slate ground since the Taste-skill pass; a faint terracotta glow is all
    that is left of the old orange grade, so the autumn leaves still belong. */
 .blossom-story-root {
-  /* The slate the page settles on; the scene tiles (scene-tiles.tsx) turn
-     to exactly this, so the dissolve lands on what comes next. */
   --scene-ground: oklch(0.81 0.018 255);
 
   background:
     radial-gradient(circle at 72% 34%, oklch(0.8 0.05 42 / 0.22), transparent 38rem),
     radial-gradient(circle at 18% 68%, oklch(0.91 0.016 255 / 0.82), transparent 46rem),
     var(--scene-ground);
-}
-
-/* ── Scene tiles (scene-tiles.tsx) ───────────────────────────────────────
-   The curtain between the opening chapter and the story: plain white, as on
-   the reference handover (the dark theme closes on its own dark ground, not a
-   white flash). Each tile's opacity is written by scroll; the edges are whole
-   pixels, so no seams. */
-.scene-tiles i {
-  position: absolute;
-  background: #fff;
-  will-change: opacity;
-}
-
-.dark .scene-tiles i {
-  background: var(--ground);
 }
 
 .blossom-story-background {
@@ -3312,6 +3295,54 @@ a.work-aux-link:hover {
   background: color-mix(in oklab, var(--ground) 72%, transparent);
 }
 
+/* ── Footer parallax reveal (footer-reveal.tsx) ──────────────────────────
+   Only the footer uses the reveal transition: on desktop it emerges cleanly
+   from beneath .blossom-story-root without touching hero, story, or any
+   internal sticky sections (#story, #process, #faq). */
+.chapter-footer-inner {
+  position: relative;
+}
+
+.chapter-scrim-footer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  background: oklch(0.06 0.01 255);
+  will-change: opacity;
+}
+
+.chapter-footer[data-reveal-ready] {
+  margin-top: -2rem;
+  padding-top: 2rem;
+  overflow: clip;
+  background: oklch(0.2 0.018 255);
+}
+
+.chapter-footer[data-reveal-ready='sticky'] {
+  position: sticky;
+  bottom: 0;
+}
+
+.chapter-footer[data-reveal-ready] .saas-footer.footer-scene {
+  border-radius: 0;
+}
+
+#top:has(.chapter-footer[data-reveal-ready]) .blossom-story-root {
+  border-bottom-right-radius: clamp(1.25rem, 2.2vw, 2rem);
+  border-bottom-left-radius: clamp(1.25rem, 2.2vw, 2rem);
+  box-shadow: 0 24px 60px oklch(0.08 0.015 255 / 0.24);
+}
+
+.dark #top:has(.chapter-footer[data-reveal-ready]) .blossom-story-root {
+  box-shadow: 0 24px 60px oklch(0 0 0 / 0.55);
+}
+
+#top:has(.chapter-footer[data-reveal-ready]) .blossom-story-background {
+  border-radius: inherit;
+}
+
 /* ── One continuous wash from About to the footer ────────────────────────
    Each section used to paint its own translucent background and a top rule.
    Side by side, those slightly different washes drew hard horizontal lines
@@ -3335,29 +3366,6 @@ a.work-aux-link:hover {
   section:is(#about, #portfolio, #services, #process, #experience, #platforms, #testimonials, #engagement, #faq, #contact) {
   background: none !important;
   border-top-color: transparent !important;
-}
-
-/* On the landing page the scene tiles (scene-tiles.tsx) close over the scene
-   before the story arrives, so the story needs no paper of its own: a sheet
-   here sat over the tiles and hid most of the handover. */
-.blossom-story-root .story-screen {
-  background: transparent;
-}
-
-/* Room for the curtain to close: it starts as the work strip reaches the nav
-   and is shut as the story's top comes into view. Nothing new arrives in
-   between, so the close takes about two thirds of a screen of scroll. */
-.scene-handover {
-  height: 120vh;
-}
-
-.blossom-story-root .story-content .saas-footer {
-  border-top-color: transparent;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    color-mix(in oklab, oklch(0.8 0.018 255) 62%, transparent) 70%
-  );
 }
 
 /* ── Hero portrait ────────────────────────────────────────────────────────

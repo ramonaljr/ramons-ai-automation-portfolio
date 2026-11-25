@@ -1,4 +1,5 @@
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
 import { useGSAP } from '@gsap/react'
 
@@ -12,7 +13,7 @@ import { useGSAP } from '@gsap/react'
  * Plugins register once, here, so every component imports from this module
  * rather than registering inside a render.
  */
-gsap.registerPlugin(useGSAP, SplitText)
+gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger)
 
 /**
  * Every GSAP entrance runs inside `gsap.matchMedia()` on this query, so
@@ -30,4 +31,4 @@ export const MOTION_OK = '(prefers-reduced-motion: no-preference)'
  */
 export const LINE_DROP = 130
 
-export { gsap, SplitText, useGSAP }
+export { gsap, ScrollTrigger, SplitText, useGSAP }
